@@ -1,0 +1,22 @@
+{
+  "name": "Laguna Swim International",
+  "short_name": "Laguna Swim",
+  "description": "Cronómetro multi-carril en tiempo real",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#071e38",
+  "theme_color": "#071e38",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
