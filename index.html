@@ -364,6 +364,16 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
         <label>Año</label><input id="r-year" placeholder="2026" type="number">
         <button class="btn btn-sky" onclick="addRankTime()">Agregar al ranking</button>
       </div>
+
+      <div class="card" style="border-color:rgba(250,204,21,0.3)">
+        <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;color:#ffd700">📋 Importar varios tiempos a la vez</div>
+        <div style="font-size:0.72rem;color:#7ab8e8;margin-bottom:0.6rem;line-height:1.5">Un tiempo por línea con este formato:<br><b style="color:#fff">Nombre, M/F, Categoría, Distancia, Estilo, Tiempo, Competencia, Año</b><br><span style="color:#7ab8e8">Ej: Luisa Silva, F, 13-14, 100, Libre, 1:12.99, InterClubes Norte, 2014</span></div>
+        <textarea id="bulk-input" style="width:100%;height:160px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;padding:0.6rem;font-size:0.75rem;font-family:monospace;resize:vertical" placeholder="Luisa Silva Reyes, F, 13-14, 100, Libre, 1:12.99, VI Encuentro InterClubes Norte, 2014
+Stephanie Gutierrez, F, 15-18, 50, Libre, 32.42, VI Encuentro InterClubes Norte, 2014
+Elias Martinez Caballero, M, 7-8, 25, Libre, 16.39, VI Encuentro InterClubes Norte, 2014"></textarea>
+        <button class="btn btn-yellow" onclick="importBulk()" style="margin-top:0.4rem">⬆ Importar todos</button>
+        <div id="bulk-result" style="font-size:0.75rem;margin-top:0.4rem;color:#22c55e;display:none"></div>
+      </div>
     </div>
     <div class="footer-bar">© 2026 Laguna Swim International · Sergio Elías Villarreal Limas · Todos los derechos reservados<br><button class="coach-btn" onclick="showCoachLogin()">⚙</button></div>
   </div>
@@ -795,7 +805,31 @@ function addRankTime(){
   loadRanking();
 }
 
-function deleteRank(id){if(!confirm('¿Eliminar este tiempo?'))return;db.ref('ranking/'+id).remove();loadRanking();}
+function importBulk(){
+  const text=document.getElementById('bulk-input').value.trim();
+  if(!text){alert('Pega los tiempos primero');return;}
+  const lines=text.split('\n').filter(l=>l.trim());
+  let ok=0,errors=[];
+  const promises=lines.map((line,idx)=>{
+    const parts=line.split(',').map(p=>p.trim());
+    if(parts.length<8){errors.push('Línea '+(idx+1)+': formato incorrecto');return;}
+    const [swimmer,gender,cat,dist,style,time,comp,year]=parts;
+    if(!swimmer||!gender||!cat||!dist||!style||!time||!comp||!year){errors.push('Línea '+(idx+1)+': datos incompletos');return;}
+    const tp=time.split(':');let ms=0;
+    if(tp.length===2){const sp=tp[1].split('.');ms=(+tp[0])*60000+(+sp[0])*1000+(+(sp[1]||0))*10;}
+    else{const sp=tp[0].split('.');ms=(+sp[0])*1000+(+(sp[1]||0))*10;}
+    const id='r'+Date.now()+idx;
+    ok++;
+    return db.ref('ranking/'+id).set({id,swimmer,gender:gender.toUpperCase(),cat,dist:+dist,style,time,timeMs:ms,comp,year:+year});
+  });
+  Promise.all(promises.filter(Boolean)).then(()=>{
+    const res=document.getElementById('bulk-result');
+    res.style.display='block';
+    res.style.color=errors.length?'#eab308':'#22c55e';
+    res.textContent=`✅ ${ok} tiempos importados`+(errors.length?` · ⚠ ${errors.join(' | ')}`:'');
+    if(ok>0){document.getElementById('bulk-input').value='';loadRanking();}
+  });
+}
 
 // COACH
 function showCoachLogin(){document.getElementById('coach-modal').classList.remove('modal-hidden');}
