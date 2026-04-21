@@ -198,8 +198,11 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
         <select id="event-dist"><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option><option value="200">200m</option><option value="400">400m</option><option value="800">800m</option><option value="1500">1500m</option></select>
         <label>Estilo</label>
         <select id="event-style"><option value="Libre">Libre</option><option value="Dorso">Dorso</option><option value="Pecho">Pecho</option><option value="Mariposa">Mariposa</option><option value="Combinado">Combinado individual</option></select>
-        <label>Carriles</label>
-        <select id="lane-count" onchange="buildInputs()"><option value="1">1 carril</option><option value="2">2 carriles</option><option value="3">3 carriles</option><option value="4">4 carriles</option><option value="5">5 carriles</option><option value="6">6 carriles</option><option value="7">7 carriles</option><option value="8" selected>8 carriles</option></select>
+        <label>Alberca — elige los carriles activos</label>
+        <div style="margin-bottom:0.5rem">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0.4rem" id="lane-selector"></div>
+          <div style="font-size:0.68rem;color:#7ab8e8" id="lane-selector-hint">Toca para activar/desactivar cada carril</div>
+        </div>
         <label>Nombre de competencia</label>
         <input id="comp-name" placeholder="Ej: Torneo Regional 2026">
       </div>
@@ -632,17 +635,51 @@ function goTimer(id){
 // ═══════════════════════════════════════════════
 // SETUP CARRERA
 // ═══════════════════════════════════════════════
+// Carriles activos (set de números)
+let activeLanes=new Set([1,2,3,4,5,6,7,8]);
+
+function buildLaneSelector(){
+  const c=document.getElementById('lane-selector');
+  c.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const btn=document.createElement('button');
+    btn.type='button';
+    const active=activeLanes.has(i);
+    btn.style=`
+      width:44px;height:44px;border-radius:10px;font-size:1rem;font-weight:800;cursor:pointer;
+      border:2px solid ${active?'#38bdf8':'rgba(255,255,255,0.15)'};
+      background:${active?'rgba(56,189,248,0.18)':'rgba(255,255,255,0.05)'};
+      color:${active?'#38bdf8':'rgba(255,255,255,0.3)'};
+      transition:all 0.15s;
+    `;
+    btn.textContent=i;
+    btn.onclick=()=>{
+      if(activeLanes.has(i)){activeLanes.delete(i);}
+      else{activeLanes.add(i);}
+      buildLaneSelector();
+      buildInputs();
+    };
+    c.appendChild(btn);
+  }
+  const sorted=[...activeLanes].sort((a,b)=>a-b);
+  const hint=document.getElementById('lane-selector-hint');
+  hint.textContent=sorted.length===0?'⚠ Selecciona al menos un carril':'Carriles activos: '+sorted.join(', ')+' ('+sorted.length+' en total)';
+  hint.style.color=sorted.length===0?'#ef4444':'#7ab8e8';
+}
+
 function buildInputs(){
-  const n=+document.getElementById('lane-count').value;
+  const sorted=[...activeLanes].sort((a,b)=>a-b);
   const c=document.getElementById('names-card');
   c.innerHTML='<label style="margin-bottom:6px">Nombres de nadadores</label>';
-  for(let i=1;i<=n;i++){
+  sorted.forEach(i=>{
     const inp=document.createElement('input');
     inp.placeholder='Carril '+i+' — Nombre';
     inp.id='n'+i;
     c.appendChild(inp);
-  }
+  });
 }
+
+buildLaneSelector();
 buildInputs();
 
 function getEventInfo(){
@@ -654,12 +691,13 @@ function getEventInfo(){
 }
 
 function createRace(){
-  const n=+document.getElementById('lane-count').value;
+  const sorted=[...activeLanes].sort((a,b)=>a-b);
+  if(sorted.length===0){alert('Selecciona al menos un carril');return;}
   laneData=[];posCounter=1;
-  for(let i=1;i<=n;i++){
+  sorted.forEach(i=>{
     const nm=(document.getElementById('n'+i)||{}).value||'';
     laneData.push({lane:i,name:nm.trim()||'Carril '+i,time:null,stopped:false,position:null,tkId:null,parciales:[]});
-  }
+  })
   const code=genCode();myRoom=code;myRole='master';
   const ev=getEventInfo();
   const lanesObj={};laneData.forEach(l=>{lanesObj[l.lane]=l;});
@@ -794,7 +832,8 @@ function cancelRace(){
 
 function newRace(){
   clearInterval(clockInterval);myRoom=null;laneData=[];posCounter=1;raceStartAt=null;
-  buildInputs();goTimer('s-setup');
+  activeLanes=new Set([1,2,3,4,5,6,7,8]);
+  buildLaneSelector();buildInputs();goTimer('s-setup');
 }
 
 // ═══════════════════════════════════════════════
