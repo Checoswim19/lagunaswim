@@ -10,9 +10,13 @@
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg">
 <meta name="apple-mobile-web-app-title" content="Laguna Swim">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- Firebase SDKs — ahora incluye Auth -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 html,body{height:100%;overscroll-behavior:none}
@@ -72,8 +76,6 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
 .stat-lbl{font-size:0.64rem;color:#7ab8e8;margin-top:2px}
 .prog-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1rem;margin-bottom:0.6rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
 .prog-card:active{transform:scale(0.98)}
-
-/* RANKING */
 .rank-filters{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.8rem}
 .rank-filters select{margin-bottom:0}
 .rank-section{margin-bottom:1.2rem}
@@ -86,13 +88,9 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
 .rank-detail{font-size:0.7rem;color:#7ab8e8;margin-top:1px}
 .rank-time{font-size:1rem;font-weight:800;color:#38bdf8;font-variant-numeric:tabular-nums}
 .badge-nr{font-size:0.58rem;background:linear-gradient(135deg,#b8860b,#ffd700);color:#1a0a00;font-weight:800;padding:2px 6px;border-radius:20px;display:inline-block;margin-left:4px}
-.badge-cat{font-size:0.6rem;background:rgba(56,189,248,0.15);color:#38bdf8;padding:1px 6px;border-radius:20px}
-
-/* HALL OF FAME */
 .hof-card{background:linear-gradient(135deg,rgba(184,134,11,0.12),rgba(255,215,0,0.05));border:2px solid rgba(255,215,0,0.35);border-radius:20px;padding:1.2rem;margin-bottom:1rem}
 .hof-header{display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem}
 .hof-avatar{width:64px;height:64px;border-radius:50%;border:3px solid #ffd700;overflow:hidden;flex-shrink:0;background:#0f3460;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
-.hof-avatar img{width:100%;height:100%;object-fit:cover}
 .hof-name{font-size:1.1rem;font-weight:800;color:#ffd700}
 .hof-title{font-size:0.72rem;color:#e5c84a;margin-top:2px}
 .hof-record{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:rgba(0,0,0,0.2);border-radius:10px;margin-bottom:0.4rem}
@@ -101,12 +99,26 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
 .hof-comp{font-size:0.65rem;color:#a08020;margin-top:1px}
 .olympic-badge{background:linear-gradient(135deg,#b8860b,#ffd700);color:#1a0a00;font-size:0.6rem;font-weight:800;padding:2px 7px;border-radius:20px;display:inline-block;margin-top:3px}
 
-/* COACH */
+/* ===== MODAL BASE ===== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:flex-end;justify-content:center}
-.modal-hidden{display:none}
+.modal-hidden{display:none!important}
 .modal-box{background:#0a1f38;border-radius:20px 20px 0 0;padding:1.5rem;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
+
+/* ===== AUTH MODAL (centrado) ===== */
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-box{background:#0d2a4a;border:1px solid rgba(56,189,248,0.25);border-radius:24px;padding:1.8rem 1.5rem;width:100%;max-width:400px}
+.auth-title{font-size:1.1rem;font-weight:800;color:#38bdf8;margin-bottom:0.3rem;text-align:center}
+.auth-sub{font-size:0.72rem;color:#7ab8e8;text-align:center;margin-bottom:1.2rem}
+.auth-error{background:rgba(185,28,28,0.15);border:1px solid rgba(185,28,28,0.4);border-radius:10px;padding:0.6rem 0.8rem;font-size:0.78rem;color:#fca5a5;margin-bottom:0.7rem;display:none}
+.auth-user-badge{display:flex;align-items:center;gap:0.6rem;background:rgba(21,128,61,0.15);border:1px solid rgba(21,128,61,0.3);border-radius:12px;padding:0.6rem 0.9rem;margin-bottom:0.7rem}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(56,189,248,0.3);border-top-color:#38bdf8;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 .footer-bar{text-align:center;padding:1rem 0 0.5rem;font-size:0.65rem;color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.06);margin-top:1rem}
 .coach-btn{background:none;border:none;color:rgba(255,255,255,0.2);font-size:0.62rem;cursor:pointer;padding:4px 8px;display:block;margin:0.3rem auto 0}
+/* botón logout visible solo cuando está logueado */
+.coach-logout-btn{background:rgba(185,28,28,0.15);border:1px solid rgba(185,28,28,0.3);border-radius:8px;color:#fca5a5;font-size:0.7rem;cursor:pointer;padding:4px 10px;display:none;margin:0.3rem auto 0}
+
 #qr-container{display:flex;justify-content:center;padding:0.5rem 0}
 #fb-status{font-size:0.68rem;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,0.07)}
 .res-row{display:flex;align-items:center;gap:0.8rem;padding:0.75rem 0.9rem;border-radius:12px;margin-bottom:0.4rem}
@@ -153,8 +165,16 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
 
   <div id="s-role" class="screen" style="min-height:unset">
     <div class="hdr"><svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="40" r="30" fill="none" stroke="#38bdf8" stroke-width="4"/><path d="M18,62 Q35,52 50,62 Q65,72 82,62" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/></svg><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">¿Cómo participas?</div></div></div>
-    <div class="role-card" onclick="goTimer('s-setup')"><div style="font-size:2rem;width:45px;text-align:center">🎯</div><div><div style="font-weight:700">Entrenador (Master)</div><div style="font-size:0.73rem;color:#7ab8e8">Crea y controla la carrera</div></div><div style="margin-left:auto;color:#7ab8e8;font-size:1.2rem">›</div></div>
-    <div class="role-card" onclick="goTimer('s-join')"><div style="font-size:2rem;width:45px;text-align:center">🏁</div><div><div style="font-weight:700">Cronometrista</div><div style="font-size:0.73rem;color:#7ab8e8">Padre o asistente</div></div><div style="margin-left:auto;color:#7ab8e8;font-size:1.2rem">›</div></div>
+    <div class="role-card" onclick="requireCoachThen(()=>goTimer('s-setup'))">
+      <div style="font-size:2rem;width:45px;text-align:center">🎯</div>
+      <div><div style="font-weight:700">Entrenador (Master)</div><div style="font-size:0.73rem;color:#7ab8e8">Crea y controla la carrera</div></div>
+      <div style="margin-left:auto;color:#7ab8e8;font-size:1.2rem">›</div>
+    </div>
+    <div class="role-card" onclick="goTimer('s-join')">
+      <div style="font-size:2rem;width:45px;text-align:center">🏁</div>
+      <div><div style="font-weight:700">Cronometrista</div><div style="font-size:0.73rem;color:#7ab8e8">Padre o asistente</div></div>
+      <div style="margin-left:auto;color:#7ab8e8;font-size:1.2rem">›</div>
+    </div>
     <div style="flex:1"></div>
     <button class="btn btn-gray" onclick="goTimer('s-home')">Regresar</button>
   </div>
@@ -261,7 +281,10 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
     <div class="book-card"><div class="book-cover">🏊</div><div class="book-info"><div class="book-lang">🇲🇽 Español</div><div class="book-title">Natación Masters</div><div class="book-desc">Guía completa para el éxito internacional en el agua.</div><div class="book-price">$199 MXN</div><div class="book-btns"><button class="btn btn-sky btn-sm" onclick="buyBook(3)">💳 Comprar PDF</button><button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com/dp/B0G3PQ53KT')">📦 Físico</button></div></div></div>
     <div class="book-card" style="border-color:rgba(56,189,248,0.35);background:rgba(56,189,248,0.05)"><div class="book-cover" style="background:#0c3460;position:relative">🏅<div style="position:absolute;top:-6px;right:-6px;background:#0ea5e9;font-size:0.52rem;font-weight:800;padding:2px 6px;border-radius:20px">PRO</div></div><div class="book-info"><div class="book-lang">🇲🇽 Español</div><div class="book-title">Laguna Swim Pro — Manual de Certificación</div><div class="book-desc">29+ años de experiencia. El "quinto estilo" y certificación internacional.</div><div class="book-price" style="color:#38bdf8">$399 MXN</div><div class="book-btns"><button class="btn btn-sky btn-sm" onclick="buyBook(4)">💳 Comprar PDF</button><button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com/dp/B0FS2D8XZM')">📦 Físico</button></div></div></div>
     <div class="ad-banner"><div class="ad-tag">PUBLICIDAD</div><div class="ad-text">¿Tienda deportiva? lagunaswim.net</div><div class="ad-logo">Tu Logo</div></div>
-    <div class="footer-bar">© 2026 Laguna Swim International · Sergio Elías Villarreal Limas · Todos los derechos reservados<br><button class="coach-btn" onclick="showCoachLogin()">⚙</button></div>
+    <div class="footer-bar">© 2026 Laguna Swim International · Sergio Elías Villarreal Limas · Todos los derechos reservados<br>
+      <button class="coach-btn" onclick="showCoachLogin()">⚙ Acceso entrenador</button>
+      <button class="coach-logout-btn" id="logout-btn-store" onclick="coachLogout()">Cerrar sesión</button>
+    </div>
   </div>
 </div>
 
@@ -269,8 +292,6 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
 <div id="tab-ranking" class="screen">
   <div class="hdr"><svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="40" r="30" fill="none" stroke="#38bdf8" stroke-width="4"/><path d="M18,62 Q35,52 50,62 Q65,72 82,62" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/></svg><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Ranking oficial</div></div></div>
   <div style="flex:1;overflow-y:auto">
-
-    <!-- Hall of Fame -->
     <div class="hof-card">
       <div class="hof-header">
         <div class="hof-avatar">👑</div>
@@ -280,63 +301,18 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
           <div><span class="olympic-badge">🏅 Marca Mínima Olímpica París 2024</span></div>
         </div>
       </div>
-      <div class="hof-record">
-        <div><div class="hof-event">100m Pecho LCM</div><div class="hof-comp">Selectivo Nacional · Monterrey 2023</div></div>
-        <div style="text-align:right"><div class="hof-time">1:00.14</div><span class="badge-nr">🇲🇽 NR</span></div>
-      </div>
-      <div class="hof-record">
-        <div><div class="hof-event">200m Pecho LCM</div><div class="hof-comp">Selectivo Nacional · Monterrey 2023</div></div>
-        <div style="text-align:right"><div class="hof-time">2:09.60</div><span class="badge-nr">🇲🇽 NR</span></div>
-      </div>
-      <div class="hof-record">
-        <div><div class="hof-event">4×100m Combinado</div><div class="hof-comp">Mundial World Aquatics · Singapur 2025</div></div>
-        <div style="text-align:right"><div class="hof-time">3:35.81</div><span class="badge-nr">🇲🇽 NR</span></div>
-      </div>
+      <div class="hof-record"><div><div class="hof-event">100m Pecho LCM</div><div class="hof-comp">Selectivo Nacional · Monterrey 2023</div></div><div style="text-align:right"><div class="hof-time">1:00.14</div><span class="badge-nr">🇲🇽 NR</span></div></div>
+      <div class="hof-record"><div><div class="hof-event">200m Pecho LCM</div><div class="hof-comp">Selectivo Nacional · Monterrey 2023</div></div><div style="text-align:right"><div class="hof-time">2:09.60</div><span class="badge-nr">🇲🇽 NR</span></div></div>
+      <div class="hof-record"><div><div class="hof-event">4×100m Combinado</div><div class="hof-comp">Mundial World Aquatics · Singapur 2025</div></div><div style="text-align:right"><div class="hof-time">3:35.81</div><span class="badge-nr">🇲🇽 NR</span></div></div>
       <div style="font-size:0.7rem;color:#a08020;margin-top:0.6rem;text-align:center;font-style:italic">Compañeros de camino rumbo a París 2024 · Primer mexicano en bajar de 2:10 en 200m pecho</div>
     </div>
-
-    <!-- Filters -->
     <div class="rank-filters">
-      <select id="rank-cat" onchange="filterRanking()">
-        <option value="">Todas las categorías</option>
-        <option value="6-">6 años y menores</option>
-        <option value="7-8">7-8 años</option>
-        <option value="9-10">9-10 años</option>
-        <option value="11-12">11-12 años</option>
-        <option value="13-14">13-14 años</option>
-        <option value="15-18">15-18 años</option>
-        <option value="PM18-24">Pre-Master 18-24</option>
-        <option value="M25-29">Master 25-29</option>
-        <option value="M30-34">Master 30-34</option>
-        <option value="M35-39">Master 35-39</option>
-        <option value="M40-44">Master 40-44</option>
-        <option value="M45-49">Master 45-49</option>
-        <option value="M50-54">Master 50-54</option>
-        <option value="M55-59">Master 55-59</option>
-        <option value="M60-64">Master 60-64</option>
-        <option value="M65-69">Master 65-69</option>
-        <option value="M70+">Master 70+</option>
-      </select>
-      <select id="rank-gender" onchange="filterRanking()">
-        <option value="">Ambos géneros</option>
-        <option value="M">Masculino</option>
-        <option value="F">Femenino</option>
-      </select>
-      <select id="rank-dist" onchange="filterRanking()">
-        <option value="">Todas las pruebas</option>
-        <option value="25">25m</option><option value="50">50m</option><option value="100">100m</option>
-        <option value="200">200m</option><option value="400">400m</option><option value="800">800m</option><option value="1500">1500m</option>
-      </select>
-      <select id="rank-style" onchange="filterRanking()">
-        <option value="">Todos los estilos</option>
-        <option value="Libre">Libre</option><option value="Dorso">Dorso</option>
-        <option value="Pecho">Pecho</option><option value="Mariposa">Mariposa</option><option value="Combinado">Combinado</option>
-      </select>
+      <select id="rank-cat" onchange="filterRanking()"><option value="">Todas las categorías</option><option value="6-">6 años y menores</option><option value="7-8">7-8 años</option><option value="9-10">9-10 años</option><option value="11-12">11-12 años</option><option value="13-14">13-14 años</option><option value="15-18">15-18 años</option><option value="PM18-24">Pre-Master 18-24</option><option value="M25-29">Master 25-29</option><option value="M30-34">Master 30-34</option><option value="M35-39">Master 35-39</option><option value="M40-44">Master 40-44</option><option value="M45-49">Master 45-49</option><option value="M50-54">Master 50-54</option><option value="M55-59">Master 55-59</option><option value="M60-64">Master 60-64</option><option value="M65-69">Master 65-69</option><option value="M70+">Master 70+</option></select>
+      <select id="rank-gender" onchange="filterRanking()"><option value="">Ambos géneros</option><option value="M">Masculino</option><option value="F">Femenino</option></select>
+      <select id="rank-dist" onchange="filterRanking()"><option value="">Todas las pruebas</option><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option><option value="200">200m</option><option value="400">400m</option><option value="800">800m</option><option value="1500">1500m</option></select>
+      <select id="rank-style" onchange="filterRanking()"><option value="">Todos los estilos</option><option value="Libre">Libre</option><option value="Dorso">Dorso</option><option value="Pecho">Pecho</option><option value="Mariposa">Mariposa</option><option value="Combinado">Combinado</option></select>
     </div>
-
     <div id="ranking-list"><div style="text-align:center;color:#7ab8e8;padding:2rem;font-size:0.85rem">Cargando ranking...</div></div>
-
-    <!-- Coach add section -->
     <div id="coach-add-section" style="display:none">
       <div class="card" style="border-color:rgba(56,189,248,0.3)">
         <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.6rem;color:#38bdf8">➕ Agregar tiempo al ranking</div>
@@ -344,17 +320,7 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
         <label>Género</label>
         <select id="r-gender"><option value="M">Masculino</option><option value="F">Femenino</option></select>
         <label>Categoría de edad</label>
-        <select id="r-cat">
-          <option value="6-">6 años y menores</option><option value="7-8">7-8 años</option>
-          <option value="9-10">9-10 años</option><option value="11-12">11-12 años</option>
-          <option value="13-14">13-14 años</option><option value="15-18">15-18 años</option>
-          <option value="PM18-24">Pre-Master 18-24</option><option value="M25-29">Master 25-29</option>
-          <option value="M30-34">Master 30-34</option><option value="M35-39">Master 35-39</option>
-          <option value="M40-44">Master 40-44</option><option value="M45-49">Master 45-49</option>
-          <option value="M50-54">Master 50-54</option><option value="M55-59">Master 55-59</option>
-          <option value="M60-64">Master 60-64</option><option value="M65-69">Master 65-69</option>
-          <option value="M70+">Master 70+</option>
-        </select>
+        <select id="r-cat"><option value="6-">6 años y menores</option><option value="7-8">7-8 años</option><option value="9-10">9-10 años</option><option value="11-12">11-12 años</option><option value="13-14">13-14 años</option><option value="15-18">15-18 años</option><option value="PM18-24">Pre-Master 18-24</option><option value="M25-29">Master 25-29</option><option value="M30-34">Master 30-34</option><option value="M35-39">Master 35-39</option><option value="M40-44">Master 40-44</option><option value="M45-49">Master 45-49</option><option value="M50-54">Master 50-54</option><option value="M55-59">Master 55-59</option><option value="M60-64">Master 60-64</option><option value="M65-69">Master 65-69</option><option value="M70+">Master 70+</option></select>
         <label>Distancia</label>
         <select id="r-dist"><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option><option value="200">200m</option><option value="400">400m</option><option value="800">800m</option><option value="1500">1500m</option></select>
         <label>Estilo</label>
@@ -364,18 +330,18 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
         <label>Año</label><input id="r-year" placeholder="2026" type="number">
         <button class="btn btn-sky" onclick="addRankTime()">Agregar al ranking</button>
       </div>
-
       <div class="card" style="border-color:rgba(250,204,21,0.3)">
         <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;color:#ffd700">📋 Importar varios tiempos a la vez</div>
-        <div style="font-size:0.72rem;color:#7ab8e8;margin-bottom:0.6rem;line-height:1.5">Un tiempo por línea con este formato:<br><b style="color:#fff">Nombre, M/F, Categoría, Distancia, Estilo, Tiempo, Competencia, Año</b><br><span style="color:#7ab8e8">Ej: Luisa Silva, F, 13-14, 100, Libre, 1:12.99, InterClubes Norte, 2014</span></div>
-        <textarea id="bulk-input" style="width:100%;height:160px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;padding:0.6rem;font-size:0.75rem;font-family:monospace;resize:vertical" placeholder="Luisa Silva Reyes, F, 13-14, 100, Libre, 1:12.99, VI Encuentro InterClubes Norte, 2014
-Stephanie Gutierrez, F, 15-18, 50, Libre, 32.42, VI Encuentro InterClubes Norte, 2014
-Elias Martinez Caballero, M, 7-8, 25, Libre, 16.39, VI Encuentro InterClubes Norte, 2014"></textarea>
+        <div style="font-size:0.72rem;color:#7ab8e8;margin-bottom:0.6rem;line-height:1.5">Un tiempo por línea con este formato:<br><b style="color:#fff">Nombre, M/F, Categoría, Distancia, Estilo, Tiempo, Competencia, Año</b></div>
+        <textarea id="bulk-input" style="width:100%;height:160px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;padding:0.6rem;font-size:0.75rem;font-family:monospace;resize:vertical" placeholder="Luisa Silva Reyes, F, 13-14, 100, Libre, 1:12.99, VI Encuentro InterClubes Norte, 2014"></textarea>
         <button class="btn btn-yellow" onclick="importBulk()" style="margin-top:0.4rem">⬆ Importar todos</button>
         <div id="bulk-result" style="font-size:0.75rem;margin-top:0.4rem;color:#22c55e;display:none"></div>
       </div>
     </div>
-    <div class="footer-bar">© 2026 Laguna Swim International · Sergio Elías Villarreal Limas · Todos los derechos reservados<br><button class="coach-btn" onclick="showCoachLogin()">⚙</button></div>
+    <div class="footer-bar">© 2026 Laguna Swim International · Sergio Elías Villarreal Limas · Todos los derechos reservados<br>
+      <button class="coach-btn" onclick="showCoachLogin()">⚙ Acceso entrenador</button>
+      <button class="coach-logout-btn" id="logout-btn-ranking" onclick="coachLogout()">Cerrar sesión</button>
+    </div>
   </div>
 </div>
 
@@ -394,49 +360,70 @@ Elias Martinez Caballero, M, 7-8, 25, Libre, 16.39, VI Encuentro InterClubes Nor
       </div>
       <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);margin-top:0.7rem;line-height:1.5;font-style:italic">"No formamos nadadores rápidos… formamos personas fuertes que terminan nadando rápido."</div>
     </div>
-
     <div class="stat-row">
       <div class="stat-box"><div class="stat-num">29+</div><div class="stat-lbl">Años exp.</div></div>
       <div class="stat-box"><div class="stat-num">60+</div><div class="stat-lbl">Medallas Panam</div></div>
       <div class="stat-box"><div class="stat-num">80+</div><div class="stat-lbl">Nadadores/evento</div></div>
     </div>
-
-    <!-- Logros -->
     <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.5rem">🌎 Logros internacionales Masters</div>
     <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:0.8rem;margin-bottom:0.5rem">
       <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem"><span style="font-size:1.3rem">🥇</span><div><div style="font-weight:700;font-size:0.88rem">Panamericanos Masters — Colombia</div><div style="font-size:0.7rem;color:#a08020">Múltiples medallas en piscina y aguas abiertas</div></div></div>
       <div style="display:flex;align-items:center;gap:0.6rem"><span style="font-size:1.3rem">🥇</span><div><div style="font-weight:700;font-size:0.88rem">Panamericanos Masters — Trinidad y Tobago</div><div style="font-size:0.7rem;color:#a08020">Más de 60 medallas panamericanas en total</div></div></div>
     </div>
-
-    <!-- Programas -->
     <div style="font-size:0.82rem;font-weight:700;margin:0.8rem 0 0.5rem">🏊 Programas Laguna Swim</div>
     <div class="prog-card" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio!%20Me%20interesa%20el%20programa%20de%20Nataci%C3%B3n%20Infantil%20en%20Laguna%20Swim%20%F0%9F%8F%8A')"><div><div style="font-weight:700">🧒 Natación Infantil</div><div style="font-size:0.72rem;color:#7ab8e8;margin-top:2px">Desde los primeros chapoteos</div></div><div style="color:#22c55e;font-size:0.78rem;font-weight:600">WhatsApp ›</div></div>
     <div class="prog-card" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio!%20Me%20interesa%20el%20programa%20de%20Nataci%C3%B3n%20Juvenil%20en%20Laguna%20Swim%20%F0%9F%8F%8A')"><div><div style="font-weight:700">🏃 Natación Juvenil</div><div style="font-size:0.72rem;color:#7ab8e8;margin-top:2px">Formación y competencia</div></div><div style="color:#22c55e;font-size:0.78rem;font-weight:600">WhatsApp ›</div></div>
     <div class="prog-card" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio!%20Me%20interesa%20el%20programa%20Master%20en%20Laguna%20Swim%20%F0%9F%8F%8A')"><div><div style="font-weight:700">🏅 Natación Master</div><div style="font-size:0.72rem;color:#7ab8e8;margin-top:2px">Alto rendimiento para adultos</div></div><div style="color:#22c55e;font-size:0.78rem;font-weight:600">WhatsApp ›</div></div>
     <div class="prog-card" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio!%20Me%20interesan%20clases%20particulares%20en%20Laguna%20Swim%20%F0%9F%8F%8A')"><div><div style="font-weight:700">⭐ Clases Particulares</div><div style="font-size:0.72rem;color:#7ab8e8;margin-top:2px">Atención personalizada</div></div><div style="color:#22c55e;font-size:0.78rem;font-weight:600">WhatsApp ›</div></div>
-
-    <!-- Galería -->
     <div style="font-size:0.82rem;font-weight:700;margin:0.8rem 0 0.5rem">📸 Galería del equipo</div>
     <div style="background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.15);border-radius:12px;padding:1.2rem;text-align:center;margin-bottom:0.8rem">
       <div style="font-size:1.5rem;margin-bottom:0.3rem">🏊‍♂️</div>
       <div style="font-size:0.82rem;font-weight:700;color:#38bdf8">Próximamente</div>
       <div style="font-size:0.72rem;color:#7ab8e8;margin-top:0.2rem">Fotos del equipo, competencias y logros</div>
     </div>
-
     <button class="btn btn-wa" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio%2C%20me%20interesa%20Laguna%20Swim')">💬 Contactar por WhatsApp</button>
     <button class="btn btn-orange" onclick="openUrl('https://www.amazon.com/stores/author/B0CNYHD2MX')">📦 Ver libros en Amazon</button>
-    <div class="footer-bar">© 2026 Laguna Swim International · Sergio Elías Villarreal Limas · Todos los derechos reservados<br><button class="coach-btn" onclick="showCoachLogin()">⚙</button></div>
+    <div class="footer-bar">© 2026 Laguna Swim International · Sergio Elías Villarreal Limas · Todos los derechos reservados<br>
+      <button class="coach-btn" onclick="showCoachLogin()">⚙ Acceso entrenador</button>
+      <button class="coach-logout-btn" id="logout-btn-profile" onclick="coachLogout()">Cerrar sesión</button>
+    </div>
   </div>
 </div>
 
-<!-- Coach Modal -->
-<div class="modal-overlay modal-hidden" id="coach-modal">
-  <div class="modal-box">
-    <div style="font-weight:800;font-size:1rem;margin-bottom:1rem;color:#38bdf8">🔐 Acceso Entrenador</div>
-    <label>Contraseña</label>
-    <input type="password" id="coach-pass" placeholder="••••••••">
-    <button class="btn btn-sky" onclick="checkCoach()">Entrar</button>
-    <button class="btn btn-gray" onclick="closeCoachModal()">Cancelar</button>
+<!-- ===== MODAL AUTH (Firebase) ===== -->
+<div class="auth-overlay modal-hidden" id="auth-modal">
+  <div class="auth-box">
+    <!-- Estado: formulario de login -->
+    <div id="auth-form-view">
+      <div style="text-align:center;font-size:2rem;margin-bottom:0.5rem">🔐</div>
+      <div class="auth-title">Acceso Entrenador</div>
+      <div class="auth-sub">Inicia sesión con tu cuenta de Firebase</div>
+      <div class="auth-error" id="auth-error"></div>
+      <label>Correo electrónico</label>
+      <input type="email" id="auth-email" placeholder="tu@correo.com" autocomplete="username">
+      <label>Contraseña</label>
+      <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn btn-sky" id="auth-login-btn" onclick="doLogin()" style="margin-top:0.3rem">Entrar</button>
+      <button class="btn btn-gray" onclick="closeAuthModal()">Cancelar</button>
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.25);text-align:center;margin-top:0.5rem">
+        Seguridad: Firebase Authentication · Tu contraseña nunca se expone en el código
+      </div>
+    </div>
+    <!-- Estado: ya logueado -->
+    <div id="auth-logged-view" style="display:none">
+      <div style="text-align:center;font-size:2rem;margin-bottom:0.5rem">✅</div>
+      <div class="auth-title" style="color:#22c55e">Sesión activa</div>
+      <div class="auth-sub">Bienvenido, entrenador</div>
+      <div class="auth-user-badge">
+        <span style="font-size:1.1rem">🏊</span>
+        <div>
+          <div style="font-size:0.85rem;font-weight:700;color:#22c55e" id="auth-user-email">—</div>
+          <div style="font-size:0.7rem;color:#7ab8e8">Entrenador verificado · acceso completo</div>
+        </div>
+      </div>
+      <button class="btn btn-red" onclick="coachLogout()" style="margin-bottom:0.4rem">Cerrar sesión</button>
+      <button class="btn btn-gray" onclick="closeAuthModal()">Cerrar</button>
+    </div>
   </div>
 </div>
 
@@ -462,21 +449,137 @@ Elias Martinez Caballero, M, 7-8, 25, Libre, 16.39, VI Encuentro InterClubes Nor
 <canvas id="share-canvas" style="display:none"></canvas>
 
 <script>
-// FIREBASE
-const fbConfig={apiKey:"AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",authDomain:"laguna-swim-chrono.firebaseapp.com",databaseURL:"https://laguna-swim-chrono-default-rtdb.firebaseio.com",projectId:"laguna-swim-chrono",storageBucket:"laguna-swim-chrono.firebasestorage.app",messagingSenderId:"618459577354",appId:"1:618459577354:web:2e26bda92112ce241c33f3"};
+// ─── FIREBASE INIT ──────────────────────────────────────────────
+const fbConfig={
+  apiKey:"AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
+  authDomain:"laguna-swim-chrono.firebaseapp.com",
+  databaseURL:"https://laguna-swim-chrono-default-rtdb.firebaseio.com",
+  projectId:"laguna-swim-chrono",
+  storageBucket:"laguna-swim-chrono.firebasestorage.app",
+  messagingSenderId:"618459577354",
+  appId:"1:618459577354:web:2e26bda92112ce241c33f3"
+};
 firebase.initializeApp(fbConfig);
 const db=firebase.database();
-db.ref('.info/connected').on('value',s=>{const el=document.getElementById('fb-status');if(s.val()){el.textContent='● OK';el.style.color='#22c55e';}else{el.textContent='○';el.style.color='#ef4444';}});
+const auth=firebase.auth();
 
-// STATE
-let myRoom=null,myRole=null,myLane=null,laneData=[],posCounter=1,clockInterval=null,raceStartAt=null,roomRef=null;
-let isCoach=false,tkParciales=[],rankingData=[];
-const BOOKS=[null,{id:1,title:'Padres Campeones',price:99},{id:2,title:'Champion Parents',price:99},{id:3,title:'Natación Masters',price:199},{id:4,title:'Laguna Swim Pro — Manual de Certificación',price:399}];
+// Estado de conexión
+db.ref('.info/connected').on('value',s=>{
+  const el=document.getElementById('fb-status');
+  if(s.val()){el.textContent='● OK';el.style.color='#22c55e';}
+  else{el.textContent='○';el.style.color='#ef4444';}
+});
 
-// Pecho pruebas donde siempre aparece Miguel
-const PECHO_EVENTS=['50-Pecho','100-Pecho','200-Pecho'];
+// ─── AUTH STATE ─────────────────────────────────────────────────
+let isCoach=false;
+let pendingCoachAction=null; // callback a ejecutar tras login exitoso
 
-// TABS
+auth.onAuthStateChanged(user=>{
+  if(user){
+    isCoach=true;
+    onCoachLogin(user);
+  } else {
+    isCoach=false;
+    onCoachLogout();
+  }
+});
+
+function onCoachLogin(user){
+  // Actualizar UI de sesión en modal
+  document.getElementById('auth-user-email').textContent=user.email;
+  document.getElementById('auth-form-view').style.display='none';
+  document.getElementById('auth-logged-view').style.display='block';
+  // Botones de logout visibles, botones de acceso ocultos
+  document.querySelectorAll('.coach-btn').forEach(b=>b.style.display='none');
+  document.querySelectorAll('.coach-logout-btn').forEach(b=>b.style.display='block');
+  // Panel de ranking visible
+  document.getElementById('coach-add-section').style.display='block';
+  // Ejecutar acción pendiente (ej. ir a s-setup)
+  if(pendingCoachAction){pendingCoachAction();pendingCoachAction=null;}
+}
+
+function onCoachLogout(){
+  document.getElementById('auth-form-view').style.display='block';
+  document.getElementById('auth-logged-view').style.display='none';
+  document.querySelectorAll('.coach-btn').forEach(b=>b.style.display='block');
+  document.querySelectorAll('.coach-logout-btn').forEach(b=>b.style.display='none');
+  document.getElementById('coach-add-section').style.display='none';
+}
+
+// ─── AUTH MODAL ─────────────────────────────────────────────────
+function showCoachLogin(){
+  document.getElementById('auth-modal').classList.remove('modal-hidden');
+  document.getElementById('auth-error').style.display='none';
+  document.getElementById('auth-error').textContent='';
+  if(!isCoach){
+    document.getElementById('auth-email').value='';
+    document.getElementById('auth-pass').value='';
+    setTimeout(()=>document.getElementById('auth-email').focus(),200);
+  }
+}
+
+function closeAuthModal(){
+  document.getElementById('auth-modal').classList.add('modal-hidden');
+  pendingCoachAction=null;
+}
+
+function doLogin(){
+  const email=document.getElementById('auth-email').value.trim();
+  const pass=document.getElementById('auth-pass').value;
+  const btn=document.getElementById('auth-login-btn');
+  const errEl=document.getElementById('auth-error');
+  if(!email||!pass){showAuthError('Ingresa correo y contraseña');return;}
+  btn.innerHTML='<span class="spinner"></span> Verificando...';
+  btn.disabled=true;
+  errEl.style.display='none';
+  auth.signInWithEmailAndPassword(email,pass)
+    .then(()=>{
+      btn.innerHTML='Entrar';btn.disabled=false;
+      closeAuthModal();
+    })
+    .catch(err=>{
+      btn.innerHTML='Entrar';btn.disabled=false;
+      const msgs={
+        'auth/user-not-found':'No existe una cuenta con ese correo.',
+        'auth/wrong-password':'Contraseña incorrecta.',
+        'auth/invalid-email':'El correo no tiene un formato válido.',
+        'auth/too-many-requests':'Demasiados intentos. Espera unos minutos.',
+        'auth/invalid-credential':'Correo o contraseña incorrectos.'
+      };
+      showAuthError(msgs[err.code]||'Error: '+err.message);
+    });
+}
+
+function showAuthError(msg){
+  const el=document.getElementById('auth-error');
+  el.textContent=msg;el.style.display='block';
+}
+
+function coachLogout(){
+  auth.signOut().then(()=>{
+    document.getElementById('auth-modal').classList.add('modal-hidden');
+    alert('Sesión cerrada correctamente.');
+  });
+}
+
+// Requiere coach autenticado; si no, abre modal y guarda callback
+function requireCoachThen(cb){
+  if(isCoach){cb();}
+  else{pendingCoachAction=cb;showCoachLogin();}
+}
+
+// ─── ESTADO GENERAL ─────────────────────────────────────────────
+let myRoom=null,myRole=null,myLane=null,laneData=[],posCounter=1;
+let clockInterval=null,raceStartAt=null,roomRef=null;
+let tkParciales=[],rankingData=[];
+const BOOKS=[null,
+  {id:1,title:'Padres Campeones',price:99},
+  {id:2,title:'Champion Parents',price:99},
+  {id:3,title:'Natación Masters',price:199},
+  {id:4,title:'Laguna Swim Pro — Manual de Certificación',price:399}
+];
+
+// ─── TABS ────────────────────────────────────────────────────────
 function showTab(t){
   ['timer','store','ranking','profile'].forEach(x=>{
     document.getElementById('tab-'+x).classList.toggle('active',x===t);
@@ -485,17 +588,17 @@ function showTab(t){
   if(t==='ranking')loadRanking();
 }
 
-// TIMER NAV
+// ─── TIMER NAV ──────────────────────────────────────────────────
 const tScreens=['s-home','s-role','s-setup','s-lobby','s-race','s-results','s-join','s-tk'];
 function goTimer(id){tScreens.forEach(s=>{const el=document.getElementById(s);if(el)el.classList.toggle('active',s===id);});}
 
-// UTILS
+// ─── UTILS ──────────────────────────────────────────────────────
 const fmt=ms=>{if(ms==null)return'--:--.--';const m=Math.floor(ms/60000),s=Math.floor(ms%60000/1000),c=Math.floor(ms%1000/10);return`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(c).padStart(2,'0')}`;};
 const medal=p=>(['🥇','🥈','🥉'][p-1]||' ');
 const genCode=()=>Math.random().toString(36).substr(2,5).toUpperCase();
 function openUrl(u){window.open(u,'_blank');}
 
-// SETUP
+// ─── SETUP ──────────────────────────────────────────────────────
 function buildInputs(){
   const n=+document.getElementById('lane-count').value;
   const c=document.getElementById('names-card');
@@ -512,7 +615,7 @@ function getEventInfo(){
   return{dist,style,pool,comp,label:`${dist}m ${style} · Alberca ${pool}m`+(comp?' · '+comp:'')};
 }
 
-// CREATE RACE
+// ─── CREAR CARRERA ──────────────────────────────────────────────
 function createRace(){
   const n=+document.getElementById('lane-count').value;
   laneData=[];posCounter=1;
@@ -529,15 +632,13 @@ function createRace(){
   listenRoom(code);goTimer('s-lobby');
 }
 
-// LISTEN
+// ─── LISTEN ROOM ────────────────────────────────────────────────
 function listenRoom(code){
   if(roomRef)roomRef.off();
   roomRef=db.ref('races/'+code);
   roomRef.on('value',snap=>{
     const data=snap.val();if(!data)return;
-    if(myRole==='timekeeper'&&data.started&&data.startAt&&!clockInterval){
-      startTkRace(data.startAt,code);
-    }
+    if(myRole==='timekeeper'&&data.started&&data.startAt&&!clockInterval){startTkRace(data.startAt,code);}
     if(myRole==='master'&&data.lanes){
       Object.values(data.lanes).forEach(rl=>{
         const l=laneData.find(x=>x.lane===rl.lane);
@@ -604,7 +705,7 @@ function stopAll(){laneData.forEach(l=>{if(!l.stopped)masterStop(l.lane);});}
 function cancelRace(){if(myRoom)db.ref('races/'+myRoom).remove();myRoom=null;laneData=[];posCounter=1;clearInterval(clockInterval);document.getElementById('qr-container').innerHTML='';goTimer('s-role');}
 function newRace(){clearInterval(clockInterval);myRoom=null;laneData=[];posCounter=1;raceStartAt=null;buildInputs();goTimer('s-setup');}
 
-// JOIN
+// ─── JOIN ────────────────────────────────────────────────────────
 function joinRace(){
   const code=document.getElementById('join-code').value.toUpperCase().trim();
   const name=document.getElementById('join-name').value.trim()||'Cronometrista';
@@ -625,7 +726,6 @@ function joinRace(){
     document.getElementById('tk-conn').textContent='● Carril '+avail.lane;
     goTimer('s-tk');
     listenRoom(code);
-    // Check if race already started
     if(data.started&&data.startAt){startTkRace(data.startAt,code);}
   });
 }
@@ -671,7 +771,7 @@ function tkStop(sa,code){
   });
 }
 
-// RESULTS
+// ─── RESULTS ────────────────────────────────────────────────────
 function showResults(){
   goTimer('s-results');
   const sorted=[...laneData].sort((a,b)=>(a.time||Infinity)-(b.time||Infinity));
@@ -723,7 +823,7 @@ function shareImg(){
   cv.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='LagunaSwim_Resultados.png';a.click();URL.revokeObjectURL(url);});
 }
 
-// RANKING
+// ─── RANKING ────────────────────────────────────────────────────
 function loadRanking(){
   db.ref('ranking').once('value').then(snap=>{
     rankingData=[];
@@ -745,35 +845,25 @@ function filterRanking(){
 
 function renderRanking(data){
   const list=document.getElementById('ranking-list');
-  // Group by dist+style+cat+gender, max 3 per group, 1 person each
   const groups={};
   data.forEach(r=>{
     const key=`${r.dist}m ${r.style} · ${r.cat} · ${r.gender==='M'?'Masculino':'Femenino'}`;
     if(!groups[key])groups[key]=[];
-    // Only 3 max, no repeat swimmer
-    if(groups[key].length<3&&!groups[key].find(x=>x.swimmer===r.swimmer)){
-      groups[key].push(r);
-    }
+    if(groups[key].length<3&&!groups[key].find(x=>x.swimmer===r.swimmer))groups[key].push(r);
   });
-
-  if(Object.keys(groups).length===0){
-    list.innerHTML='<div style="text-align:center;color:#7ab8e8;padding:2rem;font-size:0.85rem">No hay tiempos registrados aún</div>';
-    return;
-  }
-
+  if(Object.keys(groups).length===0){list.innerHTML='<div style="text-align:center;color:#7ab8e8;padding:2rem;font-size:0.85rem">No hay tiempos registrados aún</div>';return;}
   list.innerHTML='';
   Object.entries(groups).forEach(([prueba,records])=>{
     const sec=document.createElement('div');sec.className='rank-section';
     const h=document.createElement('div');h.className='rank-section-title';h.textContent='🏊 '+prueba;sec.appendChild(h);
-    // Check if this is a pecho event to show Miguel
     const isPecho=prueba.includes('Pecho');
     const distMatch=prueba.match(/^(\d+)m/);
     const distVal=distMatch?distMatch[1]:'';
     const showMiguel=isPecho&&['50','100','200'].includes(distVal);
     if(showMiguel){
-      const miguel={swimmer:'Miguel De Lara',time:distVal==='50'?'27.38':distVal==='100'?'1:00.14':'2:09.60',comp:'Récord Nacional México',year:2023,isNR:true};
+      const miguel={time:distVal==='50'?'27.38':distVal==='100'?'1:00.14':'2:09.60'};
       const mr=document.createElement('div');mr.className='rank-row gold-record';
-      mr.innerHTML=`<div class="rank-pos">👑</div><div class="rank-info"><div class="rank-name">Miguel De Lara <span class="badge-nr">🇲🇽 NR</span></div><div class="rank-detail">${miguel.comp} · ${miguel.year}</div></div><div class="rank-time" style="color:#ffd700">${miguel.time}</div>`;
+      mr.innerHTML=`<div class="rank-pos">👑</div><div class="rank-info"><div class="rank-name">Miguel De Lara <span class="badge-nr">🇲🇽 NR</span></div><div class="rank-detail">Récord Nacional México · 2023</div></div><div class="rank-time" style="color:#ffd700">${miguel.time}</div>`;
       sec.appendChild(mr);
     }
     records.forEach((r,i)=>{
@@ -818,38 +908,30 @@ function importBulk(){
     const tp=time.split(':');let ms=0;
     if(tp.length===2){const sp=tp[1].split('.');ms=(+tp[0])*60000+(+sp[0])*1000+(+(sp[1]||0))*10;}
     else{const sp=tp[0].split('.');ms=(+sp[0])*1000+(+(sp[1]||0))*10;}
-    const id='r'+Date.now()+idx;
-    ok++;
+    const id='r'+Date.now()+idx;ok++;
     return db.ref('ranking/'+id).set({id,swimmer,gender:gender.toUpperCase(),cat,dist:+dist,style,time,timeMs:ms,comp,year:+year});
   });
   Promise.all(promises.filter(Boolean)).then(()=>{
     const res=document.getElementById('bulk-result');
-    res.style.display='block';
-    res.style.color=errors.length?'#eab308':'#22c55e';
+    res.style.display='block';res.style.color=errors.length?'#eab308':'#22c55e';
     res.textContent=`✅ ${ok} tiempos importados`+(errors.length?` · ⚠ ${errors.join(' | ')}`:'');
     if(ok>0){document.getElementById('bulk-input').value='';loadRanking();}
   });
 }
 
-// COACH
-function showCoachLogin(){document.getElementById('coach-modal').classList.remove('modal-hidden');}
-function closeCoachModal(){document.getElementById('coach-modal').classList.add('modal-hidden');}
-function checkCoach(){
-  if(document.getElementById('coach-pass').value==='Sergio1919'){
-    isCoach=true;closeCoachModal();
-    document.getElementById('coach-add-section').style.display='block';
-    showTab('ranking');
-    alert('✅ Bienvenido entrenador Sergio 🏊');
-  }else{alert('Contraseña incorrecta');}
+function deleteRank(id){
+  if(!isCoach){alert('Debes iniciar sesión como entrenador');return;}
+  if(!confirm('¿Eliminar este tiempo del ranking?'))return;
+  db.ref('ranking/'+id).remove().then(()=>loadRanking());
 }
 
-// STORE
+// ─── TIENDA ─────────────────────────────────────────────────────
 let currentBook=null;
 function buyBook(id){currentBook=BOOKS[id];if(!currentBook)return;document.getElementById('pay-title').textContent=currentBook.title;document.getElementById('pay-amount').textContent='$'+currentBook.price+' MXN';document.getElementById('pay-email').value='';document.getElementById('pay-modal').classList.remove('modal-hidden');}
 function simulatePay(){const email=document.getElementById('pay-email').value.trim();if(!email||!email.includes('@')){alert('Ingresa tu correo');return;}closeModal();alert(`✅ Pago registrado!\n\n"${currentBook?.title}" será enviado a ${email}.`);}
 function closeModal(){document.getElementById('pay-modal').classList.add('modal-hidden');}
 
-// URL PARAM
+// ─── URL PARAM ──────────────────────────────────────────────────
 const urlRoom=new URLSearchParams(location.search).get('room');
 if(urlRoom){document.getElementById('join-code').value=urlRoom.toUpperCase();setTimeout(()=>{showTab('timer');goTimer('s-join');},300);}
 </script>
