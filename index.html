@@ -16,6 +16,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
@@ -63,9 +65,9 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
 .book-btns{display:flex;gap:0.5rem;margin-top:0.3rem;flex-wrap:wrap}
 .role-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.1rem;margin-bottom:0.7rem;cursor:pointer;display:flex;align-items:center;gap:1rem}
 .role-card:active{transform:scale(0.97)}
-.stop-btn{width:100%;padding:2rem 1rem;border-radius:20px;background:#1d6fa4;border:3px solid #38bdf8;color:#fff;font-size:1.2rem;font-weight:800;cursor:pointer;text-align:center;margin-bottom:0.6rem}
+.stop-btn{width:100%;padding:2.5rem 1rem;border-radius:20px;background:#1d6fa4;border:3px solid #38bdf8;color:#fff;font-size:1.5rem;font-weight:800;cursor:pointer;text-align:center;margin-bottom:0.6rem}
 .stop-btn:active{transform:scale(0.95)}
-.parcial-btn{width:100%;padding:1rem;border-radius:14px;background:#7c3aed;border:2px solid #a78bfa;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;text-align:center;margin-bottom:0.5rem}
+.parcial-btn{width:100%;padding:1.4rem;border-radius:14px;background:#7c3aed;border:2px solid #a78bfa;color:#fff;font-size:1.2rem;font-weight:700;cursor:pointer;text-align:center;margin-bottom:0.6rem}
 .parcial-btn:active{transform:scale(0.96)}
 .parcial-list{background:rgba(0,0,0,0.2);border-radius:10px;padding:0.6rem;margin-top:0.4rem}
 .parcial-item{display:flex;justify-content:space-between;font-size:0.75rem;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-variant-numeric:tabular-nums}
@@ -126,6 +128,14 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
 .res-row:nth-child(2){background:rgba(148,163,184,0.08);border:1px solid rgba(148,163,184,0.15)}
 .res-row:nth-child(3){background:rgba(180,83,9,0.08);border:1px solid rgba(180,83,9,0.15)}
 .res-row:nth-child(n+4){background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07)}
+
+/* DIPLOMA MODAL */
+.diploma-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0}
+.diploma-box{background:#0d2a4a;border-radius:20px 20px 0 0;padding:1.5rem;width:100%;max-width:480px}
+.diploma-preview{width:100%;border-radius:12px;margin-bottom:0.8rem;display:block;border:1px solid rgba(56,189,248,0.2)}
+.diploma-info-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem}
+.diploma-badge{background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:0.5rem 0.8rem;text-align:center;flex:1;margin-right:0.5rem}
+.diploma-price-box{background:rgba(14,165,233,0.12);border:1px solid rgba(14,165,233,0.3);border-radius:10px;padding:0.5rem 0.8rem;text-align:center;min-width:90px}
 </style>
 </head>
 <body>
@@ -480,6 +490,43 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
   </div>
 </div>
 
+<!-- DIPLOMA MODAL -->
+<div class="diploma-overlay modal-hidden" id="diploma-modal">
+  <div class="diploma-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.9rem">
+      <div style="font-weight:800;font-size:1rem;color:#38bdf8">🏅 Diploma oficial</div>
+      <button onclick="closeDiplomaModal()" style="background:none;border:none;color:#7ab8e8;font-size:1.3rem;cursor:pointer">✕</button>
+    </div>
+    <canvas id="diploma-preview-canvas" class="diploma-preview"></canvas>
+    <div class="diploma-info-row">
+      <div class="diploma-badge">
+        <div style="font-size:0.62rem;color:#a08020;margin-bottom:2px">Posición global</div>
+        <div style="font-size:1.4rem;font-weight:800;color:#ffd700" id="dip-pos-global">—</div>
+        <div style="font-size:0.6rem;color:#a08020" id="dip-total-global">de — nadadores</div>
+      </div>
+      <div class="diploma-badge">
+        <div style="font-size:0.62rem;color:#7ab8e8;margin-bottom:2px">En su categoría</div>
+        <div style="font-size:1.4rem;font-weight:800;color:#38bdf8" id="dip-pos-cat">—</div>
+        <div style="font-size:0.6rem;color:#7ab8e8" id="dip-total-cat">de — en categoría</div>
+      </div>
+      <div class="diploma-price-box">
+        <div style="font-size:0.62rem;color:#7ab8e8;margin-bottom:2px">Precio</div>
+        <div style="font-size:1.3rem;font-weight:800;color:#38bdf8">$10</div>
+        <div style="font-size:0.6rem;color:#7ab8e8">MXN</div>
+      </div>
+    </div>
+    <div style="font-size:0.72rem;color:#7ab8e8;margin-bottom:0.8rem;text-align:center">
+      Diploma personalizado en PDF · Incluye posición global y en categoría
+    </div>
+    <label style="margin-bottom:3px">Tu correo (para confirmación)</label>
+    <input type="email" id="dip-email" placeholder="correo@ejemplo.com" style="margin-bottom:0.7rem">
+    <button class="btn btn-gold" onclick="pagarDiploma()" style="font-size:1rem">🏅 Pagar $10 MXN y Descargar</button>
+    <button class="btn btn-gray" onclick="closeDiplomaModal()" style="margin-bottom:0">Cancelar</button>
+    <div style="font-size:0.62rem;color:rgba(255,255,255,0.2);text-align:center;margin-top:0.4rem">🔒 Pago seguro · Descarga inmediata</div>
+  </div>
+</div>
+
+<canvas id="diploma-full-canvas" style="display:none"></canvas>
 <canvas id="share-canvas" style="display:none"></canvas>
 
 <script>
@@ -705,7 +752,7 @@ function buildRaceView(){
   const c=document.getElementById('race-lanes');c.innerHTML='';
   laneData.forEach(l=>{
     const d=document.createElement('div');d.className='lane-row live';d.id='rl-'+l.lane;
-    d.innerHTML=`<div style="flex:1"><div style="font-size:0.68rem;color:#7ab8e8;font-weight:600">CARRIL ${l.lane}</div><div style="font-weight:700;font-size:0.93rem">${l.name}</div><div class="parcial-list" id="pl-${l.lane}" style="margin-top:4px;display:none"></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span id="lp-${l.lane}" style="font-size:1.35rem"></span><span style="font-size:0.95rem;font-weight:800;font-variant-numeric:tabular-nums;color:#38bdf8" id="lt-${l.lane}">En curso</span><div style="display:flex;gap:4px"><button onclick="event.stopPropagation();masterParcial(${l.lane})" style="background:#7c3aed;border:none;color:#fff;border-radius:8px;padding:4px 8px;font-size:0.7rem;cursor:pointer">⏱</button><button onclick="event.stopPropagation();masterStop(${l.lane})" style="background:#15803d;border:none;color:#fff;border-radius:8px;padding:4px 8px;font-size:0.7rem;cursor:pointer">🏁</button></div></div>`;
+    d.innerHTML=`<div style="flex:1"><div style="font-size:0.68rem;color:#7ab8e8;font-weight:600">CARRIL ${l.lane}</div><div style="font-weight:700;font-size:0.93rem">${l.name}</div><div class="parcial-list" id="pl-${l.lane}" style="margin-top:4px;display:none"></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><span id="lp-${l.lane}" style="font-size:1.35rem"></span><span style="font-size:0.95rem;font-weight:800;font-variant-numeric:tabular-nums;color:#38bdf8" id="lt-${l.lane}">En curso</span><div style="display:flex;gap:6px"><button onclick="event.stopPropagation();masterParcial(${l.lane})" style="background:#7c3aed;border:none;color:#fff;border-radius:10px;padding:10px 14px;font-size:1rem;cursor:pointer;font-weight:700;min-width:48px;min-height:44px">⏱</button><button onclick="event.stopPropagation();masterStop(${l.lane})" style="background:#15803d;border:none;color:#fff;border-radius:10px;padding:10px 14px;font-size:1rem;cursor:pointer;font-weight:700;min-width:48px;min-height:44px">🏁</button></div></div>`;
     c.appendChild(d);
   });
 }
@@ -825,12 +872,47 @@ function showResults(){
     });
     if(prog>=1)clearInterval(anim);
   },16);
+
+  const ev=getEventInfo();
   const list=document.getElementById('results-list');list.innerHTML='';
   sorted.forEach((l,i)=>{
     const d=document.createElement('div');d.className='res-row';
     let ph='';
-    if(l.parciales&&l.parciales.length>0){ph='<div class="parcial-list" style="margin-top:0.4rem">';l.parciales.forEach(p=>{ph+=`<div class="parcial-item"><span>V${p.num}</span><span style="color:#a78bfa">${fmt(p.parcial)}</span><span style="color:#38bdf8">${fmt(p.acumulado)}</span></div>`;});ph+='</div>';}
-    d.innerHTML=`<div style="font-size:1.6rem;width:36px;text-align:center">${medal(i+1)}</div><div style="flex:1"><div style="font-weight:700;font-size:0.93rem">${l.name}</div><div style="font-size:0.7rem;color:#7ab8e8">Carril ${l.lane}</div>${ph}</div><div style="font-size:1.05rem;font-weight:800;color:#38bdf8;font-variant-numeric:tabular-nums">${fmt(l.time)}</div>`;
+    if(l.parciales&&l.parciales.length>0){
+      ph='<div class="parcial-list" style="margin-top:0.4rem">';
+      l.parciales.forEach(p=>{ph+=`<div class="parcial-item"><span>V${p.num}</span><span style="color:#a78bfa">${fmt(p.parcial)}</span><span style="color:#38bdf8">${fmt(p.acumulado)}</span></div>`;});
+      ph+='</div>';
+    }
+    // Posición en esta carrera
+    const posCarrera=i+1;
+    const totalCarrera=sorted.length;
+    d.innerHTML=`
+      <div style="font-size:1.6rem;width:36px;text-align:center">${medal(i+1)}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:0.93rem">${l.name}</div>
+        <div style="font-size:0.7rem;color:#7ab8e8">Carril ${l.lane}</div>
+        ${ph}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+        <div style="font-size:1.05rem;font-weight:800;color:#38bdf8;font-variant-numeric:tabular-nums">${fmt(l.time)}</div>
+        <button onclick="abrirDiplomaCarrera(${JSON.stringify({
+          nombre: l.name,
+          tiempo: fmt(l.time),
+          posCarrera: posCarrera,
+          totalCarrera: totalCarrera,
+          evento: ev.label,
+          dist: ev.dist,
+          style: ev.style,
+          comp: ev.comp || 'Laguna Swim',
+          fecha: new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'})
+        }).replace(/"/g,'&quot;')})"
+          style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:8px;padding:4px 9px;font-size:0.65rem;font-weight:800;cursor:pointer;white-space:nowrap">
+          🏅 Diploma
+        </button>
+      </div>`;
+    list.appendChild(d);
+  });
+}
     list.appendChild(d);
   });
 }
@@ -904,20 +986,19 @@ function filterRanking(){
 function renderRanking(data, dist, style){
   const list=document.getElementById('ranking-list');
 
-  // Mostrar Miguel si aplica (pecho 50/100/200)
+  // Miguel NR en pecho
   const isPecho=style==='Pecho';
   const showMiguel=isPecho&&['50','100','200'].includes(String(dist));
   const miguelTimes={'50':'27.38','100':'1:00.14','200':'2:09.60'};
 
-  // Encabezado de la prueba
   const header=document.createElement('div');
   header.className='rank-section-title';
   header.style.cssText='font-size:0.9rem;margin-bottom:0.8rem';
-  header.textContent=`🏊 ${dist}m ${style} — Ranking general`;
+  const totalLabel=data.length>50?` (mostrando Top 50 de ${data.length})`:``;
+  header.textContent=`🏊 ${dist}m ${style} — Ranking general${totalLabel}`;
   list.innerHTML='';
   list.appendChild(header);
 
-  // Card de Miguel NR si aplica
   if(showMiguel){
     const mr=document.createElement('div');mr.className='rank-row gold-record';
     mr.innerHTML=`<div class="rank-pos">👑</div><div class="rank-info"><div class="rank-name">Miguel De Lara <span class="badge-nr">🇲🇽 NR</span></div><div class="rank-detail" style="color:#a08020">Récord Nacional · 2023 · Master</div></div><div class="rank-time" style="color:#ffd700">${miguelTimes[String(dist)]}</div>`;
@@ -932,7 +1013,6 @@ function renderRanking(data, dist, style){
     return;
   }
 
-  // Lista plana: todos los nadadores ordenados por tiempo, con categoría en cada fila
   const catLabels={
     '6-':'6 y menores','7-8':'7-8 años','9-10':'9-10 años','11-12':'11-12 años',
     '13-14':'13-14 años','15-18':'15-18 años','PM18-24':'Pre-Master 18-24',
@@ -941,31 +1021,291 @@ function renderRanking(data, dist, style){
     'M55-59':'Master 55-59','M60-64':'Master 60-64','M65-69':'Master 65-69','M70+':'Master 70+'
   };
 
-  data.forEach((r,i)=>{
-    const d=document.createElement('div');d.className='rank-row';
+  // Top 50 máximo por vista
+  const top50=data.slice(0,50);
+
+  top50.forEach((r,i)=>{
+    const globalPos=i+1; // posición en este filtro (puede ser filtrado por cat/gender)
     const genIcon=r.gender==='M'?'♂':'♀';
     const catLabel=catLabels[r.cat]||r.cat;
+    const d=document.createElement('div');d.className='rank-row';
+    d.style='align-items:flex-start';
     d.innerHTML=`
-      <div class="rank-pos" style="font-size:${i<3?'1.3':'0.95'}rem">${['🥇','🥈','🥉'][i]||(i+1)+'.'}</div>
-      <div class="rank-info">
+      <div class="rank-pos" style="font-size:${i<3?'1.3':'0.95'}rem;padding-top:2px">${['🥇','🥈','🥉'][i]||(i+1)+'.'}</div>
+      <div class="rank-info" style="flex:1">
         <div class="rank-name">${r.swimmer} <span style="font-size:0.7rem;color:#7ab8e8">${genIcon}</span></div>
-        <div class="rank-detail">
+        <div class="rank-detail" style="margin-top:2px">
           <span style="background:rgba(56,189,248,0.12);color:#38bdf8;border-radius:20px;padding:1px 7px;font-size:0.65rem;font-weight:700;margin-right:4px">${catLabel}</span>
           ${r.comp} · ${r.year}
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-left:6px">
         <div class="rank-time">${r.time}</div>
-        ${isCoach?`<button onclick="deleteRank('${r.id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.75rem;padding:0">✕ borrar</button>`:''}
+        <button onclick="abrirDiploma(${JSON.stringify(r).replace(/"/g,'&quot;')})" style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:8px;padding:3px 8px;font-size:0.65rem;font-weight:800;cursor:pointer;white-space:nowrap">🏅 Diploma</button>
+        ${isCoach?`<button onclick="deleteRank('${r.id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.7rem;padding:0">✕ borrar</button>`:''}
       </div>`;
     list.appendChild(d);
   });
 
-  // Contador al final
   const count=document.createElement('div');
   count.style='text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.25);padding:0.8rem 0 0.3rem';
-  count.textContent=`${data.length} tiempo${data.length!==1?'s':''} registrado${data.length!==1?'s':''}`;
+  count.textContent=`${Math.min(data.length,50)} de ${data.length} tiempo${data.length!==1?'s':''} registrado${data.length!==1?'s':''}`;
   list.appendChild(count);
+}
+
+// ─── DIPLOMA ────────────────────────────────────────────────────
+let diplomaRecord=null;
+
+function abrirDiploma(record){
+  diplomaRecord=record;
+
+  // Calcular posiciones con todos los datos de rankingData
+  const dist=record.dist;
+  const style=record.style;
+  const cat=record.cat;
+  const gender=record.gender;
+
+  // Global: misma prueba (dist+style), todos los nadadores de ese género
+  const globalList=rankingData
+    .filter(r=>r.dist==dist&&r.style===style&&r.gender===gender)
+    .sort((a,b)=>a.timeMs-b.timeMs);
+  const posGlobal=globalList.findIndex(r=>r.id===record.id)+1;
+  const totalGlobal=globalList.length;
+
+  // En categoría: misma prueba + mismo cat + mismo gender
+  const catList=rankingData
+    .filter(r=>r.dist==dist&&r.style===style&&r.gender===gender&&r.cat===cat)
+    .sort((a,b)=>a.timeMs-b.timeMs);
+  const posCat=catList.findIndex(r=>r.id===record.id)+1;
+  const totalCat=catList.length;
+
+  document.getElementById('dip-pos-global').textContent=posGlobal+'°';
+  document.getElementById('dip-total-global').textContent='de '+totalGlobal+' nadadores';
+  document.getElementById('dip-pos-cat').textContent=posCat+'°';
+  const catLabels={'6-':'6 y menores','7-8':'7-8 años','9-10':'9-10 años','11-12':'11-12 años','13-14':'13-14 años','15-18':'15-18 años','PM18-24':'Pre-Master 18-24','M25-29':'Master 25-29','M30-34':'Master 30-34','M35-39':'Master 35-39','M40-44':'Master 40-44','M45-49':'Master 45-49','M50-54':'Master 50-54','M55-59':'Master 55-59','M60-64':'Master 60-64','M65-69':'Master 65-69','M70+':'Master 70+'};
+  document.getElementById('dip-total-cat').textContent='de '+totalCat+' en '+(catLabels[cat]||cat);
+
+  // Guardar posiciones en el record para el PDF
+  diplomaRecord._posGlobal=posGlobal;
+  diplomaRecord._totalGlobal=totalGlobal;
+  diplomaRecord._posCat=posCat;
+  diplomaRecord._totalCat=totalCat;
+
+  // Dibujar preview
+  dibujarDiploma(document.getElementById('diploma-preview-canvas'), record, posGlobal, totalGlobal, posCat, totalCat, 700, 495);
+
+  document.getElementById('dip-email').value='';
+  document.getElementById('diploma-modal').classList.remove('modal-hidden');
+}
+
+function closeDiplomaModal(){
+  document.getElementById('diploma-modal').classList.add('modal-hidden');
+  diplomaRecord=null;
+}
+
+function dibujarDiploma(cv, r, posG, totG, posC, totC, W, H){
+  cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d');
+
+  // Función interna que dibuja todo una vez que el logo está listo (o sin él)
+  function render(logoImg){
+    // Fondo degradado azul marino
+    const bg=ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,'#041225');
+    bg.addColorStop(1,'#0a2a4a');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+    // Marco dorado exterior
+    ctx.strokeStyle='#b8860b'; ctx.lineWidth=6;
+    ctx.strokeRect(14,14,W-28,H-28);
+    ctx.strokeStyle='rgba(184,134,11,0.4)'; ctx.lineWidth=2;
+    ctx.strokeRect(24,24,W-48,H-48);
+
+    // Esquinas decorativas
+    const corner=(x,y,rx,ry)=>{
+      ctx.strokeStyle='#ffd700'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(x,y+ry); ctx.lineTo(x,y); ctx.lineTo(x+rx,y); ctx.stroke();
+    };
+    corner(30,30,30,30); corner(W-30,30,-30,30);
+    corner(30,H-30,30,-30); corner(W-30,H-30,-30,-30);
+
+    // Logo del equipo (esquina superior izquierda)
+    if(logoImg){
+      const lSize=60;
+      // Círculo blanco de fondo para el logo
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(58+lSize/2, 44+lSize/2, lSize/2+4, 0, Math.PI*2);
+      ctx.fillStyle='#ffffff';
+      ctx.fill();
+      ctx.strokeStyle='#b8860b'; ctx.lineWidth=2; ctx.stroke();
+      // Clip circular para el logo
+      ctx.beginPath();
+      ctx.arc(58+lSize/2, 44+lSize/2, lSize/2, 0, Math.PI*2);
+      ctx.clip();
+      ctx.drawImage(logoImg, 58, 44, lSize, lSize);
+      ctx.restore();
+    }
+
+    // Línea separadora superior
+    ctx.strokeStyle='rgba(184,134,11,0.5)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(50,108); ctx.lineTo(W-50,108); ctx.stroke();
+
+    // LAGUNA SWIM — encabezado
+    ctx.fillStyle='#38bdf8';
+    ctx.font=`bold ${Math.round(W*0.026)}px system-ui`;
+    ctx.textAlign='center';
+    ctx.fillText('LAGUNA SWIM INTERNATIONAL', W/2, Math.round(H*0.115));
+
+    ctx.fillStyle='rgba(255,215,0,0.7)';
+    ctx.font=`italic ${Math.round(W*0.016)}px system-ui`;
+    ctx.fillText('"Fuertes y Valientes" — Josué 1:9', W/2, Math.round(H*0.152));
+
+    // DIPLOMA DE PARTICIPACIÓN
+    ctx.fillStyle='#ffd700';
+    ctx.font=`bold ${Math.round(W*0.037)}px system-ui`;
+    ctx.fillText('DIPLOMA DE PARTICIPACIÓN', W/2, Math.round(H*0.262));
+
+    // Se otorga a:
+    ctx.fillStyle='rgba(255,255,255,0.5)';
+    ctx.font=`${Math.round(W*0.018)}px system-ui`;
+    ctx.fillText('Se otorga a:', W/2, Math.round(H*0.318));
+
+    // Nombre del nadador
+    const maxNameW = W - 160;
+    let nameFont = Math.round(W*0.04);
+    ctx.font=`bold ${nameFont}px system-ui`;
+    while(ctx.measureText(r.swimmer).width > maxNameW && nameFont > 18){ nameFont--; ctx.font=`bold ${nameFont}px system-ui`; }
+    ctx.fillStyle='#ffffff';
+    ctx.fillText(r.swimmer, W/2, Math.round(H*0.394));
+
+    // Línea bajo nombre
+    const nw=ctx.measureText(r.swimmer).width;
+    ctx.strokeStyle='rgba(56,189,248,0.4)'; ctx.lineWidth=1;
+    const ny=Math.round(H*0.406);
+    ctx.beginPath(); ctx.moveTo(W/2-nw/2,ny); ctx.lineTo(W/2+nw/2,ny); ctx.stroke();
+
+    // Prueba + categoría
+    const catLabels={'6-':'6 y menores','7-8':'7-8 años','9-10':'9-10 años','11-12':'11-12 años','13-14':'13-14 años','15-18':'15-18 años','PM18-24':'Pre-Master 18-24','M25-29':'Master 25-29','M30-34':'Master 30-34','M35-39':'Master 35-39','M40-44':'Master 40-44','M45-49':'Master 45-49','M50-54':'Master 50-54','M55-59':'Master 55-59','M60-64':'Master 60-64','M65-69':'Master 65-69','M70+':'Master 70+'};
+    const catLabel=catLabels[r.cat]||r.cat;
+    const genderLabel=r.gender==='M'?'Varonil':'Femenil';
+    ctx.fillStyle='#38bdf8';
+    ctx.font=`bold ${Math.round(W*0.021)}px system-ui`;
+    ctx.fillText(`${r.dist}m ${r.style} · ${catLabel} · Rama ${genderLabel}`, W/2, Math.round(H*0.458));
+
+    ctx.fillStyle='rgba(255,255,255,0.55)';
+    ctx.font=`${Math.round(W*0.017)}px system-ui`;
+    ctx.fillText(r.comp + ' · ' + r.year, W/2, Math.round(H*0.492));
+
+    // Separador central
+    ctx.strokeStyle='rgba(184,134,11,0.3)'; ctx.lineWidth=1;
+    const sepY=Math.round(H*0.528);
+    ctx.beginPath(); ctx.moveTo(50,sepY); ctx.lineTo(W-50,sepY); ctx.stroke();
+
+    // BLOQUES: tiempo / posición global / posición categoría
+    const bW=Math.round(W*0.24), bH=Math.round(H*0.162), gap=Math.round(W*0.028);
+    const totalW=3*bW+2*gap;
+    const bx=[(W-totalW)/2, (W-totalW)/2+bW+gap, (W-totalW)/2+2*(bW+gap)];
+    const by=Math.round(H*0.546);
+
+    const bloque=(x,titulo,valor,subtitulo,color)=>{
+      ctx.fillStyle='rgba(255,255,255,0.04)';
+      ctx.strokeStyle=color+'55';
+      ctx.lineWidth=1;
+      roundRect(ctx,x,by,bW,bH,8);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.4)';
+      ctx.font=`${Math.round(W*0.014)}px system-ui`; ctx.textAlign='center';
+      ctx.fillText(titulo,x+bW/2,by+Math.round(bH*0.22));
+      ctx.fillStyle=color;
+      ctx.font=`bold ${Math.round(W*0.036)}px system-ui`;
+      ctx.fillText(valor,x+bW/2,by+Math.round(bH*0.62));
+      ctx.fillStyle='rgba(255,255,255,0.35)';
+      ctx.font=`${Math.round(W*0.012)}px system-ui`;
+      ctx.fillText(subtitulo,x+bW/2,by+Math.round(bH*0.86));
+    };
+
+    bloque(bx[0],'TIEMPO OFICIAL', r.time, 'Registro cronometrado', '#38bdf8');
+    bloque(bx[1],'POSICIÓN GLOBAL', posG+'° / '+totG, 'Rama '+genderLabel, '#ffd700');
+    bloque(bx[2],'EN CATEGORÍA', posC+'° / '+totC, catLabel, '#a78bfa');
+
+    // Separador inferior
+    const sep2Y=Math.round(H*0.848);
+    ctx.strokeStyle='rgba(184,134,11,0.3)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(50,sep2Y); ctx.lineTo(W-50,sep2Y); ctx.stroke();
+
+    // Firma entrenador (izquierda)
+    ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font=`bold ${Math.round(W*0.017)}px system-ui`; ctx.textAlign='left';
+    ctx.fillText('Sergio Elías Villarreal Limas', 60, Math.round(H*0.893));
+    ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font=`${Math.round(W*0.014)}px system-ui`;
+    ctx.fillText('Entrenador · Laguna Swim International', 60, Math.round(H*0.921));
+    ctx.fillText('Lic. Acondicionamiento Físico · American Swimming Nivel 4', 60, Math.round(H*0.949));
+
+    // Fecha y folio (derecha)
+    ctx.textAlign='right';
+    ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font=`${Math.round(W*0.014)}px system-ui`;
+    const fecha=new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+    ctx.fillText('Emitido: '+fecha, W-60, Math.round(H*0.893));
+    ctx.fillStyle='#38bdf8'; ctx.font=`bold ${Math.round(W*0.014)}px system-ui`;
+    ctx.fillText('lagunaswim.net', W-60, Math.round(H*0.921));
+    ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.font=`${Math.round(W*0.012)}px system-ui`;
+    const folio='LS-'+r.dist+r.style.substring(0,2).toUpperCase()+'-'+String(r.id).slice(-6).toUpperCase();
+    ctx.fillText('Folio: '+folio, W-60, Math.round(H*0.949));
+  }
+
+  // Cargar logo desde Cloudinary y luego renderizar
+  const logo=new Image();
+  logo.crossOrigin='anonymous';
+  logo.onload=()=>render(logo);
+  logo.onerror=()=>render(null); // Si falla, renderiza sin logo
+  logo.src='https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg';
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
+}
+
+function pagarDiploma(){
+  const email=document.getElementById('dip-email').value.trim();
+  if(!email||!email.includes('@')){alert('Ingresa tu correo para continuar');return;}
+  if(!diplomaRecord){return;}
+
+  // Aquí iría la integración real de MercadoPago
+  // Por ahora: simular pago y generar diploma inmediatamente
+  const r=diplomaRecord;
+  const {_posGlobal,_totalGlobal,_posCat,_totalCat}=r;
+
+  // Generar diploma en alta resolución (A4 landscape: 1122×794 px a 96dpi)
+  const cv=document.getElementById('diploma-full-canvas');
+  dibujarDiploma(cv, r, _posGlobal, _totalGlobal, _posCat, _totalCat, 1122, 794);
+
+  // Convertir canvas a PDF con jsPDF
+  try{
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[1122,794],hotfixes:['px_scaling']});
+    const imgData=cv.toDataURL('image/jpeg',0.95);
+    pdf.addImage(imgData,'JPEG',0,0,1122,794);
+    const nombre=r.swimmer.replace(/\s+/g,'_');
+    pdf.save(`Diploma_LagunaSwim_${nombre}_${r.dist}m${r.style}.pdf`);
+  }catch(e){
+    // Fallback: descargar como PNG si jsPDF no carga
+    cv.toBlob(blob=>{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      const nombre=r.swimmer.replace(/\s+/g,'_');
+      a.href=url; a.download=`Diploma_LagunaSwim_${nombre}_${r.dist}m${r.style}.png`;
+      a.click(); URL.revokeObjectURL(url);
+    });
+  }
+
+  closeDiplomaModal();
+  alert(`✅ Diploma generado!\n\nNadador: ${r.swimmer}\nPrueba: ${r.dist}m ${r.style}\nTiempo: ${r.time}\n\nSe enviará confirmación a ${email}`);
 }
 
 function addRankTime(){
@@ -1018,15 +1358,468 @@ function deleteRank(id){
   db.ref('ranking/'+id).remove().then(()=>loadRanking());
 }
 
-// ─── TIENDA ─────────────────────────────────────────────────────
-let currentBook=null;
-function buyBook(id){currentBook=BOOKS[id];if(!currentBook)return;document.getElementById('pay-title').textContent=currentBook.title;document.getElementById('pay-amount').textContent='$'+currentBook.price+' MXN';document.getElementById('pay-email').value='';document.getElementById('pay-modal').classList.remove('modal-hidden');}
-function simulatePay(){const email=document.getElementById('pay-email').value.trim();if(!email||!email.includes('@')){alert('Ingresa tu correo');return;}closeModal();alert(`✅ Pago registrado!\n\n"${currentBook?.title}" será enviado a ${email}.`);}
-function closeModal(){document.getElementById('pay-modal').classList.add('modal-hidden');}
+// ─── DIPLOMA DESDE CARRERA ──────────────────────────────────────
+function abrirDiplomaCarrera(datos){
+  // Construir un record compatible con el modal de diploma
+  // Para carrera no tenemos cat/gender — usamos la info del evento
+  const r = {
+    id: 'carrera-' + Date.now(),
+    swimmer: datos.nombre,
+    time: datos.tiempo,
+    timeMs: 0,
+    dist: datos.dist,
+    style: datos.style,
+    cat: '',
+    gender: '',
+    comp: datos.comp,
+    year: new Date().getFullYear(),
+    // Extras para el diploma de carrera
+    _esCarrera: true,
+    _evento: datos.evento,
+    _fecha: datos.fecha
+  };
+
+  diplomaRecord = r;
+  diplomaRecord._posGlobal  = datos.posCarrera;
+  diplomaRecord._totalGlobal= datos.totalCarrera;
+  diplomaRecord._posCat     = datos.posCarrera;
+  diplomaRecord._totalCat   = datos.totalCarrera;
+
+  // Mostrar posiciones en el modal
+  document.getElementById('dip-pos-global').textContent = datos.posCarrera + '°';
+  document.getElementById('dip-total-global').textContent = 'de ' + datos.totalCarrera + ' nadadores';
+  document.getElementById('dip-pos-cat').textContent = datos.posCarrera + '°';
+  document.getElementById('dip-total-cat').textContent = datos.comp || 'esta carrera';
+
+  // Preview del diploma con datos de carrera
+  dibujarDiplomaCarrera(
+    document.getElementById('diploma-preview-canvas'),
+    datos, 700, 495
+  );
+
+  document.getElementById('dip-email').value = '';
+  document.getElementById('diploma-modal').classList.remove('modal-hidden');
+}
+
+function dibujarDiplomaCarrera(cv, datos, W, H){
+  cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d');
+
+  function render(logoImg){
+    // Fondo
+    const bg=ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,'#041225'); bg.addColorStop(1,'#0a2a4a');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+    // Marcos dorados
+    ctx.strokeStyle='#b8860b'; ctx.lineWidth=6; ctx.strokeRect(14,14,W-28,H-28);
+    ctx.strokeStyle='rgba(184,134,11,0.4)'; ctx.lineWidth=2; ctx.strokeRect(24,24,W-48,H-48);
+
+    // Esquinas
+    const corner=(x,y,rx,ry)=>{ctx.strokeStyle='#ffd700';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y+ry);ctx.lineTo(x,y);ctx.lineTo(x+rx,y);ctx.stroke();};
+    corner(30,30,30,30); corner(W-30,30,-30,30); corner(30,H-30,30,-30); corner(W-30,H-30,-30,-30);
+
+    // Logo
+    if(logoImg){
+      const lSize=56;
+      ctx.save();
+      ctx.beginPath(); ctx.arc(62+lSize/2,42+lSize/2,lSize/2+4,0,Math.PI*2);
+      ctx.fillStyle='#fff'; ctx.fill();
+      ctx.strokeStyle='#b8860b'; ctx.lineWidth=2; ctx.stroke();
+      ctx.beginPath(); ctx.arc(62+lSize/2,42+lSize/2,lSize/2,0,Math.PI*2); ctx.clip();
+      ctx.drawImage(logoImg,62,42,lSize,lSize);
+      ctx.restore();
+    }
+
+    // Línea superior
+    ctx.strokeStyle='rgba(184,134,11,0.5)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(50,106); ctx.lineTo(W-50,106); ctx.stroke();
+
+    // Encabezado
+    ctx.fillStyle='#38bdf8'; ctx.font=`bold ${Math.round(W*0.026)}px system-ui`; ctx.textAlign='center';
+    ctx.fillText('LAGUNA SWIM INTERNATIONAL', W/2, Math.round(H*0.115));
+    ctx.fillStyle='rgba(255,215,0,0.7)'; ctx.font=`italic ${Math.round(W*0.016)}px system-ui`;
+    ctx.fillText('"Fuertes y Valientes" — Josué 1:9', W/2, Math.round(H*0.152));
+
+    // Título diploma
+    ctx.fillStyle='#ffd700'; ctx.font=`bold ${Math.round(W*0.037)}px system-ui`;
+    ctx.fillText('DIPLOMA DE PARTICIPACIÓN', W/2, Math.round(H*0.262));
+
+    // Se otorga a
+    ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font=`${Math.round(W*0.018)}px system-ui`;
+    ctx.fillText('Se otorga a:', W/2, Math.round(H*0.318));
+
+    // Nombre
+    let nameFont=Math.round(W*0.04);
+    ctx.font=`bold ${nameFont}px system-ui`;
+    const maxNW=W-160;
+    while(ctx.measureText(datos.nombre).width>maxNW&&nameFont>16){nameFont--;ctx.font=`bold ${nameFont}px system-ui`;}
+    ctx.fillStyle='#fff'; ctx.fillText(datos.nombre, W/2, Math.round(H*0.394));
+    const nw=ctx.measureText(datos.nombre).width;
+    ctx.strokeStyle='rgba(56,189,248,0.4)'; ctx.lineWidth=1;
+    const ny=Math.round(H*0.408);
+    ctx.beginPath(); ctx.moveTo(W/2-nw/2,ny); ctx.lineTo(W/2+nw/2,ny); ctx.stroke();
+
+    // Evento
+    ctx.fillStyle='#38bdf8'; ctx.font=`bold ${Math.round(W*0.022)}px system-ui`;
+    ctx.fillText(datos.evento, W/2, Math.round(H*0.462));
+    ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font=`${Math.round(W*0.017)}px system-ui`;
+    ctx.fillText((datos.comp||'Laguna Swim') + ' · ' + datos.fecha, W/2, Math.round(H*0.496));
+
+    // Separador
+    ctx.strokeStyle='rgba(184,134,11,0.3)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(50,Math.round(H*0.528)); ctx.lineTo(W-50,Math.round(H*0.528)); ctx.stroke();
+
+    // Bloques
+    const bW=Math.round(W*0.26), bH=Math.round(H*0.162), gap=Math.round(W*0.04);
+    const totalBW=2*bW+gap; const bx=[(W-totalBW)/2,(W-totalBW)/2+bW+gap];
+    const by=Math.round(H*0.546);
+
+    const bloque=(x,titulo,valor,subtitulo,color)=>{
+      ctx.fillStyle='rgba(255,255,255,0.04)'; ctx.strokeStyle=color+'55'; ctx.lineWidth=1;
+      roundRect(ctx,x,by,bW,bH,8); ctx.fill(); ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font=`${Math.round(W*0.014)}px system-ui`; ctx.textAlign='center';
+      ctx.fillText(titulo,x+bW/2,by+Math.round(bH*0.22));
+      ctx.fillStyle=color; ctx.font=`bold ${Math.round(W*0.036)}px system-ui`;
+      ctx.fillText(valor,x+bW/2,by+Math.round(bH*0.62));
+      ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font=`${Math.round(W*0.013)}px system-ui`;
+      ctx.fillText(subtitulo,x+bW/2,by+Math.round(bH*0.86));
+    };
+
+    bloque(bx[0],'TIEMPO OFICIAL', datos.tiempo, 'Registro cronometrado','#38bdf8');
+    bloque(bx[1],'POSICIÓN', datos.posCarrera+'° / '+datos.totalCarrera, 'en esta carrera','#ffd700');
+
+    // Separador firma
+    const sep2Y=Math.round(H*0.848);
+    ctx.strokeStyle='rgba(184,134,11,0.3)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(50,sep2Y); ctx.lineTo(W-50,sep2Y); ctx.stroke();
+
+    // Firma
+    ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font=`bold ${Math.round(W*0.017)}px system-ui`; ctx.textAlign='left';
+    ctx.fillText('Sergio Elías Villarreal Limas', 60, Math.round(H*0.893));
+    ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font=`${Math.round(W*0.014)}px system-ui`;
+    ctx.fillText('Entrenador · Laguna Swim International', 60, Math.round(H*0.921));
+    ctx.fillText('Lic. Acondicionamiento Físico · American Swimming Nivel 4', 60, Math.round(H*0.949));
+
+    ctx.textAlign='right';
+    ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font=`${Math.round(W*0.014)}px system-ui`;
+    ctx.fillText('Emitido: '+datos.fecha, W-60, Math.round(H*0.893));
+    ctx.fillStyle='#38bdf8'; ctx.font=`bold ${Math.round(W*0.014)}px system-ui`;
+    ctx.fillText('lagunaswim.net', W-60, Math.round(H*0.921));
+    const folio='LS-C'+String(Date.now()).slice(-6);
+    ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.font=`${Math.round(W*0.012)}px system-ui`;
+    ctx.fillText('Folio: '+folio, W-60, Math.round(H*0.949));
+  }
+
+  const logo=new Image(); logo.crossOrigin='anonymous';
+  logo.onload=()=>render(logo);
+  logo.onerror=()=>render(null);
+  logo.src='https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg';
+}
+
+// Override de pagarDiploma para manejar diplomas de carrera
+const _pagarDiplomaOriginal = pagarDiploma;
+// ⚠️  CAMBIA ESTA CLAVE POR TU ACCESS TOKEN DE PRODUCCIÓN
+// Sandbox (pruebas): empieza con TEST-
+// Producción:        empieza con APP_USR-
+const MP_ACCESS_TOKEN = 'TEST-APP_USR-2511695098746016-041218-850cb95251c8f6fb124c7c3b838be48b-29087794;
+
+// URL base de tu backend o función serverless que crea la preferencia.
+// Si aún no tienes backend, usa el modo REDIRECT que se explica abajo.
+// Para una solución sin backend, usaremos el endpoint directo de MP API
+// con tu token desde el cliente (solo recomendado en sandbox/pruebas).
+const MP_API = 'https://api.mercadopago.com/checkout/preferences';
+
+async function crearPreferencia(titulo, precio, emailComprador, metadatos){
+  const body = {
+    items: [{
+      title: titulo,
+      quantity: 1,
+      currency_id: 'MXN',
+      unit_price: precio
+    }],
+    payer: { email: emailComprador },
+    back_urls: {
+      success: location.href + '?pago=ok',
+      failure: location.href + '?pago=error',
+      pending: location.href + '?pago=pendiente'
+    },
+    auto_return: 'approved',
+    metadata: metadatos,
+    statement_descriptor: 'LAGUNA SWIM',
+    external_reference: 'LS-' + Date.now()
+  };
+
+  const res = await fetch(MP_API, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + MP_ACCESS_TOKEN
+    },
+    body: JSON.stringify(body)
+  });
+
+  if(!res.ok) throw new Error('Error MP ' + res.status);
+  return res.json();
+}
+
+function abrirCheckoutMP(initPoint){
+  // Abre el checkout de MercadoPago en ventana nueva
+  window.open(initPoint, '_blank');
+}
+
+// ─── TIENDA — PAGO LIBROS ────────────────────────────────────────
+let currentBook = null;
+
+function buyBook(id){
+  currentBook = BOOKS[id];
+  if(!currentBook) return;
+  document.getElementById('pay-title').textContent = currentBook.title;
+  document.getElementById('pay-amount').textContent = '$' + currentBook.price + ' MXN';
+  document.getElementById('pay-email').value = '';
+  document.getElementById('pay-modal').classList.remove('modal-hidden');
+}
+
+async function simulatePay(){
+  const email = document.getElementById('pay-email').value.trim();
+  if(!email || !email.includes('@')){ alert('Ingresa tu correo'); return; }
+  if(!currentBook) return;
+
+  const btn = document.querySelector('#pay-modal .btn-sky');
+  const originalText = btn.textContent;
+  btn.innerHTML = '<span class="spinner"></span> Generando enlace...';
+  btn.disabled = true;
+
+  try{
+    const pref = await crearPreferencia(
+      currentBook.title,
+      currentBook.price,
+      email,
+      { tipo: 'libro', libro_id: currentBook.id, email }
+    );
+    closeModal();
+    abrirCheckoutMP(pref.init_point);
+  } catch(e){
+    // Si el token no está configurado, muestra mensaje claro
+    if(MP_ACCESS_TOKEN.includes('XXXXX')){
+      closeModal();
+      alert('⚙️ Configura tu Access Token de MercadoPago en la variable MP_ACCESS_TOKEN del código.\n\nPor ahora el pago es simulado:\n"' + currentBook.title + '" será enviado a ' + email);
+    } else {
+      alert('Error al conectar con MercadoPago: ' + e.message);
+    }
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
+function closeModal(){ document.getElementById('pay-modal').classList.add('modal-hidden'); }
+
+// ─── DIPLOMA — PAGO $10 MXN ─────────────────────────────────────
+async function pagarDiploma(){
+  const email = document.getElementById('dip-email').value.trim();
+  if(!email || !email.includes('@')){ alert('Ingresa tu correo para continuar'); return; }
+  if(!diplomaRecord) return;
+
+  const r = diplomaRecord;
+  const { _posGlobal, _totalGlobal, _posCat, _totalCat } = r;
+  const btn = document.querySelector('#diploma-modal .btn-gold');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span> Procesando pago...';
+  btn.disabled = true;
+
+  try{
+    const titulo = `Diploma Laguna Swim · ${r.swimmer} · ${r.dist}m ${r.style}`;
+    const pref = await crearPreferencia(titulo, 10, email, {
+      tipo: 'diploma',
+      swimmer: r.swimmer,
+      dist: r.dist,
+      style: r.style,
+      time: r.time,
+      cat: r.cat,
+      gender: r.gender,
+      comp: r.comp,
+      year: r.year,
+      pos_global: _posGlobal,
+      pos_cat: _posCat,
+      email
+    });
+
+    // Guardar diploma pendiente en localStorage para generarlo al volver
+    localStorage.setItem('diploma_pendiente', JSON.stringify({
+      record: r, posGlobal: _posGlobal, totalGlobal: _totalGlobal,
+      posCat: _posCat, totalCat: _totalCat
+    }));
+
+    closeDiplomaModal();
+    abrirCheckoutMP(pref.init_point);
+
+  } catch(e){
+    if(MP_ACCESS_TOKEN.includes('XXXXX')){
+      // Token no configurado → generar diploma directo (demo)
+      closeDiplomaModal();
+      generarDescargaDiploma(r, _posGlobal, _totalGlobal, _posCat, _totalCat);
+      alert('⚙️ Modo demo — configura MP_ACCESS_TOKEN para cobro real.\nDiploma generado para: ' + r.swimmer);
+    } else {
+      alert('Error al conectar con MercadoPago: ' + e.message);
+    }
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+}
+
+// Genera y descarga el PDF del diploma (ranking o carrera)
+function generarDescargaDiploma(r, posG, totG, posC, totC){
+  const cv = document.getElementById('diploma-full-canvas');
+
+  const doDescarga = () => {
+    try{
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:'landscape', unit:'px', format:[1122,794], hotfixes:['px_scaling'] });
+      const imgData = cv.toDataURL('image/jpeg', 0.95);
+      pdf.addImage(imgData, 'JPEG', 0, 0, 1122, 794);
+      const nombre = r.swimmer.replace(/\s+/g,'_');
+      pdf.save(`Diploma_LagunaSwim_${nombre}_${r.dist}m${r.style}.pdf`);
+    } catch(e){
+      cv.toBlob(blob=>{
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const nombre = r.swimmer.replace(/\s+/g,'_');
+        a.href = url; a.download = `Diploma_LagunaSwim_${nombre}_${r.dist}m${r.style}.png`;
+        a.click(); URL.revokeObjectURL(url);
+      });
+    }
+  };
+
+  if(r._esCarrera){
+    // Diploma de carrera — cargar logo y dibujar en alta res
+    const datosCarrera = {
+      nombre: r.swimmer, tiempo: r.time,
+      posCarrera: posG, totalCarrera: totG,
+      evento: r._evento, comp: r.comp,
+      fecha: r._fecha, dist: r.dist, style: r.style
+    };
+    const logo = new Image(); logo.crossOrigin = 'anonymous';
+    const renderYDescarga = (img) => {
+      dibujarDiplomaCarreraCanvas(cv, datosCarrera, 1122, 794, img);
+      setTimeout(doDescarga, 150);
+    };
+    logo.onload = () => renderYDescarga(logo);
+    logo.onerror = () => renderYDescarga(null);
+    logo.src = 'https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg';
+  } else {
+    // Diploma de ranking — dibujarDiploma ya carga el logo internamente
+    // Necesitamos esperar a que termine de renderizar
+    const logo = new Image(); logo.crossOrigin = 'anonymous';
+    logo.onload = () => {
+      dibujarDiploma(cv, r, posG, totG, posC, totC, 1122, 794);
+      setTimeout(doDescarga, 150);
+    };
+    logo.onerror = () => {
+      dibujarDiploma(cv, r, posG, totG, posC, totC, 1122, 794);
+      setTimeout(doDescarga, 150);
+    };
+    logo.src = 'https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg';
+  }
+}
+
+// Dibuja diploma de carrera en canvas dado con logoImg ya cargado
+function dibujarDiplomaCarreraCanvas(cv, datos, W, H, logoImg){
+  cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d');
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#041225'); bg.addColorStop(1,'#0a2a4a');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#b8860b'; ctx.lineWidth=6; ctx.strokeRect(14,14,W-28,H-28);
+  ctx.strokeStyle='rgba(184,134,11,0.4)'; ctx.lineWidth=2; ctx.strokeRect(24,24,W-48,H-48);
+  const corner=(x,y,rx,ry)=>{ctx.strokeStyle='#ffd700';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y+ry);ctx.lineTo(x,y);ctx.lineTo(x+rx,y);ctx.stroke();};
+  corner(30,30,30,30); corner(W-30,30,-30,30); corner(30,H-30,30,-30); corner(W-30,H-30,-30,-30);
+  if(logoImg){
+    const lSize=Math.round(W*0.07);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(62+lSize/2,42+lSize/2,lSize/2+4,0,Math.PI*2);
+    ctx.fillStyle='#fff'; ctx.fill(); ctx.strokeStyle='#b8860b'; ctx.lineWidth=2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(62+lSize/2,42+lSize/2,lSize/2,0,Math.PI*2); ctx.clip();
+    ctx.drawImage(logoImg,62,42,lSize,lSize); ctx.restore();
+  }
+  ctx.strokeStyle='rgba(184,134,11,0.5)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(50,Math.round(H*0.136)); ctx.lineTo(W-50,Math.round(H*0.136)); ctx.stroke();
+  ctx.fillStyle='#38bdf8'; ctx.font=`bold ${Math.round(W*0.026)}px system-ui`; ctx.textAlign='center';
+  ctx.fillText('LAGUNA SWIM INTERNATIONAL',W/2,Math.round(H*0.115));
+  ctx.fillStyle='rgba(255,215,0,0.7)'; ctx.font=`italic ${Math.round(W*0.016)}px system-ui`;
+  ctx.fillText('"Fuertes y Valientes" — Josué 1:9',W/2,Math.round(H*0.152));
+  ctx.fillStyle='#ffd700'; ctx.font=`bold ${Math.round(W*0.037)}px system-ui`;
+  ctx.fillText('DIPLOMA DE PARTICIPACIÓN',W/2,Math.round(H*0.262));
+  ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font=`${Math.round(W*0.018)}px system-ui`;
+  ctx.fillText('Se otorga a:',W/2,Math.round(H*0.318));
+  let nf=Math.round(W*0.04); ctx.font=`bold ${nf}px system-ui`;
+  while(ctx.measureText(datos.nombre).width>W-200&&nf>16){nf--;ctx.font=`bold ${nf}px system-ui`;}
+  ctx.fillStyle='#fff'; ctx.fillText(datos.nombre,W/2,Math.round(H*0.394));
+  const nw=ctx.measureText(datos.nombre).width;
+  ctx.strokeStyle='rgba(56,189,248,0.4)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(W/2-nw/2,Math.round(H*0.408)); ctx.lineTo(W/2+nw/2,Math.round(H*0.408)); ctx.stroke();
+  ctx.fillStyle='#38bdf8'; ctx.font=`bold ${Math.round(W*0.022)}px system-ui`;
+  ctx.fillText(datos.evento,W/2,Math.round(H*0.462));
+  ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font=`${Math.round(W*0.017)}px system-ui`;
+  ctx.fillText((datos.comp||'Laguna Swim')+' · '+datos.fecha,W/2,Math.round(H*0.496));
+  ctx.strokeStyle='rgba(184,134,11,0.3)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(50,Math.round(H*0.528)); ctx.lineTo(W-50,Math.round(H*0.528)); ctx.stroke();
+  const bW=Math.round(W*0.26),bH=Math.round(H*0.162),gap=Math.round(W*0.04);
+  const totalBW=2*bW+gap;
+  const bx=[(W-totalBW)/2,(W-totalBW)/2+bW+gap];
+  const by=Math.round(H*0.546);
+  const bloque=(x,titulo,valor,subtitulo,color)=>{
+    ctx.fillStyle='rgba(255,255,255,0.04)'; ctx.strokeStyle=color+'55'; ctx.lineWidth=1;
+    roundRect(ctx,x,by,bW,bH,8); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font=`${Math.round(W*0.014)}px system-ui`; ctx.textAlign='center';
+    ctx.fillText(titulo,x+bW/2,by+Math.round(bH*0.22));
+    ctx.fillStyle=color; ctx.font=`bold ${Math.round(W*0.036)}px system-ui`;
+    ctx.fillText(valor,x+bW/2,by+Math.round(bH*0.62));
+    ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font=`${Math.round(W*0.013)}px system-ui`;
+    ctx.fillText(subtitulo,x+bW/2,by+Math.round(bH*0.86));
+  };
+  bloque(bx[0],'TIEMPO OFICIAL',datos.tiempo,'Registro cronometrado','#38bdf8');
+  bloque(bx[1],'POSICIÓN',datos.posCarrera+'° / '+datos.totalCarrera,'en esta carrera','#ffd700');
+  ctx.strokeStyle='rgba(184,134,11,0.3)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(50,Math.round(H*0.848)); ctx.lineTo(W-50,Math.round(H*0.848)); ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font=`bold ${Math.round(W*0.017)}px system-ui`; ctx.textAlign='left';
+  ctx.fillText('Sergio Elías Villarreal Limas',60,Math.round(H*0.893));
+  ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font=`${Math.round(W*0.014)}px system-ui`;
+  ctx.fillText('Entrenador · Laguna Swim International',60,Math.round(H*0.921));
+  ctx.fillText('Lic. Acondicionamiento Físico · American Swimming Nivel 4',60,Math.round(H*0.949));
+  ctx.textAlign='right';
+  ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font=`${Math.round(W*0.014)}px system-ui`;
+  ctx.fillText('Emitido: '+datos.fecha,W-60,Math.round(H*0.893));
+  ctx.fillStyle='#38bdf8'; ctx.font=`bold ${Math.round(W*0.014)}px system-ui`;
+  ctx.fillText('lagunaswim.net',W-60,Math.round(H*0.921));
+  ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.font=`${Math.round(W*0.012)}px system-ui`;
+  ctx.fillText('Folio: LS-C'+String(Date.now()).slice(-6),W-60,Math.round(H*0.949));
+}
+
+// Al volver de MercadoPago con ?pago=ok, generar el diploma automáticamente
+(function checarRetornoPago(){
+  const params = new URLSearchParams(location.search);
+  if(params.get('pago') === 'ok'){
+    const pending = localStorage.getItem('diploma_pendiente');
+    if(pending){
+      try{
+        const { record, posGlobal, totalGlobal, posCat, totalCat } = JSON.parse(pending);
+        localStorage.removeItem('diploma_pendiente');
+        setTimeout(()=>{
+          generarDescargaDiploma(record, posGlobal, totalGlobal, posCat, totalCat);
+          alert('✅ ¡Pago confirmado! Tu diploma se está descargando.');
+        }, 1000);
+      } catch(e){}
+    }
+    // Limpiar la URL
+    history.replaceState({}, '', location.pathname);
+  }
+})();
 
 // ─── URL PARAM ──────────────────────────────────────────────────
-const urlRoom=new URLSearchParams(location.search).get('room');
-if(urlRoom){document.getElementById('join-code').value=urlRoom.toUpperCase();setTimeout(()=>{showTab('timer');goTimer('s-join');},300);}
+const urlRoom = new URLSearchParams(location.search).get('room');
+if(urlRoom){ document.getElementById('join-code').value=urlRoom.toUpperCase(); setTimeout(()=>{ showTab('timer'); goTimer('s-join'); }, 300); }
 </script>
 </body>
 </html>
