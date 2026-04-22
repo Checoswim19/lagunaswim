@@ -1314,10 +1314,10 @@ async function generar(){
     '[siempre con aletas + dorso suave o social kick]\n'+
     'Subtotal: Xm\n\n'+
     'SERGIO DICE: [consejo tecnico directo y motivador personalizado para '+nombre+', basado en 30 anos de experiencia]\n\n'+
-    'REGLAS CRITICAS: TODOS los metros deben ser multiplos de 25m (25, 50, 75, 100, 150, 200, 300, 400, 600, 800, 1000, etc). Nunca uses 70m, 90m, 130m ni ningun numero que no sea multiplo de 25. Los subtotales de cada segmento tambien deben ser multiplos de 25. La suma total debe ser exactamente '+metros+'m. Usa tiempos de salida reales (1min30seg, 55 seg, etc). Se especifico con herramientas y porcentajes. Tono de entrenador experto de alto rendimiento.';
+    'REGLAS CRITICAS: DEBES generar el entrenamiento COMPLETO de principio a fin sin cortarlo. TODOS los metros deben ser multiplos de 25m (25, 50, 75, 100, 150, 200, 300, 400, 600, 800, 1000, etc). Nunca uses 70m, 90m, 130m ni ningun numero que no sea multiplo de 25. Los subtotales de cada segmento tambien deben ser multiplos de 25. La suma total debe ser exactamente '+metros+'m. Usa tiempos de salida reales (1min30seg, 55 seg, etc). Se especifico con herramientas y porcentajes. Tono de entrenador experto de alto rendimiento.';
 
   try{
-    var res=await fetch('https://laguna-api.checoswim.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    var res=await fetch('https://laguna-api.checoswim.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2500,messages:[{role:'user',content:prompt}]})});
     clearInterval(mInt);
     var data=await res.json();
     var text=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:'Error al generar.';
