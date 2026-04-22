@@ -1044,6 +1044,8 @@ function filterRanking(){
 function renderRanking(data,dist,style){
   const list=document.getElementById('ranking-list');
   list.innerHTML='';
+  // Guardar data en variable global para acceder por índice
+  window._rankingCache=data;
 
   // Encabezado
   const hdr=document.createElement('div');
@@ -1067,15 +1069,12 @@ function renderRanking(data,dist,style){
     return;
   }
 
-  // ── PROYECCIÓN: si ya hay tiempo en el cronómetro activo ──────
-  // (disponible si myRole==='master' y la carrera terminó, mostramos dónde quedaría)
   const top50=data.slice(0,50);
 
   top50.forEach((r,i)=>{
     const d=document.createElement('div');d.className='rank-row';
     const catLabel=CAT_LABELS[r.cat]||r.cat;
     const genIcon=r.gender==='M'?'♂':'♀';
-    // Barra de proyección (tiempo relativo al primero)
     const fastest=data[0].timeMs;
     const pct=Math.round((fastest/r.timeMs)*100);
 
@@ -1088,9 +1087,12 @@ function renderRanking(data,dist,style){
       '</div>'+
       '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-left:6px">'+
         '<div class="rank-time">'+r.time+'</div>'+
-        '<button onclick=\'abrirDiplomaRanking('+JSON.stringify(r).replace(/"/g,"'")+')\' style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:8px;padding:3px 8px;font-size:0.62rem;font-weight:800;cursor:pointer;white-space:nowrap">🏅 Diploma</button>'+
+        '<button data-ridx="'+i+'" class="dip-rank-btn" style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:8px;padding:3px 8px;font-size:0.62rem;font-weight:800;cursor:pointer;white-space:nowrap">🏅 Diploma</button>'+
         (isCoach?'<button onclick="deleteRank(\''+r.id+'\')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.7rem;padding:0">✕</button>':'')+
       '</div>';
+
+    // Adjuntar evento al botón usando data index — sin JSON en HTML
+    d.querySelector('.dip-rank-btn').addEventListener('click',()=>abrirDiplomaRanking(window._rankingCache[i]));
     list.appendChild(d);
   });
 
