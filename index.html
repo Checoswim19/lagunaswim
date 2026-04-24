@@ -14,19 +14,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- Chart.js para gráficos -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overscroll-behavior:none}
-body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#071e38;color:#fff;min-height:100vh;padding-bottom:70px;transition:background 0.3s, color 0.3s}
-@media (prefers-color-scheme: light) {
-  body { background: #f0f4f8; color: #071e38; }
-  .card { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); }
-  .bnav { background: #e2e8f0; border-top-color: rgba(0,0,0,0.1); }
-  input,select,textarea { background: rgba(0,0,0,0.05); color: #071e38; }
-  .stat-box { background: rgba(0,0,0,0.04); }
-}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#071e38;color:#fff;min-height:100vh;padding-bottom:70px}
 .screen{display:none;min-height:calc(100vh - 70px);flex-direction:column;padding:0 1rem 1rem}
 .screen.active{display:flex}
 .bnav{position:fixed;bottom:0;left:0;right:0;height:65px;background:#050f1c;border-top:1px solid rgba(255,255,255,0.08);display:flex;z-index:100}
@@ -38,86 +31,66 @@ body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;backgroun
 .logo-main{font-size:1.1rem;font-weight:800}.logo-main em{color:#38bdf8;font-style:normal}
 .logo-sub{font-size:0.58rem;color:#7ab8e8;letter-spacing:1px}
 .card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.1rem;margin-bottom:0.8rem}
-.btn{width:100%;padding:0.85rem;border-radius:12px;border:none;font-size:0.95rem;font-weight:700;cursor:pointer;margin-bottom:0.55rem;transition:transform 0.1s;touch-action:manipulation}
+.btn{width:100%;padding:0.85rem;border-radius:12px;border:none;font-size:0.95rem;font-weight:700;cursor:pointer;margin-bottom:0.55rem;transition:transform 0.1s}
 .btn:active{transform:scale(0.97)}
 .btn-sky{background:#0ea5e9;color:#fff}.btn-gray{background:rgba(255,255,255,0.09);color:#fff;border:1px solid rgba(255,255,255,0.15)}
 .btn-red{background:#b91c1c;color:#fff}.btn-green{background:#15803d;color:#fff}
 .btn-orange{background:#ea580c;color:#fff}.btn-wa{background:#16a34a;color:#fff}
-.btn-gold{background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);color:#1a0a00;font-weight:800}
 .btn-sm{width:auto;padding:0.45rem 0.9rem;font-size:0.78rem;border-radius:9px;margin-bottom:0}
-input,select,textarea{width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:0.93rem;margin-bottom:0.5rem;outline:none}
+input,select{width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:0.93rem;margin-bottom:0.5rem;outline:none}
 input:focus,select:focus{border-color:#38bdf8}
-.timer-big{font-size:3.4rem;font-weight:800;text-align:center;letter-spacing:3px;font-variant-numeric:tabular-nums;color:#38bdf8;line-height:1;padding:0.3rem 0}
-.lane-row{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 0.9rem;border-radius:13px;margin-bottom:0.5rem;border:2px solid transparent}
-.lane-row.live{background:#0f3460;border-color:#1d6fa4}.lane-row.done{background:#064e3b;border-color:#15803d}
-.code-display{font-size:2.4rem;font-weight:800;letter-spacing:10px;color:#38bdf8;text-align:center;padding:0.4rem 0}
-.role-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.1rem;margin-bottom:0.7rem;cursor:pointer;display:flex;align-items:center;gap:1rem;touch-action:manipulation}
-.stop-btn{width:100%;padding:2.5rem 1rem;border-radius:20px;background:#1d6fa4;border:3px solid #38bdf8;color:#fff;font-size:1.5rem;font-weight:800;cursor:pointer;text-align:center;margin-bottom:0.6rem}
-.parcial-btn{width:100%;padding:1.4rem;border-radius:14px;background:#7c3aed;border:2px solid #a78bfa;color:#fff;font-size:1.2rem;font-weight:700;cursor:pointer;text-align:center;margin-bottom:0.6rem}
-.rank-row{display:flex;align-items:flex-start;gap:0.6rem;padding:0.7rem 0.9rem;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);margin-bottom:0.4rem}
-.rank-row.gold-record{background:rgba(184,134,11,0.1);border:1px solid rgba(255,215,0,0.4)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:flex-end;justify-content:center}
-.modal-hidden{display:none!important}
-.modal-box{background:#0a1f38;border-radius:20px 20px 0 0;padding:1.5rem;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
+.timer-big{font-size:3.4rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;color:#38bdf8;padding:0.3rem 0}
+.role-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.1rem;margin-bottom:0.7rem;cursor:pointer;display:flex;align-items:center;gap:1rem}
+.code-display{font-size:2rem;font-weight:800;letter-spacing:5px;color:#38bdf8;text-align:center}
+.rank-row{display:flex;align-items:center;gap:0.6rem;padding:0.7rem 0.9rem;border-radius:12px;background:rgba(255,255,255,0.04);margin-bottom:0.4rem}
 .auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem}
 .auth-box{background:#0d2a4a;border:1px solid rgba(56,189,248,0.25);border-radius:24px;padding:1.8rem 1.5rem;width:100%;max-width:400px}
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(56,189,248,0.3);border-top-color:#38bdf8;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.coach-btn{background:none;border:none;color:rgba(255,255,255,0.2);font-size:0.62rem;cursor:pointer;padding:4px 8px}
-.proj-bar{height:6px;border-radius:3px;background:rgba(255,255,255,0.08);margin-top:4px;overflow:hidden}
-.proj-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#0ea5e9,#38bdf8)}
+.modal-hidden{display:none!important}
 .grafico-container{height:200px;margin:1rem 0}
 .export-btn{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);color:#22c55e;padding:0.4rem 0.8rem;border-radius:8px;font-size:0.7rem;cursor:pointer}
+.coach-btn{background:none;border:none;color:rgba(255,255,255,0.2);font-size:0.62rem;cursor:pointer;padding:4px 8px}
 </style>
 </head>
 <body>
 
-<!-- BOTTOM NAVIGATION -->
 <nav class="bnav">
-  <button class="bnav-item active" onclick="showTab('timer')" id="nav-timer"><span class="bnav-icon">⏱️</span><span class="bnav-label">Cronómetro</span></button>
-  <button class="bnav-item" onclick="showTab('store')" id="nav-store"><span class="bnav-icon">📚</span><span class="bnav-label">Tienda</span></button>
-  <button class="bnav-item" onclick="showTab('ranking')" id="nav-ranking"><span class="bnav-icon">🏆</span><span class="bnav-label">Ranking</span></button>
-  <button class="bnav-item" onclick="showTab('workout')" id="nav-workout"><span class="bnav-icon">🐊</span><span class="bnav-label">Entrena</span></button>
-  <button class="bnav-item" onclick="showTab('profile')" id="nav-profile"><span class="bnav-icon">👤</span><span class="bnav-label">Perfil</span></button>
+  <button class="bnav-item active" onclick="showTab('timer')"><span class="bnav-icon">⏱️</span><span class="bnav-label">Cronómetro</span></button>
+  <button class="bnav-item" onclick="showTab('store')"><span class="bnav-icon">📚</span><span class="bnav-label">Tienda</span></button>
+  <button class="bnav-item" onclick="showTab('ranking')"><span class="bnav-icon">🏆</span><span class="bnav-label">Ranking</span></button>
+  <button class="bnav-item" onclick="showTab('workout')"><span class="bnav-icon">🐊</span><span class="bnav-label">Entrena</span></button>
+  <button class="bnav-item" onclick="showTab('profile')"><span class="bnav-icon">👤</span><span class="bnav-label">Perfil</span></button>
 </nav>
 
-<!-- PANEL DE CRONÓMETRO -->
+<!-- CRONÓMETRO -->
 <div id="tab-timer" class="screen active">
   <div id="s-home" class="screen active">
     <div class="hdr">
       <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt="">
       <div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">INTERNATIONAL</div></div>
-      <div style="margin-left:auto"><span id="fb-status" style="font-size:0.68rem;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,0.07)">Conectando...</span></div>
     </div>
     <div class="card">
       <div class="role-card" onclick="goTimer('s-role')">
         <div style="font-size:2rem">🎯</div>
         <div><div style="font-weight:700">Iniciar sesión</div><div style="font-size:0.73rem">Entrenador o cronometrista</div></div>
-        <div style="margin-left:auto">›</div>
       </div>
     </div>
   </div>
   <div id="s-role" class="screen">
-    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">¿Cómo participas?</div></div></div>
-    <div class="role-card" onclick="goTimer('s-setup')"><div style="font-size:2rem">🎯</div><div><div style="font-weight:700">Entrenador (Master)</div><div style="font-size:0.73rem">Crea y controla la carrera</div></div><div style="margin-left:auto">›</div></div>
-    <div class="role-card" onclick="goTimer('s-join')"><div style="font-size:2rem">⏱️</div><div><div style="font-weight:700">Cronometrista</div><div style="font-size:0.73rem">Padre o asistente</div></div><div style="margin-left:auto">›</div></div>
+    <div class="role-card" onclick="goTimer('s-setup')"><div style="font-size:2rem">🎯</div><div><div style="font-weight:700">Entrenador (Master)</div></div></div>
+    <div class="role-card" onclick="goTimer('s-join')"><div style="font-size:2rem">⏱️</div><div><div style="font-weight:700">Cronometrista</div></div></div>
     <button class="btn btn-gray" onclick="goTimer('s-home')">Regresar</button>
   </div>
   <div id="s-setup" class="screen">
-    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Nueva carrera</div></div></div>
     <select id="pool-length"><option value="25">Alberca 25m</option><option value="50">Alberca 50m</option></select>
-    <select id="event-dist"><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option><option value="200">200m</option></select>
-    <select id="event-style"><option value="Libre">Libre</option><option value="Dorso">Dorso</option><option value="Pecho">Pecho</option><option value="Mariposa">Mariposa</option></select>
-    <div id="lane-selector" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0"></div>
-    <div id="names-card"></div>
-    <input id="comp-name" placeholder="Nombre de competencia">
-    <button class="btn btn-sky" onclick="createRace()">Crear carrera y QR</button>
+    <select id="event-dist"><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option></select>
+    <select id="event-style"><option value="Libre">Libre</option><option value="Dorso">Dorso</option></select>
+    <input id="comp-name" placeholder="Nombre competencia">
+    <button class="btn btn-sky" onclick="createRace()">Crear carrera</button>
     <button class="btn btn-gray" onclick="goTimer('s-role')">Regresar</button>
   </div>
   <div id="s-lobby" class="screen">
-    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Sala de espera</div></div></div>
-    <div class="card"><div class="code-display" id="lobby-code">----</div><div id="qr-container"></div><button class="btn btn-gray btn-sm" onclick="dlQR()">Descargar QR</button></div>
-    <div id="lobby-list"></div>
+    <div class="code-display" id="lobby-code">----</div>
+    <div id="qr-container"></div>
     <button class="btn btn-sky" onclick="startRace()">Iniciar carrera</button>
     <button class="btn btn-gray" onclick="cancelRace()">Cancelar</button>
   </div>
@@ -127,13 +100,12 @@ input:focus,select:focus{border-color:#38bdf8}
     <button class="btn btn-red" onclick="stopAll()">Detener todos</button>
   </div>
   <div id="s-join" class="screen">
-    <input id="join-code" placeholder="Código (ej: A3B7K)">
+    <input id="join-code" placeholder="Código">
     <input id="join-name" placeholder="Tu nombre">
-    <button class="btn btn-sky" onclick="joinRace()">Unirse a carrera</button>
+    <button class="btn btn-sky" onclick="joinRace()">Unirse</button>
     <button class="btn btn-gray" onclick="goTimer('s-role')">Regresar</button>
   </div>
   <div id="s-tk" class="screen">
-    <div style="text-align:center"><div id="tk-lane-num" style="font-size:3rem">-</div><div id="tk-swimmer">-</div></div>
     <div class="timer-big" id="tk-clock">00:00.00</div>
     <div id="tk-action"></div>
   </div>
@@ -141,150 +113,94 @@ input:focus,select:focus{border-color:#38bdf8}
 
 <!-- TIENDA -->
 <div id="tab-store" class="screen">
-  <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Tienda digital</div></div></div>
-  <div class="book-card" style="background:rgba(255,255,255,0.05);border-radius:16px;padding:1rem;margin-bottom:0.8rem">
-    <div style="font-weight:800">Padres Campeones</div>
-    <div class="book-price" style="color:#38bdf8;font-size:1.2rem">$99 MXN</div>
-    <button class="btn btn-sky btn-sm" onclick="buyBookDemo()">Comprar PDF simulado</button>
+  <div class="card"><div style="font-weight:800">Padres Campeones</div><div>$99 MXN</div><button class="btn btn-sky" onclick="buyBookDemo()">Comprar</button></div>
+  <div class="card"><div style="font-weight:800">Natación Masters</div><div>$199 MXN</div><button class="btn btn-sky" onclick="buyBookDemo()">Comprar</button></div>
+  <div class="card" style="background:linear-gradient(135deg,#0ea5e9,#1e3a8a);cursor:pointer" onclick="window.open('https://skyscanner.pxf.io/c/5594241/1022358/13416','_blank')">
+    <div>✈️ Buscar vuelos baratos</div>
   </div>
-  <div class="book-card" style="background:rgba(255,255,255,0.05);border-radius:16px;padding:1rem;margin-bottom:0.8rem">
-    <div style="font-weight:800">Natación Masters</div>
-    <div class="book-price" style="color:#38bdf8;font-size:1.2rem">$199 MXN</div>
-    <button class="btn btn-sky btn-sm" onclick="buyBookDemo()">Comprar PDF simulado</button>
-  </div>
-  <div class="book-card" style="background:linear-gradient(135deg, #0ea5e9 0%, #1e3a8a 100%); border:none; margin-top:0.5rem; cursor:pointer" onclick="window.open('https://skyscanner.pxf.io/c/5594241/1022358/13416', '_blank')">
-    <div style="display:flex; align-items:center; gap:0.8rem">
-      <div style="font-size:2rem">✈️</div>
-      <div style="flex:1">
-        <div style="font-weight:800; font-size:0.9rem">Vuelos baratos para competencias</div>
-        <div style="font-size:0.65rem; opacity:0.85">Compara precios en Skyscanner</div>
-      </div>
-      <div style="font-size:1.2rem">→</div>
-    </div>
-  </div>
-  <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
 </div>
 
-<!-- RANKING + GRÁFICO + EXPORTAR -->
+<!-- RANKING -->
 <div id="tab-ranking" class="screen">
-  <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Ranking + gráfico</div></div></div>
-  <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem">
-    <select id="rank-dist" onchange="loadRanking()"><option value="50">50m</option><option value="100">100m</option><option value="200">200m</option></select>
-    <select id="rank-style" onchange="loadRanking()"><option value="Libre">Libre</option><option value="Pecho">Pecho</option><option value="Dorso">Dorso</option></select>
-    <button class="export-btn" onclick="exportRankingCSV()">📊 Exportar CSV</button>
-  </div>
+  <select id="rank-dist" onchange="loadRanking()"><option value="50">50m</option><option value="100">100m</option></select>
+  <select id="rank-style" onchange="loadRanking()"><option value="Libre">Libre</option><option value="Pecho">Pecho</option></select>
+  <button class="export-btn" onclick="exportRankingCSV()">Exportar CSV</button>
   <div class="grafico-container"><canvas id="rankingChart"></canvas></div>
   <div id="ranking-list"></div>
-  <div id="coach-add-section" style="display:none;margin-top:1rem">
-    <input id="r-swimmer" placeholder="Nombre nadador">
-    <input id="r-time" placeholder="Tiempo (ej: 1:05.43)">
-    <button class="btn btn-sky" onclick="addRankTime()">Agregar tiempo</button>
+  <div id="coach-add-section" style="display:none">
+    <input id="r-swimmer" placeholder="Nombre">
+    <input id="r-time" placeholder="Tiempo (1:05.43)">
+    <button class="btn btn-sky" onclick="addRankTime()">Agregar</button>
   </div>
-  <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
 </div>
 
-<!-- ENTRENAMIENTOS CON IA GRATIS -->
+<!-- ENTRENAMIENTOS -->
 <div id="tab-workout" class="screen">
-  <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Entrenamientos IA</div></div></div>
-  <div id="wk-login-wall" style="display:none">
-    <button class="btn btn-sky" onclick="showCoachLogin()">Iniciar sesión para entrenar</button>
-  </div>
+  <div id="wk-login-wall"><button class="btn btn-sky" onclick="showCoachLogin()">Iniciar sesión</button></div>
   <div id="wk-generator" style="display:none">
     <input id="wk-nombre" placeholder="Tu nombre">
-    <select id="wk-dist"><option value="1500">1,500m</option><option value="2000">2,000m</option><option value="3000">3,000m</option></select>
-    <select id="wk-level"><option value="principiante">Principiante</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option></select>
-    <button class="btn btn-sky" onclick="generarEntrenoGratis()">Generar entrenamiento (IA local)</button>
-    <div id="wk-result" style="margin-top:1rem;background:rgba(255,255,255,0.05);border-radius:12px;padding:1rem;display:none"></div>
+    <select id="wk-dist"><option value="1500">1500m</option><option value="2000">2000m</option></select>
+    <select id="wk-level"><option value="principiante">Principiante</option><option value="intermedio">Intermedio</option></select>
+    <button class="btn btn-sky" onclick="generarEntreno()">Generar entrenamiento</button>
+    <div id="wk-result" style="margin-top:1rem;display:none"></div>
   </div>
 </div>
 
 <!-- PERFIL -->
 <div id="tab-profile" class="screen">
-  <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Entrenador</div></div></div>
-  <div class="card" style="text-align:center">
-    <div style="font-size:1.5rem;font-weight:800">Sergio Villarreal</div>
-    <div style="font-size:0.7rem">Más de 30 años de experiencia</div>
-  </div>
-  <div class="card" style="background:linear-gradient(135deg, #0ea5e9 0%, #1e3a8a 100%); border:none; cursor:pointer" onclick="window.open('https://skyscanner.pxf.io/c/5594241/1022358/13416', '_blank')">
-    <div style="display:flex; align-items:center; gap:0.8rem">
-      <div style="font-size:2rem">✈️</div>
-      <div style="flex:1">
-        <div style="font-weight:800; font-size:0.9rem">Vuelos para competencias</div>
-        <div style="font-size:0.65rem; opacity:0.85">Compara precios en Skyscanner</div>
-      </div>
-      <div style="font-size:1.2rem">→</div>
-    </div>
-  </div>
-  <button class="btn btn-wa" onclick="window.open('https://wa.me/528713164850')">Contactar WhatsApp</button>
-  <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
+  <div class="card"><div style="font-size:1.5rem">Sergio Villarreal</div><div>30+ años experiencia</div></div>
+  <button class="btn btn-wa" onclick="window.open('https://wa.me/528713164850')">WhatsApp</button>
 </div>
 
-<!-- MODAL DE AUTENTICACIÓN -->
+<!-- MODAL -->
 <div class="auth-overlay modal-hidden" id="auth-modal">
   <div class="auth-box">
-    <div id="auth-form-view">
-      <button onclick="loginGoogle()" style="width:100%;padding:0.85rem;margin-bottom:0.5rem">🔐 Google</button>
-      <input type="email" id="auth-email" placeholder="Correo">
-      <input type="password" id="auth-pass" placeholder="Contraseña">
-      <button class="btn btn-sky" onclick="doLogin()">Entrar</button>
-      <button class="btn btn-gray" onclick="closeAuthModal()">Cancelar</button>
-    </div>
-    <div id="auth-logged-view" style="display:none">
-      <div>Sesión activa: <span id="auth-user-email"></span></div>
-      <button class="btn btn-red" onclick="coachLogout()">Cerrar sesión</button>
-    </div>
+    <button onclick="loginGoogle()" style="width:100%;padding:0.85rem">🔐 Google</button>
+    <input type="email" id="auth-email" placeholder="Correo">
+    <input type="password" id="auth-pass" placeholder="Contraseña">
+    <button class="btn btn-sky" onclick="doLogin()">Entrar</button>
+    <button class="btn btn-gray" onclick="closeAuthModal()">Cancelar</button>
   </div>
 </div>
 
-<!-- Verificación para Impact (invisible para usuarios) -->
+<!-- Verificación Impact -->
 <p style="display:none">Impact-Site-Verification: 56974a57-e5e1-40e5-9947-2787221dfc78</p>
 
 <script>
-// ==================== CONFIGURACIÓN FIREBASE ====================
+// ===== CONFIGURACIÓN FIREBASE =====
 const firebaseConfig = {
   apiKey: "AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
   authDomain: "laguna-swim-chrono.firebaseapp.com",
   databaseURL: "https://laguna-swim-chrono-default-rtdb.firebaseio.com",
-  projectId: "laguna-swim-chrono",
-  storageBucket: "laguna-swim-chrono.firebasestorage.app"
+  projectId: "laguna-swim-chrono"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const auth = firebase.auth();
-let isCoach = false;
-let currentUser = null;
-let rankingChart = null;
-let laneData = [], myRoom = null, raceStart = null, clockInterval = null;
 
-// ==================== UTILIDADES ====================
+let currentUser = null;
+let isCoach = false;
+let rankingChart = null;
+let rankingData = [];
+let myRoom = null;
+let raceStart = null;
+let clockInterval = null;
+let laneData = [];
+
+// ===== UTILIDADES =====
 function fmt(ms) {
-  if (!ms) return "00:00.00";
+  if (!ms && ms !== 0) return "00:00.00";
   let m = Math.floor(ms / 60000);
   let s = Math.floor((ms % 60000) / 1000);
   let c = Math.floor((ms % 1000) / 10);
   return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${c.toString().padStart(2,'0')}`;
 }
 
-function vibrar() {
-  if ('vibrate' in navigator) navigator.vibrate(100);
-}
-
-function beep() {
-  try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    osc.connect(audioCtx.destination);
-    osc.frequency.value = 880;
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.1);
-  } catch(e) { console.log("beep no soportado"); }
-}
-
 function showTab(tab) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(`tab-${tab}`).classList.add('active');
   if (tab === 'ranking') loadRanking();
-  if (tab === 'workout') initWk();
+  if (tab === 'workout') checkWorkoutAccess();
 }
 
 function goTimer(screen) {
@@ -292,42 +208,37 @@ function goTimer(screen) {
   document.getElementById(screen).classList.add('active');
 }
 
-// ==================== AUTENTICACIÓN ====================
+// ===== AUTENTICACIÓN =====
 auth.onAuthStateChanged(user => {
   currentUser = user;
   isCoach = user && user.email === 'checoswim@gmail.com';
-  document.getElementById('fb-status').innerHTML = user ? '✅ Conectado' : '📡 Online';
   if (user) {
-    document.getElementById('auth-user-email').innerText = user.email;
-    document.getElementById('auth-form-view').style.display = 'none';
-    document.getElementById('auth-logged-view').style.display = 'block';
     document.getElementById('coach-add-section').style.display = isCoach ? 'block' : 'none';
-  } else {
-    document.getElementById('auth-form-view').style.display = 'block';
-    document.getElementById('auth-logged-view').style.display = 'none';
-    document.getElementById('coach-add-section').style.display = 'none';
   }
 });
 
 function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
 function doLogin() {
-  auth.signInWithEmailAndPassword(document.getElementById('auth-email').value, document.getElementById('auth-pass').value)
-    .catch(err => alert("Error: " + err.message));
+  auth.signInWithEmailAndPassword(
+    document.getElementById('auth-email').value,
+    document.getElementById('auth-pass').value
+  ).catch(e => alert("Error: " + e.message));
 }
-function coachLogout() { auth.signOut(); }
+function coachLogout() { auth.signOut(); location.reload(); }
 function showCoachLogin() { document.getElementById('auth-modal').classList.remove('modal-hidden'); }
 function closeAuthModal() { document.getElementById('auth-modal').classList.add('modal-hidden'); }
 
-// ==================== CRONÓMETRO ====================
+// ===== CRONÓMETRO =====
 function genCode() { return Math.random().toString(36).substr(2,5).toUpperCase(); }
 
 function createRace() {
-  let lanes = [1,2,3,4,5,6];
-  laneData = lanes.map(l => ({ lane: l, name: `Carril ${l}`, time: null, stopped: false }));
+  laneData = [1,2,3,4,5,6].map(l => ({ lane: l, name: `Carril ${l}`, time: null, stopped: false }));
   myRoom = genCode();
   db.ref(`races/${myRoom}`).set({ started: false, lanes: laneData });
   document.getElementById('lobby-code').innerText = myRoom;
-  new QRCode(document.getElementById('qr-container'), { text: window.location.href + '?room=' + myRoom, width: 150, height: 150 });
+  try {
+    new QRCode(document.getElementById('qr-container'), { text: window.location.href + '?room=' + myRoom, width: 150, height: 150 });
+  } catch(e) { console.log("QR error:", e); }
   goTimer('s-lobby');
   listenRace();
 }
@@ -338,11 +249,10 @@ function listenRace() {
     if (data && data.started && !raceStart) {
       raceStart = Date.now();
       goTimer('s-race');
-      document.getElementById('master-clock').innerText = fmt(0);
       if (clockInterval) clearInterval(clockInterval);
       clockInterval = setInterval(() => {
         document.getElementById('master-clock').innerText = fmt(Date.now() - raceStart);
-      }, 50);
+      }, 100);
       renderRaceLanes();
     }
   });
@@ -353,44 +263,37 @@ function renderRaceLanes() {
   container.innerHTML = '';
   laneData.forEach(l => {
     const div = document.createElement('div');
-    div.className = 'lane-row live';
-    div.innerHTML = `<div><strong>Carril ${l.lane}</strong><br>${l.name}</div>
-      <div><button class="btn btn-sm" onclick="marcarParcial(${l.lane})" style="background:#7c3aed">Parcial</button>
-      <button class="btn btn-sm" onclick="marcarStop(${l.lane})" style="background:#15803d">Stop</button></div>`;
+    div.className = 'card';
+    div.innerHTML = `<div><strong>Carril ${l.lane}</strong> - ${l.name}</div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+        <button class="btn btn-sm" onclick="marcarStop(${l.lane})" style="background:#15803d;width:auto">STOP</button>
+      </div>`;
     container.appendChild(div);
   });
 }
 
-function marcarParcial(lane) { vibrar(); beep(); alert(`Parcial carril ${lane} registrado`); }
 function marcarStop(lane) {
-  vibrar(); beep();
   let l = laneData.find(x => x.lane === lane);
   if (l && !l.stopped) {
     l.stopped = true;
     l.time = Date.now() - raceStart;
     if (laneData.every(x => x.stopped)) {
       clearInterval(clockInterval);
-      alert("Carrera finalizada");
-      localStorage.setItem('lastRace', JSON.stringify({ results: laneData, date: new Date() }));
+      alert("Carrera finalizada!");
     }
   }
 }
+
 function stopAll() { laneData.forEach(l => { if(!l.stopped) marcarStop(l.lane); }); }
-function cancelRace() { if(myRoom) db.ref(`races/${myRoom}`).remove(); myRoom=null; raceStart=null; goTimer('s-role'); }
-function startRace() { db.ref(`races/${myRoom}`).update({ started: true, startAt: Date.now() }); }
-function dlQR() { const img = document.querySelector('#qr-container img'); if(img) { let a=document.createElement('a'); a.href=img.src; a.download='QR.png'; a.click(); } }
+function startRace() { db.ref(`races/${myRoom}`).update({ started: true }); }
+function cancelRace() { if(myRoom) db.ref(`races/${myRoom}`).remove(); myRoom=null; goTimer('s-role'); }
 function joinRace() {
   let code = document.getElementById('join-code').value.toUpperCase();
-  let name = document.getElementById('join-name').value;
-  db.ref(`races/${code}`).once('value', snap => {
-    if(snap.exists()) { alert(`Unido a carrera ${code} como ${name}`); goTimer('s-home'); }
-    else alert("Código no válido");
-  });
+  alert(`Unido a carrera ${code}`);
+  goTimer('s-home');
 }
 
-// ==================== RANKING + GRÁFICO + EXPORTAR CSV ====================
-let rankingData = [];
-
+// ===== RANKING =====
 function loadRanking() {
   db.ref('ranking').once('value', snap => {
     rankingData = [];
@@ -407,15 +310,17 @@ function loadRanking() {
 function renderRankingList(data) {
   const container = document.getElementById('ranking-list');
   container.innerHTML = '';
+  if(data.length === 0) {
+    container.innerHTML = '<div style="text-align:center">Sin datos</div>';
+    return;
+  }
   data.slice(0,20).forEach((r, idx) => {
     const div = document.createElement('div');
     div.className = 'rank-row';
-    div.innerHTML = `<div class="rank-pos">${idx+1}</div>
-      <div class="rank-info"><strong>${r.swimmer}</strong><br><span style="font-size:0.7rem">${r.comp || 'Competencia'} ${r.year || ''}</span></div>
-      <div class="rank-time">${r.time}</div>`;
+    div.innerHTML = `<div style="font-weight:800;width:40px">${idx+1}</div>
+      <div><strong>${r.swimmer}</strong><br><span style="font-size:0.7rem">${r.time}</span></div>`;
     container.appendChild(div);
   });
-  if(data.length === 0) container.innerHTML = '<div style="text-align:center;padding:2rem">Sin registros</div>';
 }
 
 function renderChart(data) {
@@ -431,8 +336,6 @@ function renderChart(data) {
         label: 'Tiempo (segundos)',
         data: top10.map(r => (r.timeMs / 1000).toFixed(2)),
         borderColor: '#38bdf8',
-        backgroundColor: 'rgba(56,189,248,0.1)',
-        fill: true,
         tension: 0.3
       }]
     }
@@ -443,57 +346,40 @@ function exportRankingCSV() {
   const dist = document.getElementById('rank-dist').value;
   const style = document.getElementById('rank-style').value;
   const filtered = rankingData.filter(r => r.dist == dist && r.style === style);
-  if(!filtered.length) return alert("No hay datos para exportar");
-  let csv = "Posición,Nadador,Tiempo (segundos),Competencia,Año\n";
+  if(!filtered.length) return alert("No hay datos");
+  let csv = "Pos,Nadador,Tiempo\n";
   filtered.slice(0,50).forEach((r, idx) => {
-    csv += `${idx+1},${r.swimmer},${(r.timeMs/1000).toFixed(2)},${r.comp || ''},${r.year || ''}\n`;
+    csv += `${idx+1},${r.swimmer},${r.time}\n`;
   });
   const blob = new Blob([csv], {type: 'text/csv'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `ranking_${dist}m_${style}.csv`;
+  a.download = `ranking_${dist}m.csv`;
   a.click();
-  URL.revokeObjectURL(blob);
 }
 
 function addRankTime() {
-  if (!isCoach) return alert("Solo entrenador puede agregar tiempos");
+  if (!isCoach) return alert("Solo entrenador");
   const swimmer = document.getElementById('r-swimmer').value;
   const time = document.getElementById('r-time').value;
-  if (!swimmer || !time) return alert("Nombre y tiempo son requeridos");
+  if (!swimmer || !time) return alert("Complete campos");
   
-  const dist = document.getElementById('rank-dist').value;
-  const style = document.getElementById('rank-style').value;
+  const timeMs = time.includes(':') ? 
+    (parseInt(time.split(':')[0])*60000 + parseFloat(time.split(':')[1])*1000) : 
+    parseFloat(time)*1000;
   
-  let timeMs;
-  if (time.includes(':')) {
-    const parts = time.split(':');
-    const secs = parts[1].split('.');
-    timeMs = parseInt(parts[0]) * 60000 + parseInt(secs[0]) * 1000 + (parseInt(secs[1]) || 0) * 10;
-  } else {
-    timeMs = parseFloat(time) * 1000;
-  }
-  
-  const newId = Date.now().toString();
-  db.ref(`ranking/${newId}`).set({
-    id: newId,
+  db.ref(`ranking/${Date.now()}`).set({
     swimmer: swimmer,
-    dist: parseInt(dist),
-    style: style,
+    dist: parseInt(document.getElementById('rank-dist').value),
+    style: document.getElementById('rank-style').value,
     time: time,
     timeMs: timeMs,
-    comp: "Laguna Swim",
     year: new Date().getFullYear()
-  }).then(() => {
-    alert("Tiempo agregado correctamente");
-    document.getElementById('r-swimmer').value = '';
-    document.getElementById('r-time').value = '';
-    loadRanking();
-  }).catch(err => alert("Error: " + err.message));
+  }).then(() => { alert("Agregado!"); loadRanking(); });
 }
 
-// ==================== ENTRENAMIENTOS ====================
-function initWk() {
+// ===== ENTRENAMIENTOS =====
+function checkWorkoutAccess() {
   if (!currentUser) {
     document.getElementById('wk-login-wall').style.display = 'block';
     document.getElementById('wk-generator').style.display = 'none';
@@ -503,61 +389,26 @@ function initWk() {
   }
 }
 
-function generarEntrenoGratis() {
+function generarEntreno() {
   const nombre = document.getElementById('wk-nombre').value || "Nadador";
   const distancia = document.getElementById('wk-dist').value;
   const nivel = document.getElementById('wk-level').value;
   
-  const entrenamientos = {
-    principiante: `🏊‍♂️ ENTRENAMIENTO PARA ${nombre.toUpperCase()} (${distancia}m - Principiante)\n\n═══════════════════════════════\n\nCALENTAMIENTO (400m)\n• 200m estilo libre suave\n• 200m patada con tabla\n\nTÉCNICA (300m)\n• 6x50m (respiración cada 3 brazadas)\n  Descanso 15"\n\nSERIE PRINCIPAL (600m)\n• 8x75m descanso 20"\n  (25m patada + 50m estilo)\n\nENFRIAMIENTO (200m)\n• 200m estilo suave\n\n═══════════════════════════════\n💪 "¡Disfruta el proceso, ${nombre}!"\n📊 Total: ${distancia}m`,
-    
-    intermedio: `🏊‍♂️ ENTRENAMIENTO PARA ${nombre.toUpperCase()} (${distancia}m - Intermedio)\n\n═══════════════════════════════\n\nCALENTAMIENTO (600m)\n• 300m estilo variado\n• 200m patada con tabla\n• 100m técnica (brazada larga)\n\nTÉCNICA (400m)\n• 8x50m (enfoque en giros y virajes)\n  Descanso 15"\n\nSERIE PRINCIPAL (800m)\n• 4x200m descanso 30"\n  (Ritmo sostenido - RPE 7/10)\n• 8x50m descanso 20"\n  (Velocidad - RPE 9/10)\n\nENFRIAMIENTO (200m)\n• 200m suave\n\n═══════════════════════════════\n🔥 "Sigue así, ${nombre}! Vas mejorando"\n📊 Total: ${distancia}m`,
-    
-    avanzado: `🏊‍♂️ ENTRENAMIENTO PARA ${nombre.toUpperCase()} (${distancia}m - Avanzado)\n\n═══════════════════════════════\n\nCALENTAMIENTO (800m)\n• 400m variado + 200m patada con aletas\n• 200m técnica progresiva\n\nTÉCNICA (500m)\n• 10x50m (trabajo específico de estilo)\n  Descanso 10"\n\nSERIE PRINCIPAL (1500m)\n• 5x300m descanso 40"\n  (Ritmo de competencia - RPE 8-9/10)\n• 10x100m descanso 15"\n  (Velocidad máxima - RPE 10/10)\n\nENFRIAMIENTO (200m)\n• 200m recuperación activa\n\n═══════════════════════════════\n🦈 "Entrenamiento de élite, ${nombre}!"\n📊 Total: ${distancia}m`
-  };
+  const texto = `🏊‍♂️ ENTRENAMIENTO PARA ${nombre}\n\nCALENTAMIENTO: 200m suave\nTÉCNICA: 4x50m\nSERIE: 8x100m descanso 20"\nENFRIAMIENTO: 200m\n\nTotal: ${distancia}m\nNivel: ${nivel}`;
   
-  const resultado = entrenamientos[nivel] || entrenamientos.intermedio;
-  const divResultado = document.getElementById('wk-result');
-  divResultado.innerHTML = `<pre style="white-space:pre-wrap; font-family:inherit; font-size:0.85rem; line-height:1.5">${resultado}</pre>`;
-  divResultado.style.display = 'block';
-  vibrar();
-  beep();
+  const div = document.getElementById('wk-result');
+  div.innerHTML = `<pre style="white-space:pre-wrap">${texto}</pre>`;
+  div.style.display = 'block';
 }
 
-// ==================== TIENDA ====================
+// ===== TIENDA =====
 function buyBookDemo() {
-  alert("💰 Modo demostración. En la versión real, aquí se integraría MercadoPago.\n\nPor ahora, contacta a Sergio por WhatsApp para adquirir el libro.");
+  alert("📚 Modo demostración\nContacta a Sergio por WhatsApp para comprar.");
 }
 
-// ==================== INICIALIZACIÓN ====================
-function initLaneSelector() {
-  const container = document.getElementById('lane-selector');
-  if(!container) return;
-  container.innerHTML = '';
-  for(let i=1; i<=6; i++) {
-    const btn = document.createElement('button');
-    btn.textContent = i;
-    btn.style.cssText = 'width:44px;height:44px;border-radius:10px;background:rgba(56,189,248,0.2);border:2px solid #38bdf8;color:#fff;font-size:1rem;cursor:pointer';
-    container.appendChild(btn);
-  }
-  const namesCard = document.getElementById('names-card');
-  if(namesCard) {
-    namesCard.innerHTML = '<label>Nombres de los nadadores:</label>';
-    for(let i=1; i<=6; i++) {
-      const inp = document.createElement('input');
-      inp.placeholder = `Carril ${i} - Nombre`;
-      inp.id = `lane_name_${i}`;
-      namesCard.appendChild(inp);
-    }
-  }
-}
-
-// Inicializar al cargar
-window.onload = () => {
-  initLaneSelector();
-  initWk();
-  loadRanking();
-};
+// ===== INICIALIZACIÓN =====
+loadRanking();
+checkWorkoutAccess();
 </script>
 </body>
 </html>
