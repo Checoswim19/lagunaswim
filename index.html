@@ -5,17 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#071e38">
-<title>Laguna Swim - Sistema Completo</title>
+<title>Laguna Swim</title>
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg">
 <meta name="apple-mobile-web-app-title" content="Laguna Swim">
-<!-- Firebase -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overscroll-behavior:none}
@@ -31,384 +28,1406 @@ body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;backgroun
 .logo-main{font-size:1.1rem;font-weight:800}.logo-main em{color:#38bdf8;font-style:normal}
 .logo-sub{font-size:0.58rem;color:#7ab8e8;letter-spacing:1px}
 .card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.1rem;margin-bottom:0.8rem}
-.btn{width:100%;padding:0.85rem;border-radius:12px;border:none;font-size:0.95rem;font-weight:700;cursor:pointer;margin-bottom:0.55rem;transition:transform 0.1s}
+.btn{width:100%;padding:0.85rem;border-radius:12px;border:none;font-size:0.95rem;font-weight:700;cursor:pointer;margin-bottom:0.55rem;transition:transform 0.1s;touch-action:manipulation}
 .btn:active{transform:scale(0.97)}
 .btn-sky{background:#0ea5e9;color:#fff}.btn-gray{background:rgba(255,255,255,0.09);color:#fff;border:1px solid rgba(255,255,255,0.15)}
 .btn-red{background:#b91c1c;color:#fff}.btn-green{background:#15803d;color:#fff}
 .btn-orange{background:#ea580c;color:#fff}.btn-wa{background:#16a34a;color:#fff}
+.btn-gold{background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);color:#1a0a00;font-weight:800}
 .btn-sm{width:auto;padding:0.45rem 0.9rem;font-size:0.78rem;border-radius:9px;margin-bottom:0}
-input,select{width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:0.93rem;margin-bottom:0.5rem;outline:none}
+input,select,textarea{width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:0.93rem;margin-bottom:0.5rem;outline:none}
 input:focus,select:focus{border-color:#38bdf8}
-.timer-big{font-size:3.4rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;color:#38bdf8;padding:0.3rem 0}
-.role-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.1rem;margin-bottom:0.7rem;cursor:pointer;display:flex;align-items:center;gap:1rem}
-.code-display{font-size:2rem;font-weight:800;letter-spacing:5px;color:#38bdf8;text-align:center}
-.rank-row{display:flex;align-items:center;gap:0.6rem;padding:0.7rem 0.9rem;border-radius:12px;background:rgba(255,255,255,0.04);margin-bottom:0.4rem}
+input::placeholder{color:rgba(255,255,255,0.3)}
+select option{background:#071e38}
+label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weight:500}
+.timer-big{font-size:3.4rem;font-weight:800;text-align:center;letter-spacing:3px;font-variant-numeric:tabular-nums;color:#38bdf8;line-height:1;padding:0.3rem 0}
+.lane-row{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 0.9rem;border-radius:13px;margin-bottom:0.5rem;border:2px solid transparent}
+.lane-row.live{background:#0f3460;border-color:#1d6fa4}.lane-row.done{background:#064e3b;border-color:#15803d}
+.code-display{font-size:2.4rem;font-weight:800;letter-spacing:10px;color:#38bdf8;text-align:center;padding:0.4rem 0}
+.role-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.1rem;margin-bottom:0.7rem;cursor:pointer;display:flex;align-items:center;gap:1rem;touch-action:manipulation}
+.role-card:active{transform:scale(0.97)}
+.stop-btn{width:100%;padding:2.5rem 1rem;border-radius:20px;background:#1d6fa4;border:3px solid #38bdf8;color:#fff;font-size:1.5rem;font-weight:800;cursor:pointer;text-align:center;margin-bottom:0.6rem;touch-action:manipulation}
+.stop-btn:active{transform:scale(0.95)}
+.parcial-btn{width:100%;padding:1.4rem;border-radius:14px;background:#7c3aed;border:2px solid #a78bfa;color:#fff;font-size:1.2rem;font-weight:700;cursor:pointer;text-align:center;margin-bottom:0.6rem;touch-action:manipulation}
+.parcial-btn:active{transform:scale(0.96)}
+.parcial-list{background:rgba(0,0,0,0.2);border-radius:10px;padding:0.6rem;margin-top:0.4rem}
+.parcial-item{display:flex;justify-content:space-between;font-size:0.75rem;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-variant-numeric:tabular-nums}
+.parcial-item:last-child{border-bottom:none}
+.book-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:16px;padding:1rem;margin-bottom:0.8rem;display:flex;gap:0.9rem}
+.book-cover{width:70px;min-width:70px;height:98px;border-radius:8px;background:#0f3460;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.book-info{flex:1;display:flex;flex-direction:column;gap:0.25rem}
+.book-title{font-weight:800;font-size:0.9rem;line-height:1.3}
+.book-desc{font-size:0.72rem;color:#7ab8e8;line-height:1.4}
+.book-price{font-size:1.1rem;font-weight:800;color:#38bdf8}
+.book-lang{font-size:0.62rem;background:rgba(56,189,248,0.12);color:#38bdf8;border-radius:20px;padding:2px 8px;display:inline-block;width:fit-content;margin-bottom:2px}
+.book-btns{display:flex;gap:0.5rem;margin-top:0.3rem;flex-wrap:wrap}
+.rank-row{display:flex;align-items:flex-start;gap:0.6rem;padding:0.7rem 0.9rem;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);margin-bottom:0.4rem;font-size:0.82rem}
+.rank-row.gold-record{background:rgba(184,134,11,0.1);border:1px solid rgba(255,215,0,0.4)}
+.rank-pos{font-size:1.2rem;width:30px;text-align:center;padding-top:2px;flex-shrink:0}
+.rank-info{flex:1}.rank-name{font-weight:700;font-size:0.88rem}
+.rank-detail{font-size:0.7rem;color:#7ab8e8;margin-top:2px}
+.rank-time{font-size:1rem;font-weight:800;color:#38bdf8;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge-nr{font-size:0.58rem;background:linear-gradient(135deg,#b8860b,#ffd700);color:#1a0a00;font-weight:800;padding:2px 6px;border-radius:20px;display:inline-block;margin-left:4px}
+.cat-chip{background:rgba(56,189,248,0.12);color:#38bdf8;border-radius:20px;padding:1px 7px;font-size:0.65rem;font-weight:700;margin-right:4px;display:inline-block}
+.hof-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.8rem;background:rgba(184,134,11,0.08);border:1px solid rgba(255,215,0,0.25);border-radius:12px;margin-bottom:0.4rem}
+.hof-row-event{font-size:0.8rem;font-weight:700;color:#fff}
+.hof-row-comp{font-size:0.62rem;color:#a08020;margin-top:1px}
+.hof-row-time{font-size:1rem;font-weight:800;color:#ffd700;font-variant-numeric:tabular-nums}
+.stat-row{display:flex;gap:0.6rem;margin-bottom:0.8rem}
+.stat-box{flex:1;background:rgba(255,255,255,0.05);border-radius:12px;padding:0.7rem;text-align:center}
+.stat-num{font-size:1.25rem;font-weight:800;color:#38bdf8}.stat-lbl{font-size:0.64rem;color:#7ab8e8;margin-top:2px}
+.prog-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1rem;margin-bottom:0.6rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;touch-action:manipulation}
+.prog-card:active{transform:scale(0.98)}
+.ad-banner{width:100%;background:#0a1f38;border:1px solid rgba(56,189,248,0.15);border-radius:10px;padding:0.5rem 0.8rem;display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem}
+.ad-tag{font-size:0.58rem;color:#38bdf8;border:1px solid rgba(56,189,248,0.5);border-radius:4px;padding:1px 4px;white-space:nowrap}
+.ad-text{font-size:0.74rem;color:rgba(255,255,255,0.55);flex:1}
+.ad-logo{font-size:0.76rem;font-weight:700;color:#38bdf8;white-space:nowrap}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal-hidden{display:none!important}
+.modal-box{background:#0a1f38;border-radius:20px 20px 0 0;padding:1.5rem;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
 .auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem}
 .auth-box{background:#0d2a4a;border:1px solid rgba(56,189,248,0.25);border-radius:24px;padding:1.8rem 1.5rem;width:100%;max-width:400px}
-.modal-hidden{display:none!important}
-.grafico-container{height:200px;margin:1rem 0}
-.export-btn{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);color:#22c55e;padding:0.4rem 0.8rem;border-radius:8px;font-size:0.7rem;cursor:pointer}
-.coach-btn{background:none;border:none;color:rgba(255,255,255,0.2);font-size:0.62rem;cursor:pointer;padding:4px 8px}
+.auth-error{background:rgba(185,28,28,0.15);border:1px solid rgba(185,28,28,0.4);border-radius:10px;padding:0.6rem 0.8rem;font-size:0.78rem;color:#fca5a5;margin-bottom:0.7rem}
+.diploma-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:400;display:flex;align-items:flex-end;justify-content:center}
+.diploma-box{background:#0d2a4a;border-radius:20px 20px 0 0;padding:1.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.diploma-preview{width:100%;border-radius:12px;margin-bottom:0.8rem;display:block;border:1px solid rgba(56,189,248,0.2)}
+.res-row{display:flex;align-items:flex-start;gap:0.8rem;padding:0.75rem 0.9rem;border-radius:12px;margin-bottom:0.4rem}
+.res-row:nth-child(1){background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.2)}
+.res-row:nth-child(2){background:rgba(148,163,184,0.08);border:1px solid rgba(148,163,184,0.15)}
+.res-row:nth-child(3){background:rgba(180,83,9,0.08);border:1px solid rgba(180,83,9,0.15)}
+.res-row:nth-child(n+4){background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07)}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(56,189,248,0.3);border-top-color:#38bdf8;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.footer-bar{text-align:center;padding:1rem 0 0.5rem;font-size:0.65rem;color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.06);margin-top:1rem}
+.coach-btn{background:none;border:none;color:rgba(255,255,255,0.2);font-size:0.62rem;cursor:pointer;padding:4px 8px;display:inline-block}
+.coach-logout-btn{background:rgba(185,28,28,0.15);border:1px solid rgba(185,28,28,0.3);border-radius:8px;color:#fca5a5;font-size:0.7rem;cursor:pointer;padding:4px 10px;display:none}
+.proj-bar{height:6px;border-radius:3px;background:rgba(255,255,255,0.08);margin-top:4px;overflow:hidden}
+.proj-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#0ea5e9,#38bdf8)}
+.wk-btn{padding:0.6rem;border-radius:10px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.15s;width:100%}
+.wk-btn.on{border-color:#38bdf8;background:rgba(56,189,248,0.15);color:#38bdf8}
+.wk-btn.bestia{border-color:rgba(255,140,0,0.8);background:rgba(255,80,0,0.15);color:#ff8c00}
 </style>
 </head>
 <body>
-
 <nav class="bnav">
-  <button class="bnav-item active" onclick="showTab('timer')"><span class="bnav-icon">⏱️</span><span class="bnav-label">Cronómetro</span></button>
-  <button class="bnav-item" onclick="showTab('store')"><span class="bnav-icon">📚</span><span class="bnav-label">Tienda</span></button>
-  <button class="bnav-item" onclick="showTab('ranking')"><span class="bnav-icon">🏆</span><span class="bnav-label">Ranking</span></button>
-  <button class="bnav-item" onclick="showTab('workout')"><span class="bnav-icon">🐊</span><span class="bnav-label">Entrena</span></button>
-  <button class="bnav-item" onclick="showTab('profile')"><span class="bnav-icon">👤</span><span class="bnav-label">Perfil</span></button>
+  <button class="bnav-item active" onclick="showTab('timer')" id="nav-timer"><span class="bnav-icon">&#127937;</span><span class="bnav-label">Cronometro</span></button>
+  <button class="bnav-item" onclick="showTab('store')" id="nav-store"><span class="bnav-icon">&#128218;</span><span class="bnav-label">Tienda</span></button>
+  <button class="bnav-item" onclick="showTab('ranking')" id="nav-ranking"><span class="bnav-icon">&#127942;</span><span class="bnav-label">Ranking</span></button>
+  <button class="bnav-item" onclick="showTab('workout')" id="nav-workout"><span class="bnav-icon">&#129409;</span><span class="bnav-label">Entrena</span></button>
+  <button class="bnav-item" onclick="showTab('profile')" id="nav-profile"><span class="bnav-icon">&#128100;</span><span class="bnav-label">Sergio</span></button>
 </nav>
 
-<!-- CRONÓMETRO -->
+<!-- TIMER TAB -->
 <div id="tab-timer" class="screen active">
-  <div id="s-home" class="screen active">
+  <div id="s-home" class="screen active" style="min-height:unset">
     <div class="hdr">
       <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt="">
       <div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">INTERNATIONAL</div></div>
+      <div style="margin-left:auto"><span id="fb-status" style="font-size:0.68rem;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,0.07)">...</span></div>
     </div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div style="text-align:center;padding:1rem 0 1.5rem">
+        <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" style="width:90px;height:90px;border-radius:20px;object-fit:contain;background:#fff;padding:6px;margin-bottom:0.6rem" alt="">
+        <div style="font-size:1.6rem;font-weight:800">LAGUNA <span style="color:#38bdf8">SWIM</span></div>
+        <div style="font-size:0.7rem;color:#7ab8e8;letter-spacing:2px;margin-top:2px">OW &amp; SW INTERNATIONAL</div>
+        <div style="font-size:0.78rem;color:#e5c84a;margin-top:0.4rem;font-style:italic">"Fuertes y Valientes" - Josue 1:9</div>
+      </div>
+      <div class="card">
+        <div class="role-card" onclick="goTimer('s-role')">
+          <div style="font-size:2rem;width:45px;text-align:center">&#127919;</div>
+          <div><div style="font-weight:700">Iniciar sesion</div><div style="font-size:0.73rem;color:#7ab8e8">Entrenador o cronometrista</div></div>
+          <div style="margin-left:auto;color:#7ab8e8;font-size:1.2rem">&#8250;</div>
+        </div>
+      </div>
+      <div class="ad-banner"><div class="ad-tag">PUBLICIDAD</div><div class="ad-text">Tu negocio aqui? lagunaswim.net</div><div class="ad-logo">Tu Logo</div></div>
+    </div>
+  </div>
+  <div id="s-role" class="screen" style="min-height:unset">
+    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Como participas?</div></div></div>
+    <div class="role-card" onclick="goTimer('s-setup')"><div style="font-size:2rem;width:45px;text-align:center">&#127919;</div><div><div style="font-weight:700">Entrenador (Master)</div><div style="font-size:0.73rem;color:#7ab8e8">Crea y controla la carrera</div></div><div style="margin-left:auto;color:#7ab8e8;font-size:1.2rem">&#8250;</div></div>
+    <div class="role-card" onclick="goTimer('s-join')"><div style="font-size:2rem;width:45px;text-align:center">&#127937;</div><div><div style="font-weight:700">Cronometrista</div><div style="font-size:0.73rem;color:#7ab8e8">Padre o asistente</div></div><div style="margin-left:auto;color:#7ab8e8;font-size:1.2rem">&#8250;</div></div>
+    <div style="flex:1"></div>
+    <button class="btn btn-gray" onclick="goTimer('s-home')">Regresar</button>
+  </div>
+  <div id="s-setup" class="screen" style="min-height:unset">
+    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Nueva carrera</div></div></div>
+    <div style="flex:1;overflow-y:auto">
+      <div class="card">
+        <label>Longitud de alberca</label>
+        <select id="pool-length"><option value="25">Alberca 25m</option><option value="50">Alberca 50m</option></select>
+        <label>Prueba</label>
+        <select id="event-dist"><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option><option value="200">200m</option><option value="400">400m</option><option value="800">800m</option><option value="1500">1500m</option></select>
+        <label>Estilo</label>
+        <select id="event-style"><option value="Libre">Libre</option><option value="Dorso">Dorso</option><option value="Pecho">Pecho</option><option value="Mariposa">Mariposa</option><option value="Combinado">Combinado</option></select>
+        <label>Carriles activos (toca para activar/desactivar)</label>
+        <div id="lane-selector" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0.4rem"></div>
+        <div id="lane-selector-hint" style="font-size:0.68rem;color:#7ab8e8;margin-bottom:0.5rem"></div>
+        <label>Nombre de competencia</label>
+        <input id="comp-name" placeholder="Torneo Regional 2026">
+      </div>
+      <div class="card" id="names-card"></div>
+      <button class="btn btn-sky" onclick="createRace()">Crear carrera y generar QR</button>
+      <button class="btn btn-gray" onclick="goTimer('s-role')">Regresar</button>
+    </div>
+  </div>
+  <div id="s-lobby" class="screen" style="min-height:unset">
+    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Sala de espera</div></div></div>
+    <div style="flex:1;overflow-y:auto">
+      <div class="card" style="text-align:center">
+        <div style="font-size:0.73rem;color:#7ab8e8;margin-bottom:0.2rem">Codigo de carrera</div>
+        <div class="code-display" id="lobby-code">----</div>
+        <div id="lobby-event-info" style="font-size:0.78rem;color:#38bdf8;margin-bottom:0.3rem"></div>
+        <div id="qr-container" style="display:flex;justify-content:center;padding:0.5rem 0"></div>
+        <button class="btn btn-gray btn-sm" style="display:block;margin:0.4rem auto 0" onclick="dlQR()">Descargar QR</button>
+      </div>
+      <div class="card" id="lobby-list"></div>
+      <div style="text-align:center;font-size:0.78rem;color:#7ab8e8;margin-bottom:0.6rem">Esperando cronometristas...</div>
+      <button class="btn btn-sky" onclick="startRace()">Iniciar carrera</button>
+      <button class="btn btn-gray" onclick="cancelRace()">Cancelar</button>
+    </div>
+  </div>
+  <div id="s-race" class="screen" style="min-height:unset">
+    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div id="race-lbl" class="logo-sub">En carrera</div></div></div>
+    <div class="timer-big" id="master-clock">00:00.00</div>
+    <div style="font-size:0.72rem;text-align:center;color:#7ab8e8;margin-bottom:0.3rem" id="race-event-lbl"></div>
+    <div style="flex:1;overflow-y:auto" id="race-lanes"></div>
+    <button class="btn btn-red" onclick="stopAll()" style="margin-top:0.5rem">Detener todos</button>
+  </div>
+  <div id="s-results" class="screen" style="min-height:unset">
+    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Resultados finales</div></div></div>
+    <div style="flex:1;overflow-y:auto">
+      <button class="btn btn-green" onclick="shareImg()" style="margin-bottom:0.6rem">Compartir imagen</button>
+      <canvas id="pool-canvas" style="width:100%;border-radius:12px;margin-bottom:0.8rem"></canvas>
+      <div id="results-list"></div>
+      <button class="btn btn-sky" onclick="newRace()">Nueva carrera</button>
+    </div>
+  </div>
+  <div id="s-join" class="screen" style="min-height:unset">
+    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Cronometrista</div></div></div>
     <div class="card">
-      <div class="role-card" onclick="goTimer('s-role')">
-        <div style="font-size:2rem">🎯</div>
-        <div><div style="font-weight:700">Iniciar sesión</div><div style="font-size:0.73rem">Entrenador o cronometrista</div></div>
+      <label>Codigo de carrera</label>
+      <input id="join-code" type="text" maxlength="5" placeholder="A3B7K" style="text-transform:uppercase;font-size:1.5rem;text-align:center;letter-spacing:8px;font-weight:800">
+      <label>Tu nombre</label>
+      <input id="join-name" placeholder="Tu nombre">
+    </div>
+    <button class="btn btn-sky" onclick="joinRace()">Unirse a la carrera</button>
+    <button class="btn btn-gray" onclick="goTimer('s-role')">Regresar</button>
+  </div>
+  <div id="s-tk" class="screen" style="min-height:unset">
+    <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div id="tk-conn" class="logo-sub" style="color:#22c55e">Conectado</div></div></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:0.5rem 0">
+      <div style="text-align:center">
+        <div style="font-size:0.8rem;color:#7ab8e8">Tu carril</div>
+        <div style="font-size:3rem;font-weight:800;color:#38bdf8;line-height:1" id="tk-lane-num">-</div>
+        <div style="font-size:0.95rem;font-weight:700;margin-top:0.2rem" id="tk-swimmer">-</div>
+      </div>
+      <div class="timer-big" id="tk-clock">00:00.00</div>
+      <div style="width:100%" id="tk-action"><div style="text-align:center;color:#7ab8e8;font-size:0.88rem;padding:2rem 0">Esperando que el entrenador inicie...</div></div>
+      <div id="tk-parciales" style="width:100%;display:none">
+        <div style="font-size:0.75rem;color:#7ab8e8;margin-bottom:0.3rem;text-align:center">Parciales</div>
+        <div class="parcial-list" id="tk-parcial-list"></div>
+      </div>
+      <div id="tk-done" style="display:none;text-align:center">
+        <div style="font-size:0.85rem;color:#7ab8e8">Tiempo final</div>
+        <div style="font-size:2.8rem;font-weight:800;color:#38bdf8;font-variant-numeric:tabular-nums" id="tk-final">--:--:--</div>
+        <div style="font-size:1.5rem;margin-top:0.3rem" id="tk-pos-medal"></div>
       </div>
     </div>
   </div>
-  <div id="s-role" class="screen">
-    <div class="role-card" onclick="goTimer('s-setup')"><div style="font-size:2rem">🎯</div><div><div style="font-weight:700">Entrenador (Master)</div></div></div>
-    <div class="role-card" onclick="goTimer('s-join')"><div style="font-size:2rem">⏱️</div><div><div style="font-weight:700">Cronometrista</div></div></div>
-    <button class="btn btn-gray" onclick="goTimer('s-home')">Regresar</button>
-  </div>
-  <div id="s-setup" class="screen">
-    <select id="pool-length"><option value="25">Alberca 25m</option><option value="50">Alberca 50m</option></select>
-    <select id="event-dist"><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option></select>
-    <select id="event-style"><option value="Libre">Libre</option><option value="Dorso">Dorso</option></select>
-    <input id="comp-name" placeholder="Nombre competencia">
-    <button class="btn btn-sky" onclick="createRace()">Crear carrera</button>
-    <button class="btn btn-gray" onclick="goTimer('s-role')">Regresar</button>
-  </div>
-  <div id="s-lobby" class="screen">
-    <div class="code-display" id="lobby-code">----</div>
-    <div id="qr-container"></div>
-    <button class="btn btn-sky" onclick="startRace()">Iniciar carrera</button>
-    <button class="btn btn-gray" onclick="cancelRace()">Cancelar</button>
-  </div>
-  <div id="s-race" class="screen">
-    <div class="timer-big" id="master-clock">00:00.00</div>
-    <div id="race-lanes"></div>
-    <button class="btn btn-red" onclick="stopAll()">Detener todos</button>
-  </div>
-  <div id="s-join" class="screen">
-    <input id="join-code" placeholder="Código">
-    <input id="join-name" placeholder="Tu nombre">
-    <button class="btn btn-sky" onclick="joinRace()">Unirse</button>
-    <button class="btn btn-gray" onclick="goTimer('s-role')">Regresar</button>
-  </div>
-  <div id="s-tk" class="screen">
-    <div class="timer-big" id="tk-clock">00:00.00</div>
-    <div id="tk-action"></div>
-  </div>
 </div>
-
-<!-- TIENDA -->
+<!-- STORE TAB -->
 <div id="tab-store" class="screen">
-  <div class="card"><div style="font-weight:800">Padres Campeones</div><div>$99 MXN</div><button class="btn btn-sky" onclick="buyBookDemo()">Comprar</button></div>
-  <div class="card"><div style="font-weight:800">Natación Masters</div><div>$199 MXN</div><button class="btn btn-sky" onclick="buyBookDemo()">Comprar</button></div>
-  <div class="card" style="background:linear-gradient(135deg,#0ea5e9,#1e3a8a);cursor:pointer" onclick="window.open('https://skyscanner.pxf.io/c/5594241/1022358/13416','_blank')">
-    <div>✈️ Buscar vuelos baratos</div>
+  <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Tienda digital</div></div></div>
+  <div style="flex:1;overflow-y:auto">
+    <div style="font-size:0.78rem;color:#7ab8e8;margin-bottom:0.8rem">Libros de Sergio Villarreal - descarga inmediata</div>
+    <div class="book-card"><div class="book-cover">&#128216;</div><div class="book-info"><div class="book-lang">&#127474;&#127485; Espanol</div><div class="book-title">Padres Campeones</div><div class="book-desc">Educa a tus hijos deportistas con amor, sabiduria y diversion.</div><div class="book-price">$99 MXN</div><div class="book-btns"><button class="btn btn-sky btn-sm" onclick="buyBook(1)">Comprar PDF</button><button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com.mx/dp/B0CNYHD2MX')">Fisico</button></div></div></div>
+    <div class="book-card"><div class="book-cover">&#128217;</div><div class="book-info"><div class="book-lang">&#127482;&#127480; English</div><div class="book-title">Champion Parents</div><div class="book-desc">Raise your athletic children with love, wisdom and fun.</div><div class="book-price">$99 MXN</div><div class="book-btns"><button class="btn btn-sky btn-sm" onclick="buyBook(2)">Buy PDF</button><button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com.mx/dp/B0CQJC77JS')">Physical</button></div></div></div>
+    <div class="book-card"><div class="book-cover">&#127944;</div><div class="book-info"><div class="book-lang">&#127474;&#127485; Espanol</div><div class="book-title">Natacion Masters</div><div class="book-desc">Guia completa para el exito internacional en el agua.</div><div class="book-price">$199 MXN</div><div class="book-btns"><button class="btn btn-sky btn-sm" onclick="buyBook(3)">Comprar PDF</button><button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com/dp/B0G3PQ53KT')">Fisico</button></div></div></div>
+    <div class="book-card" style="border-color:rgba(56,189,248,0.35)"><div class="book-cover" style="background:#0c3460;position:relative">&#127941;<div style="position:absolute;top:-6px;right:-6px;background:#0ea5e9;font-size:0.52rem;font-weight:800;padding:2px 6px;border-radius:20px">PRO</div></div><div class="book-info"><div class="book-lang">&#127474;&#127485; Espanol</div><div class="book-title">Laguna Swim Pro - Manual Certificacion</div><div class="book-desc">30+ anos de experiencia. El quinto estilo y certificacion internacional.</div><div class="book-price" style="color:#38bdf8">$399 MXN</div><div class="book-btns"><button class="btn btn-sky btn-sm" onclick="buyBook(4)">Comprar PDF</button><button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com/dp/B0FS2D8XZM')">Fisico</button></div></div></div>
+    <div class="footer-bar">2026 Laguna Swim International - Sergio Elias Villarreal Limas<br><button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button><button class="coach-logout-btn" id="lo-store" onclick="coachLogout()">Cerrar sesion</button></div>
   </div>
 </div>
 
-<!-- RANKING -->
+<!-- RANKING TAB -->
 <div id="tab-ranking" class="screen">
-  <select id="rank-dist" onchange="loadRanking()"><option value="50">50m</option><option value="100">100m</option></select>
-  <select id="rank-style" onchange="loadRanking()"><option value="Libre">Libre</option><option value="Pecho">Pecho</option></select>
-  <button class="export-btn" onclick="exportRankingCSV()">Exportar CSV</button>
-  <div class="grafico-container"><canvas id="rankingChart"></canvas></div>
-  <div id="ranking-list"></div>
-  <div id="coach-add-section" style="display:none">
-    <input id="r-swimmer" placeholder="Nombre">
-    <input id="r-time" placeholder="Tiempo (1:05.43)">
-    <button class="btn btn-sky" onclick="addRankTime()">Agregar</button>
+  <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Ranking OW &amp; SW</div></div></div>
+  <div style="flex:1;overflow-y:auto">
+
+    <!-- MIGUEL DE LARA - VERSION COMPACTA -->
+    <div style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:rgba(184,134,11,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:12px;margin-bottom:0.8rem">
+      <div style="font-size:1.3rem">&#128081;</div>
+      <div style="flex:1">
+        <div style="font-size:0.82rem;font-weight:800;color:#ffd700">Miguel De Lara <span style="font-size:0.58rem;background:linear-gradient(135deg,#b8860b,#ffd700);color:#1a0a00;font-weight:800;padding:2px 6px;border-radius:20px;margin-left:4px">NR</span></div>
+        <div style="font-size:0.62rem;color:#a08020">Recordista Nacional Mexico · Marca Minima Olimpica Paris 2024</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:0.72rem;font-weight:800;color:#ffd700;font-variant-numeric:tabular-nums">100m Pecho 1:00.14</div>
+        <div style="font-size:0.72rem;font-weight:800;color:#ffd700;font-variant-numeric:tabular-nums">200m Pecho 2:09.60</div>
+      </div>
+    </div>
+
+    <!-- SELECTOR OW / SW -->
+    <div style="display:flex;gap:8px;margin-bottom:0.9rem">
+      <button id="sw-tab-btn" onclick="switchRankMode('sw',this)" style="flex:1;padding:0.65rem;border-radius:12px;border:2px solid #38bdf8;background:rgba(56,189,248,0.15);color:#38bdf8;font-size:0.88rem;font-weight:800;cursor:pointer">&#127944; Piscina SW</button>
+      <button id="ow-tab-btn" onclick="switchRankMode('ow',this)" style="flex:1;padding:0.65rem;border-radius:12px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);font-size:0.88rem;font-weight:800;cursor:pointer">&#127754; Aguas Abiertas OW</button>
+    </div>
+
+    <!-- PISCINA SW -->
+    <div id="rank-sw-section">
+      <div style="margin-bottom:0.5rem">
+        <div style="font-size:0.7rem;color:#7ab8e8;margin-bottom:0.5rem">Selecciona prueba para ver el ranking</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem">
+          <select id="rank-dist" onchange="filterRanking()"><option value="">Distancia</option><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option><option value="200">200m</option><option value="400">400m</option><option value="800">800m</option><option value="1500">1500m</option></select>
+          <select id="rank-style" onchange="filterRanking()"><option value="">Estilo</option><option value="Libre">Libre</option><option value="Dorso">Dorso</option><option value="Pecho">Pecho</option><option value="Mariposa">Mariposa</option><option value="Combinado">Combinado</option></select>
+        </div>
+        <div id="rank-optional-filters" style="display:none;grid-template-columns:1fr 1fr;gap:0.5rem">
+          <select id="rank-cat" onchange="filterRanking()"><option value="">Todas las edades</option><option value="6-">6 y menores</option><option value="7-8">7-8 anos</option><option value="9-10">9-10 anos</option><option value="11-12">11-12 anos</option><option value="13-14">13-14 anos</option><option value="15-18">15-18 anos</option><option value="PM18-24">Pre-Master 18-24</option><option value="M25-29">Master 25-29</option><option value="M30-34">Master 30-34</option><option value="M35-39">Master 35-39</option><option value="M40-44">Master 40-44</option><option value="M45-49">Master 45-49</option><option value="M50-54">Master 50-54</option><option value="M55-59">Master 55-59</option><option value="M60-64">Master 60-64</option><option value="M65-69">Master 65-69</option><option value="M70+">Master 70+</option></select>
+          <select id="rank-gender" onchange="filterRanking()"><option value="">Ambos generos</option><option value="M">Masculino</option><option value="F">Femenino</option></select>
+        </div>
+      </div>
+      <div id="ranking-list"><div style="text-align:center;padding:2rem"><div style="font-size:2rem;margin-bottom:0.5rem">&#127944;</div><div style="font-size:0.88rem;font-weight:700;color:#38bdf8;margin-bottom:0.3rem">Selecciona distancia y estilo</div></div></div>
+      <div id="coach-add-section" style="display:none">
+        <div class="card" style="border-color:rgba(56,189,248,0.3)">
+          <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.6rem;color:#38bdf8">Agregar tiempo</div>
+          <label>Nadador</label><input id="r-swimmer" placeholder="Nombre completo">
+          <label>Genero</label><select id="r-gender"><option value="M">Masculino</option><option value="F">Femenino</option></select>
+          <label>Categoria</label><select id="r-cat"><option value="6-">6 y menores</option><option value="7-8">7-8 anos</option><option value="9-10">9-10 anos</option><option value="11-12">11-12 anos</option><option value="13-14">13-14 anos</option><option value="15-18">15-18 anos</option><option value="PM18-24">Pre-Master 18-24</option><option value="M25-29">Master 25-29</option><option value="M30-34">Master 30-34</option><option value="M35-39">Master 35-39</option><option value="M40-44">Master 40-44</option><option value="M45-49">Master 45-49</option><option value="M50-54">Master 50-54</option><option value="M55-59">Master 55-59</option><option value="M60-64">Master 60-64</option><option value="M65-69">Master 65-69</option><option value="M70+">Master 70+</option></select>
+          <label>Distancia</label><select id="r-dist"><option value="25">25m</option><option value="50">50m</option><option value="100">100m</option><option value="200">200m</option><option value="400">400m</option><option value="800">800m</option><option value="1500">1500m</option></select>
+          <label>Estilo</label><select id="r-style"><option value="Libre">Libre</option><option value="Dorso">Dorso</option><option value="Pecho">Pecho</option><option value="Mariposa">Mariposa</option><option value="Combinado">Combinado</option></select>
+          <label>Tiempo (mm:ss.cc)</label><input id="r-time" placeholder="01:05.43">
+          <label>Competencia</label><input id="r-comp" placeholder="Torneo Regional 2026">
+          <label>Ano</label><input id="r-year" placeholder="2026" type="number">
+          <button class="btn btn-sky" onclick="addRankTime()">Agregar al ranking</button>
+        </div>
+        <div class="card" style="border-color:rgba(250,204,21,0.3)">
+          <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;color:#ffd700">Importar varios</div>
+          <div style="font-size:0.72rem;color:#7ab8e8;margin-bottom:0.6rem">Nombre, M/F, Cat, Dist, Estilo, Tiempo, Comp, Ano</div>
+          <textarea id="bulk-input" style="height:100px;resize:vertical" placeholder="Ana Garcia, F, 13-14, 100, Libre, 1:12.99, Torneo, 2024"></textarea>
+          <button class="btn btn-sky" onclick="importBulk()" style="margin-top:0.4rem">Importar todos</button>
+          <div id="bulk-result" style="font-size:0.75rem;margin-top:0.4rem;display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGUAS ABIERTAS OW -->
+    <div id="rank-ow-section" style="display:none">
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">
+        <span style="font-size:1rem">&#127754;</span>
+        <div style="font-size:0.88rem;font-weight:700;color:#38bdf8">Historial Internacional</div>
+        <span style="font-size:0.65rem;color:#7ab8e8;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);border-radius:20px;padding:1px 8px">Laguna Swim OW &amp; SW</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0.8rem" id="oa-tabs">
+        <button class="btn btn-sm" style="border-radius:20px;background:rgba(56,189,248,0.15);border:1px solid #38bdf8;color:#38bdf8" onclick="oaTab('cr25',this)">&#127464;&#127479; Costa Rica 2025</button>
+        <button class="btn btn-sm" style="border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5)" onclick="oaTab('orta25',this)">&#127470;&#127481; Italia 2025</button>
+        <button class="btn btn-sm" style="border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5)" onclick="oaTab('tt24',this)">&#127481;&#127481; Trinidad 2024</button>
+        <button class="btn btn-sm" style="border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5)" onclick="oaTab('col22',this)">&#127464;&#127476; Colombia 2022</button>
+      </div>
+      <div id="oa-content"></div>
+    </div>
+
+    <div class="footer-bar">2026 Laguna Swim International<br><button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button><button class="coach-logout-btn" id="lo-ranking" onclick="coachLogout()">Cerrar sesion</button></div>
   </div>
 </div>
-
-<!-- ENTRENAMIENTOS -->
+<!-- WORKOUT TAB -->
 <div id="tab-workout" class="screen">
-  <div id="wk-login-wall"><button class="btn btn-sky" onclick="showCoachLogin()">Iniciar sesión</button></div>
-  <div id="wk-generator" style="display:none">
-    <input id="wk-nombre" placeholder="Tu nombre">
-    <select id="wk-dist"><option value="1500">1500m</option><option value="2000">2000m</option></select>
-    <select id="wk-level"><option value="principiante">Principiante</option><option value="intermedio">Intermedio</option></select>
-    <button class="btn btn-sky" onclick="generarEntreno()">Generar entrenamiento</button>
-    <div id="wk-result" style="margin-top:1rem;display:none"></div>
+  <div class="hdr">
+    <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt="">
+    <div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Generador de entrenamientos</div></div>
+  </div>
+  <div style="flex:1;overflow-y:auto">
+    <div id="wk-login-wall" style="display:none;text-align:center;padding:2.5rem 1rem">
+      <div style="font-size:3rem;margin-bottom:0.8rem">&#129409;</div>
+      <div style="font-size:1.1rem;font-weight:800;color:#38bdf8;margin-bottom:0.4rem">Entrenamientos Laguna Swim</div>
+      <div style="font-size:0.8rem;color:#7ab8e8;margin-bottom:1.2rem;line-height:1.5">Metodologia de elite - 30 anos de experiencia</div>
+      <button class="btn btn-sky" onclick="showCoachLogin()" style="max-width:280px;margin:0 auto">Iniciar sesion</button>
+    </div>
+    <div id="wk-subs-wall" style="display:none;text-align:center;padding:2rem 1rem">
+      <div style="font-size:2.5rem;margin-bottom:0.6rem">&#127944;</div>
+      <div style="font-size:1rem;font-weight:800;color:#ffd700;margin-bottom:0.3rem">Plan Semanal Laguna Swim</div>
+      <div style="font-size:0.78rem;color:#7ab8e8;margin-bottom:1rem;line-height:1.6">6 entrenamientos - 7 dias de acceso<br>IA con metodologia de elite<br>PDF descargable con tu nombre</div>
+      <div style="background:rgba(255,215,0,0.08);border:2px solid rgba(255,215,0,0.3);border-radius:16px;padding:1rem;margin-bottom:1rem">
+        <div style="font-size:2rem;font-weight:800;color:#ffd700">$100 MXN</div>
+        <div style="font-size:0.72rem;color:#a08020">6 entrenamientos - valido 7 dias</div>
+      </div>
+      <div style="font-size:0.72rem;color:#7ab8e8;margin-bottom:0.8rem" id="wk-user-info"></div>
+      <button class="btn btn-gold" onclick="iniciarPago()" style="font-size:1rem">Suscribirme - $100 MXN</button>
+      <button class="btn btn-gray" onclick="showCoachLogin()" style="font-size:0.85rem">Cambiar cuenta</button>
+    </div>
+    <div id="wk-acceso" style="display:none">
+      <div style="background:rgba(21,128,61,0.1);border:1px solid rgba(21,128,61,0.25);border-radius:10px;padding:0.6rem 0.9rem;margin-bottom:0.8rem;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:0.75rem;color:#22c55e" id="wk-badge">-</div>
+        <button onclick="showCoachLogin()" style="background:none;border:none;color:#7ab8e8;font-size:0.68rem;cursor:pointer">Mi cuenta</button>
+      </div>
+      <div id="wk-selector" style="display:block">
+        <div style="font-size:0.78rem;color:#7ab8e8;text-align:center;margin-bottom:0.8rem">Elige que quieres generar:</div>
+        <div onclick="elegirModo('diario')" style="background:rgba(56,189,248,0.06);border:2px solid rgba(56,189,248,0.3);border-radius:16px;padding:1.2rem;margin-bottom:0.7rem;cursor:pointer;display:flex;align-items:center;gap:1rem;touch-action:manipulation">
+          <div style="font-size:2.5rem;flex-shrink:0">&#127939;</div>
+          <div><div style="font-size:1rem;font-weight:800;color:#38bdf8">Sesion del dia</div><div style="font-size:0.75rem;color:#7ab8e8;margin-top:3px;line-height:1.4">Un entrenamiento personalizado para hoy. Eliges metros, nivel y estilos. La IA genera la sesion completa.</div></div>
+          <div style="margin-left:auto;color:#38bdf8;font-size:1.4rem;flex-shrink:0">&#8250;</div>
+        </div>
+        <div onclick="elegirModo('semanal')" style="background:rgba(255,215,0,0.06);border:2px solid rgba(255,215,0,0.3);border-radius:16px;padding:1.2rem;margin-bottom:0.7rem;cursor:pointer;display:flex;align-items:center;gap:1rem;touch-action:manipulation">
+          <div style="font-size:2.5rem;flex-shrink:0">&#128197;</div>
+          <div><div style="font-size:1rem;font-weight:800;color:#ffd700">Plan semanal completo</div><div style="font-size:0.75rem;color:#7ab8e8;margin-top:3px;line-height:1.4">Plan de Lunes a Sabado para un nadador especifico. Tipo de semana, prueba principal, volumen diario.</div></div>
+          <div style="margin-left:auto;color:#ffd700;font-size:1.4rem;flex-shrink:0">&#8250;</div>
+        </div>
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.25);text-align:center;margin-top:0.3rem">Cada generacion usa 1 de tus entrenamientos disponibles</div>
+      </div>
+      <div id="wk-diario" style="display:none">
+        <button onclick="volverSelector()" style="background:none;border:none;color:#7ab8e8;font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.3rem">&#8592; Regresar</button>
+        <div id="wk-config">
+          <div class="card"><div style="font-size:0.82rem;font-weight:700;margin-bottom:0.5rem;color:#38bdf8">Tu nombre</div><input id="wk-nombre" placeholder="Nombre del nadador" style="margin-bottom:0"></div>
+          <div class="card">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">Calentamiento fuera del agua</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">
+              <button class="wk-btn on" id="wkd-basico" onclick="selWk(this,'dryland','basico')" style="padding:0.7rem 0.3rem">Basico<br><span style="font-size:0.6rem;font-weight:400">5 min</span></button>
+              <button class="wk-btn" id="wkd-intermedio" onclick="selWk(this,'dryland','intermedio')" style="padding:0.7rem 0.3rem">Intermedio<br><span style="font-size:0.6rem;font-weight:400">10 min</span></button>
+              <button class="wk-btn" id="wkd-avanzado" onclick="selWk(this,'dryland','avanzado')" style="padding:0.7rem 0.3rem">Avanzado<br><span style="font-size:0.6rem;font-weight:400">15 min</span></button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">Metros en agua</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem">
+              <button class="wk-btn" id="wkm-1000" onclick="selWk(this,'metros','1000')" style="padding:0.6rem 0.3rem;font-size:0.8rem">1,000m</button>
+              <button class="wk-btn" id="wkm-1500" onclick="selWk(this,'metros','1500')" style="padding:0.6rem 0.3rem;font-size:0.8rem">1,500m</button>
+              <button class="wk-btn on" id="wkm-2000" onclick="selWk(this,'metros','2000')" style="padding:0.6rem 0.3rem;font-size:0.8rem">2,000m</button>
+              <button class="wk-btn" id="wkm-2500" onclick="selWk(this,'metros','2500')" style="padding:0.6rem 0.3rem;font-size:0.8rem">2,500m</button>
+              <button class="wk-btn" id="wkm-3000" onclick="selWk(this,'metros','3000')" style="padding:0.6rem 0.3rem;font-size:0.8rem">3,000m</button>
+              <button class="wk-btn" id="wkm-4000" onclick="selWk(this,'metros','4000')" style="padding:0.6rem 0.3rem;font-size:0.8rem">4,000m</button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">Estilos (elige varios)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem">
+              <button class="wk-btn on" id="wks-Libre" onclick="togEstilo('Libre')" style="padding:0.6rem">Libre</button>
+              <button class="wk-btn" id="wks-Dorso" onclick="togEstilo('Dorso')" style="padding:0.6rem">Dorso</button>
+              <button class="wk-btn" id="wks-Pecho" onclick="togEstilo('Pecho')" style="padding:0.6rem">Pecho</button>
+              <button class="wk-btn" id="wks-Mariposa" onclick="togEstilo('Mariposa')" style="padding:0.6rem">Mariposa</button>
+              <button class="wk-btn" id="wks-Combinado" onclick="togEstilo('Combinado')" style="padding:0.6rem;grid-column:span 2">Combinado (todos)</button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">Nivel de intensidad</div>
+            <div style="display:flex;flex-direction:column;gap:0.4rem">
+              <button class="wk-btn" id="wkn-relajacion" onclick="selWk(this,'nivel','relajacion')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#129368;</span><div><div>Nivel 1 - Relajacion</div><div style="font-size:0.68rem;font-weight:400;color:#7ab8e8">FC menor de 140 - Tecnica suave</div></div></button>
+              <button class="wk-btn" id="wkn-mantenimiento" onclick="selWk(this,'nivel','mantenimiento')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#127939;</span><div><div>Nivel 2 - Mantenimiento</div><div style="font-size:0.68rem;font-weight:400;color:#7ab8e8">FC 140-150 - Aerobico base</div></div></button>
+              <button class="wk-btn on" id="wkn-condicion" onclick="selWk(this,'nivel','condicion')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#128170;</span><div><div>Nivel 3 - Condicion</div><div style="font-size:0.68rem;font-weight:400">FC 150-160 - Umbral aerobico</div></div></button>
+              <button class="wk-btn" id="wkn-entrenamiento" onclick="selWk(this,'nivel','entrenamiento')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#128293;</span><div><div>Nivel 4 - Entrenamiento</div><div style="font-size:0.68rem;font-weight:400;color:#7ab8e8">FC 160-170 - FAST</div></div></button>
+              <button class="wk-btn bestia" id="wkn-bestia" onclick="selWk(this,'nivel','bestia')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#129409;</span><div><div>Nivel 5 - Modo Bestia</div><div style="font-size:0.68rem;font-weight:400;color:#cc6600">FC mayor de 170 - Elite internacional</div></div></button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.5rem;color:#38bdf8">Enfoque tecnico</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.8rem">
+              <button class="wk-btn on" id="wke-tecnica" onclick="selWk(this,'enfoque','tecnica')" style="padding:0.6rem;font-size:0.78rem">Tecnica</button>
+              <button class="wk-btn" id="wke-velocidad" onclick="selWk(this,'enfoque','velocidad')" style="padding:0.6rem;font-size:0.78rem">Velocidad</button>
+              <button class="wk-btn" id="wke-resistencia" onclick="selWk(this,'enfoque','resistencia')" style="padding:0.6rem;font-size:0.78rem">Resistencia</button>
+              <button class="wk-btn" id="wke-control" onclick="selWk(this,'enfoque','control')" style="padding:0.6rem;font-size:0.78rem">Control resp.</button>
+            </div>
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.5rem;color:#38bdf8">Alberca</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+              <button class="wk-btn on" id="wka-25" onclick="selWk(this,'alberca','25')" style="padding:0.6rem;font-size:0.82rem">25 metros</button>
+              <button class="wk-btn" id="wka-50" onclick="selWk(this,'alberca','50')" style="padding:0.6rem;font-size:0.82rem">50 metros</button>
+            </div>
+          </div>
+          <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:0.6rem;margin-bottom:0.5rem;font-size:0.7rem;color:#ffd700;text-align:center">Version de prueba gratuita - Proximamente con plan de suscripcion</div>
+          <button class="btn btn-sky" onclick="generar()" style="font-size:1rem;padding:1rem">&#129409; Generar sesion del dia</button>
+        </div>
+        <div id="wk-loading" style="display:none;text-align:center;padding:3rem 1rem">
+          <div style="font-size:3rem;margin-bottom:1rem;animation:spin 1s linear infinite;display:inline-block">&#127754;</div>
+          <div style="font-size:1rem;font-weight:700;color:#38bdf8;margin-bottom:0.4rem">Generando tu entrenamiento...</div>
+          <div style="font-size:0.78rem;color:#7ab8e8" id="wk-loading-msg">Aplicando 30 anos de experiencia...</div>
+        </div>
+        <div id="wk-result" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
+            <div style="font-size:0.88rem;font-weight:700;color:#38bdf8" id="wk-title">Tu entrenamiento</div>
+            <button onclick="resetWk()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:5px 10px;font-size:0.72rem;cursor:pointer">Nuevo</button>
+          </div>
+          <div id="wk-content" style="font-size:0.85rem;line-height:1.7;color:rgba(255,255,255,0.9)"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:1rem">
+            <button class="btn btn-green" onclick="pdfWk()" style="margin-bottom:0;font-size:0.82rem">PDF</button>
+            <button class="btn btn-sky" onclick="shareWk()" style="margin-bottom:0;font-size:0.82rem">Compartir</button>
+          </div>
+          <button class="btn btn-gray" onclick="resetWk()" style="margin-top:0.5rem">Generar otro</button>
+        </div>
+      </div>
+      <div id="wk-semanal" style="display:none">
+        <button onclick="volverSelector()" style="background:none;border:none;color:#7ab8e8;font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.3rem">&#8592; Regresar</button>
+        <div id="wk-plan-config">
+          <div class="card">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#ffd700">Perfil del nadador</div>
+            <label>Nombre</label><input id="ps-nombre" placeholder="Nombre completo" style="margin-bottom:0.4rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem">
+              <div><label>Edad</label><input id="ps-edad" placeholder="45" type="number" style="margin-bottom:0"></div>
+              <div><label>Nivel</label>
+                <select id="ps-nivel" style="margin-bottom:0">
+                  <option value="Master competitivo">Master competitivo</option>
+                  <option value="Master recreativo">Master recreativo</option>
+                  <option value="Juvenil competitivo">Juvenil competitivo</option>
+                  <option value="Adulto principiante">Adulto principiante</option>
+                  <option value="Elite internacional">Elite internacional</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#ffd700">Prueba y objetivo</div>
+            <label>Prueba principal</label>
+            <select id="ps-prueba-principal" style="margin-bottom:0.4rem">
+              <option value="100 Pecho">100m Pecho</option><option value="200 Pecho">200m Pecho</option>
+              <option value="100 Libre">100m Libre</option><option value="200 Libre">200m Libre</option>
+              <option value="400 Libre">400m Libre</option><option value="100 Mariposa">100m Mariposa</option>
+              <option value="200 Mariposa">200m Mariposa</option><option value="100 Dorso">100m Dorso</option>
+              <option value="200 Dorso">200m Dorso</option><option value="200 Combinado">200m Combinado</option>
+              <option value="400 Combinado">400m Combinado</option>
+            </select>
+            <label>Objetivo de temporada</label>
+            <input id="ps-objetivo" placeholder="Ej: Panamericano Master 2025" style="margin-bottom:0">
+          </div>
+          <div class="card">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#ffd700">Parametros de la semana</div>
+            <label>Tipo de semana</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.8rem">
+              <button class="wk-btn on" id="pst-carga" onclick="selPsTipo(this,'carga')" style="padding:0.65rem;font-size:0.8rem">Carga</button>
+              <button class="wk-btn" id="pst-afinacion" onclick="selPsTipo(this,'afinacion')" style="padding:0.65rem;font-size:0.8rem">Afinacion</button>
+              <button class="wk-btn" id="pst-competencia" onclick="selPsTipo(this,'competencia')" style="padding:0.65rem;font-size:0.8rem">Competencia</button>
+              <button class="wk-btn" id="pst-recuperacion" onclick="selPsTipo(this,'recuperacion')" style="padding:0.65rem;font-size:0.8rem">Recuperacion</button>
+            </div>
+            <label>Metros por sesion</label>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.3rem;margin-bottom:0.8rem">
+              <button class="wk-btn" id="psv-2000" onclick="selPsVol(this,'2000')" style="padding:0.5rem;font-size:0.72rem">2,000m</button>
+              <button class="wk-btn on" id="psv-2500" onclick="selPsVol(this,'2500')" style="padding:0.5rem;font-size:0.72rem">2,500m</button>
+              <button class="wk-btn" id="psv-3000" onclick="selPsVol(this,'3000')" style="padding:0.5rem;font-size:0.72rem">3,000m</button>
+              <button class="wk-btn" id="psv-3200" onclick="selPsVol(this,'3200')" style="padding:0.5rem;font-size:0.72rem">3,200m</button>
+            </div>
+            <label>Dias de entrenamiento</label>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:0.3rem;margin-bottom:0.4rem">
+              <button class="wk-btn on" id="psd-Lun" onclick="togPsDia(this,'Lun')" style="padding:0.4rem;font-size:0.7rem">Lun</button>
+              <button class="wk-btn on" id="psd-Mar" onclick="togPsDia(this,'Mar')" style="padding:0.4rem;font-size:0.7rem">Mar</button>
+              <button class="wk-btn on" id="psd-Mie" onclick="togPsDia(this,'Mie')" style="padding:0.4rem;font-size:0.7rem">Mie</button>
+              <button class="wk-btn on" id="psd-Jue" onclick="togPsDia(this,'Jue')" style="padding:0.4rem;font-size:0.7rem">Jue</button>
+              <button class="wk-btn on" id="psd-Vie" onclick="togPsDia(this,'Vie')" style="padding:0.4rem;font-size:0.7rem">Vie</button>
+              <button class="wk-btn" id="psd-Sab" onclick="togPsDia(this,'Sab')" style="padding:0.4rem;font-size:0.7rem">Sab</button>
+            </div>
+            <label>Enfasis especial (opcional)</label>
+            <input id="ps-enfasis" placeholder="Ej: tecnica de pecho, resistencia" style="margin-bottom:0">
+          </div>
+          <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:0.6rem;margin-bottom:0.5rem;font-size:0.7rem;color:#ffd700;text-align:center">Version de prueba gratuita</div>
+          <button class="btn btn-gold" onclick="generarPlanSemanal()" style="font-size:1rem;padding:1rem">&#128197; Generar plan semanal</button>
+        </div>
+        <div id="wk-plan-loading" style="display:none;text-align:center;padding:3rem 1rem">
+          <div style="font-size:3rem;margin-bottom:1rem;animation:spin 1s linear infinite;display:inline-block">&#128197;</div>
+          <div style="font-size:1rem;font-weight:700;color:#ffd700;margin-bottom:0.4rem">Generando plan semanal...</div>
+          <div style="font-size:0.78rem;color:#7ab8e8" id="wk-plan-loading-msg">Calculando progresion de la semana...</div>
+        </div>
+        <div id="wk-plan-result" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
+            <div style="font-size:0.88rem;font-weight:700;color:#ffd700" id="wk-plan-title">Plan Semanal</div>
+            <button onclick="resetPlan()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:5px 10px;font-size:0.72rem;cursor:pointer">Nuevo</button>
+          </div>
+          <div id="wk-plan-content" style="font-size:0.85rem;line-height:1.7;color:rgba(255,255,255,0.9)"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:1rem">
+            <button class="btn btn-green" onclick="pdfPlan()" style="margin-bottom:0;font-size:0.82rem">PDF</button>
+            <button class="btn btn-sky" onclick="sharePlan()" style="margin-bottom:0;font-size:0.82rem">Compartir</button>
+          </div>
+          <button class="btn btn-gray" onclick="resetPlan()" style="margin-top:0.5rem">Nuevo plan</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- PERFIL -->
+<!-- PROFILE TAB -->
 <div id="tab-profile" class="screen">
-  <div class="card"><div style="font-size:1.5rem">Sergio Villarreal</div><div>30+ años experiencia</div></div>
-  <button class="btn btn-wa" onclick="window.open('https://wa.me/528713164850')">WhatsApp</button>
+  <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Entrenador</div></div></div>
+  <div style="flex:1;overflow-y:auto">
+    <div class="card" style="text-align:center">
+      <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" style="width:80px;height:80px;border-radius:50%;border:3px solid #38bdf8;object-fit:contain;background:#fff;padding:4px;margin:0 auto 0.6rem;display:block" alt="">
+      <div style="font-size:1.25rem;font-weight:800">Sergio Villarreal</div>
+      <div style="font-size:0.75rem;color:#7ab8e8;margin-top:0.2rem">Lic. Acondicionamiento Fisico - American Swimming Nivel 4</div>
+      <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:0.15rem">Torreon, Coahuila - Unidad Deportiva</div>
+      <div style="margin-top:0.8rem;padding:0.7rem;background:rgba(255,215,0,0.07);border-radius:10px;border:1px solid rgba(255,215,0,0.2)">
+        <div style="font-size:1rem;font-weight:700;color:#ffd700;font-style:italic">"Fuertes y Valientes"</div>
+        <div style="font-size:0.68rem;color:#a08020;margin-top:2px">Josue 1:9</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num">30+</div><div class="stat-lbl">Anos exp.</div></div>
+      <div class="stat-box"><div class="stat-num">60+</div><div class="stat-lbl">Medallas Panam</div></div>
+      <div class="stat-box"><div class="stat-num">80+</div><div class="stat-lbl">Nadadores/evento</div></div>
+    </div>
+    <div style="font-size:0.82rem;font-weight:700;margin:0.8rem 0 0.5rem">Programas Laguna Swim</div>
+    <div class="prog-card" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio!%20Me%20interesa%20Natacion%20Infantil')"><div><div style="font-weight:700">Natacion Infantil</div><div style="font-size:0.72rem;color:#7ab8e8;margin-top:2px">Desde los primeros chapoteos</div></div><div style="color:#22c55e;font-size:0.78rem;font-weight:600">WhatsApp</div></div>
+    <div class="prog-card" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio!%20Me%20interesa%20Master')"><div><div style="font-weight:700">Natacion Master</div><div style="font-size:0.72rem;color:#7ab8e8;margin-top:2px">Alto rendimiento para adultos</div></div><div style="color:#22c55e;font-size:0.78rem;font-weight:600">WhatsApp</div></div>
+    <button class="btn btn-wa" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio%2C%20me%20interesa%20Laguna%20Swim')">Contactar por WhatsApp</button>
+    <button class="btn btn-orange" onclick="openUrl('https://www.amazon.com/stores/author/B0CNYHD2MX')">Ver libros en Amazon</button>
+    <div class="footer-bar">2026 Laguna Swim International - Sergio Elias Villarreal Limas<br><button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button><button class="coach-logout-btn" id="lo-profile" onclick="coachLogout()">Cerrar sesion</button></div>
+  </div>
 </div>
-
-<!-- MODAL -->
+<!-- AUTH MODAL -->
 <div class="auth-overlay modal-hidden" id="auth-modal">
-  <div class="auth-box">
-    <button onclick="loginGoogle()" style="width:100%;padding:0.85rem">🔐 Google</button>
-    <input type="email" id="auth-email" placeholder="Correo">
-    <input type="password" id="auth-pass" placeholder="Contraseña">
-    <button class="btn btn-sky" onclick="doLogin()">Entrar</button>
-    <button class="btn btn-gray" onclick="closeAuthModal()">Cancelar</button>
+  <div class="auth-box" style="max-width:380px">
+    <div id="auth-form-view">
+      <div style="text-align:center;margin-bottom:1rem">
+        <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" style="width:52px;height:52px;border-radius:12px;object-fit:contain;background:#fff;padding:4px" alt="">
+        <div style="font-size:1rem;font-weight:800;color:#38bdf8;margin-top:0.4rem">Acceso Laguna Swim</div>
+      </div>
+      <div class="auth-error modal-hidden" id="auth-error"></div>
+      <button onclick="loginGoogle()" style="width:100%;padding:0.85rem;border-radius:12px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.07);color:#fff;font-size:0.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.6rem;margin-bottom:0.5rem">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continuar con Google
+      </button>
+      <div style="display:flex;align-items:center;gap:0.5rem;margin:0.5rem 0">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.12)"></div>
+        <div style="font-size:0.68rem;color:rgba(255,255,255,0.3)">o con correo</div>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.12)"></div>
+      </div>
+      <label>Correo</label>
+      <input type="email" id="auth-email" placeholder="tu@correo.com" autocomplete="username">
+      <label>Contrasena</label>
+      <div style="position:relative;margin-bottom:0.5rem">
+        <input type="password" id="auth-pass" placeholder="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:0;padding-right:2.8rem">
+        <button onclick="togglePassVis()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#7ab8e8;cursor:pointer;font-size:1rem;padding:4px" id="pass-vis-btn">&#128065;</button>
+      </div>
+      <button class="btn btn-sky" id="auth-login-btn" onclick="doLogin()" style="margin-top:0.2rem">Entrar</button>
+      <button class="btn btn-gray" onclick="closeAuthModal()">Cancelar</button>
+    </div>
+    <div id="auth-logged-view" style="display:none;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem">&#9989;</div>
+      <div style="font-size:1rem;font-weight:800;color:#22c55e;margin-bottom:0.3rem">Sesion activa</div>
+      <div style="font-size:0.82rem;color:#7ab8e8;margin-bottom:0.3rem" id="auth-user-email">-</div>
+      <div style="font-size:0.75rem;padding:0.4rem 0.8rem;border-radius:20px;margin-bottom:0.8rem;display:inline-block" id="auth-subs-badge">-</div>
+      <button class="btn btn-red" onclick="coachLogout()" style="margin-bottom:0.4rem">Cerrar sesion</button>
+      <button class="btn btn-gray" onclick="closeAuthModal()">Cerrar</button>
+    </div>
   </div>
 </div>
 
-<!-- Verificación Impact -->
-<p style="display:none">Impact-Site-Verification: 56974a57-e5e1-40e5-9947-2787221dfc78</p>
+<!-- PAY MODAL -->
+<div class="modal-overlay modal-hidden" id="pay-modal">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-weight:800;font-size:1rem" id="pay-title">Comprar libro</div>
+      <button onclick="closePayModal()" style="background:none;border:none;color:#7ab8e8;font-size:1.3rem;cursor:pointer">X</button>
+    </div>
+    <div class="card" style="margin-bottom:0.8rem">
+      <div style="font-size:0.75rem;color:#7ab8e8;margin-bottom:0.2rem">Total</div>
+      <div style="font-size:1.7rem;font-weight:800;color:#38bdf8" id="pay-amount">$99 MXN</div>
+    </div>
+    <label>Tu correo (para recibir el PDF)</label>
+    <input type="email" id="pay-email" placeholder="correo@ejemplo.com">
+    <button class="btn btn-sky" onclick="doPay()">Pagar con MercadoPago</button>
+    <button class="btn btn-gray" onclick="closePayModal()">Cancelar</button>
+  </div>
+</div>
 
+<!-- DIPLOMA MODAL -->
+<div class="diploma-overlay modal-hidden" id="diploma-modal">
+  <div class="diploma-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.9rem">
+      <div style="font-weight:800;font-size:1rem;color:#38bdf8">Diploma oficial</div>
+      <button onclick="closeDipModal()" style="background:none;border:none;color:#7ab8e8;font-size:1.3rem;cursor:pointer">X</button>
+    </div>
+    <canvas id="dip-preview" class="diploma-preview"></canvas>
+    <div style="display:flex;gap:0.5rem;margin-bottom:0.6rem">
+      <div style="flex:1;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:0.5rem;text-align:center">
+        <div style="font-size:0.6rem;color:#a08020;margin-bottom:2px">Posicion</div>
+        <div style="font-size:1.4rem;font-weight:800;color:#ffd700" id="dip-pos">-</div>
+        <div style="font-size:0.6rem;color:#a08020" id="dip-total">de -</div>
+      </div>
+      <div style="background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.3);border-radius:10px;padding:0.5rem;text-align:center;min-width:80px">
+        <div style="font-size:0.6rem;color:#7ab8e8;margin-bottom:2px">Precio</div>
+        <div style="font-size:1.4rem;font-weight:800;color:#38bdf8">$10</div>
+        <div style="font-size:0.6rem;color:#7ab8e8">MXN</div>
+      </div>
+    </div>
+    <label>Tu correo</label>
+    <input type="email" id="dip-email" placeholder="correo@ejemplo.com" style="margin-bottom:0.7rem">
+    <button class="btn btn-gold" onclick="pagarDip()">Pagar $10 MXN y Descargar</button>
+    <button class="btn btn-gray" onclick="closeDipModal()">Cancelar</button>
+  </div>
+</div>
+
+<canvas id="dip-full" style="display:none"></canvas>
+<canvas id="share-canvas" style="display:none"></canvas>
 <script>
-// ===== CONFIGURACIÓN FIREBASE =====
-const firebaseConfig = {
-  apiKey: "AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
-  authDomain: "laguna-swim-chrono.firebaseapp.com",
-  databaseURL: "https://laguna-swim-chrono-default-rtdb.firebaseio.com",
-  projectId: "laguna-swim-chrono"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const auth = firebase.auth();
+// FIREBASE
+var fbCfg={apiKey:"AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",authDomain:"laguna-swim-chrono.firebaseapp.com",databaseURL:"https://laguna-swim-chrono-default-rtdb.firebaseio.com",projectId:"laguna-swim-chrono",storageBucket:"laguna-swim-chrono.firebasestorage.app",messagingSenderId:"618459577354",appId:"1:618459577354:web:2e26bda92112ce241c33f3"};
+firebase.initializeApp(fbCfg);
+var db=firebase.database();
+var auth=firebase.auth();
+var gProv=new firebase.auth.GoogleAuthProvider();
+db.ref('.info/connected').on('value',function(s){var e=document.getElementById('fb-status');e.textContent=s.val()?'OK':'Sin conexion';e.style.color=s.val()?'#22c55e':'#ef4444';});
 
-let currentUser = null;
-let isCoach = false;
-let rankingChart = null;
-let rankingData = [];
-let myRoom = null;
-let raceStart = null;
-let clockInterval = null;
-let laneData = [];
-
-// ===== UTILIDADES =====
-function fmt(ms) {
-  if (!ms && ms !== 0) return "00:00.00";
-  let m = Math.floor(ms / 60000);
-  let s = Math.floor((ms % 60000) / 1000);
-  let c = Math.floor((ms % 1000) / 10);
-  return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${c.toString().padStart(2,'0')}`;
-}
-
-function showTab(tab) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  if (tab === 'ranking') loadRanking();
-  if (tab === 'workout') checkWorkoutAccess();
-}
-
-function goTimer(screen) {
-  document.querySelectorAll('#tab-timer > .screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screen).classList.add('active');
-}
-
-// ===== AUTENTICACIÓN =====
-auth.onAuthStateChanged(user => {
-  currentUser = user;
-  isCoach = user && user.email === 'checoswim@gmail.com';
-  if (user) {
-    document.getElementById('coach-add-section').style.display = isCoach ? 'block' : 'none';
+// AUTH
+var COACH='checoswim@gmail.com';
+var isCoach=false,curUser=null,curSubs=null,pendingCb=null;
+auth.onAuthStateChanged(function(u){
+  curUser=u;isCoach=!!u;
+  if(u){
+    document.getElementById('auth-user-email').textContent=u.displayName||u.email;
+    document.getElementById('auth-form-view').style.display='none';
+    document.getElementById('auth-logged-view').style.display='block';
+    document.querySelectorAll('.coach-btn').forEach(function(b){b.style.display='none';});
+    document.querySelectorAll('.coach-logout-btn').forEach(function(b){b.style.display='inline-block';});
+    var cas=document.getElementById('coach-add-section');if(cas)cas.style.display='block';
+    if(u.email===COACH){curSubs={activoHasta:9999999999999,restantes:999};setBadge('Entrenador - Acceso ilimitado','#38bdf8');}
+    else loadSubs(u.uid);
+    if(pendingCb){pendingCb();pendingCb=null;}
+  } else {
+    document.getElementById('auth-form-view').style.display='block';
+    document.getElementById('auth-logged-view').style.display='none';
+    document.querySelectorAll('.coach-btn').forEach(function(b){b.style.display='inline-block';});
+    document.querySelectorAll('.coach-logout-btn').forEach(function(b){b.style.display='none';});
+    var cas=document.getElementById('coach-add-section');if(cas)cas.style.display='none';
+    curSubs=null;
   }
 });
-
-function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-function doLogin() {
-  auth.signInWithEmailAndPassword(
-    document.getElementById('auth-email').value,
-    document.getElementById('auth-pass').value
-  ).catch(e => alert("Error: " + e.message));
+function setBadge(txt,col){var b=document.getElementById('auth-subs-badge');if(b){b.textContent=txt;b.style.color=col;b.style.background=col==='#22c55e'?'rgba(21,128,61,0.15)':col==='#38bdf8'?'rgba(56,189,248,0.15)':'rgba(185,28,28,0.1)';}}
+function loadSubs(uid){db.ref('suscripciones/'+uid).once('value').then(function(s){var d=s.val();var now=Date.now();if(d&&d.activoHasta>now&&d.restantes>0){curSubs=d;var dias=Math.ceil((d.activoHasta-now)/86400000);setBadge(d.restantes+' entrenamientos - '+dias+' dias','#22c55e');}else{curSubs=null;setBadge('Sin suscripcion activa','#fca5a5');}});}
+function tieneAcceso(){if(!curUser)return false;if(curUser.email===COACH)return true;return curSubs&&curSubs.activoHasta>Date.now()&&curSubs.restantes>0;}
+function loginGoogle(){auth.signInWithPopup(gProv).then(function(){closeAuthModal();}).catch(function(e){showErr(e.message);});}
+function doLogin(){
+  var em=document.getElementById('auth-email').value.trim();
+  var pw=document.getElementById('auth-pass').value;
+  var btn=document.getElementById('auth-login-btn');
+  if(!em||!pw){showErr('Ingresa correo y contrasena');return;}
+  btn.innerHTML='<span class="spinner"></span> Verificando...';btn.disabled=true;
+  auth.signInWithEmailAndPassword(em,pw).then(function(){btn.textContent='Entrar';btn.disabled=false;closeAuthModal();}).catch(function(e){btn.textContent='Entrar';btn.disabled=false;var m={'auth/user-not-found':'No existe esa cuenta.','auth/wrong-password':'Contrasena incorrecta.','auth/invalid-credential':'Correo o contrasena incorrectos.','auth/too-many-requests':'Demasiados intentos.','auth/invalid-email':'Correo invalido.'};showErr(m[e.code]||e.message);});
 }
-function coachLogout() { auth.signOut(); location.reload(); }
-function showCoachLogin() { document.getElementById('auth-modal').classList.remove('modal-hidden'); }
-function closeAuthModal() { document.getElementById('auth-modal').classList.add('modal-hidden'); }
+function togglePassVis(){var i=document.getElementById('auth-pass');var b=document.getElementById('pass-vis-btn');if(i.type==='password'){i.type='text';b.textContent='X';}else{i.type='password';b.innerHTML='&#128065;';}}
+function showErr(m){var e=document.getElementById('auth-error');e.textContent=m;e.classList.remove('modal-hidden');}
+function showCoachLogin(){document.getElementById('auth-modal').classList.remove('modal-hidden');document.getElementById('auth-error').classList.add('modal-hidden');}
+function closeAuthModal(){document.getElementById('auth-modal').classList.add('modal-hidden');pendingCb=null;}
+function coachLogout(){auth.signOut();}
 
-// ===== CRONÓMETRO =====
-function genCode() { return Math.random().toString(36).substr(2,5).toUpperCase(); }
+// ESTADO
+var myRoom=null,myRole=null,myLane=null;
+var laneData=[],posCounter=1,clockInterval=null,raceStart=null,roomRef=null;
+var tkParciales=[],rankData=[];
+var curBook=null,dipData=null;
+var activeLanes=new Set([1,2,3,4,5,6,7,8]);
+var BOOKS=[null,{id:1,title:'Padres Campeones',price:99},{id:2,title:'Champion Parents',price:99},{id:3,title:'Natacion Masters',price:199},{id:4,title:'Laguna Swim Pro',price:399}];
+var CATS={'6-':'6 y menores','7-8':'7-8 anos','9-10':'9-10 anos','11-12':'11-12 anos','13-14':'13-14 anos','15-18':'15-18 anos','PM18-24':'Pre-Master 18-24','M25-29':'Master 25-29','M30-34':'Master 30-34','M35-39':'Master 35-39','M40-44':'Master 40-44','M45-49':'Master 45-49','M50-54':'Master 50-54','M55-59':'Master 55-59','M60-64':'Master 60-64','M65-69':'Master 65-69','M70+':'Master 70+'};
+var LOGO='https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg';
+var rankMode='sw';
 
-function createRace() {
-  laneData = [1,2,3,4,5,6].map(l => ({ lane: l, name: `Carril ${l}`, time: null, stopped: false }));
-  myRoom = genCode();
-  db.ref(`races/${myRoom}`).set({ started: false, lanes: laneData });
-  document.getElementById('lobby-code').innerText = myRoom;
-  try {
-    new QRCode(document.getElementById('qr-container'), { text: window.location.href + '?room=' + myRoom, width: 150, height: 150 });
-  } catch(e) { console.log("QR error:", e); }
-  goTimer('s-lobby');
-  listenRace();
-}
+var fmt=function(ms){if(ms==null)return'--:--.--';var m=Math.floor(ms/60000),s=Math.floor(ms%60000/1000),c=Math.floor(ms%1000/10);return(m<10?'0':'')+m+':'+(s<10?'0':'')+s+'.'+(c<10?'0':'')+c;};
+var medal=function(p){return['','1','2','3'][p]?['','&#127937;','&#129352;','&#129353;'][p]||'':'';};
+var genCode=function(){return Math.random().toString(36).substr(2,5).toUpperCase();};
+function openUrl(u){window.open(u,'_blank');}
 
-function listenRace() {
-  db.ref(`races/${myRoom}`).on('value', snap => {
-    let data = snap.val();
-    if (data && data.started && !raceStart) {
-      raceStart = Date.now();
-      goTimer('s-race');
-      if (clockInterval) clearInterval(clockInterval);
-      clockInterval = setInterval(() => {
-        document.getElementById('master-clock').innerText = fmt(Date.now() - raceStart);
-      }, 100);
-      renderRaceLanes();
-    }
+// TABS
+function showTab(t){
+  ['timer','store','ranking','workout','profile'].forEach(function(x){
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+    document.getElementById('nav-'+x).classList.toggle('active',x===t);
   });
+  if(t==='ranking'){loadRanking();renderOA();}
+  if(t==='workout')initWk();
 }
 
-function renderRaceLanes() {
-  const container = document.getElementById('race-lanes');
-  container.innerHTML = '';
-  laneData.forEach(l => {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<div><strong>Carril ${l.lane}</strong> - ${l.name}</div>
-      <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
-        <button class="btn btn-sm" onclick="marcarStop(${l.lane})" style="background:#15803d;width:auto">STOP</button>
-      </div>`;
-    container.appendChild(div);
-  });
-}
-
-function marcarStop(lane) {
-  let l = laneData.find(x => x.lane === lane);
-  if (l && !l.stopped) {
-    l.stopped = true;
-    l.time = Date.now() - raceStart;
-    if (laneData.every(x => x.stopped)) {
-      clearInterval(clockInterval);
-      alert("Carrera finalizada!");
-    }
+// RANK MODE SWITCH
+function switchRankMode(mode, btn) {
+  rankMode = mode;
+  var swBtn = document.getElementById('sw-tab-btn');
+  var owBtn = document.getElementById('ow-tab-btn');
+  var swSec = document.getElementById('rank-sw-section');
+  var owSec = document.getElementById('rank-ow-section');
+  if (mode === 'sw') {
+    swBtn.style.cssText='flex:1;padding:0.65rem;border-radius:12px;border:2px solid #38bdf8;background:rgba(56,189,248,0.15);color:#38bdf8;font-size:0.88rem;font-weight:800;cursor:pointer';
+    owBtn.style.cssText='flex:1;padding:0.65rem;border-radius:12px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);font-size:0.88rem;font-weight:800;cursor:pointer';
+    swSec.style.display='block';owSec.style.display='none';
+  } else {
+    owBtn.style.cssText='flex:1;padding:0.65rem;border-radius:12px;border:2px solid #38bdf8;background:rgba(56,189,248,0.15);color:#38bdf8;font-size:0.88rem;font-weight:800;cursor:pointer';
+    swBtn.style.cssText='flex:1;padding:0.65rem;border-radius:12px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);font-size:0.88rem;font-weight:800;cursor:pointer';
+    swSec.style.display='none';owSec.style.display='block';
+    renderOA();
   }
 }
 
-function stopAll() { laneData.forEach(l => { if(!l.stopped) marcarStop(l.lane); }); }
-function startRace() { db.ref(`races/${myRoom}`).update({ started: true }); }
-function cancelRace() { if(myRoom) db.ref(`races/${myRoom}`).remove(); myRoom=null; goTimer('s-role'); }
-function joinRace() {
-  let code = document.getElementById('join-code').value.toUpperCase();
-  alert(`Unido a carrera ${code}`);
-  goTimer('s-home');
-}
+var TS=['s-home','s-role','s-setup','s-lobby','s-race','s-results','s-join','s-tk'];
+function goTimer(id){TS.forEach(function(s){var e=document.getElementById(s);if(e)e.classList.toggle('active',s===id);});}
 
-// ===== RANKING =====
-function loadRanking() {
-  db.ref('ranking').once('value', snap => {
-    rankingData = [];
-    snap.forEach(child => rankingData.push(child.val()));
-    rankingData.sort((a,b) => a.timeMs - b.timeMs);
-    const dist = document.getElementById('rank-dist').value;
-    const style = document.getElementById('rank-style').value;
-    const filtered = rankingData.filter(r => r.dist == dist && r.style === style);
-    renderRankingList(filtered);
-    renderChart(filtered);
+// LANE SELECTOR
+function buildLaneSelector(){
+  var c=document.getElementById('lane-selector');c.innerHTML='';
+  for(var i=1;i<=10;i++){
+    var btn=document.createElement('button');var on=activeLanes.has(i);
+    btn.type='button';
+    btn.style.cssText='width:44px;height:44px;border-radius:10px;font-size:1rem;font-weight:800;cursor:pointer;border:2px solid '+(on?'#38bdf8':'rgba(255,255,255,0.15)')+';background:'+(on?'rgba(56,189,248,0.18)':'rgba(255,255,255,0.05)')+';color:'+(on?'#38bdf8':'rgba(255,255,255,0.3)');
+    btn.textContent=i;
+    (function(lane){btn.onclick=function(){if(activeLanes.has(lane))activeLanes.delete(lane);else activeLanes.add(lane);buildLaneSelector();buildInputs();};})(i);
+    c.appendChild(btn);
+  }
+  var s=Array.from(activeLanes).sort(function(a,b){return a-b;});
+  var h=document.getElementById('lane-selector-hint');
+  h.textContent=s.length===0?'Selecciona al menos un carril':'Carriles activos: '+s.join(', ')+' ('+s.length+' total)';
+  h.style.color=s.length===0?'#ef4444':'#7ab8e8';
+}
+function buildInputs(){
+  var s=Array.from(activeLanes).sort(function(a,b){return a-b;});
+  var c=document.getElementById('names-card');c.innerHTML='<label style="margin-bottom:6px">Nombres de nadadores</label>';
+  s.forEach(function(i){var inp=document.createElement('input');inp.placeholder='Carril '+i+' - Nombre';inp.id='n'+i;c.appendChild(inp);});
+}
+buildLaneSelector();buildInputs();
+
+function evInfo(){return{dist:document.getElementById('event-dist').value,style:document.getElementById('event-style').value,pool:document.getElementById('pool-length').value,comp:document.getElementById('comp-name').value.trim()};}
+
+function createRace(){
+  var s=Array.from(activeLanes).sort(function(a,b){return a-b;});
+  if(s.length===0){alert('Selecciona al menos un carril');return;}
+  laneData=[];posCounter=1;
+  s.forEach(function(i){var nm=(document.getElementById('n'+i)||{}).value||'';laneData.push({lane:i,name:nm.trim()||'Carril '+i,time:null,stopped:false,position:null,tkId:null,parciales:[]});});
+  var code=genCode();myRoom=code;myRole='master';
+  var ev=evInfo();var lo={};laneData.forEach(function(l){lo[l.lane]=l;});
+  db.ref('races/'+code).set({code:code,started:false,startAt:null,event:ev,lanes:lo});
+  document.getElementById('lobby-code').textContent=code;
+  document.getElementById('lobby-event-info').textContent=ev.dist+'m '+ev.style+(ev.comp?' - '+ev.comp:'');
+  buildLobbyList();
+  document.getElementById('qr-container').innerHTML='';
+  new QRCode(document.getElementById('qr-container'),{text:location.origin+location.pathname+'?room='+code,width:150,height:150,colorDark:'#071e38',colorLight:'#ffffff'});
+  listenRoom(code);goTimer('s-lobby');
+}
+function buildLobbyList(){
+  var c=document.getElementById('lobby-list');c.innerHTML='';
+  laneData.forEach(function(l){var d=document.createElement('div');d.style='display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.06)';d.id='ll-'+l.lane;d.innerHTML='<span style="font-size:0.86rem">Carril '+l.lane+' - <b>'+l.name+'</b></span><span id="lls-'+l.lane+'" style="font-size:0.7rem;color:#7ab8e8">Sin cronometrista</span>';c.appendChild(d);});
+}
+function dlQR(){var i=document.querySelector('#qr-container img')||document.querySelector('#qr-container canvas');if(!i)return;var a=document.createElement('a');a.href=i.src||i.toDataURL();a.download='QR.png';a.click();}
+function listenRoom(code){
+  if(roomRef)roomRef.off();
+  roomRef=db.ref('races/'+code);
+  roomRef.on('value',function(snap){
+    var d=snap.val();if(!d)return;
+    if(myRole==='timekeeper'&&d.started&&d.startAt&&!clockInterval)startTkRace(d.startAt,code);
+    if(myRole==='master'&&d.lanes){
+      Object.values(d.lanes).forEach(function(rl){
+        var l=laneData.find(function(x){return x.lane===rl.lane;});
+        if(l&&rl.stopped&&!l.stopped){l.stopped=true;l.time=rl.time;l.position=rl.position;l.parciales=rl.parciales||[];updMasterUI(l);if(laneData.every(function(x){return x.stopped;})){clearInterval(clockInterval);setTimeout(showResults,600);}}
+        var e=document.getElementById('lls-'+rl.lane);if(e&&rl.tkId&&e.textContent.indexOf('OK')<0){e.textContent='OK '+rl.tkId;e.style.color='#22c55e';}
+      });
+    }
   });
 }
+function startRace(){
+  raceStart=Date.now();
+  db.ref('races/'+myRoom).update({started:true,startAt:raceStart});
+  var ev=evInfo();
+  document.getElementById('race-lbl').textContent='Sala: '+myRoom;
+  document.getElementById('race-event-lbl').textContent=ev.dist+'m '+ev.style;
+  goTimer('s-race');buildRaceView();
+  clearInterval(clockInterval);
+  clockInterval=setInterval(function(){document.getElementById('master-clock').textContent=fmt(Date.now()-raceStart);},50);
+}
+function buildRaceView(){
+  var c=document.getElementById('race-lanes');c.innerHTML='';
+  laneData.forEach(function(l){
+    var d=document.createElement('div');d.className='lane-row live';d.id='rl-'+l.lane;
+    d.innerHTML='<div style="flex:1"><div style="font-size:0.68rem;color:#7ab8e8;font-weight:600">CARRIL '+l.lane+'</div><div style="font-weight:700;font-size:0.93rem">'+l.name+'</div><div class="parcial-list" id="pl-'+l.lane+'" style="margin-top:4px;display:none"></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><span id="lp-'+l.lane+'" style="font-size:1.35rem"></span><span style="font-size:0.95rem;font-weight:800;color:#38bdf8" id="lt-'+l.lane+'">En curso</span><div style="display:flex;gap:6px"><button onclick="event.stopPropagation();mParcial('+l.lane+')" style="background:#7c3aed;border:none;color:#fff;border-radius:10px;padding:10px 14px;font-size:1rem;cursor:pointer;font-weight:700;min-width:48px;min-height:44px">P</button><button onclick="event.stopPropagation();mStop('+l.lane+')" style="background:#15803d;border:none;color:#fff;border-radius:10px;padding:10px 14px;font-size:1rem;cursor:pointer;font-weight:700;min-width:48px;min-height:44px">STOP</button></div></div>';
+    c.appendChild(d);
+  });
+}
+function mParcial(lane){
+  var l=laneData.find(function(x){return x.lane===lane;});if(!l||l.stopped)return;
+  var el=Date.now()-raceStart;if(!l.parciales)l.parciales=[];
+  var prev=l.parciales.length>0?l.parciales[l.parciales.length-1].acu:0;
+  l.parciales.push({num:l.parciales.length+1,par:el-prev,acu:el});
+  var pl=document.getElementById('pl-'+lane);
+  if(pl){pl.style.display='block';pl.innerHTML='';l.parciales.forEach(function(p){var dv=document.createElement('div');dv.className='parcial-item';dv.innerHTML='<span>V'+p.num+'</span><span style="color:#a78bfa">'+fmt(p.par)+'</span><span style="color:#38bdf8">'+fmt(p.acu)+'</span>';pl.appendChild(dv);});}
+  db.ref('races/'+myRoom+'/lanes/'+lane+'/parciales').set(l.parciales);
+}
+function mStop(lane){
+  var l=laneData.find(function(x){return x.lane===lane;});if(!l||l.stopped)return;
+  l.stopped=true;l.time=Date.now()-raceStart;l.position=posCounter++;
+  updMasterUI(l);
+  db.ref('races/'+myRoom+'/lanes/'+lane).update({stopped:true,time:l.time,position:l.position,parciales:l.parciales||[]});
+  if(laneData.every(function(x){return x.stopped;})){clearInterval(clockInterval);setTimeout(showResults,600);}
+}
+function updMasterUI(l){var r=document.getElementById('rl-'+l.lane);if(r)r.className='lane-row done';var t=document.getElementById('lt-'+l.lane);if(t)t.textContent=fmt(l.time);var p=document.getElementById('lp-'+l.lane);if(p)p.innerHTML=l.position<=3?['','&#127937;','&#129352;','&#129353;'][l.position]||'':l.position+'.';}
+function stopAll(){laneData.forEach(function(l){if(!l.stopped)mStop(l.lane);});}
+function cancelRace(){if(myRoom)db.ref('races/'+myRoom).remove();myRoom=null;laneData=[];posCounter=1;clearInterval(clockInterval);document.getElementById('qr-container').innerHTML='';goTimer('s-role');}
+function newRace(){clearInterval(clockInterval);myRoom=null;laneData=[];posCounter=1;raceStart=null;activeLanes=new Set([1,2,3,4,5,6,7,8]);buildLaneSelector();buildInputs();goTimer('s-setup');}
 
-function renderRankingList(data) {
-  const container = document.getElementById('ranking-list');
-  container.innerHTML = '';
-  if(data.length === 0) {
-    container.innerHTML = '<div style="text-align:center">Sin datos</div>';
+function joinRace(){
+  var code=document.getElementById('join-code').value.toUpperCase().trim();
+  var name=document.getElementById('join-name').value.trim()||'Cronometrista';
+  if(!code){alert('Ingresa el codigo');return;}
+  db.ref('races/'+code).once('value').then(function(snap){
+    var d=snap.val();if(!d){alert('Codigo no encontrado');return;}
+    var av=Object.values(d.lanes||{}).find(function(l){return !l.tkId;});
+    if(!av){alert('Todos los carriles tienen cronometrista');return;}
+    myRoom=code;myRole='timekeeper';myLane=av.lane;
+    db.ref('races/'+code+'/lanes/'+av.lane).update({tkId:name});
+    document.getElementById('tk-lane-num').textContent=av.lane;
+    document.getElementById('tk-swimmer').textContent=av.name;
+    document.getElementById('tk-done').style.display='none';
+    document.getElementById('tk-parciales').style.display='none';
+    document.getElementById('tk-action').innerHTML='<div style="text-align:center;color:#7ab8e8;font-size:0.88rem;padding:2rem 0">Esperando que el entrenador inicie...</div>';
+    document.getElementById('tk-conn').textContent='Carril '+av.lane;
+    goTimer('s-tk');listenRoom(code);
+    if(d.started&&d.startAt)startTkRace(d.startAt,code);
+  });
+}
+function startTkRace(sa,code){
+  if(clockInterval)return;tkParciales=[];
+  var w=document.createElement('div');w.style='width:100%';
+  var pb=document.createElement('button');pb.className='parcial-btn';pb.textContent='PARCIAL';pb.onclick=function(){tkPar(sa,code);};
+  var sb=document.createElement('button');sb.className='stop-btn';sb.textContent='LLEGUE A META';sb.onclick=function(){tkStop(sa,code);};
+  w.appendChild(pb);w.appendChild(sb);
+  document.getElementById('tk-action').innerHTML='';document.getElementById('tk-action').appendChild(w);
+  document.getElementById('tk-conn').textContent='En carrera';
+  clockInterval=setInterval(function(){document.getElementById('tk-clock').textContent=fmt(Date.now()-sa);},50);
+}
+function tkPar(sa,code){
+  var el=Date.now()-sa;var prev=tkParciales.length>0?tkParciales[tkParciales.length-1].acu:0;
+  tkParciales.push({num:tkParciales.length+1,par:el-prev,acu:el});
+  document.getElementById('tk-parciales').style.display='block';
+  var pl=document.getElementById('tk-parcial-list');pl.innerHTML='';
+  tkParciales.forEach(function(p){var d=document.createElement('div');d.className='parcial-item';d.innerHTML='<span>V'+p.num+'</span><span style="color:#a78bfa">'+fmt(p.par)+'</span><span style="color:#38bdf8">'+fmt(p.acu)+'</span>';pl.appendChild(d);});
+  db.ref('races/'+code+'/lanes/'+myLane+'/parciales').set(tkParciales);
+}
+function tkStop(sa,code){
+  db.ref('races/'+code+'/lanes/'+myLane).once('value').then(function(snap){
+    var rl=snap.val();if(!rl||rl.stopped)return;
+    db.ref('races/'+code+'/lanes').once('value').then(function(s2){
+      var pos=Object.values(s2.val()||{}).filter(function(l){return l.stopped;}).length+1;
+      var el=Date.now()-sa;
+      db.ref('races/'+code+'/lanes/'+myLane).update({stopped:true,time:el,position:pos,parciales:tkParciales});
+      clearInterval(clockInterval);clockInterval=null;
+      document.getElementById('tk-action').innerHTML='';
+      document.getElementById('tk-done').style.display='block';
+      document.getElementById('tk-final').textContent=fmt(el);
+      document.getElementById('tk-pos-medal').innerHTML=pos<=3?['','&#127937;','&#129352;','&#129353;'][pos]:'Pos '+pos;
+      document.getElementById('tk-conn').textContent='Tiempo guardado';
+    });
+  });
+}
+// RESULTS
+function showResults(){
+  goTimer('s-results');
+  var sorted=laneData.slice().sort(function(a,b){return (a.time||Infinity)-(b.time||Infinity);});
+  var cv=document.getElementById('pool-canvas');cv.width=cv.offsetWidth||340;cv.height=180;
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,lH=H/Math.max(laneData.length,1);
+  var maxT=Math.max.apply(null,laneData.map(function(l){return l.time||1;}));
+  var prog=0;
+  var anim=setInterval(function(){
+    prog=Math.min(prog+0.025,1);ctx.fillStyle='#0a3d6b';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;
+    laneData.forEach(function(_,i){ctx.beginPath();ctx.moveTo(0,(i+1)*lH);ctx.lineTo(W,(i+1)*lH);ctx.stroke();});
+    laneData.forEach(function(l,i){
+      var ratio=(l.time||maxT)/maxT,x=Math.min(prog/ratio,1)*(W-36)+18,y=i*lH+lH/2;
+      ctx.strokeStyle='rgba(56,189,248,0.2)';ctx.lineWidth=lH*0.32;ctx.beginPath();ctx.moveTo(18,y);ctx.lineTo(x,y);ctx.stroke();
+      ctx.fillStyle='#38bdf8';ctx.beginPath();ctx.arc(x,y,lH*0.28,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#071e38';ctx.font='bold '+Math.max(10,Math.round(lH*0.28))+'px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.lane,x,y);
+    });
+    if(prog>=1)clearInterval(anim);
+  },16);
+  var ev=evInfo();
+  var fecha=new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+  var list=document.getElementById('results-list');list.innerHTML='';
+  sorted.forEach(function(l,i){
+    var d=document.createElement('div');d.className='res-row';
+    var ph='';
+    if(l.parciales&&l.parciales.length>0){ph='<div class="parcial-list" style="margin-top:0.4rem">';l.parciales.forEach(function(p){ph+='<div class="parcial-item"><span>V'+p.num+'</span><span style="color:#a78bfa">'+fmt(p.par)+'</span><span style="color:#38bdf8">'+fmt(p.acu)+'</span></div>';});ph+='</div>';}
+    var dip={nombre:l.name,tiempo:fmt(l.time),pos:i+1,total:sorted.length,evento:ev.dist+'m '+ev.style+(ev.comp?' - '+ev.comp:''),comp:ev.comp||'Laguna Swim',dist:ev.dist,style:ev.style,fecha:fecha};
+    d.innerHTML='<div style="font-size:1.6rem;width:36px;text-align:center;flex-shrink:0">'+(i<3?['&#127937;','&#129352;','&#129353;'][i]:'')+'</div><div style="flex:1"><div style="font-weight:700;font-size:0.93rem">'+l.name+'</div><div style="font-size:0.7rem;color:#7ab8e8">Carril '+l.lane+'</div>'+ph+'</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0"><div style="font-size:1.05rem;font-weight:800;color:#38bdf8;font-variant-numeric:tabular-nums">'+fmt(l.time)+'</div><button style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:8px;padding:5px 10px;font-size:0.68rem;font-weight:800;cursor:pointer">Diploma</button></div>';
+    d.querySelector('button').addEventListener('click',function(){openDip(dip);});
+    list.appendChild(d);
+  });
+}
+function shareImg(){
+  var sorted=laneData.slice().sort(function(a,b){return (a.time||Infinity)-(b.time||Infinity);});
+  var cv=document.getElementById('share-canvas'),W=640,rH=68,hdr=130,ftr=60;
+  cv.width=W;cv.height=hdr+rH*sorted.length+ftr;var ctx=cv.getContext('2d');
+  ctx.fillStyle='#071e38';ctx.fillRect(0,0,W,cv.height);
+  ctx.fillStyle='#0f3460';ctx.fillRect(0,0,W,hdr);
+  ctx.fillStyle='#38bdf8';ctx.font='bold 28px system-ui';ctx.textAlign='center';ctx.fillText('LAGUNA SWIM INTERNATIONAL',W/2,42);
+  ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='12px system-ui';ctx.fillText(new Date().toLocaleDateString('es-MX'),W/2,70);
+  sorted.forEach(function(l,i){var y=hdr+i*rH;ctx.fillStyle='#fff';ctx.font='bold 17px system-ui';ctx.textAlign='left';ctx.fillText(l.name,80,y+rH/2);ctx.fillStyle='#38bdf8';ctx.font='bold 22px system-ui';ctx.textAlign='right';ctx.fillText(fmt(l.time),W-24,y+rH/2+8);});
+  cv.toBlob(function(blob){var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Resultados.png';a.click();URL.revokeObjectURL(url);});
+}
+
+// RANKING SW
+function loadRanking(){
+  db.ref('ranking').once('value').then(function(snap){
+    rankData=[];var d=snap.val()||{};
+    Object.values(d).forEach(function(r){rankData.push(r);});
+    rankData.sort(function(a,b){return a.timeMs-b.timeMs;});
+    filterRanking();
+  });
+}
+function filterRanking(){
+  var dist=document.getElementById('rank-dist').value;
+  var style=document.getElementById('rank-style').value;
+  var cat=(document.getElementById('rank-cat')||{}).value||'';
+  var gender=(document.getElementById('rank-gender')||{}).value||'';
+  var list=document.getElementById('ranking-list');
+  var opt=document.getElementById('rank-optional-filters');
+  if(!dist||!style){
+    opt.style.display='none';
+    list.innerHTML='<div style="text-align:center;padding:2rem"><div style="font-size:2rem">&#127944;</div><div style="font-size:0.88rem;font-weight:700;color:#38bdf8">Selecciona distancia y estilo</div></div>';
     return;
   }
-  data.slice(0,20).forEach((r, idx) => {
-    const div = document.createElement('div');
-    div.className = 'rank-row';
-    div.innerHTML = `<div style="font-weight:800;width:40px">${idx+1}</div>
-      <div><strong>${r.swimmer}</strong><br><span style="font-size:0.7rem">${r.time}</span></div>`;
-    container.appendChild(div);
-  });
+  var filtered=rankData.filter(function(r){return r.dist==dist&&r.style===style&&(!cat||r.cat===cat)&&(!gender||r.gender===gender);});
+  opt.style.display='grid';
+  renderRanking(filtered,+dist,style);
 }
-
-function renderChart(data) {
-  const ctx = document.getElementById('rankingChart').getContext('2d');
-  if(rankingChart) rankingChart.destroy();
-  const top10 = data.slice(0,10);
-  if(top10.length === 0) return;
-  rankingChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: top10.map((_,i) => `${i+1}°`),
-      datasets: [{
-        label: 'Tiempo (segundos)',
-        data: top10.map(r => (r.timeMs / 1000).toFixed(2)),
-        borderColor: '#38bdf8',
-        tension: 0.3
-      }]
-    }
-  });
-}
-
-function exportRankingCSV() {
-  const dist = document.getElementById('rank-dist').value;
-  const style = document.getElementById('rank-style').value;
-  const filtered = rankingData.filter(r => r.dist == dist && r.style === style);
-  if(!filtered.length) return alert("No hay datos");
-  let csv = "Pos,Nadador,Tiempo\n";
-  filtered.slice(0,50).forEach((r, idx) => {
-    csv += `${idx+1},${r.swimmer},${r.time}\n`;
-  });
-  const blob = new Blob([csv], {type: 'text/csv'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `ranking_${dist}m.csv`;
-  a.click();
-}
-
-function addRankTime() {
-  if (!isCoach) return alert("Solo entrenador");
-  const swimmer = document.getElementById('r-swimmer').value;
-  const time = document.getElementById('r-time').value;
-  if (!swimmer || !time) return alert("Complete campos");
-  
-  const timeMs = time.includes(':') ? 
-    (parseInt(time.split(':')[0])*60000 + parseFloat(time.split(':')[1])*1000) : 
-    parseFloat(time)*1000;
-  
-  db.ref(`ranking/${Date.now()}`).set({
-    swimmer: swimmer,
-    dist: parseInt(document.getElementById('rank-dist').value),
-    style: document.getElementById('rank-style').value,
-    time: time,
-    timeMs: timeMs,
-    year: new Date().getFullYear()
-  }).then(() => { alert("Agregado!"); loadRanking(); });
-}
-
-// ===== ENTRENAMIENTOS =====
-function checkWorkoutAccess() {
-  if (!currentUser) {
-    document.getElementById('wk-login-wall').style.display = 'block';
-    document.getElementById('wk-generator').style.display = 'none';
-  } else {
-    document.getElementById('wk-login-wall').style.display = 'none';
-    document.getElementById('wk-generator').style.display = 'block';
+function renderRanking(data,dist,style){
+  var list=document.getElementById('ranking-list');list.innerHTML='';
+  window._rankCache=data;
+  var h=document.createElement('div');
+  h.style='font-size:0.9rem;font-weight:700;color:#38bdf8;padding:0.4rem 0;border-bottom:1px solid rgba(56,189,248,0.2);margin-bottom:0.8rem';
+  h.textContent=dist+'m '+style+(data.length>50?' - Top 50 de '+data.length:'');
+  list.appendChild(h);
+  if(style==='Pecho'&&[50,100,200].indexOf(dist)>=0){
+    var mt={50:'27.38',100:'1:00.14',200:'2:09.60'};
+    var mr=document.createElement('div');mr.className='rank-row gold-record';
+    mr.innerHTML='<div class="rank-pos">&#128081;</div><div class="rank-info"><div class="rank-name">Miguel De Lara <span class="badge-nr">NR</span></div><div class="rank-detail" style="color:#a08020">Record Nacional - 2023</div></div><div class="rank-time" style="color:#ffd700">'+mt[dist]+'</div>';
+    list.appendChild(mr);
   }
+  if(data.length===0){var e=document.createElement('div');e.style='text-align:center;color:#7ab8e8;padding:1.5rem;font-size:0.82rem';e.textContent='No hay tiempos registrados';list.appendChild(e);return;}
+  var top=data.slice(0,50);var fast=data[0].timeMs;
+  top.forEach(function(r,i){
+    var d=document.createElement('div');d.className='rank-row';
+    var cl=CATS[r.cat]||r.cat;var gi=r.gender==='M'?'M':'F';
+    var pct=Math.round((fast/r.timeMs)*100);
+    d.innerHTML='<div class="rank-pos" style="font-size:'+(i<3?'1.3':'0.95')+'rem">'+(i<3?['&#127937;','&#129352;','&#129353;'][i]:(i+1)+'.')+'</div><div class="rank-info" style="flex:1"><div class="rank-name">'+r.swimmer+' <span style="font-size:0.7rem;color:#7ab8e8">'+gi+'</span></div><div class="rank-detail"><span class="cat-chip">'+cl+'</span>'+r.comp+' - '+r.year+'</div><div class="proj-bar"><div class="proj-fill" style="width:'+pct+'%"></div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-left:6px"><div class="rank-time">'+r.time+'</div><button style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:8px;padding:3px 8px;font-size:0.62rem;font-weight:800;cursor:pointer">Diploma</button>'+(isCoach?'<button style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.7rem;padding:0">X</button>':'')+'</div>';
+    (function(rec){
+      var btns=d.querySelectorAll('button');
+      btns[0].addEventListener('click',function(){openDipRanking(rec);});
+      if(isCoach&&btns[1])btns[1].addEventListener('click',function(){delRank(rec.id);});
+    })(r);
+    list.appendChild(d);
+  });
+  var cnt=document.createElement('div');cnt.style='text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.25);padding:0.8rem 0';cnt.textContent=Math.min(data.length,50)+' de '+data.length+' tiempos';list.appendChild(cnt);
+}
+function toMs(t){var p=t.split(':');if(p.length===2){var s=p[1].split('.');return(+p[0])*60000+(+s[0])*1000+(+(s[1]||0))*10;}var s=p[0].split('.');return(+s[0])*1000+(+(s[1]||0))*10;}
+function addRankTime(){
+  var sw=document.getElementById('r-swimmer').value.trim();
+  var gn=document.getElementById('r-gender').value;var ct=document.getElementById('r-cat').value;
+  var di=+document.getElementById('r-dist').value;var st=document.getElementById('r-style').value;
+  var ti=document.getElementById('r-time').value.trim();var co=document.getElementById('r-comp').value.trim();var yr=+document.getElementById('r-year').value;
+  if(!sw||!ti||!co||!yr){alert('Completa todos los campos');return;}
+  var id='r'+Date.now();
+  db.ref('ranking/'+id).set({id:id,swimmer:sw,gender:gn,cat:ct,dist:di,style:st,time:ti,timeMs:toMs(ti),comp:co,year:yr});
+  alert('Tiempo agregado');['r-swimmer','r-time','r-comp','r-year'].forEach(function(f){document.getElementById(f).value='';});loadRanking();
+}
+function importBulk(){
+  var text=document.getElementById('bulk-input').value.trim();if(!text){alert('Pega los tiempos primero');return;}
+  var lines=text.split('\n').filter(function(l){return l.trim();});var ok=0,errs=[];
+  var ps=lines.map(function(line,idx){
+    var p=line.split(',').map(function(x){return x.trim();});
+    if(p.length<8){errs.push('Linea '+(idx+1));return null;}
+    var id='r'+Date.now()+idx;ok++;
+    return db.ref('ranking/'+id).set({id:id,swimmer:p[0],gender:p[1].toUpperCase(),cat:p[2],dist:+p[3],style:p[4],time:p[5],timeMs:toMs(p[5]),comp:p[6],year:+p[7]});
+  });
+  Promise.all(ps.filter(Boolean)).then(function(){
+    var r=document.getElementById('bulk-result');r.style.display='block';r.style.color=errs.length?'#eab308':'#22c55e';
+    r.textContent=ok+' importados'+(errs.length?' - Errores: '+errs.join(', '):'');
+    if(ok>0){document.getElementById('bulk-input').value='';loadRanking();}
+  });
+}
+function delRank(id){if(!isCoach)return;if(!confirm('Eliminar?'))return;db.ref('ranking/'+id).remove().then(function(){loadRanking();});}
+
+// DIPLOMA
+function drawDip(cv,datos,W,H){
+  cv.width=W;cv.height=H;var ctx=cv.getContext('2d');
+  function render(logo){
+    var bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#041225');bg.addColorStop(1,'#0a2a4a');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='#b8860b';ctx.lineWidth=6;ctx.strokeRect(14,14,W-28,H-28);
+    ctx.strokeStyle='rgba(184,134,11,0.4)';ctx.lineWidth=2;ctx.strokeRect(24,24,W-48,H-48);
+    var cr=function(x,y,rx,ry){ctx.strokeStyle='#ffd700';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y+ry);ctx.lineTo(x,y);ctx.lineTo(x+rx,y);ctx.stroke();};
+    cr(30,30,30,30);cr(W-30,30,-30,30);cr(30,H-30,30,-30);cr(W-30,H-30,-30,-30);
+    if(logo){var ls=Math.round(W*0.08);ctx.save();ctx.beginPath();ctx.arc(62+ls/2,42+ls/2,ls/2+4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#b8860b';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.arc(62+ls/2,42+ls/2,ls/2,0,Math.PI*2);ctx.clip();ctx.drawImage(logo,62,42,ls,ls);ctx.restore();}
+    ctx.strokeStyle='rgba(184,134,11,0.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(50,Math.round(H*0.2));ctx.lineTo(W-50,Math.round(H*0.2));ctx.stroke();
+    ctx.fillStyle='#38bdf8';ctx.font='bold '+Math.round(W*0.026)+'px system-ui';ctx.textAlign='center';ctx.fillText('LAGUNA SWIM INTERNATIONAL',W/2,Math.round(H*0.115));
+    ctx.fillStyle='rgba(255,215,0,0.7)';ctx.font='italic '+Math.round(W*0.016)+'px system-ui';ctx.fillText('"Fuertes y Valientes" - Josue 1:9',W/2,Math.round(H*0.155));
+    ctx.fillStyle='#ffd700';ctx.font='bold '+Math.round(W*0.037)+'px system-ui';ctx.fillText('DIPLOMA DE PARTICIPACION',W/2,Math.round(H*0.265));
+    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font=Math.round(W*0.018)+'px system-ui';ctx.fillText('Se otorga a:',W/2,Math.round(H*0.32));
+    var nf=Math.round(W*0.042);ctx.font='bold '+nf+'px system-ui';
+    while(ctx.measureText(datos.nombre).width>W-180&&nf>16){nf--;ctx.font='bold '+nf+'px system-ui';}
+    ctx.fillStyle='#fff';ctx.fillText(datos.nombre,W/2,Math.round(H*0.398));
+    var nw=ctx.measureText(datos.nombre).width;ctx.strokeStyle='rgba(56,189,248,0.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(W/2-nw/2,Math.round(H*0.41));ctx.lineTo(W/2+nw/2,Math.round(H*0.41));ctx.stroke();
+    ctx.fillStyle='#38bdf8';ctx.font='bold '+Math.round(W*0.021)+'px system-ui';ctx.fillText(datos.evento,W/2,Math.round(H*0.462));
+    ctx.fillStyle='rgba(255,255,255,0.55)';ctx.font=Math.round(W*0.017)+'px system-ui';ctx.fillText((datos.comp||'Laguna Swim')+' - '+datos.fecha,W/2,Math.round(H*0.496));
+    ctx.strokeStyle='rgba(184,134,11,0.3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(50,Math.round(H*0.528));ctx.lineTo(W-50,Math.round(H*0.528));ctx.stroke();
+    var bW=Math.round(W*0.27),bH=Math.round(H*0.165),gap=Math.round(W*0.042);var tW=2*bW+gap;var bx=[(W-tW)/2,(W-tW)/2+bW+gap];var by=Math.round(H*0.546);
+    var blq=function(x,t,v,s,col){
+      ctx.fillStyle='rgba(255,255,255,0.04)';ctx.strokeStyle=col+'55';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(x+8,by);ctx.lineTo(x+bW-8,by);ctx.arcTo(x+bW,by,x+bW,by+8,8);ctx.lineTo(x+bW,by+bH-8);ctx.arcTo(x+bW,by+bH,x+bW-8,by+bH,8);ctx.lineTo(x+8,by+bH);ctx.arcTo(x,by+bH,x,by+bH-8,8);ctx.lineTo(x,by+8);ctx.arcTo(x,by,x+8,by,8);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font=Math.round(W*0.014)+'px system-ui';ctx.textAlign='center';ctx.fillText(t,x+bW/2,by+Math.round(bH*0.22));
+      ctx.fillStyle=col;ctx.font='bold '+Math.round(W*0.036)+'px system-ui';ctx.fillText(v,x+bW/2,by+Math.round(bH*0.62));
+      ctx.fillStyle='rgba(255,255,255,0.35)';ctx.font=Math.round(W*0.013)+'px system-ui';ctx.fillText(s,x+bW/2,by+Math.round(bH*0.86));
+    };
+    blq(bx[0],'TIEMPO OFICIAL',datos.tiempo,'Registro cronometrado','#38bdf8');
+    blq(bx[1],'POSICION',datos.pos+' de '+datos.total,'en esta prueba','#ffd700');
+    ctx.strokeStyle='rgba(184,134,11,0.3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(50,Math.round(H*0.848));ctx.lineTo(W-50,Math.round(H*0.848));ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font='bold '+Math.round(W*0.017)+'px system-ui';ctx.textAlign='left';ctx.fillText('Sergio Elias Villarreal Limas',60,Math.round(H*0.893));
+    ctx.fillStyle='rgba(255,255,255,0.35)';ctx.font=Math.round(W*0.014)+'px system-ui';ctx.fillText('Entrenador - Laguna Swim International',60,Math.round(H*0.921));ctx.fillText('Mas de 30 anos de experiencia en natacion de elite',60,Math.round(H*0.949));
+    ctx.textAlign='right';ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font=Math.round(W*0.014)+'px system-ui';ctx.fillText('Emitido: '+datos.fecha,W-60,Math.round(H*0.893));
+    ctx.fillStyle='#38bdf8';ctx.font='bold '+Math.round(W*0.014)+'px system-ui';ctx.fillText('lagunaswim.net',W-60,Math.round(H*0.921));
+    ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font=Math.round(W*0.012)+'px system-ui';ctx.fillText('Folio: LS-'+datos.dist+String(datos.style||'').substring(0,2).toUpperCase()+'-'+String(Date.now()).slice(-6),W-60,Math.round(H*0.949));
+  }
+  var img=new Image();img.crossOrigin='anonymous';img.onload=function(){render(img);};img.onerror=function(){render(null);};img.src=LOGO;
+}
+function openDip(datos){
+  dipData=datos;
+  document.getElementById('dip-pos').textContent=datos.pos+'';
+  document.getElementById('dip-total').textContent='de '+(datos.total||'—');
+  drawDip(document.getElementById('dip-preview'),datos,700,495);
+  document.getElementById('dip-email').value='';
+  document.getElementById('diploma-modal').classList.remove('modal-hidden');
+}
+function openDipRanking(r){
+  var gl=rankData.filter(function(x){return x.dist==r.dist&&x.style===r.style&&x.gender===r.gender;}).sort(function(a,b){return a.timeMs-b.timeMs;});
+  var pos=gl.findIndex(function(x){return x.id===r.id;})+1;
+  var cl=CATS[r.cat]||r.cat;var gn=r.gender==='M'?'Varonil':'Femenil';
+  var datos={nombre:r.swimmer,tiempo:r.time,pos:pos,total:gl.length,evento:r.dist+'m '+r.style+' - '+cl+' - Rama '+gn,comp:r.comp,dist:r.dist,style:r.style,fecha:new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'})};
+  openDip(datos);
+}
+function openDipInt(encoded){
+  var datos=JSON.parse(decodeURIComponent(encoded));
+  openDip(datos);
+}
+function closeDipModal(){document.getElementById('diploma-modal').classList.add('modal-hidden');dipData=null;}
+function pagarDip(){
+  var email=document.getElementById('dip-email').value.trim();if(!email||!email.includes('@')){alert('Ingresa tu correo');return;}if(!dipData)return;
+  closeDipModal();
+  var cv=document.getElementById('dip-full');
+  drawDip(cv,dipData,1122,794);
+  setTimeout(function(){
+    try{var pdf=new window.jspdf.jsPDF({orientation:'landscape',unit:'px',format:[1122,794],hotfixes:['px_scaling']});pdf.addImage(cv.toDataURL('image/jpeg',0.95),'JPEG',0,0,1122,794);pdf.save('Diploma_'+dipData.nombre.replace(/\s+/g,'_')+'.pdf');}
+    catch(e){cv.toBlob(function(blob){var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Diploma_'+dipData.nombre.replace(/\s+/g,'_')+'.png';a.click();URL.revokeObjectURL(url);});}
+    alert('Diploma generado para '+dipData.nombre);
+  },400);
 }
 
-function generarEntreno() {
-  const nombre = document.getElementById('wk-nombre').value || "Nadador";
-  const distancia = document.getElementById('wk-dist').value;
-  const nivel = document.getElementById('wk-level').value;
-  
-  const texto = `🏊‍♂️ ENTRENAMIENTO PARA ${nombre}\n\nCALENTAMIENTO: 200m suave\nTÉCNICA: 4x50m\nSERIE: 8x100m descanso 20"\nENFRIAMIENTO: 200m\n\nTotal: ${distancia}m\nNivel: ${nivel}`;
-  
-  const div = document.getElementById('wk-result');
-  div.innerHTML = `<pre style="white-space:pre-wrap">${texto}</pre>`;
-  div.style.display = 'block';
-}
+// TIENDA
+function buyBook(id){curBook=BOOKS[id];if(!curBook)return;document.getElementById('pay-title').textContent=curBook.title;document.getElementById('pay-amount').textContent='$'+curBook.price+' MXN';document.getElementById('pay-email').value='';document.getElementById('pay-modal').classList.remove('modal-hidden');}
+function doPay(){var em=document.getElementById('pay-email').value.trim();if(!em||!em.includes('@')){alert('Ingresa tu correo');return;}if(!curBook)return;closePayModal();alert('Pago registrado! Configura MercadoPago Access Token para cobro real.');}
+function closePayModal(){document.getElementById('pay-modal').classList.add('modal-hidden');}
+// AGUAS ABIERTAS OW
+var OA_EVENTS = {
+  cr25:{titulo:'Ocean Man Guanacaste',lugar:'Playa Panama, Guanacaste, Costa Rica',bandera:'&#127464;&#127479;',fecha:'13-14 Diciembre 2025',equipo:'Laguna Swim OW &amp; SW · Mexico',nota:'10 pases al Campeonato Mundial Ocean Man',
+    stats:[{txt:'10 pases al mundial',cls:'gold'},{txt:'Relevos 2do y 3er lugar',cls:'silver'},{txt:'10 atletas',cls:'info'}],
+    secciones:[
+      {label:'PASES AL MUNDIAL — TOP 10 EN CATEGORIA',rows:[
+        {pos:'1',medal:1,name:'Elena Ontiveros',cat:'OceanKids U11 Femenil',prueba:'OceanKids',tiempo:'00:09:05',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'1',medal:1,name:'Barbara Acosta Gallegos',cat:'OceanKids U13 Femenil',prueba:'OceanKids',tiempo:'00:09:23',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'7',medal:0,name:'Luisa Fernanda Silva Reyes',cat:'Oceanman Femenil 20-29',prueba:'Oceanman 10km',tiempo:'04:37:58',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'8',medal:0,name:'Renata Elisa Magadan Hernandez',cat:'Sprint Junior Femenil',prueba:'Sprint',tiempo:'00:36:09',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'8',medal:0,name:'Marian Sofia Lopez Reyes',cat:'Half Oceanman Junior Femenil',prueba:'Half Oceanman',tiempo:'02:04:41',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'9',medal:0,name:'Hector Ali Reyes Herrera',cat:'OceanKids U11 Varonil',prueba:'OceanKids',tiempo:'00:11:16',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'10',medal:0,name:'Victoria Ontiveros',cat:'Sprint Junior Femenil',prueba:'Sprint',tiempo:'00:37:51',src:'pdf',pais:'&#127464;&#127479; Costa Rica'}
+      ]},
+      {label:'RELEVOS OCEANTEAMS — PODIO',rows:[
+        {pos:'2',medal:2,name:'Laguna Swim Fem 1',cat:'Relevo Femenil',prueba:'OceanTeams',tiempo:'—',src:'doc',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'3',medal:3,name:'Laguna Swim Fem 2',cat:'Relevo Femenil',prueba:'OceanTeams',tiempo:'—',src:'doc',pais:'&#127464;&#127479; Costa Rica'}
+      ]},
+      {label:'OTRAS DESTACADAS PARTICIPACIONES',rows:[
+        {pos:'12',medal:0,name:'Sebastian Valles',cat:'Sprint Junior Varonil',prueba:'Sprint',tiempo:'00:34:39',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'13',medal:0,name:'Matteo Reyes Plata',cat:'Sprint Junior Varonil',prueba:'Sprint',tiempo:'00:58:01',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'13',medal:0,name:'Juan Luis Gutierrez',cat:'Oceanman Master 40-49 Varonil',prueba:'Oceanman',tiempo:'03:38:07',src:'pdf',pais:'&#127464;&#127479; Costa Rica'},
+        {pos:'40',medal:0,name:'Sergio Villarreal',cat:'Half Oceanman Master 40-49 Varonil',prueba:'Half Oceanman',tiempo:'02:02:46',src:'pdf',pais:'&#127464;&#127479; Costa Rica'}
+      ]}
+    ]
+  },
+  orta25:{titulo:'Ocean Man Lago D\'Orta',lugar:'Lago D\'Orta, Italia',bandera:'&#127470;&#127481;',fecha:'Junio 2025',equipo:'Laguna Swim International · Mexico',nota:'Primera experiencia europea — pases al Mundial desde Italia',
+    stats:[{txt:'Pases al mundial',cls:'gold'},{txt:'5 atletas',cls:'info'},{txt:'3 pruebas',cls:'info'}],
+    secciones:[
+      {label:'PASES AL MUNDIAL — TOP 10 EN CATEGORIA',rows:[
+        {pos:'3',medal:3,name:'Jesus Antonio Delgado Hernandez',cat:'OceanKids U11 Varonil',prueba:'OceanKids',tiempo:'00:15:35',src:'pdf',pais:'&#127470;&#127481; Italia'},
+        {pos:'6',medal:0,name:'Marian Sofia Lopez Reyes',cat:'Sprint Junior Femenil',prueba:'Sprint',tiempo:'00:44:04',src:'pdf',pais:'&#127470;&#127481; Italia'},
+        {pos:'7',medal:0,name:'Zoe Israel Galindo Vega',cat:'Sprint Junior Varonil',prueba:'Sprint',tiempo:'00:34:53',src:'pdf',pais:'&#127470;&#127481; Italia'}
+      ]},
+      {label:'OTRAS DESTACADAS PARTICIPACIONES',rows:[
+        {pos:'12',medal:0,name:'Sebastian Valles',cat:'Sprint Junior Varonil',prueba:'Sprint',tiempo:'00:34:39',src:'pdf',pais:'&#127470;&#127481; Italia'},
+        {pos:'28',medal:0,name:'Juan Luis Gutierrez',cat:'Half Oceanman Master 40-49 Varonil',prueba:'Half Oceanman 4.5km',tiempo:'02:08:35',src:'pdf',pais:'&#127470;&#127481; Italia'},
+        {pos:'43',medal:0,name:'Sergio Elias Villarreal Limas',cat:'Half Oceanman Master 40-49 Varonil',prueba:'Half Oceanman 4.5km',tiempo:'02:25:49',src:'pdf',pais:'&#127470;&#127481; Italia'}
+      ]}
+    ]
+  },
+  tt24:{titulo:'IX Panamericano Masters de Natacion',lugar:'Couva, Trinidad y Tobago',bandera:'&#127481;&#127481;',fecha:'Julio 2024 · Piscina 50m + Aguas Abiertas 3K',equipo:'Jefferson · Mexico',nota:'10mo lugar por equipos como Jefferson · Mas de 50 medallas entre Colombia 2022 y Trinidad 2024',
+    stats:[{txt:'1er lugar OA F18-24',cls:'gold'},{txt:'2do lugar OA M40-44',cls:'silver'},{txt:'Multiples podios piscina',cls:'info'}],
+    secciones:[
+      {label:'PODIOS — PISCINA 50m LCM',rows:[
+        {pos:'1',medal:1,name:'Luisa Fernanda Silva Reyes',cat:'F18-24 · 50m Libre',prueba:'Piscina 50m LCM',tiempo:'31.25',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'1',medal:1,name:'Luisa Fernanda Silva Reyes',cat:'F18-24 · 100m Libre',prueba:'Piscina 50m LCM',tiempo:'1:10.98',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'1',medal:1,name:'Shara Sanchez',cat:'F30-34 · 50m Pecho',prueba:'Piscina 50m LCM',tiempo:'45.45',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'2',medal:2,name:'Sergio Mercado Hernandez',cat:'M45-49 · 200m Combinado',prueba:'Piscina 50m LCM',tiempo:'3:01.01',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'4',medal:0,name:'Pamela Urista',cat:'F30-34 · 200m Dorso',prueba:'Piscina 50m LCM',tiempo:'3:30.14',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'6',medal:0,name:'Leticia Samaniego Rios',cat:'F55-59 · 100m Libre',prueba:'Piscina 50m LCM',tiempo:'2:00.13',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'7',medal:0,name:'Sergio Mercado Hernandez',cat:'M45-49 · 100m Libre',prueba:'Piscina 50m LCM',tiempo:'1:12.82',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'9',medal:0,name:'Sergio Villarreal',cat:'M40-44 · 50m Libre',prueba:'Piscina 50m LCM',tiempo:'32.64',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'10',medal:0,name:'Shara Sanchez',cat:'F30-34 · 50m Libre',prueba:'Piscina 50m LCM',tiempo:'37.37',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'4',medal:0,name:'Juan Luis Gutierrez',cat:'M40-44 · 200m Combinado',prueba:'Piscina 50m LCM',tiempo:'3:17.06',src:'doc',pais:'&#127481;&#127481; Trinidad y Tobago'}
+      ]},
+      {label:'AGUAS ABIERTAS 3K — RESULTADOS OFICIALES',rows:[
+        {pos:'1',medal:1,name:'Luisa Fernanda Silva Reyes',cat:'F18-24',prueba:'3K Aguas Abiertas',tiempo:'1:16:40',src:'pdf',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'2',medal:2,name:'Juan Luis Gutierrez',cat:'M40-44',prueba:'3K Aguas Abiertas',tiempo:'1:32:36',src:'pdf',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'7',medal:0,name:'Sergio Mercado Hernandez',cat:'M45-49',prueba:'3K Aguas Abiertas',tiempo:'1:17:22',src:'pdf',pais:'&#127481;&#127481; Trinidad y Tobago'},
+        {pos:'DNF',medal:0,name:'Sergio Villarreal',cat:'M40-44',prueba:'3K Aguas Abiertas',tiempo:'DNF',src:'pdf',pais:'&#127481;&#127481; Trinidad y Tobago'}
+      ]}
+    ]
+  },
+  col22:{titulo:'VIII Panamericano Masters de Natacion',lugar:'Medellin, Colombia',bandera:'&#127464;&#127476;',fecha:'Julio 2022 · Piscina 50m',equipo:'Holy Life Club (Jefferson) · Mexico',nota:'11 atletas representando a Mexico en su primer Panamericano',
+    stats:[{txt:'3 oros Brenda Gutierrez',cls:'gold'},{txt:'Plata Daniela Olivas',cls:'silver'},{txt:'Bronce Alfredo Gonzalez',cls:'bronze'}],
+    secciones:[
+      {label:'MEDALLAS Y PODIOS',rows:[
+        {pos:'1',medal:1,name:'Brenda Gutierrez Izquierdo',cat:'F30-34 · 50m Pecho',prueba:'Piscina 50m LCM',tiempo:'~38.82',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'1',medal:1,name:'Brenda Gutierrez Izquierdo',cat:'F30-34 · 100m Pecho',prueba:'Piscina 50m LCM',tiempo:'~1:30.34',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'1',medal:1,name:'Brenda Gutierrez Izquierdo',cat:'F30-34 · 200m Pecho',prueba:'Piscina 50m LCM',tiempo:'~3:20.99',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'2',medal:2,name:'Daniela Olivas',cat:'F18-24 · 200m Libre',prueba:'Piscina 50m LCM',tiempo:'2:58.35',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'3',medal:3,name:'Alfredo Gonzalez Gonzalez',cat:'H35-39 · 400m Combinado',prueba:'Piscina 50m LCM',tiempo:'5:31.08',src:'pdf',pais:'&#127464;&#127476; Colombia'}
+      ]},
+      {label:'OTRAS DESTACADAS PARTICIPACIONES',rows:[
+        {pos:'4',medal:0,name:'Alfredo Gonzalez Gonzalez',cat:'H35-39 · 200m Mariposa',prueba:'Piscina 50m LCM',tiempo:'2:41.13',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'4',medal:0,name:'Alfredo Gonzalez Gonzalez',cat:'H35-39 · 200m Combinado',prueba:'Piscina 50m LCM',tiempo:'2:35.72',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'4',medal:0,name:'Veronica J. Villarreal Limas',cat:'F35-39 · 400m Combinado',prueba:'Piscina 50m LCM',tiempo:'7:15.04',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'4',medal:0,name:'Norm Izquierdo de Gutierrez',cat:'F55-59 · 50m Pecho',prueba:'Piscina 50m LCM',tiempo:'54.58',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'5',medal:0,name:'Brenda Gutierrez Izquierdo',cat:'F30-34 · 50m Mariposa',prueba:'Piscina 50m LCM',tiempo:'35.77',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'5',medal:0,name:'Stephan Gutierrez Izquierdo',cat:'H18-24 · 50m Mariposa',prueba:'Piscina 50m LCM',tiempo:'39.72',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'5',medal:0,name:'Stephan Gutierrez Izquierdo',cat:'H18-24 · 50m Pecho',prueba:'Piscina 50m LCM',tiempo:'~44.00',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'6',medal:0,name:'Luisa Fernanda Silva Reyes',cat:'F18-24 · 50m Libre',prueba:'Piscina 50m LCM',tiempo:'~32.63',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'6',medal:0,name:'Leticia Samaniego Rios',cat:'F55-59 · 200m Libre',prueba:'Piscina 50m LCM',tiempo:'4:42.94',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'7',medal:0,name:'Daniela Olivas',cat:'F18-24 · 50m Pecho',prueba:'Piscina 50m LCM',tiempo:'48.18',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'9',medal:0,name:'Stephan Gutierrez Izquierdo',cat:'H18-24 · 50m Libre',prueba:'Piscina 50m LCM',tiempo:'33.24',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'13',medal:0,name:'Juan Luis Gutierrez',cat:'H40-44 · 200m Pecho',prueba:'Piscina 50m LCM',tiempo:'3:51.56',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'15',medal:0,name:'Luisa Fernanda Silva Reyes',cat:'F18-24 · 100m Libre',prueba:'Piscina 50m LCM',tiempo:'~1:12.58',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'16',medal:0,name:'Juan Luis Gutierrez',cat:'H40-44 · 800m Libre',prueba:'Piscina 50m LCM',tiempo:'11:53.27',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'17',medal:0,name:'Sergio Villarreal',cat:'H40-44 · 200m Libre',prueba:'Piscina 50m LCM',tiempo:'3:05.83',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'17',medal:0,name:'Daniel Alejandro Galvan',cat:'H30-34 · 50m Pecho',prueba:'Piscina 50m LCM',tiempo:'~39.34',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'18',medal:0,name:'Juan Luis Gutierrez',cat:'H40-44 · 50m Pecho',prueba:'Piscina 50m LCM',tiempo:'41.33',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'19',medal:0,name:'Sergio Villarreal',cat:'H40-44 · 50m Pecho',prueba:'Piscina 50m LCM',tiempo:'43.38',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'15',medal:0,name:'Sergio Villarreal',cat:'H40-44 · 50m Mariposa',prueba:'Piscina 50m LCM',tiempo:'41.09',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'4',medal:0,name:'Luisa Fernanda Silva Reyes',cat:'F18-24 · 400m Combinado',prueba:'Piscina 50m LCM',tiempo:'7:29.87',src:'pdf',pais:'&#127464;&#127476; Colombia'},
+        {pos:'4',medal:0,name:'Veronica J. Villarreal Limas',cat:'F35-39 · 100m Pecho',prueba:'Piscina 50m LCM',tiempo:'1:39.02',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'4',medal:0,name:'Juan Luis Gutierrez',cat:'H40-44 · 400m Libre',prueba:'Piscina 50m LCM',tiempo:'6:23.68',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'4',medal:0,name:'Norm Izquierdo de Gutierrez',cat:'F55-59 · 100m Pecho',prueba:'Piscina 50m LCM',tiempo:'2:13.54',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'NS',medal:0,name:'Alfredo Gonzalez Gonzalez',cat:'H35-39 · 200m Espalda',prueba:'Piscina 50m LCM',tiempo:'NS',src:'sec',pais:'&#127464;&#127476; Colombia'},
+        {pos:'DQ',medal:0,name:'Daniela Olivas',cat:'F18-24 · 800m Libre',prueba:'Piscina 50m LCM',tiempo:'DQ',src:'sec',pais:'&#127464;&#127476; Colombia'}
+      ]}
+    ]
+  }
+};
 
-// ===== TIENDA =====
-function buyBookDemo() {
-  alert("📚 Modo demostración\nContacta a Sergio por WhatsApp para comprar.");
+var oaActivo='cr25';
+function oaTab(id,btn){
+  oaActivo=id;
+  document.querySelectorAll('#oa-tabs button').forEach(function(b){b.style.background='rgba(255,255,255,0.06)';b.style.borderColor='rgba(255,255,255,0.15)';b.style.color='rgba(255,255,255,0.5)';});
+  btn.style.background='rgba(56,189,248,0.15)';btn.style.borderColor='#38bdf8';btn.style.color='#38bdf8';
+  renderOA();
 }
+function renderOA(){
+  var ev=OA_EVENTS[oaActivo];
+  var c=document.getElementById('oa-content');
+  if(!ev||!c)return;
+  function mI(m){if(m===1)return'&#127941;';if(m===2)return'&#129352;';if(m===3)return'&#129353;';return'';}
+  function rS(m,pos){
+    if(m===1)return'background:rgba(184,134,11,0.1);border:1px solid rgba(255,215,0,0.4)';
+    if(m===2)return'background:rgba(192,192,192,0.08);border:1px solid rgba(192,192,192,0.25)';
+    if(m===3)return'background:rgba(205,127,50,0.08);border:1px solid rgba(205,127,50,0.25)';
+    if(pos==='DQ'||pos==='NS'||pos==='DNF')return'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);opacity:0.65';
+    return'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07)';
+  }
+  function tC(m){if(m===1)return'#ffd700';if(m===2)return'#c0c0c0';if(m===3)return'#cd7f32';return'#38bdf8';}
+  function sB(s){
+    if(s==='pdf'||s==='doc')return'<span style="font-size:0.55rem;background:rgba(34,197,94,0.12);color:#22c55e;border-radius:4px;padding:1px 5px;margin-left:4px">PDF oficial</span>';
+    return'<span style="font-size:0.55rem;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);border-radius:4px;padding:1px 5px;margin-left:4px">Swimcloud</span>';
+  }
+  function sP(s){
+    var bg,col;
+    if(s.cls==='gold'){bg='rgba(255,215,0,0.1)';col='#ffd700';}
+    else if(s.cls==='silver'){bg='rgba(192,192,192,0.1)';col='#c0c0c0';}
+    else if(s.cls==='bronze'){bg='rgba(205,127,50,0.1)';col='#cd7f32';}
+    else{bg='rgba(56,189,248,0.1)';col='#38bdf8';}
+    return'<span style="font-size:0.63rem;font-weight:700;padding:2px 9px;border-radius:20px;background:'+bg+';color:'+col+';border:1px solid '+col+'44;display:inline-block;margin-bottom:3px">'+s.txt+'</span>';
+  }
+  function dB(r,ev){
+    if(r.tiempo==='—'||r.tiempo==='DQ'||r.tiempo==='NS'||r.tiempo==='DNF')return'';
+    var datos={nombre:r.name,tiempo:r.tiempo,pos:r.pos,total:'—',evento:r.prueba+' · '+r.cat,comp:ev.titulo+' · '+ev.lugar+' · '+ev.fecha,dist:'',style:'',fecha:ev.fecha};
+    return'<button onclick="openDipInt(\''+encodeURIComponent(JSON.stringify(datos))+'\')" style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:7px;padding:4px 9px;font-size:0.62rem;font-weight:800;cursor:pointer;margin-top:3px;display:block">Diploma</button>';
+  }
+  var h='';
+  h+='<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:0.9rem 1rem;margin-bottom:0.8rem">';
+  h+='<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:3px"><span style="font-size:1.3rem">'+ev.bandera+'</span><div style="font-size:0.95rem;font-weight:800;color:#fff">'+ev.titulo+'</div></div>';
+  h+='<div style="font-size:0.7rem;color:#7ab8e8;margin-bottom:1px">'+ev.lugar+'</div>';
+  h+='<div style="font-size:0.7rem;color:#7ab8e8;margin-bottom:4px">'+ev.fecha+'</div>';
+  h+='<div style="font-size:0.68rem;color:rgba(255,255,255,0.35);margin-bottom:0.6rem">'+ev.equipo+'</div>';
+  if(ev.nota)h+='<div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:0.4rem 0.7rem;font-size:0.7rem;color:#ffd700;margin-bottom:0.6rem">&#9733; '+ev.nota+'</div>';
+  h+='<div style="display:flex;gap:5px;flex-wrap:wrap">';
+  ev.stats.forEach(function(s){h+=sP(s);});
+  h+='</div></div>';
+  ev.secciones.forEach(function(sec){
+    h+='<div style="font-size:0.61rem;color:#7ab8e8;letter-spacing:1.5px;font-weight:700;margin:0.7rem 0 0.4rem">'+sec.label+'</div>';
+    sec.rows.forEach(function(r){
+      var posColor=(r.pos==='DQ'||r.pos==='NS'||r.pos==='DNF')?'#ef4444':'rgba(255,255,255,0.3)';
+      h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:10px;margin-bottom:4px;'+rS(r.medal,r.pos)+'">';
+      if(r.medal){h+='<div style="font-size:1.1rem;width:26px;text-align:center;flex-shrink:0;padding-top:1px">'+mI(r.medal)+'</div>';}
+      else{h+='<div style="font-size:0.72rem;font-weight:700;width:26px;text-align:center;flex-shrink:0;color:'+posColor+';padding-top:2px">'+r.pos+'.</div>';}
+      h+='<div style="flex:1;min-width:0">';
+      h+='<div style="font-weight:700;font-size:0.82rem;line-height:1.3">'+r.name+sB(r.src)+'</div>';
+      h+='<div style="font-size:0.67rem;color:#7ab8e8;margin-top:2px">'+r.cat+'</div>';
+      h+='<div style="font-size:0.65rem;color:rgba(255,255,255,0.3);margin-top:1px">'+r.prueba+'</div>';
+      h+='<div style="font-size:0.65rem;color:rgba(255,255,255,0.22);margin-top:1px">'+r.pais+'</div>';
+      h+=dB(r,ev);
+      h+='</div>';
+      h+='<div style="font-size:0.88rem;font-weight:800;color:'+tC(r.medal)+';font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0;padding-top:2px">'+r.tiempo+'</div>';
+      h+='</div>';
+    });
+  });
+  c.innerHTML=h;
+}
+// WORKOUT
+var wkCfg={dryland:'basico',metros:'2000',nivel:'condicion',enfoque:'tecnica',alberca:'25'};
+var wkEstilos=new Set(['Libre']);
+var DRYLAND={
+  basico:'CALENTAMIENTO BASICO (5 min)\nRotaciones de cuello 10 reps\nCirculos de hombros 10 adelante + 10 atras\nEstiramiento de pecho 3x10 seg\nRotacion de caderas 10 cada lado\nActivacion de tobillos 10 reps\n10 sentadillas lentas',
+  intermedio:'CALENTAMIENTO INTERMEDIO (10 min)\nMovilidad dinamica cuello y hombros\n10-10-10 lagartijas progresivas\n10-10-10 sentadillas con salto\nStretch de pecho en pared 3x15 seg\nRotacion toracica en suelo 8 reps\nMedicine ball individual 20 seg\nPlancha de core 3x20 seg\n5x (3 jalones + pausa)',
+  avanzado:'CALENTAMIENTO AVANZADO (15 min)\nMovilidad fluida cuello-hombros-caderas 2 min\nMedicine ball individual build 25 seg\n10-10-10 lagartijas / 10-10-10 sentadillas / 10-5 abdominales\nMedicine ball en pareja build 25 seg\n(3-4 jalones + 5 sentadillas con salto + 1 min descanso) x 5\nStretch dinamico de hombros\nRotacion toracica profunda\nActivacion de tobillos 2 min\n5 respiraciones diafragmaticas'
+};
+var NVL={relajacion:'Nivel 1 Relajacion',mantenimiento:'Nivel 2 Mantenimiento',condicion:'Nivel 3 Condicion',entrenamiento:'Nivel 4 Entrenamiento',bestia:'Nivel 5 Modo Bestia'};
 
-// ===== INICIALIZACIÓN =====
-loadRanking();
-checkWorkoutAccess();
+function selWk(btn,group,val){
+  var pfx={dryland:'wkd',metros:'wkm',nivel:'wkn',enfoque:'wke',alberca:'wka'}[group];
+  document.querySelectorAll('[id^="'+pfx+'-"]').forEach(function(b){b.classList.remove('on','bestia');});
+  if(val==='bestia')btn.classList.add('bestia');else btn.classList.add('on');
+  wkCfg[group]=val;
+}
+function togEstilo(style){
+  if(style==='Combinado'){wkEstilos=new Set(['Libre','Dorso','Pecho','Mariposa','Combinado']);['Libre','Dorso','Pecho','Mariposa','Combinado'].forEach(function(s){var b=document.getElementById('wks-'+s);if(b)b.classList.add('on');});return;}
+  if(wkEstilos.has(style)){if(wkEstilos.size===1)return;wkEstilos.delete(style);var b=document.getElementById('wks-'+style);if(b)b.classList.remove('on');}
+  else{wkEstilos.add(style);var b=document.getElementById('wks-'+style);if(b)b.classList.add('on');wkEstilos.delete('Combinado');var bc=document.getElementById('wks-Combinado');if(bc)bc.classList.remove('on');}
+}
+function initWk(){
+  var lw=document.getElementById('wk-login-wall');var sw=document.getElementById('wk-subs-wall');var acc=document.getElementById('wk-acceso');
+  if(lw)lw.style.display='none';if(sw)sw.style.display='none';if(acc)acc.style.display='none';
+  if(!curUser){if(lw)lw.style.display='block';return;}
+  if(tieneAcceso()){if(acc)acc.style.display='block';updBadge();}
+  else{if(sw)sw.style.display='block';var info=document.getElementById('wk-user-info');if(info&&curUser)info.textContent='Cuenta: '+(curUser.displayName||curUser.email);}
+}
+function elegirModo(modo){
+  document.getElementById('wk-selector').style.display='none';
+  document.getElementById('wk-diario').style.display=modo==='diario'?'block':'none';
+  document.getElementById('wk-semanal').style.display=modo==='semanal'?'block':'none';
+}
+function volverSelector(){
+  document.getElementById('wk-selector').style.display='block';
+  document.getElementById('wk-diario').style.display='none';
+  document.getElementById('wk-semanal').style.display='none';
+  ['wk-config','wk-plan-config'].forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='block';});
+  ['wk-loading','wk-result','wk-plan-loading','wk-plan-result'].forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='none';});
+}
+function updBadge(){
+  var b=document.getElementById('wk-badge');if(!b||!curUser)return;
+  if(curUser.email===COACH){b.textContent='Entrenador Sergio - Acceso ilimitado';b.style.color='#38bdf8';return;}
+  if(curSubs){var dias=Math.max(0,Math.ceil((curSubs.activoHasta-Date.now())/86400000));b.textContent=curSubs.restantes+' entrenamientos - '+dias+' dias';b.style.color=curSubs.restantes>2?'#22c55e':'#eab308';}
+}
+function iniciarPago(){
+  if(!curUser){showCoachLogin();return;}
+  var uid=curUser.uid;var email=curUser.email;
+  var hasta=Date.now()+(7*24*60*60*1000);
+  var data={activoHasta:hasta,restantes:6,email:email,activadoEn:Date.now()};
+  db.ref('suscripciones/'+uid).set(data).then(function(){curSubs=data;alert('Suscripcion activada!\n6 entrenamientos por 7 dias.');initWk();});
+}
+async function generar(){
+  if(!curUser){showCoachLogin();return;}if(!tieneAcceso()){initWk();return;}
+  var nombre=(document.getElementById('wk-nombre')||{}).value||'';
+  if(!nombre.trim()){alert('Escribe tu nombre');return;}
+  var estilos=Array.from(wkEstilos).filter(function(e){return e!=='Combinado';}).join(', ');
+  var nivel=NVL[wkCfg.nivel];var metros=wkCfg.metros,alberca=wkCfg.alberca,enfoque=wkCfg.enfoque;
+  var dryland=DRYLAND[wkCfg.dryland];
+  metros=String(Math.round(parseInt(metros)/25)*25);
+  document.getElementById('wk-config').style.display='none';
+  document.getElementById('wk-loading').style.display='block';
+  document.getElementById('wk-result').style.display='none';
+  var msgs=['Aplicando 30 anos de experiencia...','Calculando zonas FC...','Distribuyendo series...','Integrando metodologia de elite...','Personalizando para '+nombre+'...','Finalizando...'];
+  var mi=0;var mInt=setInterval(function(){mi=(mi+1)%msgs.length;var e=document.getElementById('wk-loading-msg');if(e)e.textContent=msgs[mi];},1800);
+  var prompt='Eres el sistema generador de entrenamientos de Laguna Swim International, creado por Sergio Elias Villarreal Limas, entrenador con mas de 30 anos de experiencia en natacion de alto rendimiento internacional, mas de 60 medallas panamericanas Masters y con nadadores en competencias mundiales incluyendo Olimpicos.\n\nPARAMETROS DEL ENTRENAMIENTO A GENERAR:\nNadador: '+nombre+'\nAlberca: '+alberca+'m | Metros totales: '+metros+'m | Estilos: '+estilos+' | Nivel: '+nivel+' | Enfoque: '+enfoque+'\n\nFORMATO OBLIGATORIO:\nNOMBRE: [nombre creativo] para '+nombre+'\nTOTAL: '+metros+'m | Alberca '+alberca+'m | '+nivel+'\n\nCALENTAMIENTO EN AGUA:\n[series]\nSubtotal: Xm\n\nKICK Y TECNICA:\n[drills]\nSubtotal: Xm\n\nBLOQUE PRINCIPAL:\n[series con tiempos de salida, zonas FC]\nSubtotal: Xm\n\nENFRIAMIENTO ACTIVO:\n[aletas + dorso suave]\nSubtotal: Xm\n\nSERGIO DICE: [consejo tecnico motivador]\n\nREGLAS: metros multiplos de 25, suma exacta de '+metros+'m, tiempos de salida reales.';
+  try{
+    var res=await fetch('https://laguna-api.checoswim.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2500,messages:[{role:'user',content:prompt}]})});
+    clearInterval(mInt);var data=await res.json();
+    var text=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:'Error al generar.';
+    var html='';
+    text.split('\n').forEach(function(line){
+      var tl=line.trim();if(!tl){html+='<br>';return;}
+      if(tl.indexOf('NOMBRE:')===0){html+='<div style="font-size:0.95rem;font-weight:800;color:#ffd700;padding:0.8rem;background:rgba(255,215,0,0.06);border-radius:10px;border-left:3px solid #ffd700;margin-bottom:0.5rem">'+tl+'</div>';}
+      else if(tl.indexOf('TOTAL:')===0){html+='<div style="font-size:0.78rem;color:#7ab8e8;margin-bottom:0.8rem">'+tl+'</div>';}
+      else if(tl==='CALENTAMIENTO EN AGUA:'||tl==='KICK Y TECNICA:'||tl==='BLOQUE PRINCIPAL:'||tl==='ENFRIAMIENTO:'||tl==='ENFRIAMIENTO ACTIVO:'){html+='<div style="font-size:0.82rem;font-weight:700;color:#38bdf8;margin:1rem 0 0.4rem;padding-top:0.6rem;border-top:1px solid rgba(56,189,248,0.15)">'+tl+'</div>';}
+      else if(tl.indexOf('Subtotal:')===0){html+='<div style="font-size:0.72rem;color:#22c55e;font-weight:700;text-align:right;margin:2px 0 6px">'+tl+'</div>';}
+      else if(tl.indexOf('SERGIO DICE:')===0){html+='<div style="background:rgba(56,189,248,0.06);border-left:3px solid #38bdf8;padding:0.6rem 0.8rem;border-radius:0 8px 8px 0;margin-top:0.8rem;font-size:0.82rem;color:#7ab8e8;font-style:italic">'+tl+'</div>';}
+      else{html+='<div style="padding:2px 0 2px 0.5rem;border-left:2px solid rgba(56,189,248,0.2);margin-bottom:3px;font-size:0.83rem">'+tl+'</div>';}
+    });
+    var dryHtml='<div style="background:rgba(255,140,0,0.07);border:1px solid rgba(255,140,0,0.25);border-radius:12px;padding:0.9rem;margin-bottom:0.8rem">';
+    var dryLines=dryland.split('\n');
+    dryHtml+='<div style="font-size:0.8rem;font-weight:700;color:#ff8c00;margin-bottom:0.5rem">'+dryLines[0]+'</div>';
+    for(var di=1;di<dryLines.length;di++){dryHtml+='<div style="padding:2px 0 2px 0.5rem;border-left:2px solid rgba(255,140,0,0.4);margin-bottom:3px;font-size:0.8rem">'+dryLines[di]+'</div>';}
+    dryHtml+='</div>';
+    document.getElementById('wk-loading').style.display='none';
+    document.getElementById('wk-result').style.display='block';
+    document.getElementById('wk-title').textContent=nivel+' - '+metros+'m - '+nombre;
+    document.getElementById('wk-content').innerHTML=dryHtml+html;
+    window._wkText=dryland+'\n\n'+text;window._wkNombre=nombre;window._wkMeta={metros:metros,alberca:alberca,nivel:nivel};
+    if(curUser&&curUser.email!==COACH&&curSubs){curSubs.restantes=Math.max(0,curSubs.restantes-1);db.ref('suscripciones/'+curUser.uid).update({restantes:curSubs.restantes});updBadge();}
+  }catch(e){clearInterval(mInt);document.getElementById('wk-loading').style.display='none';document.getElementById('wk-config').style.display='block';alert('Error al generar: '+e.message);}
+}
+function resetWk(){document.getElementById('wk-result').style.display='none';document.getElementById('wk-loading').style.display='none';document.getElementById('wk-config').style.display='block';}
+function shareWk(){var t=window._wkText||'';if(!t){alert('No hay entrenamiento');return;}if(navigator.share){navigator.share({title:'Entrenamiento Laguna Swim',text:t}).catch(function(){});}else{navigator.clipboard.writeText(t).then(function(){alert('Copiado al portapapeles');});}}
+function pdfWk(){alert('PDF proximamente disponible.');}
+
+// PLAN SEMANAL
+var psTipo='carga',psVol='2500',psDias=new Set(['Lun','Mar','Mie','Jue','Vie']);
+function selPsTipo(btn,tipo){psTipo=tipo;['carga','afinacion','competencia','recuperacion'].forEach(function(t){var b=document.getElementById('pst-'+t);if(b)b.classList.remove('on');});btn.classList.add('on');}
+function selPsVol(btn,vol){psVol=vol;['2000','2500','3000','3200'].forEach(function(v){var b=document.getElementById('psv-'+v);if(b)b.classList.remove('on');});btn.classList.add('on');}
+function togPsDia(btn,dia){if(psDias.has(dia)){if(psDias.size<=1)return;psDias.delete(dia);btn.classList.remove('on');}else{psDias.add(dia);btn.classList.add('on');}}
+async function generarPlanSemanal(){
+  if(!curUser){showCoachLogin();return;}if(!tieneAcceso()){initWk();return;}
+  var nombre=(document.getElementById('ps-nombre').value||'Nadador').trim();
+  var edad=document.getElementById('ps-edad').value||'45';
+  var nivel=document.getElementById('ps-nivel').value;
+  var pruebaPrin=document.getElementById('ps-prueba-principal').value;
+  var objetivo=(document.getElementById('ps-objetivo').value||'Competencia Master').trim();
+  var enfasis=(document.getElementById('ps-enfasis').value||'').trim();
+  var diasArr=['Lun','Mar','Mie','Jue','Vie','Sab'].filter(function(d){return psDias.has(d);});
+  var tipoLabel={carga:'CARGA',afinacion:'AFINACION',competencia:'COMPETENCIA/TAPER',recuperacion:'POST-COMPETENCIA'}[psTipo];
+  var volNum=parseInt(psVol);var volTotal=volNum*diasArr.length;
+  document.getElementById('wk-plan-config').style.display='none';
+  document.getElementById('wk-plan-loading').style.display='block';
+  document.getElementById('wk-plan-result').style.display='none';
+  var msgs=['Calculando progresion...','Distribuyendo zonas...','Generando series...','Aplicando metodologia Laguna Swim...','Finalizando...'];
+  var mi=0;var mInt=setInterval(function(){mi=(mi+1)%msgs.length;var e=document.getElementById('wk-plan-loading-msg');if(e)e.textContent=msgs[mi];},2000);
+  var prompt='Eres entrenador profesional Laguna Swim. Genera plan semanal para:\nNombre: '+nombre+'\nEdad: '+edad+'\nNivel: '+nivel+'\nPrueba: '+pruebaPrin+'\nObjetivo: '+objetivo+'\nTipo semana: '+tipoLabel+'\nDias: '+diasArr.join(', ')+'\nVolumen: '+volNum+'m/sesion (Total: '+volTotal+'m)\n'+(enfasis?'Enfasis: '+enfasis+'\n':'')+'\nFormato:\nDIA: [nombre]\nTOTAL: '+volNum+'m\nTIERRA (10 min):\nCALENTAMIENTO: [X]m\nSERIE PRINCIPAL: [X]m\nENFRIAMIENTO: [X]m\nFRASE DEL DIA: "..."\n---\nAl final: RESUMEN SEMANAL y FRASE MOTIVACIONAL SEMANAL. Metros multiplos de 25.';
+  try{
+    var res=await fetch('https://laguna-api.checoswim.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:prompt}]})});
+    clearInterval(mInt);var data=await res.json();
+    var text=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:'Error generando el plan.';
+    var html='';
+    text.split('\n').forEach(function(line){
+      var tl=line.trim();if(!tl){html+='<br>';return;}
+      if(tl.indexOf('DIA:')===0||tl.indexOf('DIA ')===0){html+='<div style="font-size:1rem;font-weight:800;color:#ffd700;padding:0.8rem;background:rgba(255,215,0,0.06);border-radius:10px;border-left:3px solid #ffd700;margin:1rem 0 0.5rem">'+tl+'</div>';}
+      else if(tl.indexOf('TOTAL:')===0){html+='<div style="font-size:0.78rem;color:#38bdf8;font-weight:700;margin-bottom:0.4rem">'+tl+'</div>';}
+      else if(tl.indexOf('TIERRA')===0||tl.indexOf('CALENTAMIENTO')===0||tl.indexOf('SERIE PRINCIPAL')===0||tl.indexOf('ENFRIAMIENTO')===0){html+='<div style="font-size:0.82rem;font-weight:700;color:#38bdf8;margin:0.8rem 0 0.3rem;padding-top:0.5rem;border-top:1px solid rgba(56,189,248,0.15)">'+tl+'</div>';}
+      else if(tl.indexOf('FRASE')===0){html+='<div style="background:rgba(255,215,0,0.06);border-left:3px solid #ffd700;padding:0.5rem 0.8rem;border-radius:0 8px 8px 0;margin:0.5rem 0;font-size:0.82rem;color:#ffd700;font-style:italic">'+tl+'</div>';}
+      else if(tl==='---'){html+='<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:1rem 0">';}
+      else if(tl.indexOf('RESUMEN')===0){html+='<div style="font-size:0.9rem;font-weight:800;color:#22c55e;margin:1rem 0 0.4rem;padding-top:0.6rem;border-top:2px solid rgba(34,197,94,0.3)">'+tl+'</div>';}
+      else{html+='<div style="padding:2px 0 2px 0.5rem;border-left:2px solid rgba(56,189,248,0.15);margin-bottom:2px;font-size:0.82rem">'+tl+'</div>';}
+    });
+    document.getElementById('wk-plan-loading').style.display='none';
+    document.getElementById('wk-plan-result').style.display='block';
+    document.getElementById('wk-plan-title').textContent='Plan '+tipoLabel+' - '+nombre+' - '+diasArr.length+' dias';
+    document.getElementById('wk-plan-content').innerHTML=html;
+    window._lastPlan=text;window._lastPlanNombre=nombre;
+    if(curUser&&curUser.email!==COACH&&curSubs){curSubs.restantes=Math.max(0,curSubs.restantes-1);db.ref('suscripciones/'+curUser.uid).update({restantes:curSubs.restantes});updBadge();}
+  }catch(e){clearInterval(mInt);document.getElementById('wk-plan-loading').style.display='none';document.getElementById('wk-plan-config').style.display='block';alert('Error: '+e.message);}
+}
+function resetPlan(){document.getElementById('wk-plan-result').style.display='none';document.getElementById('wk-plan-loading').style.display='none';document.getElementById('wk-plan-config').style.display='block';}
+function sharePlan(){var t=window._lastPlan||'';if(!t){alert('No hay plan generado');return;}if(navigator.share){navigator.share({title:'Plan Semanal Laguna Swim',text:t}).catch(function(){});}else{navigator.clipboard.writeText(t).then(function(){alert('Copiado al portapapeles');});}}
+function pdfPlan(){alert('PDF del plan semanal proximamente.');}
+
+// URL PARAM
+var urlRoom=new URLSearchParams(location.search).get('room');
+if(urlRoom){document.getElementById('join-code').value=urlRoom.toUpperCase();setTimeout(function(){showTab('timer');goTimer('s-join');},300);}
+
+setTimeout(function(){renderOA();},200);
 </script>
 </body>
 </html>
