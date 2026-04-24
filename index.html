@@ -14,13 +14,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- Chart.js para gráficos (gratis) -->
+<!-- Chart.js para gráficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overscroll-behavior:none}
 body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#071e38;color:#fff;min-height:100vh;padding-bottom:70px;transition:background 0.3s, color 0.3s}
-/* Modo claro automático */
 @media (prefers-color-scheme: light) {
   body { background: #f0f4f8; color: #071e38; }
   .card { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); }
@@ -82,7 +81,7 @@ input:focus,select:focus{border-color:#38bdf8}
   <button class="bnav-item" onclick="showTab('profile')" id="nav-profile"><span class="bnav-icon">👤</span><span class="bnav-label">Perfil</span></button>
 </nav>
 
-<!-- PANEL DE CRONÓMETRO (resumido por espacio, pero funcional) -->
+<!-- PANEL DE CRONÓMETRO -->
 <div id="tab-timer" class="screen active">
   <div id="s-home" class="screen active">
     <div class="hdr">
@@ -153,6 +152,16 @@ input:focus,select:focus{border-color:#38bdf8}
     <div class="book-price" style="color:#38bdf8;font-size:1.2rem">$199 MXN</div>
     <button class="btn btn-sky btn-sm" onclick="buyBookDemo()">Comprar PDF simulado</button>
   </div>
+  <div class="book-card" style="background:linear-gradient(135deg, #0ea5e9 0%, #1e3a8a 100%); border:none; margin-top:0.5rem; cursor:pointer" onclick="window.open('https://skyscanner.pxf.io/c/5594241/1022358/13416', '_blank')">
+    <div style="display:flex; align-items:center; gap:0.8rem">
+      <div style="font-size:2rem">✈️</div>
+      <div style="flex:1">
+        <div style="font-weight:800; font-size:0.9rem">Vuelos baratos para competencias</div>
+        <div style="font-size:0.65rem; opacity:0.85">Compara precios en Skyscanner</div>
+      </div>
+      <div style="font-size:1.2rem">→</div>
+    </div>
+  </div>
   <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
 </div>
 
@@ -174,7 +183,7 @@ input:focus,select:focus{border-color:#38bdf8}
   <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
 </div>
 
-<!-- ENTRENAMIENTOS CON IA GRATIS LOCAL -->
+<!-- ENTRENAMIENTOS CON IA GRATIS -->
 <div id="tab-workout" class="screen">
   <div class="hdr"><img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt=""><div><div class="logo-main">LAGUNA <em>SWIM</em></div><div class="logo-sub">Entrenamientos IA</div></div></div>
   <div id="wk-login-wall" style="display:none">
@@ -196,6 +205,16 @@ input:focus,select:focus{border-color:#38bdf8}
     <div style="font-size:1.5rem;font-weight:800">Sergio Villarreal</div>
     <div style="font-size:0.7rem">Más de 30 años de experiencia</div>
   </div>
+  <div class="card" style="background:linear-gradient(135deg, #0ea5e9 0%, #1e3a8a 100%); border:none; cursor:pointer" onclick="window.open('https://skyscanner.pxf.io/c/5594241/1022358/13416', '_blank')">
+    <div style="display:flex; align-items:center; gap:0.8rem">
+      <div style="font-size:2rem">✈️</div>
+      <div style="flex:1">
+        <div style="font-weight:800; font-size:0.9rem">Vuelos para competencias</div>
+        <div style="font-size:0.65rem; opacity:0.85">Compara precios en Skyscanner</div>
+      </div>
+      <div style="font-size:1.2rem">→</div>
+    </div>
+  </div>
   <button class="btn btn-wa" onclick="window.open('https://wa.me/528713164850')">Contactar WhatsApp</button>
   <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
 </div>
@@ -216,6 +235,9 @@ input:focus,select:focus{border-color:#38bdf8}
     </div>
   </div>
 </div>
+
+<!-- Verificación para Impact (invisible para usuarios) -->
+<p style="display:none">Impact-Site-Verification: 56974a57-e5e1-40e5-9947-2787221dfc78</p>
 
 <script>
 // ==================== CONFIGURACIÓN FIREBASE ====================
@@ -274,6 +296,7 @@ function goTimer(screen) {
 auth.onAuthStateChanged(user => {
   currentUser = user;
   isCoach = user && user.email === 'checoswim@gmail.com';
+  document.getElementById('fb-status').innerHTML = user ? '✅ Conectado' : '📡 Online';
   if (user) {
     document.getElementById('auth-user-email').innerText = user.email;
     document.getElementById('auth-form-view').style.display = 'none';
@@ -288,13 +311,14 @@ auth.onAuthStateChanged(user => {
 
 function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
 function doLogin() {
-  auth.signInWithEmailAndPassword(document.getElementById('auth-email').value, document.getElementById('auth-pass').value);
+  auth.signInWithEmailAndPassword(document.getElementById('auth-email').value, document.getElementById('auth-pass').value)
+    .catch(err => alert("Error: " + err.message));
 }
 function coachLogout() { auth.signOut(); }
 function showCoachLogin() { document.getElementById('auth-modal').classList.remove('modal-hidden'); }
 function closeAuthModal() { document.getElementById('auth-modal').classList.add('modal-hidden'); }
 
-// ==================== CRONÓMETRO SIMPLIFICADO ====================
+// ==================== CRONÓMETRO ====================
 function genCode() { return Math.random().toString(36).substr(2,5).toUpperCase(); }
 
 function createRace() {
@@ -352,7 +376,7 @@ function marcarStop(lane) {
   }
 }
 function stopAll() { laneData.forEach(l => { if(!l.stopped) marcarStop(l.lane); }); }
-function cancelRace() { if(myRoom) db.ref(`races/${myRoom}`).remove(); myRoom=null; goTimer('s-role'); }
+function cancelRace() { if(myRoom) db.ref(`races/${myRoom}`).remove(); myRoom=null; raceStart=null; goTimer('s-role'); }
 function startRace() { db.ref(`races/${myRoom}`).update({ started: true, startAt: Date.now() }); }
 function dlQR() { const img = document.querySelector('#qr-container img'); if(img) { let a=document.createElement('a'); a.href=img.src; a.download='QR.png'; a.click(); } }
 function joinRace() {
@@ -364,7 +388,7 @@ function joinRace() {
   });
 }
 
-// ==================== RANKING + GRÁFICO CHART.JS + EXPORTAR CSV ====================
+// ==================== RANKING + GRÁFICO + EXPORTAR CSV ====================
 let rankingData = [];
 
 function loadRanking() {
@@ -398,24 +422,142 @@ function renderChart(data) {
   const ctx = document.getElementById('rankingChart').getContext('2d');
   if(rankingChart) rankingChart.destroy();
   const top10 = data.slice(0,10);
+  if(top10.length === 0) return;
   rankingChart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: top10.map((_,i) => `${i+1}°`),
       datasets: [{
         label: 'Tiempo (segundos)',
-        data: top10.map(r => r.timeMs / 1000),
+        data: top10.map(r => (r.timeMs / 1000).toFixed(2)),
         borderColor: '#38bdf8',
-        tension: 0.1
+        backgroundColor: 'rgba(56,189,248,0.1)',
+        fill: true,
+        tension: 0.3
       }]
     }
   });
 }
 
 function exportRankingCSV() {
-Impact-Site-Verification: 56974a57-e5e1-40e5-9947-2787221dfc78
   const dist = document.getElementById('rank-dist').value;
   const style = document.getElementById('rank-style').value;
   const filtered = rankingData.filter(r => r.dist == dist && r.style === style);
   if(!filtered.length) return alert("No hay datos para exportar");
-  let csv = "Posición,Nad
+  let csv = "Posición,Nadador,Tiempo (segundos),Competencia,Año\n";
+  filtered.slice(0,50).forEach((r, idx) => {
+    csv += `${idx+1},${r.swimmer},${(r.timeMs/1000).toFixed(2)},${r.comp || ''},${r.year || ''}\n`;
+  });
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ranking_${dist}m_${style}.csv`;
+  a.click();
+  URL.revokeObjectURL(blob);
+}
+
+function addRankTime() {
+  if (!isCoach) return alert("Solo entrenador puede agregar tiempos");
+  const swimmer = document.getElementById('r-swimmer').value;
+  const time = document.getElementById('r-time').value;
+  if (!swimmer || !time) return alert("Nombre y tiempo son requeridos");
+  
+  const dist = document.getElementById('rank-dist').value;
+  const style = document.getElementById('rank-style').value;
+  
+  let timeMs;
+  if (time.includes(':')) {
+    const parts = time.split(':');
+    const secs = parts[1].split('.');
+    timeMs = parseInt(parts[0]) * 60000 + parseInt(secs[0]) * 1000 + (parseInt(secs[1]) || 0) * 10;
+  } else {
+    timeMs = parseFloat(time) * 1000;
+  }
+  
+  const newId = Date.now().toString();
+  db.ref(`ranking/${newId}`).set({
+    id: newId,
+    swimmer: swimmer,
+    dist: parseInt(dist),
+    style: style,
+    time: time,
+    timeMs: timeMs,
+    comp: "Laguna Swim",
+    year: new Date().getFullYear()
+  }).then(() => {
+    alert("Tiempo agregado correctamente");
+    document.getElementById('r-swimmer').value = '';
+    document.getElementById('r-time').value = '';
+    loadRanking();
+  }).catch(err => alert("Error: " + err.message));
+}
+
+// ==================== ENTRENAMIENTOS ====================
+function initWk() {
+  if (!currentUser) {
+    document.getElementById('wk-login-wall').style.display = 'block';
+    document.getElementById('wk-generator').style.display = 'none';
+  } else {
+    document.getElementById('wk-login-wall').style.display = 'none';
+    document.getElementById('wk-generator').style.display = 'block';
+  }
+}
+
+function generarEntrenoGratis() {
+  const nombre = document.getElementById('wk-nombre').value || "Nadador";
+  const distancia = document.getElementById('wk-dist').value;
+  const nivel = document.getElementById('wk-level').value;
+  
+  const entrenamientos = {
+    principiante: `🏊‍♂️ ENTRENAMIENTO PARA ${nombre.toUpperCase()} (${distancia}m - Principiante)\n\n═══════════════════════════════\n\nCALENTAMIENTO (400m)\n• 200m estilo libre suave\n• 200m patada con tabla\n\nTÉCNICA (300m)\n• 6x50m (respiración cada 3 brazadas)\n  Descanso 15"\n\nSERIE PRINCIPAL (600m)\n• 8x75m descanso 20"\n  (25m patada + 50m estilo)\n\nENFRIAMIENTO (200m)\n• 200m estilo suave\n\n═══════════════════════════════\n💪 "¡Disfruta el proceso, ${nombre}!"\n📊 Total: ${distancia}m`,
+    
+    intermedio: `🏊‍♂️ ENTRENAMIENTO PARA ${nombre.toUpperCase()} (${distancia}m - Intermedio)\n\n═══════════════════════════════\n\nCALENTAMIENTO (600m)\n• 300m estilo variado\n• 200m patada con tabla\n• 100m técnica (brazada larga)\n\nTÉCNICA (400m)\n• 8x50m (enfoque en giros y virajes)\n  Descanso 15"\n\nSERIE PRINCIPAL (800m)\n• 4x200m descanso 30"\n  (Ritmo sostenido - RPE 7/10)\n• 8x50m descanso 20"\n  (Velocidad - RPE 9/10)\n\nENFRIAMIENTO (200m)\n• 200m suave\n\n═══════════════════════════════\n🔥 "Sigue así, ${nombre}! Vas mejorando"\n📊 Total: ${distancia}m`,
+    
+    avanzado: `🏊‍♂️ ENTRENAMIENTO PARA ${nombre.toUpperCase()} (${distancia}m - Avanzado)\n\n═══════════════════════════════\n\nCALENTAMIENTO (800m)\n• 400m variado + 200m patada con aletas\n• 200m técnica progresiva\n\nTÉCNICA (500m)\n• 10x50m (trabajo específico de estilo)\n  Descanso 10"\n\nSERIE PRINCIPAL (1500m)\n• 5x300m descanso 40"\n  (Ritmo de competencia - RPE 8-9/10)\n• 10x100m descanso 15"\n  (Velocidad máxima - RPE 10/10)\n\nENFRIAMIENTO (200m)\n• 200m recuperación activa\n\n═══════════════════════════════\n🦈 "Entrenamiento de élite, ${nombre}!"\n📊 Total: ${distancia}m`
+  };
+  
+  const resultado = entrenamientos[nivel] || entrenamientos.intermedio;
+  const divResultado = document.getElementById('wk-result');
+  divResultado.innerHTML = `<pre style="white-space:pre-wrap; font-family:inherit; font-size:0.85rem; line-height:1.5">${resultado}</pre>`;
+  divResultado.style.display = 'block';
+  vibrar();
+  beep();
+}
+
+// ==================== TIENDA ====================
+function buyBookDemo() {
+  alert("💰 Modo demostración. En la versión real, aquí se integraría MercadoPago.\n\nPor ahora, contacta a Sergio por WhatsApp para adquirir el libro.");
+}
+
+// ==================== INICIALIZACIÓN ====================
+function initLaneSelector() {
+  const container = document.getElementById('lane-selector');
+  if(!container) return;
+  container.innerHTML = '';
+  for(let i=1; i<=6; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    btn.style.cssText = 'width:44px;height:44px;border-radius:10px;background:rgba(56,189,248,0.2);border:2px solid #38bdf8;color:#fff;font-size:1rem;cursor:pointer';
+    container.appendChild(btn);
+  }
+  const namesCard = document.getElementById('names-card');
+  if(namesCard) {
+    namesCard.innerHTML = '<label>Nombres de los nadadores:</label>';
+    for(let i=1; i<=6; i++) {
+      const inp = document.createElement('input');
+      inp.placeholder = `Carril ${i} - Nombre`;
+      inp.id = `lane_name_${i}`;
+      namesCard.appendChild(inp);
+    }
+  }
+}
+
+// Inicializar al cargar
+window.onload = () => {
+  initLaneSelector();
+  initWk();
+  loadRanking();
+};
+</script>
+</body>
+</html>
