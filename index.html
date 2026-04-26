@@ -327,7 +327,7 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
     <!-- SELECTOR OW / SW -->
     <div style="display:flex;gap:8px;margin-bottom:0.9rem">
       <button id="sw-tab-btn" onclick="switchRankMode('sw',this)" style="flex:1;padding:0.65rem;border-radius:12px;border:2px solid #38bdf8;background:rgba(56,189,248,0.15);color:#38bdf8;font-size:0.88rem;font-weight:800;cursor:pointer">&#127944; Piscina SW</button>
-      <button id="ow-tab-btn" onclick="switchRankMode('ow',this)" style="flex:1;padding:0.65rem;border-radius:12px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);font-size:0.88rem;font-weight:800;cursor:pointer">&#127754; Aguas Abiertas OW</button>
+      <button id="ow-tab-btn" onclick="switchRankMode('ow',this)" style="flex:1;padding:0.65rem;border-radius:12px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);font-size:0.88rem;font-weight:800;cursor:pointer">&#127757; Internacional</button>
     </div>
 
     <!-- PISCINA SW -->
@@ -372,7 +372,7 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
       <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">
         <span style="font-size:1rem">&#127754;</span>
         <div style="font-size:0.88rem;font-weight:700;color:#38bdf8">Historial Internacional</div>
-        <span style="font-size:0.65rem;color:#7ab8e8;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);border-radius:20px;padding:1px 8px">Laguna Swim OW &amp; SW</span>
+        <span style="font-size:0.65rem;color:#7ab8e8;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);border-radius:20px;padding:1px 8px">Laguna Swim Internacional</span>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0.8rem" id="oa-tabs">
         <button class="btn btn-sm" style="border-radius:20px;background:rgba(56,189,248,0.15);border:1px solid #38bdf8;color:#38bdf8" onclick="oaTab('cr25',this)">&#127464;&#127479; Costa Rica 2025</button>
@@ -1139,16 +1139,75 @@ function renderRanking(data,dist,style){
   }
   if(data.length===0){var e=document.createElement('div');e.style='text-align:center;color:#7ab8e8;padding:1.5rem;font-size:0.82rem';e.textContent='No hay tiempos registrados';list.appendChild(e);return;}
   var top=data.slice(0,50);var fast=data[0].timeMs;
+
+  // Calcular posicion por categoria para cada registro
+  function posCat(rec){
+    var enCat=data.filter(function(x){return x.cat===rec.cat&&x.gender===rec.gender;}).sort(function(a,b){return a.timeMs-b.timeMs;});
+    return enCat.findIndex(function(x){return x.id===rec.id;})+1;
+  }
+
   top.forEach(function(r,i){
     var d=document.createElement('div');d.className='rank-row';
     var cl=CATS[r.cat]||r.cat;var gi=r.gender==='M'?'M':'F';
+    var gn=r.gender==='M'?'Varonil':'Femenil';
     var pct=Math.round((fast/r.timeMs)*100);
-    d.innerHTML='<div class="rank-pos" style="font-size:'+(i<3?'1.3':'0.95')+'rem">'+(i<3?['&#127937;','&#129352;','&#129353;'][i]:(i+1)+'.')+'</div><div class="rank-info" style="flex:1"><div class="rank-name">'+r.swimmer+' <span style="font-size:0.7rem;color:#7ab8e8">'+gi+'</span></div><div class="rank-detail"><span class="cat-chip">'+cl+'</span>'+r.comp+' - '+r.year+'</div><div class="proj-bar"><div class="proj-fill" style="width:'+pct+'%"></div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-left:6px"><div class="rank-time">'+r.time+'</div><button style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:8px;padding:3px 8px;font-size:0.62rem;font-weight:800;cursor:pointer">Diploma</button>'+(isCoach?'<button style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.7rem;padding:0">X</button>':'')+'</div>';
-    (function(rec){
-      var btns=d.querySelectorAll('button');
-      btns[0].addEventListener('click',function(){openDipRanking(rec);});
-      if(isCoach&&btns[1])btns[1].addEventListener('click',function(){delRank(rec.id);});
-    })(r);
+    var posEnCat=posCat(r);
+    var esPodioGeneral=i<3;
+    var esPodioCategoria=posEnCat<=3;
+    var medGeneral=esPodioGeneral?['&#127937;','&#129352;','&#129353;'][i]:(i+1)+'.';
+    var medCat=posEnCat===1?'&#127937;':posEnCat===2?'&#129352;':posEnCat===3?'&#129353;':'';
+
+    // Botones de diploma
+    var dipBtns='';
+    if(esPodioGeneral||esPodioCategoria){
+      dipBtns='<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-top:3px">';
+      if(esPodioGeneral){
+        dipBtns+='<button class="dip-btn-general" style="background:linear-gradient(135deg,#b8860b,#d4a017);border:none;color:#1a0a00;border-radius:7px;padding:3px 7px;font-size:0.58rem;font-weight:800;cursor:pointer;line-height:1.3">&#127942; General<br>'+(i+1)+'°</button>';
+      }
+      if(esPodioCategoria){
+        dipBtns+='<button class="dip-btn-cat" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);border:none;color:#fff;border-radius:7px;padding:3px 7px;font-size:0.58rem;font-weight:800;cursor:pointer;line-height:1.3">&#127940; Categoria<br>'+posEnCat+'°</button>';
+      }
+      dipBtns+='</div>';
+    } else {
+      dipBtns='<button class="dip-btn-general" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);border-radius:7px;padding:3px 7px;font-size:0.58rem;cursor:pointer">Diploma</button>';
+    }
+
+    d.innerHTML='<div class="rank-pos" style="font-size:'+(esPodioGeneral?'1.3':'0.95')+'rem">'+medGeneral+'</div>'
+      +'<div class="rank-info" style="flex:1">'
+      +'<div class="rank-name">'+r.swimmer+' <span style="font-size:0.7rem;color:#7ab8e8">'+gi+'</span>'
+      +(esPodioCategoria?'<span style="font-size:0.58rem;background:rgba(56,189,248,0.15);color:#38bdf8;border-radius:10px;padding:1px 6px;margin-left:4px">'+medCat+' '+cl+'</span>':'')
+      +'</div>'
+      +'<div class="rank-detail"><span class="cat-chip">'+cl+'</span>'+r.comp+' - '+r.year+'</div>'
+      +'<div class="proj-bar"><div class="proj-fill" style="width:'+pct+'%"></div></div>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;padding-left:6px">'
+      +'<div class="rank-time">'+r.time+'</div>'
+      +dipBtns
+      +(isCoach?'<button class="del-btn" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.7rem;padding:0">X</button>':'')
+      +'</div>';
+
+    (function(rec, posGeneral, posCatNum, genderName, catLabel){
+      var fecha=new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+      // Diploma general
+      var btnG=d.querySelector('.dip-btn-general');
+      if(btnG) btnG.addEventListener('click',function(){
+        var datos={nombre:rec.swimmer,tiempo:rec.time,pos:posGeneral+1,total:data.length,
+          evento:dist+'m '+style+' - General',comp:rec.comp,dist:dist,style:style,fecha:fecha};
+        openDip(datos);
+      });
+      // Diploma categoria
+      var btnC=d.querySelector('.dip-btn-cat');
+      if(btnC) btnC.addEventListener('click',function(){
+        var enCat=data.filter(function(x){return x.cat===rec.cat&&x.gender===rec.gender;}).sort(function(a,b){return a.timeMs-b.timeMs;});
+        var datos={nombre:rec.swimmer,tiempo:rec.time,pos:posCatNum,total:enCat.length,
+          evento:dist+'m '+style+' - '+catLabel+' - '+genderName,comp:rec.comp,dist:dist,style:style,fecha:fecha};
+        openDip(datos);
+      });
+      // Borrar
+      var btnX=d.querySelector('.del-btn');
+      if(isCoach&&btnX) btnX.addEventListener('click',function(){delRank(rec.id);});
+    })(r, i, posEnCat, gn, cl);
+
     list.appendChild(d);
   });
   var cnt=document.createElement('div');cnt.style='text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.25);padding:0.8rem 0';cnt.textContent=Math.min(data.length,50)+' de '+data.length+' tiempos';list.appendChild(cnt);
@@ -1260,7 +1319,7 @@ function doPay(){var em=document.getElementById('pay-email').value.trim();if(!em
 function closePayModal(){document.getElementById('pay-modal').classList.add('modal-hidden');}
 // AGUAS ABIERTAS OW
 var OA_EVENTS = {
-  cr25:{titulo:'Ocean Man Guanacaste',lugar:'Playa Panama, Guanacaste, Costa Rica',bandera:'&#127464;&#127479;',fecha:'13-14 Diciembre 2025',equipo:'Laguna Swim OW &amp; SW · Mexico',nota:'10 pases al Campeonato Mundial Ocean Man',
+  cr25:{titulo:'Ocean Man Guanacaste',lugar:'Playa Panama, Guanacaste, Costa Rica',bandera:'&#127464;&#127479;',fecha:'13-14 Diciembre 2025',equipo:'Laguna Swim Internacional · Mexico',nota:'10 pases al Campeonato Mundial Ocean Man',
     stats:[{txt:'10 pases al mundial',cls:'gold'},{txt:'Relevos 2do y 3er lugar',cls:'silver'},{txt:'10 atletas',cls:'info'}],
     secciones:[
       {label:'PASES AL MUNDIAL — TOP 10 EN CATEGORIA',rows:[
@@ -1614,46 +1673,24 @@ async function generarDrills() {
   document.getElementById('drills-loading').style.display = 'block';
   document.getElementById('drills-result').style.display = 'none';
 
-  var prompt = 'Eres Sergio Elias Villarreal Limas, entrenador de natacion con 30+ anos de experiencia internacional, fundador de Laguna Swim International, Torreon Mexico. Metodologia de elite probada con nadadores panamericanos y mundialistas.
-
-' +
-    'Genera EXACTAMENTE 20 drills de natacion para el estilo: ' + estilo + '
-' +
-    'Enfoque tecnico: ' + enfoque + '
-' +
-    'Nivel: ' + nivel + '
-
-' +
-    'FORMATO OBLIGATORIO para cada drill:
-' +
-    'DRILL #N: [NOMBRE DEL DRILL EN MAYUSCULAS]
-' +
-    'Descripcion: [Explicacion clara de como ejecutarlo paso a paso]
-' +
-    'Distancia: [metros recomendados, multiplo de 25]
-' +
-    'Objetivo: [que mejora especificamente]
-' +
-    'Tip Sergio: [consejo tecnico de experto]
-
-' +
-    'REGLAS:
-' +
-    '- Los 20 drills deben ser DIFERENTES entre si
-' +
-    '- Progresion logica de basico a avanzado
-' +
-    '- Incluir drills con y sin implementos (aletas, paletas, snorkel, tabla)
-' +
-    '- Lenguaje tecnico pero claro
-' +
-    '- Basado en metodologia real de entrenamiento de elite
-' +
-    (estilo === 'OW' ? '- Drills especificos de aguas abiertas: sighting, drafting, giros en boya, ritmo de brazada en oleaje
-' : '') +
-    '- Numera del 1 al 20 sin omitir ninguno
-
-' +
+  var prompt = 'Eres Sergio Elias Villarreal Limas, entrenador de natacion con 30+ anos de experiencia internacional, fundador de Laguna Swim International, Torreon Mexico. Metodologia de elite probada con nadadores panamericanos y mundialistas.\n\n' +
+    'Genera EXACTAMENTE 20 drills de natacion para el estilo: ' + estilo + '\n' +
+    'Enfoque tecnico: ' + enfoque + '\n' +
+    'Nivel: ' + nivel + '\n\n' +
+    'FORMATO OBLIGATORIO para cada drill:\n' +
+    'DRILL #N: [NOMBRE DEL DRILL EN MAYUSCULAS]\n' +
+    'Descripcion: [Explicacion clara de como ejecutarlo paso a paso]\n' +
+    'Distancia: [metros recomendados, multiplo de 25]\n' +
+    'Objetivo: [que mejora especificamente]\n' +
+    'Tip Sergio: [consejo tecnico de experto]\n\n' +
+    'REGLAS:\n' +
+    '- Los 20 drills deben ser DIFERENTES entre si\n' +
+    '- Progresion logica de basico a avanzado\n' +
+    '- Incluir drills con y sin implementos (aletas, paletas, snorkel, tabla)\n' +
+    '- Lenguaje tecnico pero claro\n' +
+    '- Basado en metodologia real de entrenamiento de elite\n' +
+    (estilo === 'OW' ? '- Drills especificos de aguas abiertas: sighting, drafting, giros en boya, ritmo de brazada en oleaje\n' : '') +
+    '- Numera del 1 al 20 sin omitir ninguno\n\n' +
     'Genera los 20 drills completos ahora:';
 
   try {
@@ -1666,8 +1703,7 @@ async function generarDrills() {
     var text = (data.content&&data.content[0]&&data.content[0].text) ? data.content[0].text : 'Error al generar.';
 
     var html = '';
-    var lines = text.split('
-');
+    var lines = text.split('\n');
     lines.forEach(function(line){
       var tl = line.trim();
       if(!tl){html+='<br>';return;}
