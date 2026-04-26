@@ -1014,8 +1014,8 @@ function openUrl(u){window.open(u,'_blank');}
 
 // TABS
 function showTab(t){
-  ['timer','store','ranking','workout','profile'].forEach(function(x){
-    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  ['timer','store','ranking','workout','eval','profile'].forEach(function(x){
+    var te=document.getElementById('tab-'+x);if(te)te.classList.toggle('active',x===t);
     var ne=document.getElementById('nav-'+x);if(ne)ne.classList.toggle('active',x===t);
   });
   if(t==='ranking'){loadRanking();renderOA();}
