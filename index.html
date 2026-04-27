@@ -1928,48 +1928,114 @@ setTimeout(initCountdown, 300);
 
 var EJERCICIOS_NIVEL = {
   'NB': [
-    'Soplo de burbujas','Inmersion progresiva','Flotacion ventral con apoyo',
-    'Flotacion dorsal con apoyo','Foca-morsa','La anguila se muerde la cola',
-    'Lucha de flamencos','Platillos volantes','Salvar la cabeza','Gigantbol',
-    'No seas el ultimo','Cazadores y conejos','La pesca','Bombas de agua',
-    'Robar colas','Globos secos','El muerto al agua','Desplazamiento asistido',
-    'Coordinacion basica de brazos','Busqueda de anillos'
+    {n:'Soplo de burbujas', d:'Soplar bajo el agua sacando burbujas por boca y nariz'},
+    {n:'Inmersion progresiva', d:'Meter la cabeza al agua poco a poco hasta sumergirse completamente'},
+    {n:'Flotacion ventral con apoyo', d:'Flotar boca abajo agarrado de la tabla, cuerpo extendido'},
+    {n:'Flotacion dorsal con apoyo', d:'Flotar boca arriba con tabla bajo la cabeza, cuerpo relajado'},
+    {n:'Foca-morsa', d:'Caminar en lo bajo apoyado en las manos como una foca'},
+    {n:'La anguila se muerde la cola', d:'Juego en fila tomados de la cintura, el primero atrapa al ultimo'},
+    {n:'Lucha de flamencos', d:'Equilibrio en una pierna empujando suavemente al companero'},
+    {n:'Platillos volantes', d:'Lanzar y atrapar aros flotantes desde el agua'},
+    {n:'Salvar la cabeza', d:'Sumergir la cabeza rapido al pasar el flotador por encima'},
+    {n:'Gigantbol', d:'Empujar entre todos un balon gigante de un lado a otro'},
+    {n:'No seas el ultimo', d:'Carrera de entrada al agua a la senal, el ultimo pierde'},
+    {n:'Cazadores y conejos', d:'Persecucion en el agua donde unos atrapan y otros escapan'},
+    {n:'La pesca', d:'Recoger objetos del fondo o flotantes con una red'},
+    {n:'Bombas de agua', d:'Lanzar globos llenos de agua a un objetivo'},
+    {n:'Robar colas', d:'Quitarse cintas amarradas a la cintura nadando entre todos'},
+    {n:'Globos secos', d:'Mantener globos en el aire golpeandolos con la mano'},
+    {n:'El muerto al agua', d:'Flotar relajado boca arriba mientras los companeros te transportan'},
+    {n:'Desplazamiento asistido', d:'Avanzar con ayuda del instructor sosteniendo del cuerpo'},
+    {n:'Coordinacion basica de brazos', d:'Mover brazos en circulos como nadando, parado en el agua'},
+    {n:'Busqueda de anillos', d:'Sumergirse a recoger aros del fondo de la alberca'}
   ],
   'NI': [
-    'Planeo del Superman','Equilibrio espalda con rotacion','Rotacion ventral subacuatica',
-    'Colocacion en punto dulce','Avanzar en punto dulce','Patinaje de lanza con respiracion',
-    'Patada lateral con respiracion','Equilibrio dorsal sin material',
-    'Uso de snorkel para postura','Series de 10-15m continuos',
-    'Remada Contra-estandar','Remada Torpedo-estandar','Remada Rusa o Redondas',
-    'Remada Americana Vertical','Salto de flecha','El lobo y las ovejas',
-    'El tren','Puente colgante','Rugby acuatico','Remolino'
+    {n:'Planeo del Superman', d:'Flotar boca abajo con brazos extendidos al frente, cuerpo recto'},
+    {n:'Equilibrio espalda con rotacion', d:'Boca arriba, girar el cuerpo de un lado a otro manteniendo flotacion'},
+    {n:'Rotacion ventral subacuatica', d:'Bajo el agua, girar de boca arriba a boca abajo sin salir'},
+    {n:'Colocacion en punto dulce', d:'Posicion lateral con un brazo extendido, lista para respirar'},
+    {n:'Avanzar en punto dulce', d:'Mantener posicion lateral mientras avanzas con patada'},
+    {n:'Patinaje de lanza con respiracion', d:'Posicion lateral con brazo arriba, girar para respirar y volver'},
+    {n:'Patada lateral con respiracion', d:'De lado con tabla, patear y respirar girando levemente la cabeza'},
+    {n:'Equilibrio dorsal sin material', d:'Flotar boca arriba sin tablas ni apoyo, totalmente relajado'},
+    {n:'Uso de snorkel para postura', d:'Nadar libre con snorkel para enfocarse en la postura del cuerpo'},
+    {n:'Series de 10-15m continuos', d:'Nadar tramos cortos sin parar para construir resistencia'},
+    {n:'Remada Contra-estandar', d:'Boca arriba, manos a los lados empujando agua hacia los pies'},
+    {n:'Remada Torpedo-estandar', d:'Boca arriba, brazos arriba empujando agua hacia la cabeza'},
+    {n:'Remada Rusa o Redondas', d:'Boca abajo, manos haciendo circulos como limpiaparabrisas'},
+    {n:'Remada Americana Vertical', d:'Vertical en aguas profundas, manos empujando hacia abajo'},
+    {n:'Salto de flecha', d:'Saltar al agua con brazos arriba pegados a las orejas, cuerpo recto'},
+    {n:'El lobo y las ovejas', d:'Persecucion donde unos se sumergen para escapar del lobo'},
+    {n:'El tren', d:'En fila tomados con flotadores, todos pateando al mismo ritmo'},
+    {n:'Puente colgante', d:'Pasar sobre los companeros que estan flotando boca arriba'},
+    {n:'Rugby acuatico', d:'Juego de equipos pasandose un balon para anotar'},
+    {n:'Remolino', d:'Caminar en circulo todos juntos creando una corriente y luego flotar'}
   ],
   'NA': [
-    'Cambios de lanza','Cambios de lanza multiples','Patinaje recobro subacuatico',
-    'Balanceo subacuatico','Drills de Pecho especificos','Drills de Mariposa especificos',
-    'Virajes de campana simples','Salidas estables de banco','La red','Delfines',
-    'Pelota submarina','Mantear','Torre humana','Aros humanos','Deslizadores',
-    'Balleneros','Sillas voladoras','El caiman','Remada de Ochos','Remada de Pajaro'
+    {n:'Cambios de lanza', d:'En libre, cambiar el brazo extendido alternando lados con rotacion'},
+    {n:'Cambios de lanza multiples', d:'Hacer varios cambios seguidos sin parar, fluidez en la rotacion'},
+    {n:'Patinaje recobro subacuatico', d:'En posicion lateral, recuperar el brazo bajo el agua en lugar de afuera'},
+    {n:'Balanceo subacuatico', d:'Cambiar peso de un lado a otro bajo el agua sin recobro aereo'},
+    {n:'Drills de Pecho especificos', d:'Ejercicios separados de brazada y patada de pecho'},
+    {n:'Drills de Mariposa especificos', d:'Ondulacion de cuerpo y patada de delfin separadas'},
+    {n:'Virajes de campana simples', d:'Voltereta basica al llegar a la pared para regresar'},
+    {n:'Salidas estables de banco', d:'Saltar del banco con buena postura y entrada hidrodinamica'},
+    {n:'La red', d:'Juego donde un grupo forma red y otros pasan por debajo sin ser atrapados'},
+    {n:'Delfines', d:'Ondulacion del cuerpo imitando el movimiento del delfin'},
+    {n:'Pelota submarina', d:'Pasarse una pelota nadando bajo el agua sin que se salga'},
+    {n:'Mantear', d:'Levantar a un companero entre varios usando los brazos como red'},
+    {n:'Torre humana', d:'Formar torre vertical apoyandose en hombros de companeros'},
+    {n:'Aros humanos', d:'Saltar a traves de aros que forman los companeros con brazos'},
+    {n:'Deslizadores', d:'Avanzar acostado sobre tapices flotantes con manos y pies'},
+    {n:'Balleneros', d:'Lanzar picas o tubos hacia objetivos flotantes'},
+    {n:'Sillas voladoras', d:'Sentarse sobre tablas y avanzar usando solo los brazos'},
+    {n:'El caiman', d:'Avanzar pegado al agua como caiman, cabeza apenas afuera'},
+    {n:'Remada de Ochos', d:'Manos haciendo figura de ocho horizontal para sostenerse'},
+    {n:'Remada de Pajaro', d:'Boca arriba, brazos haciendo circulos hacia los lados'}
   ],
   'PRE-EQUIPO': [
-    'Lanza con balanceo combinado','Balanceo con manos sumergidas',
-    'Recobro aereo pintar linea','Nado completo Fase Fluidez',
-    'Series fraccionadas con tiempo','Reglas FINA aplicacion',
-    'Estrategia de relevos','Depuracion tecnica 4 estilos',
-    'Kamikaze','La caza del balon','Relevos con camiseta','El potro',
-    'Rescate de tesoros','Submarino','Pelota seca','Carreras de cuadrigas',
-    'Remada Americana Invertida','Remada Orejas','Remada Egg-beater',
-    'Rusa o Redondas Submarina'
+    {n:'Lanza con balanceo combinado', d:'Posicion de lanza con cambios de peso completos, transferencia de energia'},
+    {n:'Balanceo con manos sumergidas', d:'Avanzar cambiando peso pero sin sacar las manos del agua'},
+    {n:'Recobro aereo pintar linea', d:'Recobro relajado pasando la mano cerca del agua, sin alzarla'},
+    {n:'Nado completo Fase Fluidez', d:'Libre completo enfocado en deslizarse sin esfuerzo, ritmo fluido'},
+    {n:'Series fraccionadas con tiempo', d:'Repeticiones cronometradas con descanso para mejorar ritmo'},
+    {n:'Reglas FINA aplicacion', d:'Practicar tecnicas que cumplen con reglamento oficial'},
+    {n:'Estrategia de relevos', d:'Practicar entradas y salidas coordinadas con companeros'},
+    {n:'Depuracion tecnica 4 estilos', d:'Pulir detalles tecnicos en libre, dorso, pecho y mariposa'},
+    {n:'Kamikaze', d:'Nado explosivo desde la salida con maxima velocidad inicial'},
+    {n:'La caza del balon', d:'Nadar bajo presion mientras se persigue un balon en el agua'},
+    {n:'Relevos con camiseta', d:'Relevos donde se entrega una camiseta mojada al companero'},
+    {n:'El potro', d:'Salto explosivo desde el fondo para impulsarse hacia arriba'},
+    {n:'Rescate de tesoros', d:'Apnea para recoger varios objetos del fondo en una sola inmersion'},
+    {n:'Submarino', d:'Avanzar lo mas posible bajo el agua sin salir a respirar'},
+    {n:'Pelota seca', d:'Pases con pelota fuera del agua manteniendo posicion vertical'},
+    {n:'Carreras de cuadrigas', d:'Por parejas, uno avanza mientras lleva al otro tomado de los hombros'},
+    {n:'Remada Americana Invertida', d:'Vertical de cabeza, manos empujando para mantener posicion'},
+    {n:'Remada Orejas', d:'Vertical invertido con manos a los lados de la cabeza'},
+    {n:'Remada Egg-beater', d:'Patada alterna circular para sostenerse vertical sin manos'},
+    {n:'Rusa o Redondas Submarina', d:'Bajo el agua, manos en circulos para mantener posicion'}
   ],
   'EQUIPO': [
-    'Lanza con balanceo combinado','Balanceo con manos sumergidas',
-    'Recobro aereo pintar linea','Nado completo Fase Fluidez',
-    'Series fraccionadas con tiempo','Reglas FINA aplicacion',
-    'Estrategia de relevos','Depuracion tecnica 4 estilos',
-    'Kamikaze','La caza del balon','Relevos con camiseta','El potro',
-    'Rescate de tesoros','Submarino','Pelota seca','Carreras de cuadrigas',
-    'Remada Americana Invertida','Remada Orejas','Remada Egg-beater',
-    'Rusa o Redondas Submarina'
+    {n:'Lanza con balanceo combinado', d:'Tecnica avanzada de cambio de lanza con maxima eficiencia'},
+    {n:'Balanceo con manos sumergidas', d:'Nado fluido sin recobro aereo, todo el trabajo bajo el agua'},
+    {n:'Recobro aereo pintar linea', d:'Recobro perfecto rozando el agua, minima resistencia'},
+    {n:'Nado completo Fase Fluidez', d:'Estado de fluidez total: nado relajado y eficiente al maximo'},
+    {n:'Series fraccionadas con tiempo', d:'Series competitivas con tiempos exactos de salida y descanso'},
+    {n:'Reglas FINA aplicacion', d:'Dominio total del reglamento internacional de natacion'},
+    {n:'Estrategia de relevos', d:'Tactica avanzada de relevos para competencia oficial'},
+    {n:'Depuracion tecnica 4 estilos', d:'Perfeccionamiento de cada estilo a nivel competitivo'},
+    {n:'Kamikaze', d:'Salida explosiva tipo competencia con maxima potencia'},
+    {n:'La caza del balon', d:'Velocidad bajo presion simulando situacion de competencia'},
+    {n:'Relevos con camiseta', d:'Coordinacion de relevos con elemento adicional para agilidad'},
+    {n:'El potro', d:'Salto vertical maximo desde el fondo, fuerza explosiva'},
+    {n:'Rescate de tesoros', d:'Apnea profesional con multiples objetos en una respiracion'},
+    {n:'Submarino', d:'Distancia maxima en apnea horizontal con tecnica perfecta'},
+    {n:'Pelota seca', d:'Coordinacion mano-ojo en posicion vertical sostenida'},
+    {n:'Carreras de cuadrigas', d:'Maxima coordinacion y fuerza en parejas competitivas'},
+    {n:'Remada Americana Invertida', d:'Equilibrio vertical invertido prolongado'},
+    {n:'Remada Orejas', d:'Tecnica avanzada de sosten invertido'},
+    {n:'Remada Egg-beater', d:'Tecnica de waterpolo: sosten vertical perfecto sin brazos'},
+    {n:'Rusa o Redondas Submarina', d:'Sosten subacuatico con minima energia'}
   ]
 };
 
@@ -2112,25 +2178,32 @@ function abrirNadador(id, nadador) {
   listEl.innerHTML = '';
   ejercicios.forEach(function(ej, idx) {
     var palomeado = (nadador.ejercicios || {})[idx] === true;
+    var nombre = typeof ej === 'string' ? ej : ej.n;
+    var descripcion = typeof ej === 'string' ? '' : ej.d;
     var row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:0.8rem;padding:0.7rem 0.9rem;border-radius:12px;margin-bottom:0.4rem;'
+    row.style.cssText = 'display:flex;align-items:flex-start;gap:0.8rem;padding:0.8rem 0.9rem;border-radius:12px;margin-bottom:0.4rem;'
       + (palomeado ? 'background:' + col.bg + ';border:1px solid ' + col.border : 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07)');
-    row.innerHTML = '<div style="font-size:1.2rem;width:28px;text-align:center;flex-shrink:0">'
+    row.innerHTML = '<div style="font-size:1.2rem;width:28px;text-align:center;flex-shrink:0;padding-top:2px">'
       + (palomeado ? '&#9989;' : '<span style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-weight:700">' + (idx+1) + '</span>')
       + '</div>'
-      + '<div style="flex:1;font-size:0.85rem;font-weight:' + (palomeado ? '700' : '400') + ';color:' + (palomeado ? '#fff' : 'rgba(255,255,255,0.6)') + '">' + ej + '</div>'
-      + '<button style="background:' + (palomeado ? col.border : 'rgba(255,255,255,0.1)') + ';border:none;border-radius:8px;padding:6px 12px;font-size:0.72rem;font-weight:700;color:' + (palomeado ? '#071e38' : '#fff') + ';cursor:pointer">'
-      + (palomeado ? 'Dominado' : 'Marcar') + '</button>';
-    (function(ejIdx, ejNombre) {
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="font-size:0.85rem;font-weight:' + (palomeado ? '700' : '600') + ';color:' + (palomeado ? '#fff' : 'rgba(255,255,255,0.85)') + ';line-height:1.3">' + nombre + '</div>'
+      + (descripcion ? '<div style="font-size:0.7rem;color:#7ab8e8;margin-top:3px;line-height:1.4">' + descripcion + '</div>' : '')
+      + '</div>'
+      + '<button style="background:' + (palomeado ? col.border : 'rgba(255,255,255,0.1)') + ';border:none;border-radius:8px;padding:6px 12px;font-size:0.7rem;font-weight:700;color:' + (palomeado ? '#071e38' : '#fff') + ';cursor:pointer;flex-shrink:0;align-self:flex-start">'
+      + (palomeado ? '&#9989; Dominado' : 'Marcar') + '</button>';
+    (function(ejIdx) {
       row.querySelector('button').onclick = function() {
         var nuevo = !((nadador.ejercicios || {})[ejIdx] === true);
         db.ref('nadadores/' + id + '/ejercicios/' + ejIdx).set(nuevo).then(function() {
           db.ref('nadadores/' + id).once('value').then(function(s) {
             abrirNadador(id, s.val());
           });
+        }).catch(function(err){
+          alert('Error al guardar: ' + err.message);
         });
       };
-    })(idx, ej);
+    })(idx);
     listEl.appendChild(row);
   });
 
