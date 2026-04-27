@@ -460,6 +460,7 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
   </div>
 </div>
 <!-- WORKOUT TAB -->
+<!-- WORKOUT TAB -->
 <div id="tab-workout" class="screen">
   <div class="hdr">
     <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt="">
@@ -472,19 +473,8 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
       <div class="card" style="text-align:center;padding:1.5rem">
         <div style="font-size:3rem;margin-bottom:0.6rem">&#127944;</div>
         <div style="font-size:1.1rem;font-weight:800;color:#38bdf8;margin-bottom:0.3rem">Herramientas Laguna Swim</div>
-        <div style="font-size:0.75rem;color:#7ab8e8;margin-bottom:0.8rem;line-height:1.5">Metodologia de elite · 30+ anos de experiencia</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin:0.8rem 0">
-          <div style="background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:12px;padding:0.8rem 0.4rem;text-align:center">
-            <div style="font-size:1.4rem">&#127939;</div><div style="font-size:0.6rem;color:#7ab8e8;margin-top:3px">Sesion del dia</div>
-          </div>
-          <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:0.8rem 0.4rem;text-align:center">
-            <div style="font-size:1.4rem">&#128197;</div><div style="font-size:0.6rem;color:#7ab8e8;margin-top:3px">Plan semanal</div>
-          </div>
-          <div style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);border-radius:12px;padding:0.8rem 0.4rem;text-align:center">
-            <div style="font-size:1.4rem">&#127940;</div><div style="font-size:0.6rem;color:#7ab8e8;margin-top:3px">Drills</div>
-          </div>
-        </div>
-        <button class="btn btn-sky" onclick="showCoachLogin()" style="max-width:280px;margin:0.5rem auto 0">Iniciar sesion para entrenar</button>
+        <div style="font-size:0.75rem;color:#7ab8e8;margin-bottom:1rem;line-height:1.5">Metodologia de elite &middot; 30+ anos de experiencia</div>
+        <button class="btn btn-sky" onclick="showCoachLogin()" style="max-width:280px;margin:0 auto">Iniciar sesion para entrenar</button>
       </div>
     </div>
 
@@ -492,12 +482,11 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
     <div id="wk-subs-wall" style="display:none;text-align:center;padding:2rem 1rem">
       <div style="font-size:2.5rem;margin-bottom:0.6rem">&#127944;</div>
       <div style="font-size:1rem;font-weight:800;color:#ffd700;margin-bottom:0.3rem">Plan Semanal Laguna Swim</div>
-      <div style="font-size:0.78rem;color:#7ab8e8;margin-bottom:1rem;line-height:1.6">6 entrenamientos - 7 dias de acceso<br>IA con metodologia de elite</div>
+      <div style="font-size:0.78rem;color:#7ab8e8;margin-bottom:1rem">6 entrenamientos &middot; 7 dias de acceso</div>
       <div style="background:rgba(255,215,0,0.08);border:2px solid rgba(255,215,0,0.3);border-radius:16px;padding:1rem;margin-bottom:1rem">
         <div style="font-size:2rem;font-weight:800;color:#ffd700">$100 MXN</div>
-        <div style="font-size:0.72rem;color:#a08020">6 entrenamientos - valido 7 dias</div>
+        <div style="font-size:0.72rem;color:#a08020">6 entrenamientos &middot; valido 7 dias</div>
       </div>
-      <div style="font-size:0.72rem;color:#7ab8e8;margin-bottom:0.8rem" id="wk-user-info"></div>
       <button class="btn btn-gold" onclick="iniciarPago()" style="font-size:1rem">Suscribirme - $100 MXN</button>
       <button class="btn btn-gray" onclick="showCoachLogin()" style="font-size:0.85rem">Cambiar cuenta</button>
     </div>
@@ -509,256 +498,191 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
         <button onclick="showCoachLogin()" style="background:none;border:none;color:#7ab8e8;font-size:0.68rem;cursor:pointer">Mi cuenta</button>
       </div>
 
-      <!-- SELECTOR GRID 3 HERRAMIENTAS -->
+      <!-- SELECTOR -->
       <div id="wk-selector" style="display:block">
         <div style="font-size:0.75rem;color:#7ab8e8;margin-bottom:0.7rem;text-align:center">Selecciona una herramienta:</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem">
-          <!-- Sesion del dia -->
-          <div onclick="elegirModo('diario')" style="background:rgba(56,189,248,0.06);border:2px solid rgba(56,189,248,0.25);border-radius:16px;padding:1rem;cursor:pointer;text-align:center;touch-action:manipulation">
+          <div onclick="elegirModo('diario')" style="background:rgba(56,189,248,0.06);border:2px solid rgba(56,189,248,0.25);border-radius:16px;padding:1rem;cursor:pointer;text-align:center">
             <div style="font-size:2rem;margin-bottom:0.4rem">&#127939;</div>
-            <div style="font-size:0.82rem;font-weight:800;color:#38bdf8">Sesion del dia</div>
-            <div style="font-size:0.65rem;color:#7ab8e8;margin-top:3px;line-height:1.3">Entrenamiento completo personalizado con IA</div>
+            <div style="font-size:0.85rem;font-weight:800;color:#38bdf8">Sesion del dia</div>
+            <div style="font-size:0.65rem;color:#7ab8e8;margin-top:3px">Entrenamiento personalizado con IA</div>
           </div>
-          <!-- Plan semanal -->
-          <div onclick="elegirModo('semanal')" style="background:rgba(255,215,0,0.06);border:2px solid rgba(255,215,0,0.25);border-radius:16px;padding:1rem;cursor:pointer;text-align:center;touch-action:manipulation">
+          <div onclick="elegirModo('semanal')" style="background:rgba(255,215,0,0.06);border:2px solid rgba(255,215,0,0.25);border-radius:16px;padding:1rem;cursor:pointer;text-align:center">
             <div style="font-size:2rem;margin-bottom:0.4rem">&#128197;</div>
-            <div style="font-size:0.82rem;font-weight:800;color:#ffd700">Plan semanal</div>
-            <div style="font-size:0.65rem;color:#7ab8e8;margin-top:3px;line-height:1.3">Lunes a Sabado para un nadador especifico</div>
+            <div style="font-size:0.85rem;font-weight:800;color:#ffd700">Plan semanal</div>
+            <div style="font-size:0.65rem;color:#7ab8e8;margin-top:3px">Lunes a sabado personalizado</div>
           </div>
         </div>
-        <!-- Drills - full width -->
-        <div onclick="elegirModo('drills')" style="background:rgba(168,85,247,0.06);border:2px solid rgba(168,85,247,0.25);border-radius:16px;padding:1rem;cursor:pointer;display:flex;align-items:center;gap:1rem;touch-action:manipulation;margin-bottom:0.4rem">
-          <div style="font-size:2.5rem;flex-shrink:0">&#127940;</div>
-          <div>
-            <div style="font-size:0.95rem;font-weight:800;color:#a855f7">Drills</div>
-            <div style="font-size:0.68rem;color:#7ab8e8;margin-top:3px;line-height:1.3">20 ejercicios tecnicos por estilo · Libre, Dorso, Pecho, Mariposa, OW</div>
-          </div>
-          <div style="margin-left:auto;color:#a855f7;font-size:1.4rem;flex-shrink:0">&#8250;</div>
+        <div onclick="elegirModo('drills')" style="background:rgba(168,85,247,0.06);border:2px solid rgba(168,85,247,0.25);border-radius:16px;padding:1rem;cursor:pointer;display:flex;align-items:center;gap:1rem;margin-bottom:0.4rem">
+          <div style="font-size:2rem">&#127940;</div>
+          <div><div style="font-size:0.9rem;font-weight:800;color:#a855f7">Drills tecnicos</div><div style="font-size:0.68rem;color:#7ab8e8">20 ejercicios por estilo &middot; Libre, Dorso, Pecho, Mariposa, OW</div></div>
+          <div style="margin-left:auto;color:#a855f7">&#8250;</div>
         </div>
         <div style="font-size:0.63rem;color:rgba(255,255,255,0.2);text-align:center;margin-top:0.4rem">Cada generacion usa 1 de tus entrenamientos disponibles</div>
       </div>
 
       <!-- SESION DEL DIA -->
       <div id="wk-diario" style="display:none">
-        <button onclick="volverSelector()" style="background:none;border:none;color:#7ab8e8;font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.3rem">&#8592; Regresar</button>
+        <button onclick="volverSelector()" style="background:none;border:none;color:#7ab8e8;font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem">&#8592; Regresar</button>
         <div id="wk-config">
-          <button class="btn btn-sky" onclick="generar()" style="font-size:1rem;padding:1rem;margin-bottom:0.8rem;position:sticky;top:0;z-index:10">&#129409; Generar sesion del dia</button>
-          <div class="card"><div style="font-size:0.82rem;font-weight:700;margin-bottom:0.5rem;color:#38bdf8">Tu nombre</div><input id="wk-nombre" placeholder="Nombre del nadador" style="margin-bottom:0"></div>
           <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">Calentamiento fuera del agua</div>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:#38bdf8">&#128100; Tu nombre</div>
+            <input id="wk-nombre" placeholder="Ej: Sergio Villarreal">
+          </div>
+          <div class="card">
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">&#128293; Calentamiento en tierra</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">
-              <button class="wk-btn on" id="wkd-basico" onclick="selWk(this,'dryland','basico')" style="padding:0.7rem 0.3rem">Basico<br><span style="font-size:0.6rem;font-weight:400">5 min</span></button>
-              <button class="wk-btn" id="wkd-intermedio" onclick="selWk(this,'dryland','intermedio')" style="padding:0.7rem 0.3rem">Intermedio<br><span style="font-size:0.6rem;font-weight:400">10 min</span></button>
-              <button class="wk-btn" id="wkd-avanzado" onclick="selWk(this,'dryland','avanzado')" style="padding:0.7rem 0.3rem">Avanzado<br><span style="font-size:0.6rem;font-weight:400">15 min</span></button>
+              <button class="wk-btn on" id="wkd-basico" onclick="selWk(this,'dryland','basico')">Basico<br><span style="font-size:0.6rem">5 min</span></button>
+              <button class="wk-btn" id="wkd-intermedio" onclick="selWk(this,'dryland','intermedio')">Intermedio<br><span style="font-size:0.6rem">10 min</span></button>
+              <button class="wk-btn" id="wkd-avanzado" onclick="selWk(this,'dryland','avanzado')">Avanzado<br><span style="font-size:0.6rem">15 min</span></button>
             </div>
           </div>
           <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">Metros en agua</div>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">&#128207; Distancia total</div>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem">
-              <button class="wk-btn" id="wkm-1000" onclick="selWk(this,'metros','1000')" style="padding:0.6rem 0.3rem;font-size:0.8rem">1,000m</button>
-              <button class="wk-btn" id="wkm-1500" onclick="selWk(this,'metros','1500')" style="padding:0.6rem 0.3rem;font-size:0.8rem">1,500m</button>
-              <button class="wk-btn on" id="wkm-2000" onclick="selWk(this,'metros','2000')" style="padding:0.6rem 0.3rem;font-size:0.8rem">2,000m</button>
-              <button class="wk-btn" id="wkm-2500" onclick="selWk(this,'metros','2500')" style="padding:0.6rem 0.3rem;font-size:0.8rem">2,500m</button>
-              <button class="wk-btn" id="wkm-3000" onclick="selWk(this,'metros','3000')" style="padding:0.6rem 0.3rem;font-size:0.8rem">3,000m</button>
-              <button class="wk-btn" id="wkm-4000" onclick="selWk(this,'metros','4000')" style="padding:0.6rem 0.3rem;font-size:0.8rem">4,000m</button>
+              <button class="wk-btn" id="wkm-1500" onclick="selWk(this,'metros','1500')">1,500m</button>
+              <button class="wk-btn" id="wkm-2000" onclick="selWk(this,'metros','2000')">2,000m</button>
+              <button class="wk-btn on" id="wkm-2500" onclick="selWk(this,'metros','2500')">2,500m</button>
+              <button class="wk-btn" id="wkm-3000" onclick="selWk(this,'metros','3000')">3,000m</button>
+              <button class="wk-btn" id="wkm-3500" onclick="selWk(this,'metros','3500')">3,500m</button>
+              <button class="wk-btn" id="wkm-4000" onclick="selWk(this,'metros','4000')">4,000m</button>
             </div>
           </div>
           <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">Estilos (elige varios)</div>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">&#127946; Estilo principal</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem">
-              <button class="wk-btn on" id="wks-Libre" onclick="togEstilo('Libre')" style="padding:0.6rem">Libre</button>
-              <button class="wk-btn" id="wks-Dorso" onclick="togEstilo('Dorso')" style="padding:0.6rem">Dorso</button>
-              <button class="wk-btn" id="wks-Pecho" onclick="togEstilo('Pecho')" style="padding:0.6rem">Pecho</button>
-              <button class="wk-btn" id="wks-Mariposa" onclick="togEstilo('Mariposa')" style="padding:0.6rem">Mariposa</button>
-              <button class="wk-btn" id="wks-Combinado" onclick="togEstilo('Combinado')" style="padding:0.6rem;grid-column:span 2">Combinado (todos)</button>
+              <button class="wk-btn on" id="wks-Libre" onclick="selEstiloUnico('Libre')">Libre</button>
+              <button class="wk-btn" id="wks-Dorso" onclick="selEstiloUnico('Dorso')">Dorso</button>
+              <button class="wk-btn" id="wks-Pecho" onclick="selEstiloUnico('Pecho')">Pecho</button>
+              <button class="wk-btn" id="wks-Mariposa" onclick="selEstiloUnico('Mariposa')">Mariposa</button>
             </div>
           </div>
           <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">Nivel de intensidad</div>
-            <div style="display:flex;flex-direction:column;gap:0.4rem">
-              <button class="wk-btn" id="wkn-relajacion" onclick="selWk(this,'nivel','relajacion')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#129368;</span><div><div>Nivel 1 - Relajacion</div><div style="font-size:0.68rem;font-weight:400;color:#7ab8e8">FC menor de 140 - Tecnica suave</div></div></button>
-              <button class="wk-btn" id="wkn-mantenimiento" onclick="selWk(this,'nivel','mantenimiento')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#127939;</span><div><div>Nivel 2 - Mantenimiento</div><div style="font-size:0.68rem;font-weight:400;color:#7ab8e8">FC 140-150 - Aerobico base</div></div></button>
-              <button class="wk-btn on" id="wkn-condicion" onclick="selWk(this,'nivel','condicion')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#128170;</span><div><div>Nivel 3 - Condicion</div><div style="font-size:0.68rem;font-weight:400">FC 150-160 - Umbral aerobico</div></div></button>
-              <button class="wk-btn" id="wkn-entrenamiento" onclick="selWk(this,'nivel','entrenamiento')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#128293;</span><div><div>Nivel 4 - Entrenamiento</div><div style="font-size:0.68rem;font-weight:400;color:#7ab8e8">FC 160-170 - FAST</div></div></button>
-              <button class="wk-btn bestia" id="wkn-bestia" onclick="selWk(this,'nivel','bestia')" style="padding:0.75rem 1rem;text-align:left;display:flex;align-items:center;gap:0.7rem"><span style="font-size:1.2rem">&#129409;</span><div><div>Nivel 5 - Modo Bestia</div><div style="font-size:0.68rem;font-weight:400;color:#cc6600">FC mayor de 170 - Elite internacional</div></div></button>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.7rem;color:#38bdf8">&#9889; Intensidad</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem">
+              <button class="wk-btn" id="wkn-recuperacion" onclick="selWk(this,'nivel','recuperacion')">&#129001; Recuperacion</button>
+              <button class="wk-btn on" id="wkn-mantenimiento" onclick="selWk(this,'nivel','mantenimiento')">&#129000; Mantenimiento</button>
+              <button class="wk-btn" id="wkn-construccion" onclick="selWk(this,'nivel','construccion')">&#128997; Construccion</button>
+              <button class="wk-btn" id="wkn-precompetencia" onclick="selWk(this,'nivel','precompetencia')">&#9889; Pre-competencia</button>
             </div>
           </div>
-          <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.5rem;color:#38bdf8">Enfoque tecnico</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.8rem">
-              <button class="wk-btn on" id="wke-tecnica" onclick="selWk(this,'enfoque','tecnica')" style="padding:0.6rem;font-size:0.78rem">Tecnica</button>
-              <button class="wk-btn" id="wke-velocidad" onclick="selWk(this,'enfoque','velocidad')" style="padding:0.6rem;font-size:0.78rem">Velocidad</button>
-              <button class="wk-btn" id="wke-resistencia" onclick="selWk(this,'enfoque','resistencia')" style="padding:0.6rem;font-size:0.78rem">Resistencia</button>
-              <button class="wk-btn" id="wke-control" onclick="selWk(this,'enfoque','control')" style="padding:0.6rem;font-size:0.78rem">Control resp.</button>
-            </div>
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.5rem;color:#38bdf8">Alberca</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
-              <button class="wk-btn on" id="wka-25" onclick="selWk(this,'alberca','25')" style="padding:0.6rem;font-size:0.82rem">25 metros</button>
-              <button class="wk-btn" id="wka-50" onclick="selWk(this,'alberca','50')" style="padding:0.6rem;font-size:0.82rem">50 metros</button>
-            </div>
-          </div>
-          <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:0.6rem;margin-bottom:0.5rem;font-size:0.7rem;color:#ffd700;text-align:center">Version de prueba gratuita</div>
+          <button class="btn btn-sky" onclick="generar()" style="font-size:1rem;padding:0.9rem">&#127944; Generar entrenamiento</button>
         </div>
-        <div id="wk-loading" style="display:none;text-align:center;padding:3rem 1rem">
-          <div style="font-size:3rem;margin-bottom:1rem;animation:spin 1s linear infinite;display:inline-block">&#127754;</div>
-          <div style="font-size:1rem;font-weight:700;color:#38bdf8;margin-bottom:0.4rem">Generando tu entrenamiento...</div>
-          <div style="font-size:0.78rem;color:#7ab8e8" id="wk-loading-msg">Aplicando 30 anos de experiencia...</div>
-        </div>
-        <div id="wk-result" style="display:none">
+        <div id="wk-loading" style="display:none;text-align:center;padding:2rem"><div class="spinner"></div><div style="margin-top:0.5rem;color:#38bdf8" id="wk-loading-msg">Generando entrenamiento...</div></div>
+        <div id="wk-result" style="display:none;margin-top:1rem">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
             <div style="font-size:0.88rem;font-weight:700;color:#38bdf8" id="wk-title">Tu entrenamiento</div>
             <button onclick="resetWk()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:5px 10px;font-size:0.72rem;cursor:pointer">Nuevo</button>
           </div>
-          <div id="wk-content" style="font-size:0.85rem;line-height:1.7;color:rgba(255,255,255,0.9)"></div>
+          <div id="wk-content" style="font-size:0.85rem;line-height:1.7"></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:1rem">
             <button class="btn btn-green" onclick="pdfWk()" style="margin-bottom:0;font-size:0.82rem">PDF</button>
             <button class="btn btn-sky" onclick="shareWk()" style="margin-bottom:0;font-size:0.82rem">Compartir</button>
           </div>
-          <button class="btn btn-gray" onclick="resetWk()" style="margin-top:0.5rem">Generar otro</button>
         </div>
       </div>
 
       <!-- PLAN SEMANAL -->
       <div id="wk-semanal" style="display:none">
-        <button onclick="volverSelector()" style="background:none;border:none;color:#7ab8e8;font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.3rem">&#8592; Regresar</button>
+        <button onclick="volverSelector()" style="background:none;border:none;color:#7ab8e8;font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem">&#8592; Regresar</button>
         <div id="wk-plan-config">
           <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#ffd700">Perfil del nadador</div>
-            <label>Nombre</label><input id="ps-nombre" placeholder="Nombre completo" style="margin-bottom:0.4rem">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem">
-              <div><label>Edad</label><input id="ps-edad" placeholder="45" type="number" style="margin-bottom:0"></div>
-              <div><label>Nivel</label>
-                <select id="ps-nivel" style="margin-bottom:0">
-                  <option value="Master competitivo">Master competitivo</option>
-                  <option value="Master recreativo">Master recreativo</option>
-                  <option value="Juvenil competitivo">Juvenil competitivo</option>
-                  <option value="Adulto principiante">Adulto principiante</option>
-                  <option value="Elite internacional">Elite internacional</option>
-                </select>
-              </div>
-            </div>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:#ffd700">&#128100; Perfil del nadador</div>
+            <input id="ps-nombre" placeholder="Nombre completo">
+            <select id="ps-nivel" style="margin-top:0.3rem">
+              <option value="Master competitivo">Master competitivo</option>
+              <option value="Master recreativo">Master recreativo</option>
+              <option value="Juvenil competitivo">Juvenil competitivo</option>
+              <option value="Adulto principiante">Adulto principiante</option>
+              <option value="Elite internacional">Elite internacional</option>
+            </select>
           </div>
           <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#ffd700">Prueba y objetivo</div>
-            <label>Prueba principal</label>
-            <select id="ps-prueba-principal" style="margin-bottom:0.4rem">
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:#ffd700">&#127942; Prueba principal</div>
+            <select id="ps-prueba-principal">
               <option value="100 Pecho">100m Pecho</option><option value="200 Pecho">200m Pecho</option>
               <option value="100 Libre">100m Libre</option><option value="200 Libre">200m Libre</option>
               <option value="400 Libre">400m Libre</option><option value="100 Mariposa">100m Mariposa</option>
-              <option value="200 Mariposa">200m Mariposa</option><option value="100 Dorso">100m Dorso</option>
-              <option value="200 Dorso">200m Dorso</option><option value="200 Combinado">200m Combinado</option>
+              <option value="100 Dorso">100m Dorso</option><option value="200 Combinado">200m Combinado</option>
               <option value="400 Combinado">400m Combinado</option>
             </select>
-            <label>Objetivo de temporada</label>
-            <input id="ps-objetivo" placeholder="Ej: Panamericano Master 2026" style="margin-bottom:0">
           </div>
           <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#ffd700">Parametros de la semana</div>
-            <label>Tipo de semana</label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.8rem">
-              <button class="wk-btn on" id="pst-carga" onclick="selPsTipo(this,'carga')" style="padding:0.65rem;font-size:0.8rem">Carga</button>
-              <button class="wk-btn" id="pst-afinacion" onclick="selPsTipo(this,'afinacion')" style="padding:0.65rem;font-size:0.8rem">Afinacion</button>
-              <button class="wk-btn" id="pst-competencia" onclick="selPsTipo(this,'competencia')" style="padding:0.65rem;font-size:0.8rem">Competencia</button>
-              <button class="wk-btn" id="pst-recuperacion" onclick="selPsTipo(this,'recuperacion')" style="padding:0.65rem;font-size:0.8rem">Recuperacion</button>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:#ffd700">&#128197; Tipo de semana</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem">
+              <button class="wk-btn on" id="pst-carga" onclick="selPsTipo(this,'carga')">&#127959; Construccion</button>
+              <button class="wk-btn" id="pst-precomp" onclick="selPsTipo(this,'precompetencia')">&#9889; Pre-competencia</button>
+              <button class="wk-btn" id="pst-mant" onclick="selPsTipo(this,'mantenimiento')">&#128260; Mantenimiento</button>
+              <button class="wk-btn" id="pst-recup" onclick="selPsTipo(this,'recuperacion')">&#129657; Recuperacion</button>
             </div>
-            <label>Metros por sesion</label>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.3rem;margin-bottom:0.8rem">
-              <button class="wk-btn" id="psv-2000" onclick="selPsVol(this,'2000')" style="padding:0.5rem;font-size:0.72rem">2,000m</button>
-              <button class="wk-btn on" id="psv-2500" onclick="selPsVol(this,'2500')" style="padding:0.5rem;font-size:0.72rem">2,500m</button>
-              <button class="wk-btn" id="psv-3000" onclick="selPsVol(this,'3000')" style="padding:0.5rem;font-size:0.72rem">3,000m</button>
-              <button class="wk-btn" id="psv-3200" onclick="selPsVol(this,'3200')" style="padding:0.5rem;font-size:0.72rem">3,200m</button>
-            </div>
-            <label>Dias de entrenamiento</label>
-            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:0.3rem;margin-bottom:0.4rem">
-              <button class="wk-btn on" id="psd-Lun" onclick="togPsDia(this,'Lun')" style="padding:0.4rem;font-size:0.7rem">Lun</button>
-              <button class="wk-btn on" id="psd-Mar" onclick="togPsDia(this,'Mar')" style="padding:0.4rem;font-size:0.7rem">Mar</button>
-              <button class="wk-btn on" id="psd-Mie" onclick="togPsDia(this,'Mie')" style="padding:0.4rem;font-size:0.7rem">Mie</button>
-              <button class="wk-btn on" id="psd-Jue" onclick="togPsDia(this,'Jue')" style="padding:0.4rem;font-size:0.7rem">Jue</button>
-              <button class="wk-btn on" id="psd-Vie" onclick="togPsDia(this,'Vie')" style="padding:0.4rem;font-size:0.7rem">Vie</button>
-              <button class="wk-btn" id="psd-Sab" onclick="togPsDia(this,'Sab')" style="padding:0.4rem;font-size:0.7rem">Sab</button>
-            </div>
-            <label>Enfasis especial (opcional)</label>
-            <input id="ps-enfasis" placeholder="Ej: tecnica de pecho, resistencia" style="margin-bottom:0">
           </div>
-          <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:0.6rem;margin-bottom:0.5rem;font-size:0.7rem;color:#ffd700;text-align:center">Version de prueba gratuita</div>
-          <button class="btn btn-gold" onclick="generarPlanSemanal()" style="font-size:1rem;padding:1rem">&#128197; Generar plan semanal</button>
+          <div class="card">
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:#ffd700">&#128207; Metros por sesion</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.3rem">
+              <button class="wk-btn" id="psv-2000" onclick="selPsVol(this,'2000')">2,000m</button>
+              <button class="wk-btn on" id="psv-2500" onclick="selPsVol(this,'2500')">2,500m</button>
+              <button class="wk-btn" id="psv-3000" onclick="selPsVol(this,'3000')">3,000m</button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:#ffd700">&#128197; Dias de entrenamiento</div>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:0.3rem">
+              <button class="wk-btn on" id="psd-Lun" onclick="togPsDia(this,'Lun')">Lun</button>
+              <button class="wk-btn on" id="psd-Mar" onclick="togPsDia(this,'Mar')">Mar</button>
+              <button class="wk-btn on" id="psd-Mie" onclick="togPsDia(this,'Mie')">Mie</button>
+              <button class="wk-btn on" id="psd-Jue" onclick="togPsDia(this,'Jue')">Jue</button>
+              <button class="wk-btn on" id="psd-Vie" onclick="togPsDia(this,'Vie')">Vie</button>
+              <button class="wk-btn" id="psd-Sab" onclick="togPsDia(this,'Sab')">Sab</button>
+            </div>
+          </div>
+          <button class="btn btn-gold" onclick="generarPlanSemanal()" style="font-size:1rem;padding:0.9rem">&#128197; Generar plan semanal</button>
         </div>
-        <div id="wk-plan-loading" style="display:none;text-align:center;padding:3rem 1rem">
-          <div style="font-size:3rem;margin-bottom:1rem;animation:spin 1s linear infinite;display:inline-block">&#128197;</div>
-          <div style="font-size:1rem;font-weight:700;color:#ffd700;margin-bottom:0.4rem">Generando plan semanal...</div>
-          <div style="font-size:0.78rem;color:#7ab8e8" id="wk-plan-loading-msg">Calculando progresion...</div>
-        </div>
-        <div id="wk-plan-result" style="display:none">
+        <div id="wk-plan-loading" style="display:none;text-align:center;padding:2rem"><div class="spinner"></div><div style="color:#ffd700" id="wk-plan-loading-msg">Generando plan semanal...</div></div>
+        <div id="wk-plan-result" style="display:none;margin-top:1rem">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
             <div style="font-size:0.88rem;font-weight:700;color:#ffd700" id="wk-plan-title">Plan Semanal</div>
             <button onclick="resetPlan()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:5px 10px;font-size:0.72rem;cursor:pointer">Nuevo</button>
           </div>
-          <div id="wk-plan-content" style="font-size:0.85rem;line-height:1.7;color:rgba(255,255,255,0.9)"></div>
+          <div id="wk-plan-content" style="font-size:0.85rem;line-height:1.7"></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:1rem">
             <button class="btn btn-green" onclick="pdfPlan()" style="margin-bottom:0;font-size:0.82rem">PDF</button>
             <button class="btn btn-sky" onclick="sharePlan()" style="margin-bottom:0;font-size:0.82rem">Compartir</button>
           </div>
-          <button class="btn btn-gray" onclick="resetPlan()" style="margin-top:0.5rem">Nuevo plan</button>
         </div>
       </div>
 
       <!-- DRILLS -->
       <div id="wk-drills" style="display:none">
-        <button onclick="volverSelector()" style="background:none;border:none;color:#7ab8e8;font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.3rem">&#8592; Regresar</button>
+        <button onclick="volverSelector()" style="background:none;border:none;color:#7ab8e8;font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem">&#8592; Regresar</button>
         <div id="drills-config">
           <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.8rem">
             <span style="font-size:1.5rem">&#127940;</span>
-            <div><div style="font-size:0.95rem;font-weight:800;color:#a855f7">Drills</div><div style="font-size:0.68rem;color:#7ab8e8">20 ejercicios tecnicos por estilo</div></div>
+            <div><div style="font-size:0.95rem;font-weight:800;color:#a855f7">Drills tecnicos</div><div style="font-size:0.68rem;color:#7ab8e8">20 ejercicios por estilo</div></div>
           </div>
           <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#a855f7">Estilo</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem">
-              <button class="wk-btn on" id="drs-Libre" onclick="selDrill(this,'estilo','Libre')" style="padding:0.6rem;font-size:0.78rem">&#127946; Libre</button>
-              <button class="wk-btn" id="drs-Dorso" onclick="selDrill(this,'estilo','Dorso')" style="padding:0.6rem;font-size:0.78rem">&#128034; Dorso</button>
-              <button class="wk-btn" id="drs-Pecho" onclick="selDrill(this,'estilo','Pecho')" style="padding:0.6rem;font-size:0.78rem">&#127940; Pecho</button>
-              <button class="wk-btn" id="drs-Mariposa" onclick="selDrill(this,'estilo','Mariposa')" style="padding:0.6rem;font-size:0.78rem">&#129413; Mariposa</button>
-              <button class="wk-btn" id="drs-OW" onclick="selDrill(this,'estilo','OW')" style="padding:0.6rem;font-size:0.78rem">&#127754; OW</button>
-              <button class="wk-btn" id="drs-Combinado" onclick="selDrill(this,'estilo','Combinado')" style="padding:0.6rem;font-size:0.78rem">&#9995; CI</button>
-            </div>
-          </div>
-          <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#a855f7">Enfoque</div>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.7rem;color:#a855f7">&#127946; Estilo</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem">
-              <button class="wk-btn on" id="dre-todos" onclick="selDrill(this,'enfoque','todos los aspectos tecnicos')" style="padding:0.6rem;font-size:0.75rem">Todos</button>
-              <button class="wk-btn" id="dre-brazada" onclick="selDrill(this,'enfoque','brazada y posicion de brazo')" style="padding:0.6rem;font-size:0.75rem">Brazada</button>
-              <button class="wk-btn" id="dre-patada" onclick="selDrill(this,'enfoque','patada y posicion de piernas')" style="padding:0.6rem;font-size:0.75rem">Patada</button>
-              <button class="wk-btn" id="dre-respiracion" onclick="selDrill(this,'enfoque','respiracion y control de aire')" style="padding:0.6rem;font-size:0.75rem">Respiracion</button>
-              <button class="wk-btn" id="dre-viraje" onclick="selDrill(this,'enfoque','viraje y salida')" style="padding:0.6rem;font-size:0.75rem">Viraje/Salida</button>
-              <button class="wk-btn" id="dre-posicion" onclick="selDrill(this,'enfoque','posicion del cuerpo y streamline')" style="padding:0.6rem;font-size:0.75rem">Posicion</button>
+              <button class="wk-btn on" id="drs-Libre" onclick="selDrillEstilo('Libre')">&#127946; Libre</button>
+              <button class="wk-btn" id="drs-Dorso" onclick="selDrillEstilo('Dorso')">&#128034; Dorso</button>
+              <button class="wk-btn" id="drs-Pecho" onclick="selDrillEstilo('Pecho')">&#127940; Pecho</button>
+              <button class="wk-btn" id="drs-Mariposa" onclick="selDrillEstilo('Mariposa')">&#129413; Mariposa</button>
+              <button class="wk-btn" id="drs-OW" onclick="selDrillEstilo('OW')" style="grid-column:span 2">&#127754; Aguas Abiertas (OW)</button>
             </div>
           </div>
-          <div class="card">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.7rem;color:#a855f7">Nivel</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem">
-              <button class="wk-btn" id="drn-infantil" onclick="selDrill(this,'nivel','infantil')" style="padding:0.6rem;font-size:0.75rem">Infantil</button>
-              <button class="wk-btn on" id="drn-juvenil" onclick="selDrill(this,'nivel','juvenil')" style="padding:0.6rem;font-size:0.75rem">Juvenil</button>
-              <button class="wk-btn" id="drn-master" onclick="selDrill(this,'nivel','master')" style="padding:0.6rem;font-size:0.75rem">Master</button>
-            </div>
-          </div>
-          <button class="btn" style="background:#a855f7;color:#fff;font-size:1rem;padding:1rem" onclick="generarDrills()">&#127940; Generar 20 Drills</button>
+          <button class="btn" style="background:#a855f7;color:#fff;font-size:1rem;padding:0.9rem" onclick="generarDrills()">&#127940; Generar 20 drills</button>
         </div>
-        <div id="drills-loading" style="display:none;text-align:center;padding:3rem 1rem">
-          <div style="font-size:3rem;margin-bottom:1rem;animation:spin 1s linear infinite;display:inline-block">&#127940;</div>
-          <div style="font-size:1rem;font-weight:700;color:#a855f7;margin-bottom:0.4rem">Generando drills...</div>
-          <div style="font-size:0.78rem;color:#7ab8e8">Aplicando metodologia Laguna Swim...</div>
-        </div>
-        <div id="drills-result" style="display:none">
+        <div id="drills-loading" style="display:none;text-align:center;padding:2rem"><div class="spinner"></div><div style="color:#a855f7">Generando drills...</div></div>
+        <div id="drills-result" style="display:none;margin-top:1rem">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
             <div style="font-size:0.88rem;font-weight:700;color:#a855f7" id="drills-title">Drills</div>
             <button onclick="resetDrills()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:5px 10px;font-size:0.72rem;cursor:pointer">Nuevo</button>
           </div>
-          <div id="drills-content" style="font-size:0.85rem;line-height:1.7;color:rgba(255,255,255,0.9)"></div>
+          <div id="drills-content" style="font-size:0.85rem;line-height:1.7"></div>
           <button class="btn btn-sky" onclick="shareDrills()" style="margin-top:0.8rem">Compartir drills</button>
-          <button class="btn btn-gray" onclick="resetDrills()" style="margin-top:0.4rem">Generar otros</button>
         </div>
       </div>
 
-    </div><!-- fin wk-acceso -->
+    </div>
   </div>
 </div>
 
@@ -1647,14 +1571,14 @@ function renderOA(){
   c.innerHTML=h;
 }
 // WORKOUT
-var wkCfg={dryland:'basico',metros:'2000',nivel:'condicion',enfoque:'tecnica',alberca:'25'};
+var wkCfg={dryland:'basico',metros:'2500',nivel:'mantenimiento',estilo:'Libre'};
 var wkEstilos=new Set(['Libre']);
 var DRYLAND={
   basico:'CALENTAMIENTO BASICO (5 min)\nRotaciones de cuello 10 reps\nCirculos de hombros 10 adelante + 10 atras\nEstiramiento de pecho 3x10 seg\nRotacion de caderas 10 cada lado\nActivacion de tobillos 10 reps\n10 sentadillas lentas',
   intermedio:'CALENTAMIENTO INTERMEDIO (10 min)\nMovilidad dinamica cuello y hombros\n10-10-10 lagartijas progresivas\n10-10-10 sentadillas con salto\nStretch de pecho en pared 3x15 seg\nRotacion toracica en suelo 8 reps\nMedicine ball individual 20 seg\nPlancha de core 3x20 seg\n5x (3 jalones + pausa)',
   avanzado:'CALENTAMIENTO AVANZADO (15 min)\nMovilidad fluida cuello-hombros-caderas 2 min\nMedicine ball individual build 25 seg\n10-10-10 lagartijas / 10-10-10 sentadillas / 10-5 abdominales\nMedicine ball en pareja build 25 seg\n(3-4 jalones + 5 sentadillas con salto + 1 min descanso) x 5\nStretch dinamico de hombros\nRotacion toracica profunda\nActivacion de tobillos 2 min\n5 respiraciones diafragmaticas'
 };
-var NVL={relajacion:'Nivel 1 Relajacion',mantenimiento:'Nivel 2 Mantenimiento',condicion:'Nivel 3 Condicion',entrenamiento:'Nivel 4 Entrenamiento',bestia:'Nivel 5 Modo Bestia'};
+var NVL={recuperacion:'Recuperacion (R1-R2)',mantenimiento:'Mantenimiento (R2-R3)',construccion:'Construccion (R3-R4)',precompetencia:'Pre-competencia (R4-R5)'};
 
 function selWk(btn,group,val){
   var pfx={dryland:'wkd',metros:'wkm',nivel:'wkn',enfoque:'wke',alberca:'wka'}[group];
@@ -1662,10 +1586,14 @@ function selWk(btn,group,val){
   if(val==='bestia')btn.classList.add('bestia');else btn.classList.add('on');
   wkCfg[group]=val;
 }
-function togEstilo(style){
-  if(style==='Combinado'){wkEstilos=new Set(['Libre','Dorso','Pecho','Mariposa','Combinado']);['Libre','Dorso','Pecho','Mariposa','Combinado'].forEach(function(s){var b=document.getElementById('wks-'+s);if(b)b.classList.add('on');});return;}
-  if(wkEstilos.has(style)){if(wkEstilos.size===1)return;wkEstilos.delete(style);var b=document.getElementById('wks-'+style);if(b)b.classList.remove('on');}
-  else{wkEstilos.add(style);var b=document.getElementById('wks-'+style);if(b)b.classList.add('on');wkEstilos.delete('Combinado');var bc=document.getElementById('wks-Combinado');if(bc)bc.classList.remove('on');}
+function selEstiloUnico(style){
+  ['Libre','Dorso','Pecho','Mariposa'].forEach(function(s){
+    var b=document.getElementById('wks-'+s);
+    if(b)b.classList.remove('on');
+  });
+  var btn=document.getElementById('wks-'+style);
+  if(btn)btn.classList.add('on');
+  wkCfg.estilo=style;
 }
 function initWk(){
   var lw=document.getElementById('wk-login-wall');var sw=document.getElementById('wk-subs-wall');var acc=document.getElementById('wk-acceso');
@@ -1702,8 +1630,8 @@ async function generar(){
   if(!curUser){showCoachLogin();return;}if(!tieneAcceso()){initWk();return;}
   var nombre=(document.getElementById('wk-nombre')||{}).value||'';
   if(!nombre.trim()){alert('Escribe tu nombre');return;}
-  var estilos=Array.from(wkEstilos).filter(function(e){return e!=='Combinado';}).join(', ');
-  var nivel=NVL[wkCfg.nivel];var metros=wkCfg.metros,alberca=wkCfg.alberca,enfoque=wkCfg.enfoque;
+  var estilos=wkCfg.estilo||'Libre';
+  var nivel=NVL[wkCfg.nivel];var metros=wkCfg.metros;
   var dryland=DRYLAND[wkCfg.dryland];
   metros=String(Math.round(parseInt(metros)/25)*25);
   document.getElementById('wk-config').style.display='none';
@@ -1733,9 +1661,9 @@ async function generar(){
     dryHtml+='</div>';
     document.getElementById('wk-loading').style.display='none';
     document.getElementById('wk-result').style.display='block';
-    document.getElementById('wk-title').textContent=nivel+' - '+metros+'m - '+nombre;
+    document.getElementById('wk-title').textContent=metros+'m '+estilos+' - '+nombre;
     document.getElementById('wk-content').innerHTML=dryHtml+html;
-    window._wkText=dryland+'\n\n'+text;window._wkNombre=nombre;window._wkMeta={metros:metros,alberca:alberca,nivel:nivel};
+    window._wkText=dryland+'\n\n'+text;window._wkNombre=nombre;window._wkMeta={metros:metros,estilo:estilos,nivel:nivel};
     if(curUser&&curUser.email!==COACH&&curSubs){curSubs.restantes=Math.max(0,curSubs.restantes-1);db.ref('suscripciones/'+curUser.uid).update({restantes:curSubs.restantes});updBadge();}
   }catch(e){clearInterval(mInt);document.getElementById('wk-loading').style.display='none';document.getElementById('wk-config').style.display='block';alert('Error al generar: '+e.message);}
 }
@@ -1745,7 +1673,7 @@ function pdfWk(){alert('PDF proximamente disponible.');}
 
 // PLAN SEMANAL
 var psTipo='carga',psVol='2500',psDias=new Set(['Lun','Mar','Mie','Jue','Vie']);
-function selPsTipo(btn,tipo){psTipo=tipo;['carga','afinacion','competencia','recuperacion'].forEach(function(t){var b=document.getElementById('pst-'+t);if(b)b.classList.remove('on');});btn.classList.add('on');}
+function selPsTipo(btn,tipo){psTipo=tipo;['carga','precomp','mant','recup'].forEach(function(t){var b=document.getElementById('pst-'+t);if(b)b.classList.remove('on');});btn.classList.add('on');}
 function selPsVol(btn,vol){psVol=vol;['2000','2500','3000','3200'].forEach(function(v){var b=document.getElementById('psv-'+v);if(b)b.classList.remove('on');});btn.classList.add('on');}
 function togPsDia(btn,dia){if(psDias.has(dia)){if(psDias.size<=1)return;psDias.delete(dia);btn.classList.remove('on');}else{psDias.add(dia);btn.classList.add('on');}}
 async function generarPlanSemanal(){
@@ -1757,7 +1685,7 @@ async function generarPlanSemanal(){
   var objetivo=(document.getElementById('ps-objetivo').value||'Competencia Master').trim();
   var enfasis=(document.getElementById('ps-enfasis').value||'').trim();
   var diasArr=['Lun','Mar','Mie','Jue','Vie','Sab'].filter(function(d){return psDias.has(d);});
-  var tipoLabel={carga:'CARGA',afinacion:'AFINACION',competencia:'COMPETENCIA/TAPER',recuperacion:'POST-COMPETENCIA'}[psTipo];
+  var tipoLabel={carga:'CONSTRUCCION',precompetencia:'PRE-COMPETENCIA',mantenimiento:'MANTENIMIENTO',recuperacion:'RECUPERACION'}[psTipo];
   var volNum=parseInt(psVol);var volTotal=volNum*diasArr.length;
   document.getElementById('wk-plan-config').style.display='none';
   document.getElementById('wk-plan-loading').style.display='block';
@@ -1794,13 +1722,16 @@ function pdfPlan(){alert('PDF del plan semanal proximamente.');}
 
 
 // DRILLS
-var drillsCfg = {estilo:'Libre', enfoque:'todos los aspectos tecnicos', nivel:'juvenil'};
+var drillsCfg = {estilo:'Libre'};
 
-function selDrill(btn, group, val) {
-  var pfx = {estilo:'drs', enfoque:'dre', nivel:'drn'}[group];
-  document.querySelectorAll('[id^="'+pfx+'-"]').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-  drillsCfg[group] = val;
+function selDrillEstilo(estilo) {
+  ['Libre','Dorso','Pecho','Mariposa','OW'].forEach(function(s){
+    var b=document.getElementById('drs-'+s);
+    if(b)b.classList.remove('on');
+  });
+  var btn=document.getElementById('drs-'+estilo);
+  if(btn)btn.classList.add('on');
+  drillsCfg.estilo=estilo;
 }
 
 function elegirModo(modo) {
@@ -1823,16 +1754,14 @@ async function generarDrills() {
   if(!curUser){showCoachLogin();return;}
   if(!tieneAcceso()){initWk();return;}
   var estilo = drillsCfg.estilo;
-  var enfoque = drillsCfg.enfoque;
-  var nivel = drillsCfg.nivel;
   document.getElementById('drills-config').style.display = 'none';
   document.getElementById('drills-loading').style.display = 'block';
   document.getElementById('drills-result').style.display = 'none';
 
   var prompt = 'Eres Sergio Elias Villarreal Limas, entrenador de natacion con 30+ anos de experiencia internacional, fundador de Laguna Swim International, Torreon Mexico. Metodologia de elite probada con nadadores panamericanos y mundialistas.\n\n' +
     'Genera EXACTAMENTE 20 drills de natacion para el estilo: ' + estilo + '\n' +
-    'Enfoque tecnico: ' + enfoque + '\n' +
-    'Nivel: ' + nivel + '\n\n' +
+    'Cubre todos los aspectos tecnicos: brazada, patada, respiracion, viraje, posicion del cuerpo.\n' +
+    'Progresion de basico a avanzado.\n\n' +
     'FORMATO OBLIGATORIO para cada drill:\n' +
     'DRILL #N: [NOMBRE DEL DRILL EN MAYUSCULAS]\n' +
     'Descripcion: [Explicacion clara de como ejecutarlo paso a paso]\n' +
@@ -1881,10 +1810,10 @@ async function generarDrills() {
 
     document.getElementById('drills-loading').style.display = 'none';
     document.getElementById('drills-result').style.display = 'block';
-    document.getElementById('drills-title').textContent = '20 Drills - ' + estilo + ' - ' + nivel;
+    document.getElementById('drills-title').textContent = '20 Drills - ' + estilo;
     document.getElementById('drills-content').innerHTML = html;
     window._lastDrills = text;
-    window._lastDrillsInfo = {estilo:estilo, enfoque:enfoque, nivel:nivel};
+    window._lastDrillsInfo = {estilo:estilo};
 
     if(curUser&&curUser.email!==COACH&&curSubs){
       curSubs.restantes=Math.max(0,curSubs.restantes-1);
@@ -1908,7 +1837,7 @@ function shareDrills() {
   var t = window._lastDrills || '';
   if(!t){alert('No hay drills generados');return;}
   var info = window._lastDrillsInfo || {};
-  var title = 'Drills Laguna Swim - ' + (info.estilo||'') + ' - ' + (info.nivel||'');
+  var title = 'Drills Laguna Swim - ' + (info.estilo||'');
   if(navigator.share){navigator.share({title:title,text:t}).catch(function(){});}
   else{navigator.clipboard.writeText(t).then(function(){alert('Drills copiados al portapapeles');});}
 }
