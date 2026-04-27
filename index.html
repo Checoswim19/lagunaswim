@@ -1264,7 +1264,20 @@ function filterRanking(){
     list.innerHTML='<div style="text-align:center;padding:2rem"><div style="font-size:2rem">&#127944;</div><div style="font-size:0.88rem;font-weight:700;color:#38bdf8">Selecciona distancia y estilo</div></div>';
     return;
   }
-  var filtered=rankData.filter(function(r){return r.dist==dist&&r.style===style&&(!cat||r.cat===cat)&&(!gender||r.gender===gender);});
+  function normCat(c){
+    if(!c)return '';
+    var s=String(c).trim();
+    // Normalizar variantes de "6 y menores"
+    if(s==='6'||s==='6-'||s==='6y-'||s==='6 y menores'||s==='6 menos'||s.toLowerCase().indexOf('menor')>=0)return '6-';
+    return s;
+  }
+  var filtered=rankData.filter(function(r){
+    if(r.dist!=dist)return false;
+    if(r.style!==style)return false;
+    if(cat&&normCat(r.cat)!==normCat(cat))return false;
+    if(gender&&r.gender!==gender)return false;
+    return true;
+  });
   opt.style.display='grid';
   renderRanking(filtered,+dist,style);
 }
