@@ -2016,6 +2016,7 @@ function evalVista(vista) {
 }
 
 function cargarNadadores() {
+  if (!curUser || curUser.email !== COACH) return;
   db.ref('nadadores').once('value').then(function(snap) {
     var list = document.getElementById('eval-nadadores-list');
     var empty = document.getElementById('eval-empty');
@@ -2055,10 +2056,15 @@ function cargarNadadores() {
       })(id, n);
       list.appendChild(card);
     });
+  }).catch(function(err){
+    alert('Error al cargar nadadores: ' + err.message);
+    console.error('Firebase error:', err);
   });
 }
 
 function agregarNadador() {
+  if (!curUser) { alert('Debes iniciar sesion como entrenador'); return; }
+  if (curUser.email !== COACH) { alert('Solo el entrenador puede agregar nadadores'); return; }
   var nombre = document.getElementById('ev-nombre').value.trim();
   var edad = document.getElementById('ev-edad').value;
   var nivel = document.getElementById('ev-nivel').value;
@@ -2071,6 +2077,9 @@ function agregarNadador() {
     document.getElementById('ev-nombre').value = '';
     document.getElementById('ev-edad').value = '';
     evalVista('lista');
+  }).catch(function(err) {
+    alert('Error al guardar nadador: ' + err.message + '\n\nVerifica las reglas de Firebase para la rama "nadadores"');
+    console.error('Firebase error:', err);
   });
 }
 
