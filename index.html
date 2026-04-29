@@ -312,6 +312,191 @@ label{font-size:0.76rem;color:#7ab8e8;margin-bottom:3px;display:block;font-weigh
 
     </div>
 
+    <!-- RANKING DE COMPETENCIAS -->
+    <div id="ranking-comp-sec" style="margin-bottom:1rem">
+
+      <!-- Header con toggle -->
+      <div onclick="toggleRankingComp()" style="display:flex;align-items:center;justify-content:space-between;padding:0.8rem;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.25);border-radius:14px;cursor:pointer;margin-bottom:0.5rem">
+        <div style="display:flex;align-items:center;gap:0.6rem">
+          <span style="font-size:1.3rem">&#127941;</span>
+          <div>
+            <div style="font-size:0.88rem;font-weight:800;color:#ffd700">Ranking de competencias</div>
+            <div style="font-size:0.65rem;color:#7ab8e8">Laguna Swim International</div>
+          </div>
+        </div>
+        <span id="ranking-arrow" style="color:#ffd700;font-size:1.2rem">&#8964;</span>
+      </div>
+
+      <div id="ranking-comp-body" style="display:none">
+
+        <!-- Filtros -->
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:0.8rem;margin-bottom:0.8rem">
+
+          <!-- Genero -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.6rem">
+            <button class="wk-btn on" id="rk-gen-V" onclick="selRkFiltro(this,'gen','V')">Varonil</button>
+            <button class="wk-btn" id="rk-gen-F" onclick="selRkFiltro(this,'gen','F')">Femenil</button>
+          </div>
+
+          <!-- Categoria -->
+          <div style="margin-bottom:0.6rem">
+            <div style="font-size:0.65rem;color:#7ab8e8;margin-bottom:0.4rem">Categoría</div>
+            <select id="rk-cat" onchange="filtrarRanking()" style="font-size:0.8rem;padding:0.5rem">
+              <optgroup label="Infantil">
+                <option value="INF-A">Infantil A (10-11 años)</option>
+                <option value="INF-B">Infantil B (12-13 años)</option>
+                <option value="INF-C">Infantil C (14-15 años)</option>
+              </optgroup>
+              <optgroup label="Juvenil">
+                <option value="JUV-A">Juvenil A (16-17 años)</option>
+                <option value="JUV-B">Juvenil B (18-24 años)</option>
+              </optgroup>
+              <optgroup label="Master">
+                <option value="MAS-25">Master 25-29</option>
+                <option value="MAS-30">Master 30-34</option>
+                <option value="MAS-35">Master 35-39</option>
+                <option value="MAS-40">Master 40-44</option>
+                <option value="MAS-45" selected>Master 45-49</option>
+                <option value="MAS-50">Master 50-54</option>
+                <option value="MAS-55">Master 55-59</option>
+                <option value="MAS-60">Master 60-64</option>
+                <option value="MAS-65">Master 65+</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <!-- Estilo -->
+          <div style="margin-bottom:0.6rem">
+            <div style="font-size:0.65rem;color:#7ab8e8;margin-bottom:0.4rem">Estilo</div>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.3rem">
+              <button class="wk-btn on" id="rk-est-Libre" onclick="selRkFiltro(this,'est','Libre')" style="font-size:0.65rem;padding:0.4rem">Libre</button>
+              <button class="wk-btn" id="rk-est-Pecho" onclick="selRkFiltro(this,'est','Pecho')" style="font-size:0.65rem;padding:0.4rem">Pecho</button>
+              <button class="wk-btn" id="rk-est-Dorso" onclick="selRkFiltro(this,'est','Dorso')" style="font-size:0.65rem;padding:0.4rem">Dorso</button>
+              <button class="wk-btn" id="rk-est-Mariposa" onclick="selRkFiltro(this,'est','Mariposa')" style="font-size:0.65rem;padding:0.4rem">Mariposa</button>
+              <button class="wk-btn" id="rk-est-Combinado" onclick="selRkFiltro(this,'est','Combinado')" style="font-size:0.65rem;padding:0.4rem">Comb</button>
+            </div>
+          </div>
+
+          <!-- Distancia -->
+          <div>
+            <div style="font-size:0.65rem;color:#7ab8e8;margin-bottom:0.4rem">Distancia</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.3rem">
+              <button class="wk-btn" id="rk-dist-25" onclick="selRkFiltro(this,'dist','25')" style="font-size:0.68rem;padding:0.4rem">25m</button>
+              <button class="wk-btn on" id="rk-dist-50" onclick="selRkFiltro(this,'dist','50')" style="font-size:0.68rem;padding:0.4rem">50m</button>
+              <button class="wk-btn" id="rk-dist-100" onclick="selRkFiltro(this,'dist','100')" style="font-size:0.68rem;padding:0.4rem">100m</button>
+              <button class="wk-btn" id="rk-dist-200" onclick="selRkFiltro(this,'dist','200')" style="font-size:0.68rem;padding:0.4rem">200m</button>
+              <button class="wk-btn" id="rk-dist-400" onclick="selRkFiltro(this,'dist','400')" style="font-size:0.68rem;padding:0.4rem">400m</button>
+              <button class="wk-btn" id="rk-dist-800" onclick="selRkFiltro(this,'dist','800')" style="font-size:0.68rem;padding:0.4rem">800m</button>
+              <button class="wk-btn" id="rk-dist-1500" onclick="selRkFiltro(this,'dist','1500')" style="font-size:0.68rem;padding:0.4rem">1500m</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de resultados -->
+        <div id="rk-tabla" style="margin-bottom:0.8rem">
+          <div style="text-align:center;padding:1.5rem;color:#7ab8e8;font-size:0.8rem">Selecciona los filtros para ver el ranking</div>
+        </div>
+
+        <!-- Botón agregar tiempo (solo coach) -->
+        <div id="rk-btn-agregar" style="display:none">
+          <button onclick="abrirAgregarTiempo()" style="width:100%;padding:0.8rem;background:rgba(255,215,0,0.08);border:2px solid rgba(255,215,0,0.3);border-radius:12px;color:#ffd700;font-size:0.85rem;font-weight:700;cursor:pointer">
+            &#43; Agregar resultado de competencia
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MODAL AGREGAR TIEMPO -->
+    <div id="modal-agregar-tiempo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:999;overflow-y:auto">
+      <div style="background:#0f1e33;border-radius:20px 20px 0 0;margin-top:10vh;padding:1.2rem;padding-bottom:3rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem">
+          <div style="font-size:1rem;font-weight:800;color:#ffd700">&#127941; Agregar resultado</div>
+          <button onclick="cerrarAgregarTiempo()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:1rem">&#10005;</button>
+        </div>
+
+        <label>Nombre del nadador</label>
+        <input id="nt-nombre" placeholder="Nombre completo">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+          <div>
+            <label>Género</label>
+            <select id="nt-gen">
+              <option value="V">Varonil</option>
+              <option value="F">Femenil</option>
+            </select>
+          </div>
+          <div>
+            <label>Categoría</label>
+            <select id="nt-cat">
+              <optgroup label="Infantil">
+                <option value="INF-A">Infantil A (10-11)</option>
+                <option value="INF-B">Infantil B (12-13)</option>
+                <option value="INF-C">Infantil C (14-15)</option>
+              </optgroup>
+              <optgroup label="Juvenil">
+                <option value="JUV-A">Juvenil A (16-17)</option>
+                <option value="JUV-B">Juvenil B (18-24)</option>
+              </optgroup>
+              <optgroup label="Master">
+                <option value="MAS-25">Master 25-29</option>
+                <option value="MAS-30">Master 30-34</option>
+                <option value="MAS-35">Master 35-39</option>
+                <option value="MAS-40">Master 40-44</option>
+                <option value="MAS-45">Master 45-49</option>
+                <option value="MAS-50">Master 50-54</option>
+                <option value="MAS-55">Master 55-59</option>
+                <option value="MAS-60">Master 60-64</option>
+                <option value="MAS-65">Master 65+</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+          <div>
+            <label>Estilo</label>
+            <select id="nt-estilo">
+              <option>Libre</option>
+              <option>Pecho</option>
+              <option>Dorso</option>
+              <option>Mariposa</option>
+              <option>Combinado</option>
+            </select>
+          </div>
+          <div>
+            <label>Distancia</label>
+            <select id="nt-dist">
+              <option value="25">25m</option>
+              <option value="50">50m</option>
+              <option value="100">100m</option>
+              <option value="200">200m</option>
+              <option value="400">400m</option>
+              <option value="800">800m</option>
+              <option value="1500">1500m</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Tiempo (mm:ss.cc)</label>
+        <input id="nt-tiempo" placeholder="1:02.45" style="font-size:1.4rem;font-weight:800;text-align:center;color:#ffd700">
+
+        <label>Competencia</label>
+        <input id="nt-compe" placeholder="Ej: Panamericano Master Monterrey 2024">
+
+        <label>Fecha</label>
+        <input type="date" id="nt-fecha">
+
+        <label>Lugar (opcional)</label>
+        <input id="nt-lugar" placeholder="Ej: 1er lugar, Medalla de oro">
+
+        <button class="btn btn-gold" onclick="guardarTiempoRanking()" style="font-size:1rem;padding:1rem;margin-top:0.5rem">
+          &#127941; Guardar resultado
+        </button>
+        <button class="btn btn-gray" onclick="cerrarAgregarTiempo()">Cancelar</button>
+      </div>
+    </div>
+
     <!-- FOTOS FIJADAS (siempre visibles) -->
     <div id="fotos-fijadas-sec" style="display:none;margin-bottom:1rem">
       <div style="font-size:0.72rem;font-weight:700;color:#ffd700;margin-bottom:0.5rem">&#128247; FOTOS DESTACADAS</div>
@@ -1850,6 +2035,190 @@ function abrirNadador(id,nadador){
 function solicitarDiploma(nombre,nivel,pct){var msg='Hola Sergio! Solicito el Diploma de Nivel *'+nivel+'* para *'+nombre+'* que completo el '+pct+'%.';window.open('https://wa.me/528713164850?text='+encodeURIComponent(msg),'_blank');}
 
 function initProfile(){var sec=document.getElementById('eval-coach-section');if(sec)sec.style.display=curUser&&curUser.email===COACH?'block':'none';}
+
+// ═══════════════════════════════════════════════
+// RANKING DE COMPETENCIAS
+// ═══════════════════════════════════════════════
+var rkFiltros = {gen:'V', est:'Libre', dist:'50'};
+
+function toggleRankingComp(){
+  var body = document.getElementById('ranking-comp-body');
+  var arrow = document.getElementById('ranking-arrow');
+  if(!body) return;
+  if(body.style.display === 'none'){
+    body.style.display = 'block';
+    if(arrow) arrow.textContent = '\u2227';
+    // Mostrar boton coach
+    var btnAg = document.getElementById('rk-btn-agregar');
+    if(btnAg) btnAg.style.display = curUser && curUser.email === COACH ? 'block' : 'none';
+    filtrarRanking();
+  } else {
+    body.style.display = 'none';
+    if(arrow) arrow.textContent = '\u2964';
+  }
+}
+
+function selRkFiltro(btn, tipo, val){
+  rkFiltros[tipo] = val;
+  // Desactivar hermanos
+  var prefijos = {gen:'rk-gen-', est:'rk-est-', dist:'rk-dist-'};
+  var pfx = prefijos[tipo];
+  if(pfx){
+    document.querySelectorAll('[id^="'+pfx+'"]').forEach(function(b){ b.classList.remove('on'); });
+  }
+  btn.classList.add('on');
+  filtrarRanking();
+}
+
+function filtrarRanking(){
+  var cat = document.getElementById('rk-cat');
+  var catVal = cat ? cat.value : 'MAS-45';
+  var tabla = document.getElementById('rk-tabla');
+  if(!tabla) return;
+  tabla.innerHTML = '<div style="text-align:center;padding:1rem;color:#7ab8e8;font-size:0.78rem">Cargando...</div>';
+
+  var path = 'ranking/' + rkFiltros.gen + '/' + catVal + '/' + rkFiltros.est + '/' + rkFiltros.dist;
+
+  db.ref(path).orderByChild('ms').limitToFirst(20).once('value', function(snap){
+    if(!snap.exists()){
+      tabla.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#7ab8e8;font-size:0.78rem">Sin resultados registrados para esta categoria.<br><span style="font-size:0.65rem;opacity:0.6">'+rkFiltros.dist+'m '+rkFiltros.est+' - '+catVal+'</span></div>';
+      return;
+    }
+    var resultados = [];
+    snap.forEach(function(child){ resultados.push(Object.assign({key:child.key}, child.val())); });
+    resultados.sort(function(a,b){ return (a.ms||0)-(b.ms||0); });
+    renderTablaRanking(resultados, tabla);
+  });
+}
+
+function renderTablaRanking(resultados, tabla){
+  var cat = document.getElementById('rk-cat');
+  var catLabel = cat ? cat.options[cat.selectedIndex].text : '';
+  var titulo = rkFiltros.dist+'m '+rkFiltros.est+' - '+(rkFiltros.gen==='V'?'Varonil':'Femenil')+' - '+catLabel;
+
+  var html = '<div style="font-size:0.72rem;font-weight:700;color:#ffd700;margin-bottom:0.6rem">'+titulo+'</div>';
+  html += '<div style="background:rgba(255,255,255,0.03);border-radius:10px;overflow:hidden">';
+
+  // Header
+  html += '<div style="display:grid;grid-template-columns:2rem 1fr auto;gap:0.4rem;padding:0.5rem 0.7rem;background:rgba(255,215,0,0.08);font-size:0.6rem;font-weight:700;color:#7ab8e8">';
+  html += '<div>#</div><div>NADADOR</div><div>TIEMPO</div></div>';
+
+  resultados.forEach(function(r, idx){
+    var medalla = idx===0?'&#127947;':idx===1?'&#129352;':idx===2?'&#129353;':'';
+    var esPrimero = idx === 0;
+    html += '<div style="display:grid;grid-template-columns:2rem 1fr auto;gap:0.4rem;padding:0.6rem 0.7rem;border-top:1px solid rgba(255,255,255,0.05);align-items:center'+(esPrimero?';background:rgba(255,215,0,0.04)':'')+'">';
+    html += '<div style="font-size:0.75rem;font-weight:800;color:'+(esPrimero?'#ffd700':'rgba(255,255,255,0.4)')+'">'+(medalla||idx+1)+'</div>';
+    html += '<div>';
+    html += '<div style="font-size:0.82rem;font-weight:'+(esPrimero?'800':'600')+';color:'+(esPrimero?'#fff':'rgba(255,255,255,0.85)')+'">'+r.nombre+'</div>';
+    if(r.compe) html += '<div style="font-size:0.6rem;color:#7ab8e8;margin-top:1px">'+r.compe+(r.fecha?' - '+r.fecha:'')+'</div>';
+    if(r.lugar) html += '<div style="font-size:0.6rem;color:#ffd700;margin-top:1px">'+r.lugar+'</div>';
+    html += '</div>';
+    html += '<div style="text-align:right">';
+    html += '<div style="font-size:0.95rem;font-weight:800;color:'+(esPrimero?'#ffd700':'#38bdf8')+'">'+r.tiempo+'</div>';
+    if(curUser && curUser.email === COACH){
+      html += '<button onclick="borrarTiempoRanking(\'' + r.key + '\')" style="font-size:0.55rem;color:rgba(239,68,68,0.6);background:none;border:none;cursor:pointer;padding:0">borrar</button>';
+    }
+    html += '</div>';
+    html += '</div>';
+  });
+
+  html += '</div>';
+  tabla.innerHTML = html;
+}
+
+function timeToMs(t){
+  if(!t) return 999999999;
+  t = t.trim().replace(',','.');
+  var parts = t.split(':');
+  if(parts.length === 2){
+    return (parseInt(parts[0])||0)*60000 + Math.round(parseFloat(parts[1])*1000);
+  }
+  return Math.round(parseFloat(t)*1000);
+}
+
+function abrirAgregarTiempo(){
+  var m = document.getElementById('modal-agregar-tiempo');
+  if(m){ m.style.display='block'; document.body.style.overflow='hidden'; }
+  // Pre-llenar filtros actuales
+  var gen = document.getElementById('nt-gen');
+  var est = document.getElementById('nt-estilo');
+  var dist = document.getElementById('nt-dist');
+  var cat = document.getElementById('nt-cat');
+  var rkCat = document.getElementById('rk-cat');
+  if(gen) gen.value = rkFiltros.gen;
+  if(est) est.value = rkFiltros.est;
+  if(dist) dist.value = rkFiltros.dist;
+  if(cat && rkCat) cat.value = rkCat.value;
+  // Fecha hoy
+  var fInp = document.getElementById('nt-fecha');
+  if(fInp) fInp.value = fmtFecha(new Date());
+}
+
+function cerrarAgregarTiempo(){
+  var m = document.getElementById('modal-agregar-tiempo');
+  if(m) m.style.display='none';
+  document.body.style.overflow='';
+}
+
+async function guardarTiempoRanking(){
+  if(!curUser || curUser.email !== COACH){ alert('Solo el coach puede agregar tiempos'); return; }
+  var nombre = (document.getElementById('nt-nombre').value||'').trim();
+  var gen = document.getElementById('nt-gen').value;
+  var cat = document.getElementById('nt-cat').value;
+  var estilo = document.getElementById('nt-estilo').value;
+  var dist = document.getElementById('nt-dist').value;
+  var tiempo = (document.getElementById('nt-tiempo').value||'').trim();
+  var compe = (document.getElementById('nt-compe').value||'').trim();
+  var fecha = document.getElementById('nt-fecha').value||'';
+  var lugar = (document.getElementById('nt-lugar').value||'').trim();
+
+  if(!nombre){ alert('Escribe el nombre del nadador'); return; }
+  if(!tiempo){ alert('Escribe el tiempo'); return; }
+
+  var ms = timeToMs(tiempo);
+  var path = 'ranking/' + gen + '/' + cat + '/' + estilo + '/' + dist;
+  var key = db.ref(path).push().key;
+
+  try{
+    await db.ref(path+'/'+key).set({
+      nombre: nombre,
+      tiempo: tiempo,
+      ms: ms,
+      compe: compe,
+      fecha: fecha,
+      lugar: lugar,
+      timestamp: Date.now()
+    });
+    cerrarAgregarTiempo();
+    // Actualizar filtros para mostrar el nuevo tiempo
+    var rkCat = document.getElementById('rk-cat');
+    if(rkCat) rkCat.value = cat;
+    rkFiltros.gen = gen;
+    rkFiltros.est = estilo;
+    rkFiltros.dist = dist;
+    // Actualizar botones de filtro
+    ['V','F'].forEach(function(g){ var b=document.getElementById('rk-gen-'+g); if(b) b.classList.toggle('on', g===gen); });
+    ['Libre','Pecho','Dorso','Mariposa','Combinado'].forEach(function(e){ var b=document.getElementById('rk-est-'+e); if(b) b.classList.toggle('on', e===estilo); });
+    ['25','50','100','200','400','800','1500'].forEach(function(d){ var b=document.getElementById('rk-dist-'+d); if(b) b.classList.toggle('on', d===dist); });
+    filtrarRanking();
+    // Limpiar form
+    document.getElementById('nt-nombre').value='';
+    document.getElementById('nt-tiempo').value='';
+    document.getElementById('nt-compe').value='';
+    document.getElementById('nt-lugar').value='';
+  } catch(e){
+    alert('Error al guardar: '+e.message);
+  }
+}
+
+async function borrarTiempoRanking(key){
+  if(!curUser || curUser.email !== COACH) return;
+  if(!confirm('Borrar este resultado?')) return;
+  var cat = document.getElementById('rk-cat').value;
+  var path = 'ranking/' + rkFiltros.gen + '/' + cat + '/' + rkFiltros.est + '/' + rkFiltros.dist + '/' + key;
+  await db.ref(path).remove();
+  filtrarRanking();
+}
 </script>
 
 </body>
