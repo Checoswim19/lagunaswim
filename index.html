@@ -644,6 +644,8 @@ auth.onAuthStateChanged(function(u){
     if(u.email===COACH){curSubs={activoHasta:9999999999999,restantes:999};setBadge('Entrenador - Acceso ilimitado','#38bdf8');}
     else loadSubs(u.uid);
     if(pendingCb){pendingCb();pendingCb=null;}
+    initWk();
+    initMuro();
   } else {
     document.getElementById('auth-form-view').style.display='block';
     document.getElementById('auth-logged-view').style.display='none';
@@ -651,6 +653,8 @@ auth.onAuthStateChanged(function(u){
     document.querySelectorAll('.coach-logout-btn').forEach(function(b){b.style.display='none';});
     document.getElementById('coach-add-section').style.display='none';
     curSubs=null;
+    initWk();
+    initMuro();
   }
 });
 
@@ -1129,17 +1133,16 @@ function togEstilo(style){
 function initWk(){
   var lw=document.getElementById('wk-login-wall');
   var sw=document.getElementById('wk-subs-wall');
-  var cfg=document.getElementById('wk-config');
-  var res=document.getElementById('wk-result');
-  var load=document.getElementById('wk-loading');
-  if(lw)lw.style.display='none';if(sw)sw.style.display='none';
+  var acc=document.getElementById('wk-acceso');
+  if(lw)lw.style.display='none';
+  if(sw)sw.style.display='none';
+  if(acc)acc.style.display='none';
   if(!curUser){if(lw)lw.style.display='block';return;}
-  if(tieneAcceso()){
-    if(cfg&&(!res||res.style.display!=='block')&&(!load||load.style.display!=='block'))cfg.style.display='block';
+  if(curUser.email===COACH||tieneAcceso()){
+    if(acc)acc.style.display='block';
     updBadge();
   } else {
     if(sw)sw.style.display='block';
-    var info=document.getElementById('wk-user-info');if(info&&curUser)info.textContent='Cuenta: '+(curUser.displayName||curUser.email);
   }
 }
 
@@ -1291,11 +1294,195 @@ var WORKER_URL = 'https://laguna-api.checoswim.workers.dev';
 var CLOUD_NAME = 'dg84htrzg';
 var UPLOAD_PRESET = 'laguna_swim_fotos';
 
-// Variables workout
-var wkCfg = {metros:'2500', nivel:'mantenimiento', estilo:'Libre', dryland:'basico'};
-var planTipo = 'carga', planVol = '2500';
-var planDias = new Set(['Lun','Mar','Mie','Jue','Vie']);
-var drillEstilo = 'Libre';
+// ==================== ENTRENAMIENTOS SIN API ====================
+var wkCfg={dryland:'basico',metros:'2500',nivel:'mantenimiento'};
+var wkEstilos=new Set(['Libre']);
+var planTipo='carga',planVol='2500';
+var planDias=new Set(['Lun','Mar','Mie','Jue','Vie']);
+var drillEstilo='Libre';
+
+var DRYLAND={
+  basico:'CALENTAMIENTO BASICO (5 min)\n• Rotaciones de cuello: 10 reps\n• Circulos de hombros: 10 adelante + 10 atras\n• Estiramiento de pecho: 3x10 seg\n• Rotacion de caderas: 10 cada lado\n• 10 sentadillas lentas\n• 5 respiraciones profundas',
+  intermedio:'CALENTAMIENTO INTERMEDIO (10 min)\n• Movilidad dinamica cuello y hombros: 30 seg\n• 10-10-10 lagartijas progresivas\n• 10-10-10 sentadillas con salto\n• Stretch de pecho en pared: 3x15 seg\n• Plancha de core: 3x20 seg\n• 10 saltos de tijera',
+  avanzado:'CALENTAMIENTO AVANZADO (15 min)\n• Movilidad fluida completa: 2 min\n• 15-15-15 lagartijas / sentadillas / abdominales\n• Stretch dinamico de hombros con banda\n• Rotacion toracica profunda\n• Skipping talones y rodillas: 30 seg c/u\n• 5 respiraciones diafragmaticas'
+};
+
+var EJERCICIOS_TEC={
+  Libre:{basico:'4x50m (respiracion cada 3 brazadas)\n4x50m (brazada larga y deslizamiento)',medio:'6x50m (respiracion bilateral cada 3/5)\n4x50m (recobro rozando el agua)',avanzado:'8x50m (cambio de ritmo: 25m fuerte + 25m suave)\n4x50m (brazada de alta frecuencia)'},
+  Dorso:{basico:'4x50m (brazos rectos, entrada menique primero)\n4x50m (posicion de cabeza estable)',medio:'6x50m (giro de hombros exagerado)\n4x50m (patada continua de espalda)',avanzado:'8x50m (recobro relajado)\n4x50m (ritmo de brazada constante)'},
+  Pecho:{basico:'4x50m (patada de rana con tabla)\n4x50m (brazada de pecho solo brazos)',medio:'6x50m (coordinacion 2 patadas x 1 brazada)\n4x50m (recobro de brazos submarino)',avanzado:'8x50m (patada explosiva + brazada larga)\n4x50m (ritmo de competencia)'},
+  Mariposa:{basico:'4x25m (patada delfin con tabla)\n4x25m (un brazo a la vez)',medio:'4x50m (ondulacion corporal completa)\n4x25m (recobro aereo relajado)',avanzado:'6x50m (2 brazadas + 1 respiracion)\n4x25m (mariposa completa velocidad)'}
+};
+
+var SERIES_PRINC={
+  recuperacion:{nom:'RECUPERACION',desc:'FC <140 - Tecnica suave',serie:'8x100m descanso 25" (ritmo facil, enfocate en tecnica)\n4x50m patada suave descanso 20"\n200m estilo variado sin parar'},
+  mantenimiento:{nom:'MANTENIMIENTO',desc:'FC 140-150 - Aerobico base',serie:'6x200m descanso 30" (ritmo constante)\n8x50m progresivo\n400m estilo unico sin parar'},
+  construccion:{nom:'CONSTRUCCION',desc:'FC 150-160 - Umbral aerobico',serie:'4x400m descanso 45" (ritmo fuerte)\n10x100m descanso 20"\n8x50m con aletas velocidad'},
+  precompetencia:{nom:'PRE-COMPETENCIA',desc:'FC 160-170 - Ritmo de carrera',serie:'5x100m descanso 60" (maxima velocidad)\n6x50m con salida desde banco\n200m ritmo de competencia'}
+};
+
+var ENFRIAM={
+  basico:'ENFRIAMIENTO SUAVE\n• 100m estilo libre muy suave\n• 100m espalda relajada\n• Estiramientos 3 min',
+  medio:'ENFRIAMIENTO COMPLETO\n• 200m variado suave\n• 100m patada suave\n• Estiramientos 4 min',
+  avanzado:'ENFRIAMIENTO PROFESIONAL\n• 300m recuperacion activa\n• 100m solo patada suave\n• Estiramientos completos 5 min\n• Relajacion en flotacion 1 min'
+};
+
+var CONSEJOS={
+  recuperacion:'La recuperacion es tan importante como el entrenamiento. Escucha a tu cuerpo.',
+  mantenimiento:'La consistencia vence a la intensidad. Cada dia cuenta.',
+  construccion:'Hoy construyes al campeon del manana. El esfuerzo de hoy sera tu victoria.',
+  precompetencia:'Confia en tu entrenamiento. Ya tienes el trabajo hecho, ahora afina los detalles.'
+};
+
+function generarEntrenoDiario(){
+  var nombre=(document.getElementById('wk-nombre').value||'').trim();
+  if(!nombre){alert('Ingresa tu nombre');return;}
+  var dist=parseInt(wkCfg.metros);
+  var estilo=Array.from(wkEstilos)[0]||'Libre';
+  var intens=wkCfg.nivel;
+  var dryTxt=DRYLAND[wkCfg.dryland]||DRYLAND.basico;
+  var calAgua=Math.floor(dist*0.18);
+  var tecnica=Math.floor(dist*0.12);
+  var principal=Math.floor(dist*0.6);
+  var enfriamiento=dist-(calAgua+tecnica+principal);
+  var nivTec=intens==='construccion'||intens==='precompetencia'?'avanzado':intens==='mantenimiento'?'medio':'basico';
+  var ejTec=(EJERCICIOS_TEC[estilo]&&EJERCICIOS_TEC[estilo][nivTec])||EJERCICIOS_TEC.Libre.basico;
+  var serie=SERIES_PRINC[intens]||SERIES_PRINC.mantenimiento;
+  var consejo=CONSEJOS[intens]||CONSEJOS.mantenimiento;
+
+  var txt='LAGUNA SWIM - ENTRENAMIENTO PROFESIONAL\n';
+  txt+='Metodologia Sergio Elias Villarreal Limas\n\n';
+  txt+='NADADOR: '+nombre.toUpperCase()+'\n';
+  txt+='DISTANCIA: '+dist+'m  |  ESTILO: '+estilo.toUpperCase()+'\n';
+  txt+='INTENSIDAD: '+serie.nom+' - '+serie.desc+'\n\n';
+  txt+=dryTxt+'\n\n';
+  txt+='CALENTAMIENTO EN AGUA ('+calAgua+'m)\n';
+  txt+='• 200m '+estilo+' suave\n';
+  txt+='• 200m patada con tabla\n';
+  if(calAgua-400>0)txt+='• '+(calAgua-400)+'m tecnica progresiva\n';
+  txt+='\n';
+  txt+='TRABAJO TECNICO ('+tecnica+'m)\n';
+  txt+=ejTec+'\n\n';
+  txt+='SERIE PRINCIPAL ('+principal+'m)\n';
+  txt+=serie.serie+'\n\n';
+  txt+=ENFRIAM[nivTec]+'\n\n';
+  txt+='CONSEJO DEL DIA:\n"'+consejo+'" - Sergio Villarreal\n\n';
+  txt+='TOTAL: '+dist+'m\n';
+  txt+='"Fuertes y Valientes" - Josue 1:9';
+
+  window._lastWk=txt;window.ultimoEntrenamiento=txt;window.ultimoNombre=nombre;
+
+  var html='<div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:1rem;margin-top:0.5rem">';
+  html+='<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.75rem;line-height:1.5;color:#e2e8f0;margin:0">'+txt+'</pre>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.8rem">';
+  html+='<button class="btn btn-green" onclick="shareWk()" style="margin-bottom:0;font-size:0.8rem">Compartir</button>';
+  html+='<button class="btn btn-sky" onclick="resetWk()" style="margin-bottom:0;font-size:0.8rem">Nuevo</button>';
+  html+='</div></div>';
+
+  var r=document.getElementById('wk-result');
+  if(r){r.innerHTML=html;r.style.display='block';}
+  var c=document.getElementById('wk-config');if(c)c.style.display='none';
+}
+
+function generarPlanSemanal(){
+  var nombre=(document.getElementById('plan-nombre').value||'').trim();
+  if(!nombre){alert('Ingresa el nombre del nadador');return;}
+  var nivel=document.getElementById('plan-nivel').value;
+  var dist=parseInt(planVol);
+  var dias=Array.from(planDias);
+  if(!dias.length){alert('Selecciona al menos un dia');return;}
+  var tipos={carga:{nom:'CONSTRUCCION',desc:'Volumen y resistencia aerobica',intens:'construccion'},precompetencia:{nom:'PRE-COMPETENCIA',desc:'Velocidad y ritmo de carrera',intens:'precompetencia'},mantenimiento:{nom:'MANTENIMIENTO',desc:'Entrenamiento equilibrado',intens:'mantenimiento'},recuperacion:{nom:'RECUPERACION',desc:'Regenerativo post-competencia',intens:'recuperacion'}};
+  var tipo=tipos[planTipo]||tipos.mantenimiento;
+  var estilosArr=['Libre','Dorso','Pecho','Mariposa'];
+  var total=dist*dias.length;
+
+  var plan='PLAN SEMANAL LAGUNA SWIM\n';
+  plan+='Metodologia Sergio Elias Villarreal Limas\n\n';
+  plan+='NADADOR: '+nombre.toUpperCase()+'\n';
+  plan+='TIPO: '+tipo.nom+' - '+tipo.desc+'\n';
+  plan+='NIVEL: '+nivel+' | METROS/SESION: '+dist+'m | DIAS: '+dias.length+'\n';
+  plan+='TOTAL SEMANA: '+total+'m\n\n';
+
+  dias.forEach(function(dia,i){
+    var estilo=estilosArr[i%estilosArr.length];
+    var calAgua=Math.floor(dist*0.2);
+    var principal=Math.floor(dist*0.6);
+    var enf=dist-(calAgua+principal);
+    var serieTexto={construccion:'4x'+Math.floor(principal/4)+'m descanso 40" (ritmo constante)',precompetencia:'6x'+Math.floor(principal/6)+'m velocidad maxima descanso 60"',mantenimiento:'8x'+Math.floor(principal/8)+'m descanso 25" (ritmo medio)',recuperacion:'10x'+Math.floor(principal/10)+'m suave descanso 30"'}[tipo.intens]||'';
+    var frases=['El primer paso es creer en ti mismo.','Un dia mas, un paso mas cerca de tu meta.','La constancia construye campiones.','El esfuerzo de hoy es la victoria de manana.','Terminas mas fuerte de lo que empezaste.'];
+    plan+=dia.toUpperCase()+' - '+estilo.toUpperCase()+'\n';
+    plan+='Total: '+dist+'m\n';
+    plan+='Tierra (10 min): Movilidad articular + activacion\n';
+    plan+='Calentamiento agua ('+calAgua+'m): 200m '+estilo+' suave + 200m patada\n';
+    plan+='Serie principal ('+principal+'m): '+serieTexto+'\n';
+    plan+='Enfriamiento ('+enf+'m): '+enf+'m suave + estiramientos\n';
+    plan+='"'+frases[i%frases.length]+'"\n\n';
+  });
+
+  plan+='RESUMEN SEMANAL\n';
+  plan+='Total metros: '+total+'m | Sesiones: '+dias.length+'\n';
+  plan+='"Fuertes y Valientes" - Josue 1:9';
+
+  window._lastPlan=plan;window.ultimoPlan=plan;
+
+  var html='<div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:1rem">';
+  html+='<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.7rem;line-height:1.4;color:#e2e8f0;margin:0;max-height:500px;overflow-y:auto">'+plan+'</pre>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.8rem">';
+  html+='<button class="btn btn-green" onclick="sharePlan()" style="margin-bottom:0;font-size:0.8rem">Compartir</button>';
+  html+='<button class="btn btn-sky" onclick="resetPlan()" style="margin-bottom:0;font-size:0.8rem">Nuevo</button>';
+  html+='</div></div>';
+
+  var r=document.getElementById('wk-plan-result');if(r){r.innerHTML=html;r.style.display='block';}
+  var c=document.getElementById('wk-plan-config');if(c)c.style.display='none';
+}
+
+function generarDrills(){
+  var estilosTexto={
+    Libre:'1. Catch-up drill: toca el pulgar del otro brazo antes de sacar\n2. Fist drill: nada con el puno cerrado para sentir el antebrazo\n3. Fingertip drag: arrastra los dedos por el agua en el recobro\n4. Side kick: nada de costado 6 patadas + 3 brazadas\n5. Single arm: un brazo solo, otro extendido al frente\n6. 3-3-3: 3 brazadas derecha, 3 izquierda, 3 completas\n7. Thumb scrape: el pulgar roza el muslo en el empuje\n8. Head-up freestyle: cabeza fuera del agua como polo acuatico\n9. Tarzan drill: cabeza arriba + brazada larga\n10. Two-beat kick: 2 patadas por ciclo de brazada\n11. Closed fist: puno cerrado 25m + abierto 25m\n12. Shoulder roll: exagerar la rotacion del hombro\n13. Catch drill: enfocarse en el agarre inicial\n14. High elbow: codo alto en la traccion\n15. Hip-driven: iniciado desde las caderas\n16. Tempo trainer: ritmo constante de brazada\n17. Distance per stroke: maxima longitud por brazada\n18. Sprint 15m: salida explosiva y deslizamiento\n19. Underwater pull: traccion completa bajo el agua\n20. Full stroke count: contar brazadas por largo',
+    Dorso:'1. Entrada de meñique: meñique entra primero al agua\n2. Rotacion de hombros: exagerar la rotacion de espalda\n3. Bandera en cadera: mano roza la cadera al terminar\n4. Un solo brazo: un brazo, el otro pegado al cuerpo\n5. Palmas arriba: recobro con palma hacia arriba\n6. Ojos cerrados: nadar de espalda sin ver para equilibrio\n7. Patada profunda: enfocarse en patada desde la cadera\n8. Tobillo flexible: pies relajados y tobillo flexible\n9. Cabeza estable: mirada al techo sin moverla\n10. Entrada cruzada: evitar la entrada cruzada de brazos\n11. Kick on back: solo patada, brazos al costado\n12. Sculling: remos con manos a los lados\n13. Doble patada: 2 patadas por brazada\n14. Rotacion minima: practicar con menos rotacion\n15. Sprint espalda 25m: maxima velocidad\n16. Conteo de brazadas: eficiencia por largo\n17. Deslizamiento: enfasis en el planeo inicial\n18. Viraje practica: solo giro en pared\n19. Salida desde banco: practica de start\n20. Combinado espalda-libre: alterna estilos',
+    Pecho:'1. Patada tabla: solo piernas con tabla al frente\n2. Pull boya: solo brazada con boya entre piernas\n3. 2-count glide: deslizamiento de 2 tiempos\n4. Ondulacion completa: cuerpo en ola completa\n5. Brazada estrecha: codos cerca del cuerpo\n6. Brazada ancha: apertura maxima de brazos\n7. Un ciclo - un respiro: un movimiento completo por respiro\n8. Patada explosiva: enfasis en el impulso de piernas\n9. Recobro submarino: brazos van por debajo\n10. Cabeza neutra: respiracion sin levantar cabeza de mas\n11. Patada vertical: en posicion vertical practicar patada\n12. Solo brazada en superficie: sin patada\n13. Pecho con aletas: aletas para sentir la ondulacion\n14. Pull-out subacuatico: practica del deslizamiento inicial\n15. Temporizacion: contar ritmo de ciclo\n16. Pecho en espalda: acostado de espalda, practicar patada\n17. Kick timing: sincronizar patada con brazada\n18. Pecho completo lento: muy lento con maxima amplitud\n19. Sprint pecho 25m: velocidad maxima\n20. Conteo eficiencia: menos brazadas por largo',
+    Mariposa:'1. Patada con tabla: solo piernas en superficie\n2. Patada subacuatica: piernas bajo el agua\n3. Dos patadas: 2 patadas por cada brazada\n4. Un brazo: un brazo mariposa, otro libre\n5. Ondulacion sin brazos: cuerpo en ola\n6. Brazada seca: en tierra practicar el recobro\n7. Mariposa lenta: muy despacio con forma perfecta\n8. 1-2-mariposa: 2 libre + 1 mariposa\n9. Entrada de pulgares: pulgares apuntan hacia abajo\n10. Recobro relajado: manos rozando el agua\n11. Respiracion un lado: alternar respiracion\n12. Sin respirar 25m: apnea en mariposa\n13. Mariposa + patada delfin: solo piernas 15m + brazada\n14. Patada de pie: de pie en agua practicar ondulacion\n15. Sincronizacion: timing perfecto patada-brazada\n16. Brazada corta: distancia corta maxima velocidad\n17. Subacuatico 15m: patada delfin inicial\n18. Mariposa con aletas: aletas para sentir la ola\n19. Sprint mariposa 25m: maxima velocidad\n20. Combinado: 25m mariposa + 25m pecho',
+    OW:'1. Avistamiento: levantar cabeza cada 6 brazadas\n2. Drafting: nadar en la estela de otro nadador\n3. Giro en boya: practica de giro sin pared\n4. Nado sin gafas: orientacion sin ver claro\n5. Patada fuerte: contra corriente o resistencia\n6. Arranque de salida: salida desde playa o muelle\n7. Cambio de ritmo: sprint + recuperacion en aguas abiertas\n8. Respiracion bilateral obligatoria\n9. Nado en grupos: contacto fisico y posicionamiento\n10. Templo en agua abierta: ritmo constante sin referencia\n11. Hidratacion en movimiento: beber nadando\n12. Cambio de direction: giro de 180 grados\n13. Nado contra viento: adaptar tecnica\n14. Entrada explosiva: salida de playa rapida\n15. Orientacion por sol: navegar sin referencia\n16. Braceo amplio: contra resistencia del agua abierta\n17. Patada profunda: para aguas con corriente\n18. Conservacion de energia: ritmo sostenible largo\n19. Kick and glide: patada fuerte + deslizamiento\n20. Simulacro de carrera: prueba de tiempo en circuito'
+  };
+  var txt='20 DRILLS TECNICOS - '+drillEstilo.toUpperCase()+'\nLaguna Swim - Sergio Elias Villarreal Limas\n\n';
+  txt+=(estilosTexto[drillEstilo]||estilosTexto.Libre)+'\n\n';
+  txt+='CONSEJO FINAL: La tecnica perfecta se construye con repeticion constante y conciencia de cada movimiento.';
+  window._lastDrills=txt;
+
+  var html='<div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:1rem">';
+  html+='<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.75rem;line-height:1.6;color:#e2e8f0;margin:0;max-height:500px;overflow-y:auto">'+txt+'</pre>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.8rem">';
+  html+='<button class="btn btn-green" onclick="shareDrills()" style="margin-bottom:0;font-size:0.8rem">Compartir</button>';
+  html+='<button class="btn btn-sky" onclick="resetDrills()" style="margin-bottom:0;font-size:0.8rem">Nuevo</button>';
+  html+='</div></div>';
+
+  var r=document.getElementById('drills-result');if(r){r.innerHTML=html;r.style.display='block';}
+  var c=document.getElementById('drills-config');if(c)c.style.display='none';
+}
+
+function selWk(btn,group,val){
+  var pfx={dryland:'wkd',metros:'wkm',nivel:'wkn'}[group];
+  if(pfx)document.querySelectorAll('[id^="'+pfx+'-"]').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');wkCfg[group]=val;
+}
+function togEstilo(s){
+  if(wkEstilos.has(s)){if(wkEstilos.size===1)return;wkEstilos.delete(s);var b=document.getElementById('wks-'+s);if(b)b.classList.remove('on');}
+  else{wkEstilos.add(s);var b=document.getElementById('wks-'+s);if(b)b.classList.add('on');}
+}
+function selPlanTipo(tipo){planTipo=tipo;document.querySelectorAll('[id^="plan-tipo-"]').forEach(function(b){b.classList.remove('on');});var b=document.getElementById('plan-tipo-'+tipo);if(b)b.classList.add('on');}
+function selPlanVol(vol){planVol=vol;document.querySelectorAll('[id^="plan-vol-"]').forEach(function(b){b.classList.remove('on');});var b=document.getElementById('plan-vol-'+vol);if(b)b.classList.add('on');}
+function togglePlanDia(dia){var id='plan-dia-'+dia.toLowerCase();var b=document.getElementById(id);if(planDias.has(dia)){if(planDias.size<=1)return;planDias.delete(dia);if(b)b.classList.remove('on');}else{planDias.add(dia);if(b)b.classList.add('on');}}
+function selDrillEstilo(e){drillEstilo=e;['libre','dorso','pecho','mariposa','ow'].forEach(function(x){var b=document.getElementById('drill-estilo-'+x);if(b)b.classList.remove('on');});var b=document.getElementById('drill-estilo-'+e.toLowerCase());if(b)b.classList.add('on');}
+function elegirModo(modo){document.getElementById('wk-selector').style.display='none';['diario','semanal','drills'].forEach(function(m){var e=document.getElementById('wk-'+m);if(e)e.style.display=m===modo?'block':'none';});}
+function volverSelector(){document.getElementById('wk-selector').style.display='block';['wk-diario','wk-semanal','wk-drills'].forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='none';});resetWk();resetPlan();resetDrills();}
+function resetWk(){var r=document.getElementById('wk-result');var c=document.getElementById('wk-config');if(r)r.style.display='none';if(c)c.style.display='block';}
+function resetPlan(){var r=document.getElementById('wk-plan-result');var c=document.getElementById('wk-plan-config');if(r)r.style.display='none';if(c)c.style.display='block';}
+function resetDrills(){var r=document.getElementById('drills-result');var c=document.getElementById('drills-config');if(r)r.style.display='none';if(c)c.style.display='block';}
+function shareWk(){var t=window._lastWk||'';if(!t)return;if(navigator.share){navigator.share({title:'Laguna Swim',text:t}).catch(function(){});}else{navigator.clipboard.writeText(t).then(function(){alert('Copiado!');});}}
+function sharePlan(){var t=window._lastPlan||'';if(!t)return;if(navigator.share){navigator.share({title:'Plan Laguna Swim',text:t}).catch(function(){});}else{navigator.clipboard.writeText(t).then(function(){alert('Copiado!');});}}
+function shareDrills(){var t=window._lastDrills||'';if(!t)return;if(navigator.share){navigator.share({title:'Drills Laguna Swim',text:t}).catch(function(){});}else{navigator.clipboard.writeText(t).then(function(){alert('Copiado!');});}}
+function updBadge(){var b=document.getElementById('wk-badge');if(!b||!curUser)return;if(curUser.email===COACH){b.textContent='Entrenador Sergio - Acceso ilimitado';b.style.color='#38bdf8';return;}if(curSubs){var dias=Math.max(0,Math.ceil((curSubs.activoHasta-Date.now())/86400000));b.textContent=curSubs.restantes+' entrenamientos - '+dias+' dias';b.style.color=curSubs.restantes>2?'#22c55e':'#eab308';}}
+
 
 // Variables muro
 var muroOffset = 0, muroSesiones = [], fotosMuroArr = [];
