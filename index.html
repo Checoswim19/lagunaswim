@@ -1227,105 +1227,53 @@ async function generarEntrenoDiario() {
     return;
   }
   
-  var nombre = (document.getElementById('wk-nombre').value || 'Nadador').trim();
+  var nombre = document.getElementById('wk-nombre').value || 'Nadador';
   var distancia = parseInt(wk.cfg.metros);
   var estilo = wk.cfg.estilo;
   var intensidad = wk.cfg.nivel;
+  var dryland = wk.cfg.dryland;
   
-  // Calentamientos en tierra (2 opciones por nivel)
+  // Textos de calentamiento
   var calentamientos = {
-    basico: [
-      '🔥 CALENTAMIENTO BÁSICO (5 min)\n• Rotaciones de cuello: 10 reps\n• Círculos de hombros: 10 adelante + 10 atrás\n• Estiramiento de pecho: 3x10 seg\n• 10 sentadillas lentas',
-      '🔥 CALENTAMIENTO BÁSICO (5 min)\n• Movilidad cervical: 30 seg\n• Hombros: 10 círculos\n• Torso: rotaciones 10 c/lado\n• 10 saltos bajos'
-    ],
-    intermedio: [
-      '🔥 CALENTAMIENTO INTERMEDIO (10 min)\n• Movilidad dinámica: 30 seg\n• 10 lagartijas + 10 sentadillas con salto\n• Plancha de core: 3x20 seg\n• 10 jumping jacks',
-      '🔥 CALENTAMIENTO INTERMEDIO (10 min)\n• Skipping rodillas: 30 seg\n• Talones al glúteo: 30 seg\n• 15 jumping jacks\n• Estiramiento dinámico de espalda'
-    ],
-    avanzado: [
-      '🔥 CALENTAMIENTO AVANZADO (15 min)\n• Movilidad fluida: 2 min\n• 15 lagartijas + 15 sentadillas + 15 abdominales\n• Skipping alto: 30 seg x3\n• Plancha dinámica: 30 seg c/lado',
-      '🔥 CALENTAMIENTO AVANZADO (15 min)\n• Activación neuromuscular: 3 min\n• 20 lagartijas + 20 sentadillas + 20 saltos\n• Rotación torácica profunda\n• Movilidad articular completa'
-    ]
+    basico: '🔥 CALENTAMIENTO BÁSICO (5 min)\n• Rotaciones de cuello\n• Círculos de hombros\n• Estiramiento de pecho\n• 10 sentadillas lentas',
+    intermedio: '🔥 CALENTAMIENTO INTERMEDIO (10 min)\n• Movilidad dinámica\n• 10 lagartijas\n• 10 sentadillas con salto\n• Plancha 3x20"',
+    avanzado: '🔥 CALENTAMIENTO AVANZADO (15 min)\n• Movilidad fluida\n• 15 lagartijas\n• 15 sentadillas\n• Skipping alto'
   };
   
-  // Series por intensidad (3 opciones cada una)
-  var series = {
-    recuperacion: [
-      '8x100m descanso 25" (ritmo fácil, técnica)',
-      '10x75m descanso 20" (brazada larga)',
-      '6x150m descanso 30" (ritmo constante suave)'
-    ],
-    mantenimiento: [
-      '6x200m descanso 30" (ritmo constante)',
-      '8x150m descanso 25" (progresivo)',
-      '5x300m descanso 40" (resistencia aeróbica)'
-    ],
-    construccion: [
-      '4x400m descanso 45" (ritmo fuerte)',
-      '10x100m descanso 20" (velocidad)',
-      '3x500m descanso 50" (umbral anaeróbico)'
-    ],
-    precompetencia: [
-      '5x100m descanso 60" (máxima velocidad)',
-      '8x50m con salida desde banco',
-      '4x200m ritmo de carrera'
-    ]
+  // Series por intensidad
+  var seriesMap = {
+    recuperacion: '8x100m descanso 25" (ritmo fácil)',
+    mantenimiento: '6x200m descanso 30" (ritmo constante)',
+    construccion: '4x400m descanso 45" (ritmo fuerte)',
+    precompetencia: '5x100m descanso 60" (máxima velocidad)'
   };
   
   // Consejos
-  var consejos = {
-    recuperacion: [
-      '"La recuperación es parte del entrenamiento. Escucha a tu cuerpo." - Sergio',
-      '"El descanso activo es tan importante como el entrenamiento duro."'
-    ],
-    mantenimiento: [
-      '"La consistencia vence a la intensidad. Cada día cuenta." - Sergio',
-      '"El trabajo constante da frutos duraderos."'
-    ],
-    construccion: [
-      '"El dolor de hoy es la fuerza de mañana." - Sergio',
-      '"Hoy construyes al campeón del mañana. ¡Dale con todo!"'
-    ],
-    precompetencia: [
-      '"Confía en tu entrenamiento. ¡Estás listo!" - Sergio',
-      '"La preparación ya está hecha, ahora a brillar."'
-    ]
+  var consejosMap = {
+    recuperacion: '"La recuperación es parte del entrenamiento" - Sergio',
+    mantenimiento: '"La consistencia vence a la intensidad" - Sergio',
+    construccion: '"El dolor de hoy es la fuerza de mañana" - Sergio',
+    precompetencia: '"Confía en tu entrenamiento. ¡Estás listo!" - Sergio'
   };
   
-  // Calcular metros por bloque
+  // Calcular metros
   var calAgua = Math.floor(distancia * 0.2);
-  var tecnica = Math.floor(distancia * 0.15);
-  var principal = Math.floor(distancia * 0.55);
-  var enfriamiento = distancia - (calAgua + tecnica + principal);
+  var principal = Math.floor(distancia * 0.7);
+  var enfriamiento = distancia - calAgua - principal;
   
-  // Elegir opciones aleatorias
-  var calLista = calentamientos[wk.cfg.dryland] || calentamientos.intermedio;
-  var calentamientoElegido = calLista[Math.floor(Math.random() * calLista.length)];
-  
-  var seriesLista = series[intensidad] || series.mantenimiento;
-  var serieElegida = seriesLista[Math.floor(Math.random() * seriesLista.length)];
-  
-  var consejosLista = consejos[intensidad] || consejos.mantenimiento;
-  var consejoElegido = consejosLista[Math.floor(Math.random() * consejosLista.length)];
+  var calentamientoElegido = calentamientos[dryland] || calentamientos.intermedio;
+  var serieElegida = seriesMap[intensidad] || seriesMap.mantenimiento;
+  var consejoElegido = consejosMap[intensidad] || consejosMap.mantenimiento;
   
   var nivelTexto = {
-    recuperacion: '🟢 RECUPERACIÓN · FC <140',
-    mantenimiento: '🟡 MANTENIMIENTO · FC 140-150',
-    construccion: '🔴 CONSTRUCCIÓN · FC 150-160',
-    precompetencia: '⚡ PRE-COMPETENCIA · FC 160-170'
+    recuperacion: '🟢 RECUPERACIÓN',
+    mantenimiento: '🟡 MANTENIMIENTO',
+    construccion: '🔴 CONSTRUCCIÓN',
+    precompetencia: '⚡ PRE-COMPETENCIA'
   };
   
-  // Drills por estilo (técnica)
-  var drillPorEstilo = {
-    Libre: '4x50m respiración cada 3 + 4x50m brazada larga',
-    Dorso: '4x50m entrada meñique primero + 4x50m giro de hombros',
-    Pecho: '4x50m patada rana + 4x50m brazada solo brazos',
-    Mariposa: '4x25m patada delfín + 4x25m un brazo a la vez'
-  };
-  var drill = drillPorEstilo[estilo] || drillPorEstilo.Libre;
-  
-  // Generar el entrenamiento
-  var entrenamiento = `═══════════════════════════════════════════════════════════════
+  var entrenamiento = `
+═══════════════════════════════════════════════════════════════
 🏊‍♂️ LAGUNA SWIM - ENTRENAMIENTO PROFESIONAL
 ═══════════════════════════════════════════════════════════════
 
@@ -1338,12 +1286,7 @@ ${calentamientoElegido}
 
 💧 CALENTAMIENTO EN AGUA (${calAgua}m)
 • 200m ${estilo} suave + 200m patada con tabla
-• ${calAgua - 400 > 0 ? calAgua - 400 + 'm progresivo' : ''}
 Subtotal: ${calAgua}m
-
-🎯 TRABAJO TÉCNICO (${tecnica}m)
-• ${drill}
-Subtotal: ${tecnica}m
 
 ⚡ SERIE PRINCIPAL (${principal}m)
 • ${serieElegida}
@@ -1358,11 +1301,10 @@ Subtotal: ${enfriamiento}m
 ═══════════════════════════════════════════════════════════════
 💬 ${consejoElegido}
 
-📊 TOTAL VERIFICADO: ${distancia}m
+📊 TOTAL: ${distancia}m
 🏆 "Fuertes y Valientes" - Josué 1:9
 ═══════════════════════════════════════════════════════════════`;
   
-  // Mostrar en pantalla
   document.getElementById('wk-config').style.display = 'none';
   document.getElementById('wk-loading').style.display = 'block';
   
@@ -1370,9 +1312,9 @@ Subtotal: ${enfriamiento}m
     document.getElementById('wk-loading').style.display = 'none';
     document.getElementById('wk-result').style.display = 'block';
     document.getElementById('wk-title').textContent = estilo + ' ' + distancia + 'm - ' + nombre;
-    document.getElementById('wk-content').innerHTML = '<pre style="white-space:pre-wrap; font-family:\'Courier New\', monospace; font-size:0.75rem; line-height:1.5; background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; color:#e2e8f0">' + entrenamiento + '</pre>';
-    wk.lastWk = entrenamiento;
-  }, 500);
+    document.getElementById('wk-content').innerHTML = '<pre style="white-space:pre-wrap; font-family:\'Courier New\', monospace; font-size:0.8rem; line-height:1.5; background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; color:#e2e8f0">' + entrenamiento + '</pre>';
+  }, 300);
+}
 }
 
     async function generarPlanSemanal() {
