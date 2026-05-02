@@ -1220,7 +1220,7 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
             <button class="wk-btn" id="wkn-precompetencia" onclick="selWk('nivel','precompetencia',this)">Pre-competencia</button>
           </div>
         </div>
-       async function generarEntrenoDiario() {
+async function generarEntrenoDiario() {
   if (!tieneAccesoWorkout()) {
     refreshWorkoutTab();
     alert('Necesitas una suscripción activa para generar entrenamientos.');
@@ -1232,130 +1232,99 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   var estilo = wk.cfg.estilo;
   var intensidad = wk.cfg.nivel;
   
-  // Calentamientos en tierra variados
-  var drylandOpts = {
+  // Calentamientos en tierra (2 opciones por nivel)
+  var calentamientos = {
     basico: [
-      '🔥 CALENTAMIENTO BÁSICO (5 min)\n• Rotaciones de cuello: 10 reps\n• Círculos de hombros: 10 adelante + 10 atrás\n• Estiramiento de pecho: 3x10 seg\n• Rotación de caderas: 10 cada lado\n• 10 sentadillas lentas',
-      '🔥 CALENTAMIENTO BÁSICO (5 min)\n• Movilidad cervical: 30 seg\n• Hombros: 10 círculos pequeños + 10 grandes\n• Torso: rotaciones de pie: 10 c/lado\n• Tobillos: 10 flexiones c/pie\n• 10 saltos bajos'
+      '🔥 CALENTAMIENTO BÁSICO (5 min)\n• Rotaciones de cuello: 10 reps\n• Círculos de hombros: 10 adelante + 10 atrás\n• Estiramiento de pecho: 3x10 seg\n• 10 sentadillas lentas',
+      '🔥 CALENTAMIENTO BÁSICO (5 min)\n• Movilidad cervical: 30 seg\n• Hombros: 10 círculos\n• Torso: rotaciones 10 c/lado\n• 10 saltos bajos'
     ],
     intermedio: [
-      '🔥 CALENTAMIENTO INTERMEDIO (10 min)\n• Movilidad dinámica cuello y hombros: 30 seg\n• 10-10-10 lagartijas progresivas\n• 10-10-10 sentadillas con salto\n• Stretch de pecho en pared: 3x15 seg\n• Plancha de core: 3x20 seg',
-      '🔥 CALENTAMIENTO INTERMEDIO (10 min)\n• Skipping rodillas: 30 seg\n• Talones al glúteo: 30 seg\n• 15 jumping jacks\n• 10 burpees suaves\n• Estiramiento dinámico de espalda'
+      '🔥 CALENTAMIENTO INTERMEDIO (10 min)\n• Movilidad dinámica: 30 seg\n• 10 lagartijas + 10 sentadillas con salto\n• Plancha de core: 3x20 seg\n• 10 jumping jacks',
+      '🔥 CALENTAMIENTO INTERMEDIO (10 min)\n• Skipping rodillas: 30 seg\n• Talones al glúteo: 30 seg\n• 15 jumping jacks\n• Estiramiento dinámico de espalda'
     ],
     avanzado: [
-      '🔥 CALENTAMIENTO AVANZADO (15 min)\n• Movilidad fluida completa: 2 min\n• 15-15-15 lagartijas / sentadillas / abdominales\n• Stretch dinámico con banda\n• Rotación torácica profunda\n• 5 respiraciones diafragmáticas',
-      '🔥 CALENTAMIENTO AVANZADO (15 min)\n• Activación neuromuscular: 3 min\n• 20-20-20 lagartijas / sentadillas / saltos\n• Skipping alto: 30 seg x3\n• Plancha dinámica: 30 seg c/lado\n• Movilidad articular completa'
+      '🔥 CALENTAMIENTO AVANZADO (15 min)\n• Movilidad fluida: 2 min\n• 15 lagartijas + 15 sentadillas + 15 abdominales\n• Skipping alto: 30 seg x3\n• Plancha dinámica: 30 seg c/lado',
+      '🔥 CALENTAMIENTO AVANZADO (15 min)\n• Activación neuromuscular: 3 min\n• 20 lagartijas + 20 sentadillas + 20 saltos\n• Rotación torácica profunda\n• Movilidad articular completa'
     ]
   };
   
-  // Series principales por intensidad (variadas)
-  var seriesOpts = {
+  // Series por intensidad (3 opciones cada una)
+  var series = {
     recuperacion: [
-      '8x100m descanso 25" (ritmo fácil, enfócate en técnica)',
+      '8x100m descanso 25" (ritmo fácil, técnica)',
       '10x75m descanso 20" (brazada larga)',
       '6x150m descanso 30" (ritmo constante suave)'
     ],
     mantenimiento: [
-      '6x200m descanso 30" (ritmo constante RPE 7/10)',
-      '8x150m descanso 25" (progresivo RPE 6→8)',
+      '6x200m descanso 30" (ritmo constante)',
+      '8x150m descanso 25" (progresivo)',
       '5x300m descanso 40" (resistencia aeróbica)'
     ],
     construccion: [
-      '4x400m descanso 45" (ritmo fuerte RPE 8/10)',
-      '10x100m descanso 20" (velocidad RPE 9/10)',
+      '4x400m descanso 45" (ritmo fuerte)',
+      '10x100m descanso 20" (velocidad)',
       '3x500m descanso 50" (umbral anaeróbico)'
     ],
     precompetencia: [
-      '5x100m descanso 60" (máxima velocidad RPE 10/10)',
-      '8x50m con salida desde banco (explosividad)',
-      '4x200m ritmo de carrera (simulación)'
+      '5x100m descanso 60" (máxima velocidad)',
+      '8x50m con salida desde banco',
+      '4x200m ritmo de carrera'
     ]
   };
   
-  // Consejos variados
-  var consejosOpts = {
+  // Consejos
+  var consejos = {
     recuperacion: [
       '"La recuperación es parte del entrenamiento. Escucha a tu cuerpo." - Sergio',
-      '"El descanso activo es tan importante como el entrenamiento duro."',
-      '"Técnica suave hoy, velocidad mañana."',
-      '"El agua te recibe, entrena con calma."'
+      '"El descanso activo es tan importante como el entrenamiento duro."'
     ],
     mantenimiento: [
       '"La consistencia vence a la intensidad. Cada día cuenta." - Sergio',
-      '"El trabajo constante da frutos duraderos."',
-      '"Hoy construyes la base de mañana."',
-      '"La disciplina supera el talento cuando el talento no trabaja."'
+      '"El trabajo constante da frutos duraderos."'
     ],
     construccion: [
       '"El dolor de hoy es la fuerza de mañana." - Sergio',
-      '"Hoy construyes al campeón del mañana. ¡Dale con todo!"',
-      '"Cada metro cuenta, cada esfuerzo suma."',
-      '"No hay atajos para llegar a la cima."'
+      '"Hoy construyes al campeón del mañana. ¡Dale con todo!"'
     ],
     precompetencia: [
       '"Confía en tu entrenamiento. ¡Estás listo!" - Sergio',
-      '"La preparación ya está hecha, ahora a brillar."',
-      '"Visualiza tu éxito, actívalo en el agua."',
-      '"Técnica afilada, mente enfocada."'
+      '"La preparación ya está hecha, ahora a brillar."'
     ]
   };
-  
-  // Ejercicios de técnica por estilo
-  var tecnicaOpts = {
-    Libre: [
-      '4x50m respiración cada 3 brazadas',
-      '4x50m brazada larga y deslizamiento',
-      '6x50m respiración bilateral',
-      '4x50m recobro rozando el agua'
-    ],
-    Dorso: [
-      '4x50m entrada meñique primero',
-      '4x50m posición de cabeza estable',
-      '6x50m giro de hombros exagerado',
-      '4x50m recobro relajado'
-    ],
-    Pecho: [
-      '4x50m patada de rana con tabla',
-      '4x50m brazada solo brazos',
-      '6x50m 2 patadas x 1 brazada',
-      '4x50m recobro submarino'
-    ],
-    Mariposa: [
-      '4x25m patada delfín con tabla',
-      '4x25m un brazo a la vez',
-      '4x50m ondulación corporal completa',
-      '4x25m 2 brazadas + 1 respiración'
-    ]
-  };
-  
-  // Seleccionar opciones aleatorias
-  var drylandList = drylandOpts[wk.cfg.dryland] || drylandOpts.intermedio;
-  var dryland = drylandList[Math.floor(Math.random() * drylandList.length)];
-  
-  var seriesList = seriesOpts[intensidad] || seriesOpts.mantenimiento;
-  var serie = seriesList[Math.floor(Math.random() * seriesList.length)];
-  
-  var consejosList = consejosOpts[intensidad] || consejosOpts.mantenimiento;
-  var consejo = consejosList[Math.floor(Math.random() * consejosList.length)];
-  
-  var tecnicaList = tecnicaOpts[estilo] || tecnicaOpts.Libre;
-  var tecnica = tecnicaList[Math.floor(Math.random() * tecnicaList.length)];
-  var tecnica2 = tecnicaList[(Math.floor(Math.random() * tecnicaList.length) + 1) % tecnicaList.length];
   
   // Calcular metros por bloque
-  var calAgua = Math.floor(distancia * 0.18);
-  var tecnicaM = Math.floor(distancia * 0.12);
-  var principalM = Math.floor(distancia * 0.55);
-  var enfriamientoM = distancia - (calAgua + tecnicaM + principalM);
+  var calAgua = Math.floor(distancia * 0.2);
+  var tecnica = Math.floor(distancia * 0.15);
+  var principal = Math.floor(distancia * 0.55);
+  var enfriamiento = distancia - (calAgua + tecnica + principal);
   
-  var intensidadTexto = {
-    recuperacion: '🟢 RECUPERACIÓN · FC <140 · Técnica suave',
-    mantenimiento: '🟡 MANTENIMIENTO · FC 140-150 · Aeróbico base',
-    construccion: '🔴 CONSTRUCCIÓN · FC 150-160 · Umbral aeróbico',
-    precompetencia: '⚡ PRE-COMPETENCIA · FC 160-170 · Ritmo de carrera'
+  // Elegir opciones aleatorias
+  var calLista = calentamientos[wk.cfg.dryland] || calentamientos.intermedio;
+  var calentamientoElegido = calLista[Math.floor(Math.random() * calLista.length)];
+  
+  var seriesLista = series[intensidad] || series.mantenimiento;
+  var serieElegida = seriesLista[Math.floor(Math.random() * seriesLista.length)];
+  
+  var consejosLista = consejos[intensidad] || consejos.mantenimiento;
+  var consejoElegido = consejosLista[Math.floor(Math.random() * consejosLista.length)];
+  
+  var nivelTexto = {
+    recuperacion: '🟢 RECUPERACIÓN · FC <140',
+    mantenimiento: '🟡 MANTENIMIENTO · FC 140-150',
+    construccion: '🔴 CONSTRUCCIÓN · FC 150-160',
+    precompetencia: '⚡ PRE-COMPETENCIA · FC 160-170'
   };
   
-  // Generar entrenamiento (SIN API)
+  // Drills por estilo (técnica)
+  var drillPorEstilo = {
+    Libre: '4x50m respiración cada 3 + 4x50m brazada larga',
+    Dorso: '4x50m entrada meñique primero + 4x50m giro de hombros',
+    Pecho: '4x50m patada rana + 4x50m brazada solo brazos',
+    Mariposa: '4x25m patada delfín + 4x25m un brazo a la vez'
+  };
+  var drill = drillPorEstilo[estilo] || drillPorEstilo.Libre;
+  
+  // Generar el entrenamiento
   var entrenamiento = `═══════════════════════════════════════════════════════════════
 🏊‍♂️ LAGUNA SWIM - ENTRENAMIENTO PROFESIONAL
 ═══════════════════════════════════════════════════════════════
@@ -1363,33 +1332,31 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 👤 NADADOR: ${nombre.toUpperCase()}
 📏 DISTANCIA: ${distancia}m
 🎯 ESTILO: ${estilo.toUpperCase()}
-⚡ INTENSIDAD: ${intensidadTexto[intensidad]}
+⚡ INTENSIDAD: ${nivelTexto[intensidad]}
 
-${dryland}
+${calentamientoElegido}
 
 💧 CALENTAMIENTO EN AGUA (${calAgua}m)
 • 200m ${estilo} suave + 200m patada con tabla
-• 4x50m progresivo (RPE 4→7)
+• ${calAgua - 400 > 0 ? calAgua - 400 + 'm progresivo' : ''}
 Subtotal: ${calAgua}m
 
-🎯 TRABAJO TÉCNICO (${tecnicaM}m)
-• ${tecnica}
-• ${tecnica2}
-Subtotal: ${tecnicaM}m
+🎯 TRABAJO TÉCNICO (${tecnica}m)
+• ${drill}
+Subtotal: ${tecnica}m
 
-⚡ SERIE PRINCIPAL (${principalM}m)
-• ${serie}
+⚡ SERIE PRINCIPAL (${principal}m)
+• ${serieElegida}
 • 8x50m patada rápida descanso 20"
-Subtotal: ${principalM}m
+Subtotal: ${principal}m
 
-🔄 ENFRIAMIENTO (${enfriamientoM}m)
-• ${enfriamientoM}m ${estilo} suave
+🔄 ENFRIAMIENTO (${enfriamiento}m)
+• ${enfriamiento}m ${estilo} suave
 • Estiramientos fuera del agua
-Subtotal: ${enfriamientoM}m
+Subtotal: ${enfriamiento}m
 
 ═══════════════════════════════════════════════════════════════
-💬 CONSEJO DEL DÍA:
-${consejo}
+💬 ${consejoElegido}
 
 📊 TOTAL VERIFICADO: ${distancia}m
 🏆 "Fuertes y Valientes" - Josué 1:9
@@ -1405,11 +1372,6 @@ ${consejo}
     document.getElementById('wk-title').textContent = estilo + ' ' + distancia + 'm - ' + nombre;
     document.getElementById('wk-content').innerHTML = '<pre style="white-space:pre-wrap; font-family:\'Courier New\', monospace; font-size:0.75rem; line-height:1.5; background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; color:#e2e8f0">' + entrenamiento + '</pre>';
     wk.lastWk = entrenamiento;
-    
-    // Descontar entrenamiento (si no es coach)
-    if (state.user && state.user.email !== CONFIG.coach && wk.subs) {
-      descontarEntrenamiento();
-    }
   }, 500);
 }
 
