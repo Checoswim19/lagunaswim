@@ -391,6 +391,135 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 /* Connection indicator */
 .conn-ok { background: rgba(34,197,94,0.15); color: var(--success); }
 .conn-bad { background: rgba(239,68,68,0.15); color: var(--danger); }
+/* ====== ACORDEÓN CALCULADORA ====== */
+.acc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 1rem;
+  background: rgba(56,189,248,0.06);
+  border: 1px solid rgba(56,189,248,0.25);
+  border-radius: 14px;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+.acc-body {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.calc-btn {
+  padding: 0.45rem 0.3rem;
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.7rem; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+}
+.calc-btn.on {
+  border-color: var(--accent);
+  background: rgba(56,189,248,0.15);
+  color: var(--accent);
+}
+/* ====== PANTALLA SALIDA ====== */
+.start-clock {
+  font-size: 4.5rem; font-weight: 900;
+  text-align: center;
+  letter-spacing: 4px;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  line-height: 1;
+  padding: 2rem 0 1.5rem;
+  text-shadow: 0 0 30px rgba(56,189,248,0.3);
+}
+.start-clock.preparing {
+  color: var(--gold);
+  animation: pulseGold 1s ease-in-out infinite;
+  text-shadow: 0 0 30px rgba(255,215,0,0.5);
+}
+@keyframes pulseGold {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+}
+.start-btn {
+  width: 100%;
+  padding: 2.2rem 1rem;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #15803d, #22c55e);
+  border: 3px solid #4ade80;
+  color: #fff;
+  font-size: 1.6rem; font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 6px 24px rgba(34,197,94,0.4);
+  touch-action: manipulation;
+  transition: transform 0.05s;
+}
+.start-btn:active { transform: scale(0.96); }
+.start-btn:disabled {
+  background: linear-gradient(135deg, #555, #777);
+  border-color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.beep-indicator {
+  display: flex; justify-content: center; gap: 0.8rem;
+  margin: 1rem 0;
+}
+.beep-dot {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.25);
+  transition: all 0.2s;
+}
+.beep-dot.on {
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 16px var(--gold);
+  transform: scale(1.3);
+}
+.beep-dot.long {
+  width: 26px; height: 26px;
+}
+.beep-dot.long.on {
+  background: var(--success);
+  border-color: var(--success);
+  box-shadow: 0 0 20px var(--success);
+}
+/* ====== ITEM TIENDA ARTÍCULO ====== */
+.item-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px;
+  padding: 0.9rem;
+  margin-bottom: 0.7rem;
+  display: flex; gap: 0.8rem; align-items: center;
+}
+.item-icon {
+  width: 56px; min-width: 56px; height: 56px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0c3460, #1d6fa4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem;
+}
+.item-info { flex: 1; min-width: 0; }
+.item-title { font-weight: 800; font-size: 0.88rem; }
+.item-desc { font-size: 0.7rem; color: var(--accent-soft); margin-top: 1px; }
+.item-price { font-size: 0.92rem; font-weight: 800; color: var(--accent); margin-top: 2px; }
+.section-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 1rem 0 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(56,189,248,0.15);
+}
 </style>
 </head>
 <body>
@@ -443,6 +572,62 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
         <div style="margin-left:auto;color:var(--accent-soft);font-size:1.2rem">&#8250;</div>
       </div>
     </div>
+
+    <!-- Acordeón Calculadora -->
+    <div onclick="toggleCalc()" class="acc-head">
+      <div style="display:flex;align-items:center;gap:0.6rem">
+        <span style="font-size:1.3rem">&#128337;</span>
+        <div>
+          <div style="font-size:0.88rem;font-weight:800;color:var(--accent)">Calculadora de tiempos</div>
+          <div style="font-size:0.65rem;color:var(--accent-soft)">Proyecta desde un parcial</div>
+        </div>
+      </div>
+      <span id="calc-arrow" style="color:var(--accent);font-size:1.2rem">&#8964;</span>
+    </div>
+    <div id="calc-body" class="acc-body" style="display:none;margin-bottom:0.8rem">
+      <div style="font-size:0.72rem;color:var(--accent-soft);margin-bottom:0.7rem;text-align:center">
+        Ingresa un tiempo y proyecta otras distancias
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.7rem">
+        <div>
+          <label>Distancia base</label>
+          <select id="calc-dist-base" onchange="calcProyectar()" style="font-size:0.85rem;padding:0.5rem;margin-bottom:0">
+            <option value="25">25m</option>
+            <option value="50" selected>50m</option>
+            <option value="100">100m</option>
+            <option value="200">200m</option>
+            <option value="400">400m</option>
+          </select>
+        </div>
+        <div>
+          <label>Tiempo (mm:ss.cc)</label>
+          <input id="calc-tiempo-base" placeholder="0:28.50" oninput="calcProyectar()"
+            style="font-size:1.1rem;font-weight:800;text-align:center;color:var(--gold);padding:0.4rem;margin-bottom:0">
+        </div>
+      </div>
+      <label>Factor de fatiga</label>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;margin-bottom:0.7rem">
+        <button class="calc-btn" id="cf-lineal" onclick="selCalcFactor(this,'lineal')">
+          Lineal<br><span style="font-size:0.55rem;opacity:0.7">Sprint puro</span>
+        </button>
+        <button class="calc-btn on" id="cf-natacion" onclick="selCalcFactor(this,'natacion')">
+          Natacion<br><span style="font-size:0.55rem;opacity:0.7">Estandar</span>
+        </button>
+        <button class="calc-btn" id="cf-resistencia" onclick="selCalcFactor(this,'resistencia')">
+          Resistencia<br><span style="font-size:0.55rem;opacity:0.7">Fondo</span>
+        </button>
+      </div>
+      <div id="calc-resultado" style="display:none">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--accent);margin-bottom:0.4rem">
+          Proyeccion de tiempos:
+        </div>
+        <div id="calc-tabla" style="background:rgba(255,255,255,0.03);border-radius:10px;overflow:hidden"></div>
+        <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-top:0.5rem;text-align:center">
+          Estimacion - el rendimiento real depende de tecnica y condicion
+        </div>
+      </div>
+    </div>
+
     <div class="ad-banner">
       <div class="ad-tag">PUBLICIDAD</div>
       <div class="ad-text">Tu negocio aqui? lagunaswim.net</div>
@@ -543,8 +728,35 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
     <div style="text-align:center;font-size:0.78rem;color:var(--accent-soft);margin-bottom:0.6rem">
       Esperando cronometristas...
     </div>
-    <button class="btn btn-sky" onclick="startRace()">Iniciar carrera</button>
+    <button class="btn btn-sky" onclick="goToStartup()">Iniciar carrera</button>
     <button class="btn btn-gray" onclick="cancelRace()">Cancelar</button>
+  </div>
+
+  <!-- Pantalla de Salida (preview con beep FINA) -->
+  <div id="s-startup" class="screen">
+    <div class="hdr">
+      <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg" class="logo-img" alt="">
+      <div>
+        <div class="logo-main">LAGUNA <em>SWIM</em></div>
+        <div class="logo-sub" id="startup-status">Listos para la salida</div>
+      </div>
+    </div>
+    <div style="text-align:center;padding:0.5rem 0">
+      <div style="font-size:0.9rem;color:var(--accent-soft);font-weight:700" id="startup-event">-</div>
+      <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-top:2px" id="startup-comp">-</div>
+    </div>
+    <div class="start-clock" id="startup-clock">00:00.00</div>
+    <div class="beep-indicator">
+      <div class="beep-dot" id="beep-1"></div>
+      <div class="beep-dot" id="beep-2"></div>
+      <div class="beep-dot" id="beep-3"></div>
+      <div class="beep-dot long" id="beep-4"></div>
+    </div>
+    <div style="text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:1rem" id="startup-instr">
+      Presiona DAR SALIDA para iniciar la secuencia FINA
+    </div>
+    <button class="start-btn" id="startup-btn" onclick="darSalida()">DAR SALIDA</button>
+    <button class="btn btn-gray" onclick="goTimer('s-lobby')" id="startup-back">Regresar al lobby</button>
   </div>
 
   <!-- Carrera en vivo (master) -->
@@ -700,6 +912,77 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
       </div>
     </div>
   </div>
+
+  <!-- Sección Artículos del equipo -->
+  <div class="section-title">&#128085; Articulos del equipo</div>
+  <div style="font-size:0.74rem;color:var(--accent-soft);margin-bottom:0.6rem">
+    Pedidos directos por WhatsApp con Sergio
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#127919;</div>
+    <div class="item-info">
+      <div class="item-title">Gorra de silicon</div>
+      <div class="item-desc">Logo Laguna Swim - varios colores</div>
+      <div class="item-price">$180 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Gorra de silicon Laguna Swim ($180 MXN)')">Pedir</button>
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#128085;</div>
+    <div class="item-info">
+      <div class="item-title">Playera oficial</div>
+      <div class="item-desc">Algodon premium - tallas CH a XXL</div>
+      <div class="item-price">$320 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Playera oficial Laguna Swim ($320 MXN)')">Pedir</button>
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#127946;</div>
+    <div class="item-info">
+      <div class="item-title">Traje de bano competencia</div>
+      <div class="item-desc">Hombre o mujer - tallas a la medida</div>
+      <div class="item-price">$650 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Traje de bano de competencia ($650 MXN)')">Pedir</button>
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#128375;</div>
+    <div class="item-info">
+      <div class="item-title">Goggles competencia</div>
+      <div class="item-desc">Anti-fog - lente claro o ahumado</div>
+      <div class="item-price">$280 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Goggles de competencia ($280 MXN)')">Pedir</button>
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#129701;</div>
+    <div class="item-info">
+      <div class="item-title">Toalla de microfibra</div>
+      <div class="item-desc">Logo bordado - secado rapido</div>
+      <div class="item-price">$220 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Toalla de microfibra Laguna Swim ($220 MXN)')">Pedir</button>
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#127881;</div>
+    <div class="item-info">
+      <div class="item-title">Mochila tipo morral</div>
+      <div class="item-desc">Para alberca - resistente al agua</div>
+      <div class="item-price">$190 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Mochila tipo morral Laguna Swim ($190 MXN)')">Pedir</button>
+  </div>
+
+  <button class="btn btn-wa" style="margin-top:0.5rem" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio%2C%20quiero%20preguntar%20por%20articulos%20del%20equipo%20Laguna%20Swim')">
+    Preguntar por otros articulos
+  </button>
+
   <div class="footer-bar">
     2026 Laguna Swim International - Sergio Elias Villarreal Limas<br>
     <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
@@ -929,7 +1212,7 @@ function showTab(t) {
   });
 }
 
-var TIMER_SCREENS = ['s-home', 's-role', 's-setup', 's-lobby', 's-race', 's-results', 's-join', 's-tk'];
+var TIMER_SCREENS = ['s-home', 's-role', 's-setup', 's-lobby', 's-startup', 's-race', 's-results', 's-join', 's-tk'];
 function goTimer(id) {
   TIMER_SCREENS.forEach(function(s) {
     var el = document.getElementById(s);
@@ -1245,19 +1528,67 @@ function listenRoom(code) {
   });
 }
 
-// ===== START RACE (master) =====
-function startRace() {
-  // Mejora #4 + #5: sonido FINA + vibración
-  finaStartSound();
+// ===== START RACE FLOW (master) =====
+// Paso 1: Mostrar pantalla de salida con reloj en 00:00 (desde lobby)
+function goToStartup() {
+  var ev = getEventInfo();
+  document.getElementById('startup-event').textContent = ev.dist + 'm ' + ev.style;
+  document.getElementById('startup-comp').textContent = ev.comp || 'Carrera Laguna Swim';
+  document.getElementById('startup-clock').textContent = '00:00.00';
+  document.getElementById('startup-clock').className = 'start-clock';
+  document.getElementById('startup-status').textContent = 'Listos para la salida';
+  document.getElementById('startup-instr').textContent = 'Presiona DAR SALIDA para iniciar la secuencia FINA';
+  document.getElementById('startup-btn').disabled = false;
+  document.getElementById('startup-btn').textContent = 'DAR SALIDA';
+  document.getElementById('startup-back').style.display = 'block';
+  // Reset beep indicators
+  ['beep-1', 'beep-2', 'beep-3', 'beep-4'].forEach(function(id) {
+    document.getElementById(id).classList.remove('on');
+  });
+  goTimer('s-startup');
+}
+
+// Paso 2: Usuario presiona DAR SALIDA (esto desbloquea el audio)
+function darSalida() {
+  var btn = document.getElementById('startup-btn');
+  btn.disabled = true;
+  btn.textContent = 'PREPARADOS...';
+  document.getElementById('startup-back').style.display = 'none';
+  document.getElementById('startup-clock').className = 'start-clock preparing';
+  document.getElementById('startup-status').textContent = 'Salida en progreso';
+
+  // Inicializar audio (DEBE ser dentro del handler del botón en iOS)
+  var ctx = getAudioCtx();
+  if (ctx && ctx.state === 'suspended') {
+    ctx.resume();
+  }
+
+  // Vibración inicial
   vibrate([200, 100, 200, 100, 200, 100, 600]);
   acquireWakeLock();
-  // Esperar el último beep antes de arrancar el cronómetro
-  var delay = getStartSoundDelay();
-  document.getElementById('master-clock').textContent = '00:00.00';
-  document.getElementById('race-event-lbl').textContent =
-    getEventInfo().dist + 'm ' + getEventInfo().style + ' - PREPARADOS...';
-  goTimer('s-race');
-  buildRaceView();
+
+  // Programar beeps + indicadores visuales
+  // Beep 1 (t=0)
+  beep(800, 0.18, 0);
+  flashBeepDot(1, 0);
+  document.getElementById('startup-instr').textContent = 'PREPARADOS';
+  // Beep 2 (t=1)
+  beep(800, 0.18, 1.0);
+  flashBeepDot(2, 1000);
+  setTimeout(function() {
+    document.getElementById('startup-instr').textContent = 'EN SUS MARCAS';
+  }, 1000);
+  // Beep 3 (t=2)
+  beep(800, 0.18, 2.0);
+  flashBeepDot(3, 2000);
+  setTimeout(function() {
+    document.getElementById('startup-instr').textContent = 'LISTOS...';
+  }, 2000);
+  // Beep largo (t=3) - SALIDA REAL
+  beep(1100, 0.6, 3.0);
+  flashBeepDot(4, 3000);
+
+  // Arrancar cronómetro al beep largo
   setTimeout(function() {
     state.raceStart = Date.now();
     db.ref('races/' + state.myRoom).update({
@@ -1267,10 +1598,30 @@ function startRace() {
     var ev = getEventInfo();
     document.getElementById('race-lbl').textContent = 'Sala: ' + state.myRoom;
     document.getElementById('race-event-lbl').textContent = ev.dist + 'm ' + ev.style;
+    document.getElementById('master-clock').textContent = '00:00.00';
+    goTimer('s-race');
+    buildRaceView();
     clearInterval(state.clockInterval);
     state.clockInterval = setInterval(function() {
       document.getElementById('master-clock').textContent = fmt(Date.now() - state.raceStart);
     }, 50);
+    // Vibración fuerte de salida
+    vibrate([400, 100, 200]);
+  }, 3000);
+}
+
+function flashBeepDot(num, delay) {
+  setTimeout(function() {
+    var el = document.getElementById('beep-' + num);
+    if (el) {
+      el.classList.add('on');
+      // Apagar los anteriores excepto el último
+      if (num < 4) {
+        setTimeout(function() {
+          el.classList.remove('on');
+        }, 600);
+      }
+    }
   }, delay);
 }
 
@@ -1767,6 +2118,12 @@ function closePayModal() {
   document.getElementById('pay-modal').classList.add('modal-hidden');
 }
 
+// ===== PEDIR ARTÍCULO POR WHATSAPP =====
+function pedirArticulo(nombre) {
+  var msg = 'Hola Sergio! Me interesa pedir: ' + nombre + '. Quisiera saber disponibilidad y formas de pago.';
+  openUrl('https://wa.me/528713164850?text=' + encodeURIComponent(msg));
+}
+
 // ===== AUTO-JOIN VIA QR =====
 (function checkUrlRoom() {
   var params = new URLSearchParams(location.search);
@@ -1776,6 +2133,79 @@ function closePayModal() {
     goTimer('s-join');
   }
 })();
+
+// ===== CALCULADORA DE TIEMPOS =====
+var calcFactor = 'natacion';
+
+function toggleCalc() {
+  var body = document.getElementById('calc-body');
+  var arrow = document.getElementById('calc-arrow');
+  if (!body) return;
+  var open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  if (arrow) arrow.innerHTML = open ? '&#8963;' : '&#8964;';
+}
+
+function selCalcFactor(btn, factor) {
+  calcFactor = factor;
+  ['lineal', 'natacion', 'resistencia'].forEach(function(f) {
+    var b = document.getElementById('cf-' + f);
+    if (b) b.classList.remove('on');
+  });
+  btn.classList.add('on');
+  calcProyectar();
+}
+
+function calcProyectar() {
+  var distBase = parseInt(document.getElementById('calc-dist-base').value) || 50;
+  var tiempoStr = (document.getElementById('calc-tiempo-base').value || '').trim();
+  if (!tiempoStr) {
+    document.getElementById('calc-resultado').style.display = 'none';
+    return;
+  }
+  // Convertir tiempo a milisegundos
+  var ms = 0;
+  tiempoStr = tiempoStr.replace(',', '.');
+  var parts = tiempoStr.split(':');
+  if (parts.length === 2) {
+    ms = (parseInt(parts[0]) || 0) * 60000 + Math.round(parseFloat(parts[1]) * 1000);
+  } else {
+    ms = Math.round(parseFloat(tiempoStr) * 1000);
+  }
+  if (!ms || ms <= 0) {
+    document.getElementById('calc-resultado').style.display = 'none';
+    return;
+  }
+  // Fórmula de Riegel: T2 = T1 * (D2/D1)^exp
+  var exp = { lineal: 1.0, natacion: 1.06, resistencia: 1.12 }[calcFactor] || 1.06;
+  var distancias = [25, 50, 100, 200, 400, 800, 1500];
+  var html = '';
+  distancias.forEach(function(d) {
+    var msProyectado = Math.round(ms * Math.pow(d / distBase, exp));
+    var seg = msProyectado / 1000;
+    var min = Math.floor(seg / 60);
+    var segR = seg % 60;
+    var tiempoFmt = min > 0
+      ? (min + ':' + (segR < 10 ? '0' : '') + segR.toFixed(2))
+      : segR.toFixed(2);
+    var esBase = d === distBase;
+    // Pace por 100m
+    var pace100 = Math.round(msProyectado / (d / 100));
+    var paceMin = Math.floor(pace100 / 60000);
+    var paceSeg = (pace100 % 60000) / 1000;
+    var paceFmt = paceMin + ':' + (paceSeg < 10 ? '0' : '') + paceSeg.toFixed(1) + '/100m';
+    var bgRow = esBase ? 'rgba(255,215,0,0.08)' : 'rgba(255,255,255,0.03)';
+    var colDist = esBase ? 'var(--gold)' : 'var(--accent-soft)';
+    var colTime = esBase ? 'var(--gold)' : '#fff';
+    html += '<div style="display:grid;grid-template-columns:auto 1fr auto;gap:0.4rem;padding:0.5rem 0.6rem;background:' + bgRow + ';border-bottom:1px solid rgba(255,255,255,0.05);align-items:center">';
+    html += '<div style="font-size:0.78rem;font-weight:700;color:' + colDist + ';min-width:38px">' + d + 'm</div>';
+    html += '<div style="font-size:0.62rem;color:rgba(255,255,255,0.35)">' + paceFmt + '</div>';
+    html += '<div style="font-size:0.92rem;font-weight:800;color:' + colTime + ';text-align:right;font-variant-numeric:tabular-nums">' + tiempoFmt + '</div>';
+    html += '</div>';
+  });
+  document.getElementById('calc-tabla').innerHTML = html;
+  document.getElementById('calc-resultado').style.display = 'block';
+}
 </script>
 </body>
 </html>
