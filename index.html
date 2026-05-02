@@ -1220,12 +1220,13 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
             <button class="wk-btn" id="wkn-precompetencia" onclick="selWk('nivel','precompetencia',this)">Pre-competencia</button>
           </div>
         </div>
-        async function generarEntrenoDiario() {
+       async function generarEntrenoDiario() {
   if (!tieneAccesoWorkout()) {
     refreshWorkoutTab();
     alert('Necesitas una suscripción activa para generar entrenamientos.');
     return;
   }
+  
   var nombre = (document.getElementById('wk-nombre').value || 'Nadador').trim();
   var distancia = parseInt(wk.cfg.metros);
   var estilo = wk.cfg.estilo;
@@ -1338,8 +1339,8 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   var consejo = consejosList[Math.floor(Math.random() * consejosList.length)];
   
   var tecnicaList = tecnicaOpts[estilo] || tecnicaOpts.Libre;
-  var tecnica = tecnicaList[Math.floor(Math.random() * tecnicaList.length)] + ' + ' + 
-                 tecnicaList[(Math.floor(Math.random() * tecnicaList.length) + 1) % tecnicaList.length];
+  var tecnica = tecnicaList[Math.floor(Math.random() * tecnicaList.length)];
+  var tecnica2 = tecnicaList[(Math.floor(Math.random() * tecnicaList.length) + 1) % tecnicaList.length];
   
   // Calcular metros por bloque
   var calAgua = Math.floor(distancia * 0.18);
@@ -1354,7 +1355,7 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
     precompetencia: '⚡ PRE-COMPETENCIA · FC 160-170 · Ritmo de carrera'
   };
   
-  // Generar entrenamiento
+  // Generar entrenamiento (SIN API)
   var entrenamiento = `═══════════════════════════════════════════════════════════════
 🏊‍♂️ LAGUNA SWIM - ENTRENAMIENTO PROFESIONAL
 ═══════════════════════════════════════════════════════════════
@@ -1368,11 +1369,12 @@ ${dryland}
 
 💧 CALENTAMIENTO EN AGUA (${calAgua}m)
 • 200m ${estilo} suave + 200m patada con tabla
-• ${calAgua - 400 > 0 ? calAgua - 400 + 'm técnica progresiva' : ''}
+• 4x50m progresivo (RPE 4→7)
 Subtotal: ${calAgua}m
 
 🎯 TRABAJO TÉCNICO (${tecnicaM}m)
 • ${tecnica}
+• ${tecnica2}
 Subtotal: ${tecnicaM}m
 
 ⚡ SERIE PRINCIPAL (${principalM}m)
@@ -1393,6 +1395,7 @@ ${consejo}
 🏆 "Fuertes y Valientes" - Josué 1:9
 ═══════════════════════════════════════════════════════════════`;
   
+  // Mostrar en pantalla
   document.getElementById('wk-config').style.display = 'none';
   document.getElementById('wk-loading').style.display = 'block';
   
@@ -1400,73 +1403,165 @@ ${consejo}
     document.getElementById('wk-loading').style.display = 'none';
     document.getElementById('wk-result').style.display = 'block';
     document.getElementById('wk-title').textContent = estilo + ' ' + distancia + 'm - ' + nombre;
-    document.getElementById('wk-content').innerHTML = '<pre style="white-space:pre-wrap; font-family:monospace; font-size:0.75rem; line-height:1.5; background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px">' + entrenamiento + '</pre>';
+    document.getElementById('wk-content').innerHTML = '<pre style="white-space:pre-wrap; font-family:\'Courier New\', monospace; font-size:0.75rem; line-height:1.5; background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; color:#e2e8f0">' + entrenamiento + '</pre>';
     wk.lastWk = entrenamiento;
+    
+    // Descontar entrenamiento (si no es coach)
+    if (state.user && state.user.email !== CONFIG.coach && wk.subs) {
+      descontarEntrenamiento();
+    }
   }, 500);
 }
 
-    <!-- Modo: Plan semanal -->
-    <div id="wk-semanal" style="display:none">
-      <button onclick="volverSelector()" style="background:none;border:none;color:var(--accent-soft);font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem">&#8592; Regresar</button>
-      <div id="wk-plan-config">
-        <div class="card">
-          <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:var(--gold)">Perfil del nadador</div>
-          <input id="plan-nombre" placeholder="Nombre completo" style="margin-bottom:0.4rem">
-          <select id="plan-nivel">
-            <option value="Master competitivo">Master competitivo</option>
-            <option value="Juvenil">Juvenil</option>
-            <option value="Principiante">Principiante</option>
-          </select>
-        </div>
-        <div class="card">
-          <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:var(--gold)">Tipo de semana</div>
-          <div class="wk-grid-2">
-            <button class="wk-btn on-gold" id="plan-tipo-carga" onclick="selPlanTipo('carga',this)">Construccion</button>
-            <button class="wk-btn" id="plan-tipo-precompetencia" onclick="selPlanTipo('precompetencia',this)">Pre-competencia</button>
-            <button class="wk-btn" id="plan-tipo-mantenimiento" onclick="selPlanTipo('mantenimiento',this)">Mantenimiento</button>
-            <button class="wk-btn" id="plan-tipo-recuperacion" onclick="selPlanTipo('recuperacion',this)">Recuperacion</button>
-          </div>
-        </div>
-        <div class="card">
-          <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:var(--gold)">Metros por sesion</div>
-          <div class="wk-grid-3">
-            <button class="wk-btn" id="plan-vol-2000" onclick="selPlanVol('2000',this)">2,000m</button>
-            <button class="wk-btn on-gold" id="plan-vol-2500" onclick="selPlanVol('2500',this)">2,500m</button>
-            <button class="wk-btn" id="plan-vol-3000" onclick="selPlanVol('3000',this)">3,000m</button>
-          </div>
-        </div>
-        <div class="card">
-          <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;color:var(--gold)">Dias de entrenamiento</div>
-          <div class="wk-grid-6">
-            <button class="wk-btn on-gold" id="plan-dia-Lun" onclick="togglePlanDia('Lun',this)">Lun</button>
-            <button class="wk-btn on-gold" id="plan-dia-Mar" onclick="togglePlanDia('Mar',this)">Mar</button>
-            <button class="wk-btn on-gold" id="plan-dia-Mie" onclick="togglePlanDia('Mie',this)">Mie</button>
-            <button class="wk-btn on-gold" id="plan-dia-Jue" onclick="togglePlanDia('Jue',this)">Jue</button>
-            <button class="wk-btn on-gold" id="plan-dia-Vie" onclick="togglePlanDia('Vie',this)">Vie</button>
-            <button class="wk-btn" id="plan-dia-Sab" onclick="togglePlanDia('Sab',this)">Sab</button>
-          </div>
-        </div>
-        <button class="btn btn-gold" onclick="generarPlanSemanal()" style="font-size:1rem;padding:0.9rem">
-          Generar plan semanal
-        </button>
-      </div>
-      <div id="wk-plan-loading" style="display:none;text-align:center;padding:2rem">
-        <div class="spinner"></div>
-        <div style="margin-top:0.5rem;color:var(--accent-soft);font-size:0.85rem" id="wk-plan-loading-msg">Generando plan semanal...</div>
-      </div>
-      <div id="wk-plan-result" style="display:none;margin-top:1rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
-          <div style="font-size:0.88rem;font-weight:700;color:var(--gold)" id="wk-plan-title">Plan Semanal</div>
-          <button onclick="resetPlan()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:5px 10px;font-size:0.72rem;cursor:pointer">Nuevo</button>
-        </div>
-        <div id="wk-plan-content" class="wk-result-content"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:1rem">
-          <button class="btn btn-green" onclick="sharePlan()" style="margin-bottom:0;font-size:0.82rem">Compartir</button>
-          <button class="btn btn-sky" onclick="resetPlan()" style="margin-bottom:0;font-size:0.82rem">Nuevo</button>
-        </div>
-      </div>
-    </div>
+    async function generarPlanSemanal() {
+  if (!tieneAccesoWorkout()) {
+    refreshWorkoutTab();
+    alert('Necesitas una suscripción activa para generar planes.');
+    return;
+  }
+  
+  var nombre = (document.getElementById('plan-nombre').value || 'Nadador').trim();
+  var nivel = document.getElementById('plan-nivel').value;
+  var diasArr = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'].filter(function(d) { return wk.planDias.has(d); });
+  if (diasArr.length === 0) diasArr = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie'];
+  var distancia = parseInt(wk.planVol);
+  var tipo = wk.planTipo;
+  
+  var tiposSemana = {
+    carga: '🏗️ CONSTRUCCIÓN · Volumen alto, intensidad media · Enfoque: resistencia aeróbica',
+    precompetencia: '⚡ PRE-COMPETENCIA · Velocidad, series cortas · Enfoque: ritmo de carrera',
+    mantenimiento: '🔄 MANTENIMIENTO · Equilibrio volumen/intensidad · Enfoque: consistencia',
+    recuperacion: '🩹 RECUPERACIÓN · Baja intensidad · Enfoque: regeneración activa'
+  };
+  
+  var titulosDia = {
+    Lun: ['🏗️ DÍA DE VOLUMEN', '📈 COMIENZO DE SEMANA', '🏊‍♂️ CONSTRUCCIÓN 1', '💪 FUERZA INICIAL'],
+    Mar: ['⚡ TÉCNICA + RESISTENCIA', '🏊‍♀️ SERIES LARGAS', '💨 VELOCIDAD BASE', '🔄 RITMO CONSTANTE'],
+    Mie: ['🔄 RECUPERACIÓN ACTIVA', '🏊‍♂️ TÉCNICA FINA', '📉 DESCARGA MEDIA', '🎯 ENFOQUE TÉCNICO'],
+    Jue: ['🏋️ TRABAJO DE UMBRAL', '⚡ SERIES FUERTES', '💨 VELOCIDAD RESISTIDA', '🔥 INTENSIDAD ALTA'],
+    Vie: ['🎯 PREPARACIÓN COMPETENCIA', '🏊‍♂️ RITMO DE CARRERA', '⚡ AFINACIÓN TÉCNICA', '💪 ÚLTIMO ESFUERZO'],
+    Sab: ['🏆 ENTRENAMIENTO LARGO', '🏊‍♀️ RESISTENCIA DE FONDO', '💪 CONSTRUCCIÓN FINAL', '📈 VOLUMEN SEMANAL']
+  };
+  
+  var frasesDia = {
+    Lun: ['"El lunes se gana, el domingo se celebra." - Sergio', '"Primer día, primer paso hacia tu meta."', '"Hoy decides el tono del resto de la semana."'],
+    Mar: ['"Martes de técnica, jueves de velocidad."', '"La consistencia de hoy es el récord de mañana."', '"Cada brazada te acerca más."'],
+    Mie: ['"Mitad de semana, mitades de esfuerzo no."', '"La técnica es la gasolina de tu nado."', '"Hoy afilas el arma."'],
+    Jue: ['"Jueves de velocidad, sábado de resistencia."', '"El umbral se entrena, el talento se descubre."', '"La velocidad es repetición."'],
+    Vie: ['"Viernes de afinación, fin de semana de gloria."', '"El último esfuerzo de la semana es el que cuenta."', '"Hoy te preparas para brillar."'],
+    Sab: ['"Sábado de resistencia, domingo de recuperación."', '"El trabajo largo forja campeones."', '"Hoy sumas kilómetros."']
+  };
+  
+  var tiposSerie = ['⏱️ RITMO CONSTANTE', '⚡ PROGRESIVO', '💨 VELOCIDAD', '🔄 SERIES LARGAS', '📈 DESCENSO'];
+  var estilos = ['Libre', 'Dorso', 'Pecho', 'Mariposa'];
+  var totalSemana = distancia * diasArr.length;
+  
+  var plan = `═══════════════════════════════════════════════════════════════
+📅 PLAN SEMANAL LAGUNA SWIM · ${new Date().toLocaleDateString('es-MX')}
+═══════════════════════════════════════════════════════════════
 
+👤 NADADOR: ${nombre.toUpperCase()}
+📌 TIPO: ${tiposSemana[tipo]}
+🏊 NIVEL: ${nivel}
+📏 METROS POR SESIÓN: ${distancia}m
+📆 DÍAS: ${diasArr.length} días (${diasArr.join(', ')})
+📊 TOTAL SEMANA: ${totalSemana}m
+
+${'━'.repeat(63)}
+
+`;
+  
+  for (var i = 0; i < diasArr.length; i++) {
+    var dia = diasArr[i];
+    var estilo = estilos[i % estilos.length];
+    var titulos = titulosDia[dia] || titulosDia.Lun;
+    var titulo = titulos[Math.floor(Math.random() * titulos.length)];
+    var frases = frasesDia[dia] || frasesDia.Lun;
+    var frase = frases[Math.floor(Math.random() * frases.length)];
+    var tipoSerie = tiposSerie[Math.floor(Math.random() * tiposSerie.length)];
+    
+    var calAgua = Math.floor(distancia * 0.18);
+    var tecnica = Math.floor(distancia * 0.12);
+    var principal = Math.floor(distancia * 0.55);
+    var enfriamiento = distancia - (calAgua + tecnica + principal);
+    
+    var repeticiones = [6, 8, 10, 12][i % 4];
+    var distanciaSerie = Math.floor(principal / repeticiones);
+    distanciaSerie = Math.floor(distanciaSerie / 25) * 25;
+    var repeticionesReales = Math.floor(principal / distanciaSerie);
+    
+    plan += `
+📆 ${dia.toUpperCase()} · ${estilo.toUpperCase()}
+${'─'.repeat(63)}
+${titulo}
+
+🔥 CALENTAMIENTO EN TIERRA (10-15 min)
+• Movilidad articular completa
+• Activación muscular: 10-15 lagartijas, 15 sentadillas, 20 jumping jacks
+
+💧 CALENTAMIENTO EN AGUA (${calAgua}m)
+• 200m ${estilo} suave + 200m patada con tabla
+• 4x50m progresivo
+Subtotal: ${calAgua}m
+
+🎯 TRABAJO TÉCNICO (${tecnica}m)
+• 4x50m drills de ${estilo}
+• 4x50m brazada larga
+Subtotal: ${tecnica}m
+
+⚡ SERIE PRINCIPAL (${principal}m)
+• ${tipoSerie}
+• ${repeticionesReales}x${distanciaSerie}m ${estilo} descanso ${25 + i % 15}"
+• 8x50m patada rápida
+Subtotal: ${principal}m
+
+🔄 ENFRIAMIENTO (${enfriamiento}m)
+• ${enfriamiento - 100 > 0 ? enfriamiento - 100 + 'm ' + estilo + ' suave' : '100m ' + estilo + ' suave'}
+• 100m espalda relajada
+Subtotal: ${enfriamiento}m
+
+💬 FRASE DEL DÍA:
+${frase}
+
+`;
+  }
+  
+  var resumenesGeneral = [
+    '💪 Semana completada con éxito. El trabajo constante da resultados.',
+    '📊 Has mantenido una excelente consistencia. Sigue así.',
+    '🏊‍♂️ El entrenamiento semanal está completo. Descansa y recupera.',
+    '🎯 Objetivos de la semana alcanzados. A por la siguiente.'
+  ];
+  var resumen = resumenesGeneral[Math.floor(Math.random() * resumenesGeneral.length)];
+  
+  plan += `
+${'━'.repeat(63)}
+📊 RESUMEN SEMANAL
+${'─'.repeat(63)}
+• Total de metros: ${totalSemana}m
+• Sesiones realizadas: ${diasArr.length}
+• Enfoque: ${tipo.toUpperCase()}
+
+${resumen}
+
+🏆 "Fuertes y Valientes" - Josué 1:9
+═══════════════════════════════════════════════════════════════`;
+  
+  document.getElementById('wk-plan-config').style.display = 'none';
+  document.getElementById('wk-plan-loading').style.display = 'block';
+  
+  setTimeout(function() {
+    document.getElementById('wk-plan-loading').style.display = 'none';
+    document.getElementById('wk-plan-result').style.display = 'block';
+    document.getElementById('wk-plan-title').textContent = 'Plan ' + (tipo.toUpperCase()) + ' - ' + nombre;
+    document.getElementById('wk-plan-content').innerHTML = '<pre style="white-space:pre-wrap; font-family:\'Courier New\', monospace; font-size:0.7rem; line-height:1.4; background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; max-height:500px; overflow-y:auto; color:#e2e8f0">' + plan + '</pre>';
+    wk.lastPlan = plan;
+    
+    if (state.user && state.user.email !== CONFIG.coach && wk.subs) {
+      descontarEntrenamiento();
+    }
+  }, 500);
+}
     <!-- Modo: Drills -->
     <div id="wk-drills" style="display:none">
       <button onclick="volverSelector()" style="background:none;border:none;color:var(--accent-soft);font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem">&#8592; Regresar</button>
