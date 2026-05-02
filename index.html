@@ -741,6 +741,169 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   display: block;
   border: 1px solid rgba(56,189,248,0.2);
 }
+/* ====== MURO ====== */
+.wk-mode-green {
+  background: rgba(34,197,94,0.06);
+  border: 2px solid rgba(34,197,94,0.25);
+}
+.muro-week-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.7rem;
+}
+.muro-arrow {
+  background: rgba(56,189,248,0.12);
+  border: 1px solid rgba(56,189,248,0.25);
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.muro-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+.muro-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+.muro-stat {
+  background: rgba(56,189,248,0.06);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 12px;
+  padding: 0.6rem;
+  text-align: center;
+}
+.muro-stat-num {
+  font-size: 1.3rem; font-weight: 800;
+  color: var(--accent);
+}
+.muro-stat-lbl {
+  font-size: 0.6rem;
+  color: var(--accent-soft);
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.sesion-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+.sesion-card.mio {
+  border-color: rgba(56,189,248,0.35);
+  background: rgba(56,189,248,0.05);
+}
+.sesion-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e3a5f, var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; font-weight: 800; color: #fff;
+  flex-shrink: 0;
+}
+.sesion-stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.3rem;
+  margin: 0.5rem 0;
+}
+.sesion-stat-mini {
+  background: rgba(255,255,255,0.04);
+  border-radius: 7px;
+  padding: 0.3rem;
+  text-align: center;
+}
+.sesion-stat-mini-l { font-size: 0.55rem; color: var(--accent-soft); }
+.sesion-stat-mini-v { font-size: 0.72rem; font-weight: 700; }
+.foto-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.foto-tile {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  cursor: pointer;
+  background: #0a1628;
+}
+.foto-tile img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.foto-cat-icon {
+  position: absolute; top: 5px; left: 5px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 20px;
+  padding: 2px 6px;
+  font-size: 0.65rem;
+}
+.foto-likes {
+  position: absolute; top: 5px; right: 5px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 20px;
+  padding: 2px 6px;
+  font-size: 0.62rem;
+  color: #ef4444;
+}
+.foto-pinned {
+  position: absolute; bottom: 5px; right: 5px;
+  background: rgba(255,215,0,0.85);
+  border-radius: 20px;
+  padding: 2px 6px;
+  font-size: 0.55rem;
+  color: #000;
+  font-weight: 700;
+}
+.foto-author {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.75));
+  padding: 0.8rem 0.4rem 0.3rem;
+  font-size: 0.6rem;
+  color: #fff;
+}
+.fab-btn {
+  position: fixed;
+  bottom: calc(var(--bnav-h) + 16px);
+  right: 16px;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  color: #fff;
+  border: none;
+  font-size: 1.6rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(56,189,248,0.4);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-foto-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 250;
+  display: flex; flex-direction: column;
+  padding: 1rem;
+}
+.modal-foto-inner {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  gap: 1rem;
+}
+.modal-foto-img {
+  max-width: 100%;
+  max-height: 65vh;
+  border-radius: 12px;
+}
 </style>
 </head>
 <body>
@@ -1492,6 +1655,14 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         </div>
         <div style="margin-left:auto;color:var(--purple);font-size:1.2rem">&#8250;</div>
       </div>
+      <div onclick="elegirModo('muro')" class="wk-mode-card wk-mode-green" style="display:flex;align-items:center;gap:1rem;text-align:left;margin-top:0.6rem">
+        <div style="font-size:2rem">&#127881;</div>
+        <div>
+          <div style="font-size:0.9rem;font-weight:800;color:var(--success)">Muro del equipo</div>
+          <div style="font-size:0.68rem;color:var(--accent-soft)">Sesiones y fotos compartidas <span style="color:var(--success);font-weight:800">- GRATIS</span></div>
+        </div>
+        <div style="margin-left:auto;color:var(--success);font-size:1.2rem">&#8250;</div>
+      </div>
     </div>
 
     <!-- Modo: Sesión del día -->
@@ -1652,6 +1823,172 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         <div id="drills-content" class="wk-result-content"></div>
         <button class="btn btn-green" onclick="shareDrills()" style="margin-top:1rem;font-size:0.82rem">
           Compartir drills
+        </button>
+      </div>
+    </div>
+
+    <!-- Modo: Muro del equipo -->
+    <div id="wk-muro" style="display:none">
+      <button onclick="volverSelector()" style="background:none;border:none;color:var(--accent-soft);font-size:0.82rem;cursor:pointer;margin-bottom:0.8rem">&#8592; Regresar</button>
+
+      <!-- Tabs internas: Sesiones | Fotos -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.8rem">
+        <button class="wk-btn on" id="muro-tab-sesiones" onclick="switchMuroTab('sesiones')">Sesiones</button>
+        <button class="wk-btn" id="muro-tab-fotos" onclick="switchMuroTab('fotos')">Fotos</button>
+      </div>
+
+      <!-- TAB SESIONES -->
+      <div id="muro-sesiones">
+        <div class="muro-week-bar">
+          <button class="muro-arrow" onclick="cambiarSemana(-1)">&#8249;</button>
+          <div style="text-align:center">
+            <div style="font-size:0.82rem;font-weight:800" id="muro-semana-label">Esta semana</div>
+            <div style="font-size:0.65rem;color:var(--accent-soft)" id="muro-semana-rango">-</div>
+          </div>
+          <button class="muro-arrow" id="muro-arrow-next" onclick="cambiarSemana(1)">&#8250;</button>
+        </div>
+
+        <div id="muro-resumen" style="display:none">
+          <div class="muro-stats">
+            <div class="muro-stat">
+              <div class="muro-stat-num" id="res-sesiones">0</div>
+              <div class="muro-stat-lbl">Sesiones</div>
+            </div>
+            <div class="muro-stat">
+              <div class="muro-stat-num" id="res-metros">0</div>
+              <div class="muro-stat-lbl">Metros</div>
+            </div>
+            <div class="muro-stat">
+              <div class="muro-stat-num" id="res-calorias">0</div>
+              <div class="muro-stat-lbl">Calorias</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="muro-lista">
+          <div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>
+        </div>
+
+        <button class="fab-btn" id="fab-sesion" onclick="abrirRegistroSesion()" title="Registrar sesion">&#43;</button>
+      </div>
+
+      <!-- TAB FOTOS -->
+      <div id="muro-fotos" style="display:none">
+        <div id="fotos-fijadas-sec" style="display:none;margin-bottom:1rem">
+          <div style="font-size:0.72rem;color:var(--gold);font-weight:800;letter-spacing:1px;margin-bottom:0.5rem">
+            &#128204; FIJADAS POR SERGIO
+          </div>
+          <div class="foto-grid" id="fotos-fijadas-grid"></div>
+        </div>
+        <div id="fotos-semana-sec" style="display:none">
+          <div style="font-size:0.72rem;color:var(--accent);font-weight:800;letter-spacing:1px;margin-bottom:0.5rem">
+            &#128247; ESTA SEMANA
+          </div>
+          <div class="foto-grid" id="fotos-semana-grid"></div>
+        </div>
+        <div id="fotos-empty" style="text-align:center;padding:2rem;color:var(--accent-soft);font-size:0.82rem">
+          <div style="font-size:2rem;margin-bottom:0.5rem">&#128247;</div>
+          Sin fotos esta semana. ¡Sube la primera!
+        </div>
+        <button class="fab-btn" id="fab-foto" onclick="abrirSubirFoto()" title="Subir foto">&#43;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Registrar sesión -->
+<div class="modal-overlay modal-hidden" id="modal-sesion">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-weight:800;font-size:1rem;color:var(--accent)">&#127946; Registrar sesion</div>
+      <button onclick="cerrarRegistroSesion()" style="background:none;border:none;color:var(--accent-soft);font-size:1.3rem;cursor:pointer">&#10005;</button>
+    </div>
+    <label>Fecha</label>
+    <input type="date" id="reg-fecha">
+    <label>Distancia total (m) *</label>
+    <input type="number" id="reg-distancia" placeholder="2000">
+    <label>Tiempo total</label>
+    <input id="reg-tiempo" placeholder="0:45:30">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+      <div>
+        <label>FC promedio</label>
+        <input type="number" id="reg-fc-avg" placeholder="140">
+      </div>
+      <div>
+        <label>FC maxima</label>
+        <input type="number" id="reg-fc-max" placeholder="170">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+      <div>
+        <label>SWOLF</label>
+        <input type="number" id="reg-swolf" placeholder="42">
+      </div>
+      <div>
+        <label>Pace /100m</label>
+        <input id="reg-pace" placeholder="1:45">
+      </div>
+    </div>
+    <label>Calorias</label>
+    <input type="number" id="reg-calorias" placeholder="350">
+    <label>Nota personal</label>
+    <textarea id="reg-nota" rows="2" placeholder="Como te sentiste hoy?"></textarea>
+    <button class="btn btn-sky" onclick="guardarSesion()">Guardar sesion</button>
+    <button class="btn btn-gray" onclick="cerrarRegistroSesion()">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: Subir foto -->
+<div class="modal-overlay modal-hidden" id="modal-foto-up">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-weight:800;font-size:1rem;color:var(--accent)">&#128247; Subir foto</div>
+      <button onclick="cerrarSubirFoto()" style="background:none;border:none;color:var(--accent-soft);font-size:1.3rem;cursor:pointer">&#10005;</button>
+    </div>
+    <label>Categoria</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;margin-bottom:0.6rem">
+      <button class="wk-btn on" id="fcat-entreno" onclick="selFotoCat('entreno',this)">&#127946; Entreno</button>
+      <button class="wk-btn" id="fcat-competencia" onclick="selFotoCat('competencia',this)">&#127941; Competencia</button>
+      <button class="wk-btn" id="fcat-equipo" onclick="selFotoCat('equipo',this)">&#129309; Equipo</button>
+    </div>
+    <label>Selecciona imagen</label>
+    <input type="file" id="reg-foto-input" accept="image/*" onchange="prevFoto(this)" style="font-size:0.8rem;padding:0.5rem">
+    <div id="foto-preview-container" style="margin:0.5rem 0"></div>
+    <label>Comentario (opcional)</label>
+    <input id="foto-caption" placeholder="Que pasa en esta foto?">
+    <div id="foto-upload-progress" style="display:none;text-align:center;padding:0.8rem;color:var(--accent)">
+      <div class="spinner"></div> Subiendo a Cloudinary...
+    </div>
+    <button class="btn btn-sky" id="btn-subir-foto" onclick="subirFotoAlMuro()">Publicar foto</button>
+    <button class="btn btn-gray" onclick="cerrarSubirFoto()">Cancelar</button>
+    <div style="font-size:0.62rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.4rem">
+      Las fotos no fijadas se eliminan despues de 7 dias
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Ver foto en grande -->
+<div class="modal-foto-overlay modal-hidden" id="modal-ver-foto">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem">
+    <button onclick="cerrarVerFoto()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.2rem">&#10005;</button>
+  </div>
+  <div class="modal-foto-inner">
+    <img id="modal-foto-img" class="modal-foto-img" src="" alt="">
+    <div style="text-align:center;width:100%;max-width:480px">
+      <div style="font-size:0.8rem;color:var(--accent-soft);margin-bottom:0.5rem" id="modal-foto-author"></div>
+      <div style="font-size:0.92rem;color:#fff;margin-bottom:0.8rem" id="modal-foto-caption"></div>
+      <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-red" style="width:auto;padding:0.5rem 1rem;margin:0" onclick="likeFoto()">
+          &#10084; <span id="like-count">0</span>
+        </button>
+        <button class="btn btn-gold" id="btn-fijar-foto" style="width:auto;padding:0.5rem 1rem;margin:0;display:none" onclick="fijarFoto()">
+          &#128204; Fijar
+        </button>
+        <button class="btn btn-gray" id="btn-desfijar-foto" style="width:auto;padding:0.5rem 1rem;margin:0;display:none" onclick="desfijarFoto()">
+          Desfijar
+        </button>
+        <button class="btn btn-red" id="btn-borrar-foto" style="width:auto;padding:0.5rem 1rem;margin:0;display:none" onclick="borrarFoto()">
+          Borrar
         </button>
       </div>
     </div>
@@ -2981,18 +3318,34 @@ function selDrillEstilo(estilo, btn) {
 
 function elegirModo(modo) {
   document.getElementById('wk-selector').style.display = 'none';
-  ['diario', 'semanal', 'drills'].forEach(function(m) {
+  ['diario', 'semanal', 'drills', 'muro'].forEach(function(m) {
     var el = document.getElementById('wk-' + m);
     if (el) el.style.display = m === modo ? 'block' : 'none';
   });
+  // Cargar muro al entrar
+  if (modo === 'muro') {
+    initMuro();
+  }
+  // Ocultar FABs según el modo
+  setTimeout(function() {
+    var fabSesion = document.getElementById('fab-sesion');
+    var fabFoto = document.getElementById('fab-foto');
+    if (fabSesion) fabSesion.style.display = (modo === 'muro' && muro.tab === 'sesiones') ? 'flex' : 'none';
+    if (fabFoto) fabFoto.style.display = (modo === 'muro' && muro.tab === 'fotos') ? 'flex' : 'none';
+  }, 50);
 }
 
 function volverSelector() {
   document.getElementById('wk-selector').style.display = 'block';
-  ['wk-diario', 'wk-semanal', 'wk-drills'].forEach(function(id) {
+  ['wk-diario', 'wk-semanal', 'wk-drills', 'wk-muro'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+  // Ocultar FABs
+  var fabSesion = document.getElementById('fab-sesion');
+  var fabFoto = document.getElementById('fab-foto');
+  if (fabSesion) fabSesion.style.display = 'none';
+  if (fabFoto) fabFoto.style.display = 'none';
   resetWk();
   resetPlan();
   resetDrills();
@@ -3836,6 +4189,439 @@ auth.onAuthStateChanged(function(u) {
     }
   }, 150);
 });
+
+// ============================================================
+// ============== MURO: SESIONES + FOTOS ======================
+// ============================================================
+
+var muro = {
+  tab: 'sesiones',           // 'sesiones' | 'fotos'
+  weekOffset: 0,             // 0 = esta semana, -1 = pasada
+  sesiones: [],
+  fotosArr: [],
+  fotoBase64: null,
+  fotoType: null,
+  fotoCat: 'entreno',
+  fotoActual: null
+};
+
+function initMuro() {
+  if (!state.user) {
+    // Si no hay sesión, regresar al selector con aviso
+    alert('Inicia sesion para usar el muro del equipo.');
+    volverSelector();
+    showCoachLogin();
+    return;
+  }
+  muro.weekOffset = 0;
+  muro.tab = 'sesiones';
+  switchMuroTab('sesiones');
+  // Pre-llenar fecha de hoy en el form de sesión
+  var inp = document.getElementById('reg-fecha');
+  if (inp) inp.value = fmtFechaYMD(new Date());
+}
+
+function switchMuroTab(tab) {
+  muro.tab = tab;
+  document.getElementById('muro-tab-sesiones').classList.toggle('on', tab === 'sesiones');
+  document.getElementById('muro-tab-fotos').classList.toggle('on', tab === 'fotos');
+  document.getElementById('muro-sesiones').style.display = tab === 'sesiones' ? 'block' : 'none';
+  document.getElementById('muro-fotos').style.display = tab === 'fotos' ? 'block' : 'none';
+  // FABs
+  document.getElementById('fab-sesion').style.display = tab === 'sesiones' ? 'flex' : 'none';
+  document.getElementById('fab-foto').style.display = tab === 'fotos' ? 'flex' : 'none';
+  if (tab === 'sesiones') cargarSesiones();
+  else cargarFotos();
+}
+
+// Helpers de fechas
+function getLunes(offset) {
+  var hoy = new Date();
+  var dia = hoy.getDay();
+  var diff = dia === 0 ? -6 : 1 - dia;
+  var l = new Date(hoy);
+  l.setDate(hoy.getDate() + diff + (offset * 7));
+  l.setHours(0, 0, 0, 0);
+  return l;
+}
+function fmtFechaYMD(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function fmtFechaCorta(d) {
+  var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  return d.getDate() + ' ' + meses[d.getMonth()];
+}
+
+function cambiarSemana(dir) {
+  muro.weekOffset += dir;
+  if (muro.weekOffset > 0) muro.weekOffset = 0; // No futuro
+  cargarSesiones();
+}
+
+// ===== SESIONES =====
+function cargarSesiones() {
+  var lunes = getLunes(muro.weekOffset);
+  var domingo = new Date(lunes);
+  domingo.setDate(lunes.getDate() + 6);
+
+  // Labels
+  document.getElementById('muro-semana-label').textContent =
+    muro.weekOffset === 0 ? 'Esta semana' :
+    muro.weekOffset === -1 ? 'Semana pasada' :
+    'Sem ' + fmtFechaCorta(lunes);
+  document.getElementById('muro-semana-rango').textContent =
+    fmtFechaCorta(lunes) + ' - ' + fmtFechaCorta(domingo);
+  document.getElementById('muro-arrow-next').disabled = (muro.weekOffset >= 0);
+
+  var lista = document.getElementById('muro-lista');
+  lista.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>';
+
+  // Pedir las 7 fechas
+  var sesiones = [];
+  var done = 0;
+  for (var i = 0; i < 7; i++) {
+    var dia = new Date(lunes);
+    dia.setDate(lunes.getDate() + i);
+    var key = fmtFechaYMD(dia);
+    (function(k) {
+      db.ref('sesiones/' + k).once('value').then(function(snap) {
+        if (snap.exists()) {
+          snap.forEach(function(child) {
+            sesiones.push(Object.assign({ fecha: k, uid: child.key }, child.val()));
+          });
+        }
+        done++;
+        if (done === 7) renderSesiones(sesiones);
+      });
+    })(key);
+  }
+}
+
+function renderSesiones(sesiones) {
+  muro.sesiones = sesiones;
+  var lista = document.getElementById('muro-lista');
+  var resumen = document.getElementById('muro-resumen');
+
+  if (sesiones.length === 0) {
+    lista.innerHTML =
+      '<div style="text-align:center;padding:2rem;color:var(--accent-soft);font-size:0.82rem">' +
+        '<div style="font-size:2rem;margin-bottom:0.5rem">&#127946;</div>' +
+        'Nadie ha registrado esta semana.<br>¡Se el primero!' +
+      '</div>';
+    resumen.style.display = 'none';
+    return;
+  }
+
+  // Ordenar por timestamp descendente
+  sesiones.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+
+  // Resumen
+  var totalMetros = 0, totalCal = 0;
+  sesiones.forEach(function(s) {
+    totalMetros += parseInt(s.distancia || 0);
+    totalCal += parseInt(s.calorias || 0);
+  });
+  document.getElementById('res-sesiones').textContent = sesiones.length;
+  document.getElementById('res-metros').textContent = totalMetros >= 1000 ? (totalMetros / 1000).toFixed(1) + 'k' : totalMetros;
+  document.getElementById('res-calorias').textContent = totalCal > 0 ? totalCal.toLocaleString() : '-';
+  resumen.style.display = 'block';
+
+  // Render
+  var diasSiglas = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+  lista.innerHTML = '';
+  sesiones.forEach(function(s, idx) {
+    var esMio = state.user && s.uid === state.user.uid;
+    var dF = s.fecha ? new Date(s.fecha + 'T12:00:00') : new Date();
+    var card = document.createElement('div');
+    card.className = 'sesion-card' + (esMio ? ' mio' : '');
+    var inicial = (s.nombre || '?').charAt(0).toUpperCase();
+
+    var stats = [
+      { v: s.distancia ? s.distancia + 'm' : '-', l: 'metros' },
+      { v: s.swolf || '-', l: 'SWOLF' },
+      { v: s.pace ? s.pace + '/100m' : '-', l: 'pace' },
+      { v: s.fc_avg ? s.fc_avg + ' bpm' : '-', l: 'FC' }
+    ];
+    var statsHtml = '';
+    stats.forEach(function(st) {
+      statsHtml += '<div class="sesion-stat-mini">' +
+        '<div class="sesion-stat-mini-l">' + st.l + '</div>' +
+        '<div class="sesion-stat-mini-v">' + escapeHtml(String(st.v)) + '</div>' +
+      '</div>';
+    });
+
+    card.innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem">' +
+        '<div style="display:flex;align-items:center;gap:0.5rem">' +
+          '<div class="sesion-avatar">' + inicial + '</div>' +
+          '<div>' +
+            '<div style="font-size:0.82rem;font-weight:700;color:' + (esMio ? 'var(--accent)' : '#fff') + '">' +
+              escapeHtml(s.nombre || 'Nadador') + (esMio ? ' (tu)' : '') +
+            '</div>' +
+            '<div style="font-size:0.65rem;color:var(--accent-soft)">' +
+              diasSiglas[dF.getDay()] + ' ' + dF.getDate() +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        (s.tiempo ? '<div style="font-size:1.1rem;font-weight:800;color:var(--gold)">' + escapeHtml(s.tiempo) + '</div>' : '') +
+      '</div>' +
+      '<div class="sesion-stats-row">' + statsHtml + '</div>' +
+      (s.nota ? '<div style="font-size:0.7rem;color:var(--accent-soft);font-style:italic;border-top:1px solid rgba(255,255,255,0.05);padding-top:0.4rem;margin-top:0.3rem">"' + escapeHtml(s.nota) + '"</div>' : '') +
+      (esMio ? '<button class="btn-sesion-del" data-fecha="' + s.fecha + '" data-uid="' + s.uid + '" style="margin-top:0.5rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ef4444;border-radius:8px;padding:0.3rem 0.8rem;font-size:0.7rem;cursor:pointer">Borrar</button>' : '');
+
+    lista.appendChild(card);
+  });
+
+  lista.querySelectorAll('.btn-sesion-del').forEach(function(b) {
+    b.addEventListener('click', function() {
+      borrarSesion(b.getAttribute('data-fecha'), b.getAttribute('data-uid'));
+    });
+  });
+}
+
+function abrirRegistroSesion() {
+  if (!state.user) { showCoachLogin(); return; }
+  document.getElementById('modal-sesion').classList.remove('modal-hidden');
+}
+function cerrarRegistroSesion() {
+  document.getElementById('modal-sesion').classList.add('modal-hidden');
+}
+
+function guardarSesion() {
+  if (!state.user) return;
+  var dist = parseInt(document.getElementById('reg-distancia').value) || 0;
+  if (!dist) { alert('Pon al menos los metros nadados'); return; }
+  var fecha = document.getElementById('reg-fecha').value || fmtFechaYMD(new Date());
+  var nombre = state.user.displayName || state.user.email.split('@')[0];
+
+  var sesion = {
+    nombre: nombre,
+    email: state.user.email,
+    tiempo: document.getElementById('reg-tiempo').value || '',
+    distancia: dist,
+    fc_avg: parseInt(document.getElementById('reg-fc-avg').value) || 0,
+    fc_max: parseInt(document.getElementById('reg-fc-max').value) || 0,
+    swolf: parseInt(document.getElementById('reg-swolf').value) || 0,
+    pace: document.getElementById('reg-pace').value || '',
+    calorias: parseInt(document.getElementById('reg-calorias').value) || 0,
+    nota: document.getElementById('reg-nota').value || '',
+    timestamp: Date.now()
+  };
+
+  db.ref('sesiones/' + fecha + '/' + state.user.uid).set(sesion).then(function() {
+    cerrarRegistroSesion();
+    // Limpiar campos
+    ['reg-distancia', 'reg-tiempo', 'reg-fc-avg', 'reg-fc-max', 'reg-swolf', 'reg-pace', 'reg-calorias', 'reg-nota'].forEach(function(f) {
+      var e = document.getElementById(f);
+      if (e) e.value = '';
+    });
+    cargarSesiones();
+  }).catch(function(e) {
+    alert('Error: ' + e.message);
+  });
+}
+
+function borrarSesion(fecha, uid) {
+  if (!confirm('¿Borrar esta sesion?')) return;
+  db.ref('sesiones/' + fecha + '/' + uid).remove().then(function() {
+    cargarSesiones();
+  });
+}
+
+// ===== FOTOS =====
+
+function selFotoCat(cat, btn) {
+  muro.fotoCat = cat;
+  ['entreno', 'competencia', 'equipo'].forEach(function(c) {
+    var b = document.getElementById('fcat-' + c);
+    if (b) b.classList.remove('on');
+  });
+  if (btn) btn.classList.add('on');
+}
+
+function abrirSubirFoto() {
+  if (!state.user) { showCoachLogin(); return; }
+  document.getElementById('modal-foto-up').classList.remove('modal-hidden');
+}
+function cerrarSubirFoto() {
+  document.getElementById('modal-foto-up').classList.add('modal-hidden');
+  muro.fotoBase64 = null;
+  document.getElementById('foto-preview-container').innerHTML = '';
+  document.getElementById('reg-foto-input').value = '';
+  document.getElementById('foto-caption').value = '';
+}
+
+function prevFoto(input) {
+  var file = input.files[0];
+  if (!file) return;
+  // Validar tamaño
+  if (file.size > 10 * 1024 * 1024) {
+    alert('La imagen es muy grande (max 10MB).');
+    input.value = '';
+    return;
+  }
+  muro.fotoType = file.type;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    muro.fotoBase64 = e.target.result.split(',')[1];
+    var prev = document.getElementById('foto-preview-container');
+    prev.innerHTML = '<img src="' + e.target.result + '" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px">';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function subirFotoAlMuro() {
+  if (!state.user) { showCoachLogin(); return; }
+  if (!muro.fotoBase64) { alert('Elige una foto primero'); return; }
+
+  var progress = document.getElementById('foto-upload-progress');
+  var btn = document.getElementById('btn-subir-foto');
+  progress.style.display = 'block';
+  btn.style.display = 'none';
+
+  try {
+    // Subir a Cloudinary
+    var fd = new FormData();
+    fd.append('file', 'data:' + muro.fotoType + ';base64,' + muro.fotoBase64);
+    fd.append('upload_preset', CONFIG.uploadPreset);
+    fd.append('folder', 'laguna_swim/' + muro.fotoCat);
+    var res = await fetch('https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/image/upload', {
+      method: 'POST',
+      body: fd
+    });
+    var data = await res.json();
+    if (!data.secure_url) throw new Error('Error en Cloudinary: ' + (data.error && data.error.message || 'desconocido'));
+
+    // Guardar en Firebase
+    var nombre = state.user.displayName || state.user.email.split('@')[0];
+    var key = db.ref('fotos').push().key;
+    await db.ref('fotos/' + key).set({
+      url: data.secure_url,
+      cloudinaryId: data.public_id || '',
+      nombre: nombre,
+      uid: state.user.uid,
+      categoria: muro.fotoCat,
+      caption: document.getElementById('foto-caption').value || '',
+      timestamp: Date.now(),
+      expira: Date.now() + 7 * 86400000,
+      likes: 0,
+      fijada: false
+    });
+
+    cerrarSubirFoto();
+    cargarFotos();
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+  progress.style.display = 'none';
+  btn.style.display = 'block';
+}
+
+function cargarFotos() {
+  db.ref('fotos').once('value').then(function(snap) {
+    var ahora = Date.now();
+    var fijadas = [];
+    var semana = [];
+    if (snap.exists()) {
+      snap.forEach(function(child) {
+        var f = Object.assign({ key: child.key }, child.val());
+        if (f.fijada) fijadas.push(f);
+        else if (f.expira > ahora) semana.push(f);
+      });
+    }
+    fijadas.sort(function(a, b) { return (b.likes || 0) - (a.likes || 0); });
+    semana.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+
+    muro.fotosArr = [];
+    renderFotos(fijadas, 'fotos-fijadas-grid', 'fotos-fijadas-sec');
+    renderFotos(semana, 'fotos-semana-grid', 'fotos-semana-sec');
+
+    var empty = document.getElementById('fotos-empty');
+    if (fijadas.length === 0 && semana.length === 0) {
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+    }
+  });
+}
+
+function renderFotos(fotos, gridId, secId) {
+  var grid = document.getElementById(gridId);
+  var sec = document.getElementById(secId);
+  if (!grid || !sec) return;
+  if (!fotos.length) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  var html = '';
+  fotos.forEach(function(f) {
+    muro.fotosArr.push(f);
+    var idx = muro.fotosArr.length - 1;
+    var catIcon = { entreno: '&#127754;', competencia: '&#127941;', equipo: '&#129309;' }[f.categoria] || '&#128247;';
+    html += '<div class="foto-tile" data-idx="' + idx + '">';
+    html += '<img src="' + f.url + '" loading="lazy">';
+    html += '<div class="foto-cat-icon">' + catIcon + '</div>';
+    if (f.likes > 0) html += '<div class="foto-likes">&#10084; ' + f.likes + '</div>';
+    if (f.fijada) html += '<div class="foto-pinned">&#128204;</div>';
+    html += '<div class="foto-author">' + escapeHtml(f.nombre || '') + '</div>';
+    html += '</div>';
+  });
+  grid.innerHTML = html;
+  grid.querySelectorAll('.foto-tile').forEach(function(t) {
+    t.addEventListener('click', function() {
+      verFoto(muro.fotosArr[parseInt(t.getAttribute('data-idx'))]);
+    });
+  });
+}
+
+function verFoto(f) {
+  muro.fotoActual = f;
+  document.getElementById('modal-foto-img').src = f.url;
+  document.getElementById('modal-foto-author').textContent = (f.nombre || '') + ' - ' + new Date(f.timestamp).toLocaleDateString('es-MX');
+  document.getElementById('modal-foto-caption').textContent = f.caption || '';
+  document.getElementById('like-count').textContent = f.likes || 0;
+
+  var esCoach = state.user && state.user.email === CONFIG.coach;
+  var esMio = state.user && f.uid === state.user.uid;
+  document.getElementById('btn-fijar-foto').style.display = (esCoach && !f.fijada) ? 'inline-block' : 'none';
+  document.getElementById('btn-desfijar-foto').style.display = (esCoach && f.fijada) ? 'inline-block' : 'none';
+  document.getElementById('btn-borrar-foto').style.display = (esCoach || esMio) ? 'inline-block' : 'none';
+
+  document.getElementById('modal-ver-foto').classList.remove('modal-hidden');
+}
+function cerrarVerFoto() {
+  document.getElementById('modal-ver-foto').classList.add('modal-hidden');
+  muro.fotoActual = null;
+}
+
+function likeFoto() {
+  if (!muro.fotoActual) return;
+  db.ref('fotos/' + muro.fotoActual.key + '/likes').transaction(function(v) {
+    return (v || 0) + 1;
+  });
+  var l = document.getElementById('like-count');
+  l.textContent = parseInt(l.textContent || 0) + 1;
+}
+
+async function fijarFoto() {
+  if (!muro.fotoActual) return;
+  await db.ref('fotos/' + muro.fotoActual.key + '/fijada').set(true);
+  cerrarVerFoto();
+  cargarFotos();
+}
+
+async function desfijarFoto() {
+  if (!muro.fotoActual) return;
+  await db.ref('fotos/' + muro.fotoActual.key + '/fijada').set(false);
+  cerrarVerFoto();
+  cargarFotos();
+}
+
+async function borrarFoto() {
+  if (!muro.fotoActual) return;
+  if (!confirm('¿Borrar esta foto?')) return;
+  await db.ref('fotos/' + muro.fotoActual.key).remove();
+  cerrarVerFoto();
+  cargarFotos();
+}
 </script>
 </body>
 </html>
