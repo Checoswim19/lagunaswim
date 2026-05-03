@@ -904,6 +904,187 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   max-height: 65vh;
   border-radius: 12px;
 }
+/* ====== CARRUSEL DE PATROCINADORES ====== */
+.spons-wrap {
+  background: #fff;
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 14px;
+  padding: 0.5rem;
+  margin-bottom: 0.6rem;
+  position: relative;
+  overflow: hidden;
+}
+.spons-label {
+  font-size: 0.55rem;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  position: absolute;
+  top: 6px; left: 10px;
+  background: rgba(255,255,255,0.95);
+  padding: 1px 6px;
+  border-radius: 4px;
+  z-index: 2;
+}
+.spons-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  position: relative;
+}
+.spons-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  cursor: pointer;
+  padding: 8px 16px;
+}
+.spons-slide.active {
+  opacity: 1;
+}
+.spons-slide img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.spons-dots {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding-top: 4px;
+}
+.spons-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(56,189,248,0.25);
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.spons-dot.active {
+  background: var(--accent);
+  width: 18px;
+  border-radius: 3px;
+}
+/* ====== EVALUACIÓN DE NIVELES ====== */
+.wk-mode-orange {
+  background: rgba(234,88,12,0.06);
+  border: 2px solid rgba(234,88,12,0.3);
+}
+.eval-nadador-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 0.9rem;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.eval-nadador-card:active { transform: scale(0.98); }
+.eval-nivel-badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+.eval-nivel-NB { background: rgba(56,189,248,0.18); color: var(--accent); }
+.eval-nivel-NI { background: rgba(99,102,241,0.18); color: #818cf8; }
+.eval-nivel-NA { background: rgba(34,197,94,0.18); color: var(--success); }
+.eval-nivel-PEQ { background: rgba(168,85,247,0.18); color: var(--purple); }
+.eval-nivel-EQ { background: rgba(255,215,0,0.18); color: var(--gold); }
+.eval-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+.eval-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease-out;
+}
+.eval-listo-badge {
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: #1a0a00;
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+}
+.ejercicio-row {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 12px;
+  margin-bottom: 0.4rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.ejercicio-row.dominado {
+  background: rgba(34,197,94,0.08);
+  border-color: rgba(34,197,94,0.3);
+}
+.ejercicio-num {
+  width: 28px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 700;
+  padding-top: 2px;
+}
+.ejercicio-info { flex: 1; min-width: 0; }
+.ejercicio-nombre {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.ejercicio-nombre.dominado { font-weight: 700; }
+.ejercicio-desc {
+  font-size: 0.65rem;
+  color: var(--accent-soft);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.ejercicio-toggle {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.ejercicio-toggle.dominado {
+  background: var(--success);
+  color: #fff;
+}
+.eval-back-btn {
+  background: none; border: none;
+  color: var(--accent-soft);
+  font-size: 0.82rem; cursor: pointer;
+  margin-bottom: 0.8rem;
+  padding: 0;
+}
+.eval-diploma-card {
+  background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,215,0,0.05));
+  border: 2px solid rgba(255,215,0,0.4);
+  border-radius: 16px;
+  padding: 1rem;
+  text-align: center;
+  margin: 1rem 0;
+}
 </style>
 </head>
 <body>
@@ -1012,10 +1193,11 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
       </div>
     </div>
 
-    <div class="ad-banner">
-      <div class="ad-tag">PUBLICIDAD</div>
-      <div class="ad-text">Tu negocio aqui? lagunaswim.net</div>
-      <div class="ad-logo">Tu Logo</div>
+    <!-- Carrusel de patrocinadores -->
+    <div class="spons-wrap">
+      <div class="spons-label">PATROCINADORES</div>
+      <div class="spons-track" id="spons-track"></div>
+      <div class="spons-dots" id="spons-dots"></div>
     </div>
   </div>
 
@@ -1663,6 +1845,14 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         </div>
         <div style="margin-left:auto;color:var(--success);font-size:1.2rem">&#8250;</div>
       </div>
+      <div onclick="elegirModo('eval')" class="wk-mode-card wk-mode-orange" style="display:flex;align-items:center;gap:1rem;text-align:left;margin-top:0.6rem">
+        <div style="font-size:2rem">&#127942;</div>
+        <div>
+          <div style="font-size:0.9rem;font-weight:800;color:#ea580c">Evaluacion de niveles</div>
+          <div style="font-size:0.68rem;color:var(--accent-soft)">5 niveles - 80 ejercicios + diploma <span style="color:var(--success);font-weight:800">- GRATIS</span></div>
+        </div>
+        <div style="margin-left:auto;color:#ea580c;font-size:1.2rem">&#8250;</div>
+      </div>
     </div>
 
     <!-- Modo: Sesión del día -->
@@ -1893,6 +2083,63 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         <button class="fab-btn" id="fab-foto" onclick="abrirSubirFoto()" title="Subir foto">&#43;</button>
       </div>
     </div>
+
+    <!-- Modo: Evaluación de niveles -->
+    <div id="wk-eval" style="display:none">
+      <button class="eval-back-btn" onclick="volverSelector()">&#8592; Regresar</button>
+
+      <!-- Lista de nadadores -->
+      <div id="eval-lista-view">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
+          <div>
+            <div style="font-size:0.95rem;font-weight:800;color:#ea580c">Evaluacion Laguna Swim</div>
+            <div style="font-size:0.7rem;color:var(--accent-soft)" id="eval-info-text">5 niveles - 80 ejercicios</div>
+          </div>
+          <button id="eval-add-btn" onclick="abrirAltaNadador()" style="background:rgba(234,88,12,0.15);border:1px solid rgba(234,88,12,0.35);color:#ea580c;border-radius:10px;padding:0.5rem 0.9rem;font-size:0.78rem;font-weight:700;cursor:pointer;display:none">
+            &#43; Nadador
+          </button>
+        </div>
+
+        <div id="eval-empty" style="display:none;text-align:center;padding:2rem;color:var(--accent-soft);font-size:0.82rem">
+          <div style="font-size:2.5rem;margin-bottom:0.5rem">&#127946;</div>
+          <div id="eval-empty-msg">Aun no hay nadadores registrados</div>
+        </div>
+
+        <div id="eval-nadadores-list"></div>
+      </div>
+
+      <!-- Detalle de nadador (ejercicios) -->
+      <div id="eval-detalle-view" style="display:none">
+        <button class="eval-back-btn" onclick="volverListaNadadores()">&#8592; Lista de nadadores</button>
+        <div id="eval-nadador-header"></div>
+        <div id="eval-diploma-section"></div>
+        <div id="eval-ejercicios-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Alta de nadador -->
+<div class="modal-overlay modal-hidden" id="modal-alta-nadador">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-weight:800;font-size:1rem;color:#ea580c">&#127919; Registrar nadador</div>
+      <button onclick="cerrarAltaNadador()" style="background:none;border:none;color:var(--accent-soft);font-size:1.3rem;cursor:pointer">&#10005;</button>
+    </div>
+    <label>Nombre completo</label>
+    <input id="ev-nombre" placeholder="Juan Perez">
+    <label>Edad</label>
+    <input type="number" id="ev-edad" placeholder="12">
+    <label>Nivel inicial</label>
+    <select id="ev-nivel">
+      <option value="NB">Nivel Basico (NB) - 20 ejercicios</option>
+      <option value="NI">Nivel Intermedio (NI) - 20 ejercicios</option>
+      <option value="NA">Nivel Avanzado (NA) - 20 ejercicios</option>
+      <option value="PEQ">Pre-Equipo - 10 ejercicios</option>
+      <option value="EQ">Equipo - 10 ejercicios</option>
+    </select>
+    <button class="btn btn-orange" onclick="guardarNadador()">Registrar</button>
+    <button class="btn btn-gray" onclick="cerrarAltaNadador()">Cancelar</button>
   </div>
 </div>
 
@@ -3318,13 +3565,17 @@ function selDrillEstilo(estilo, btn) {
 
 function elegirModo(modo) {
   document.getElementById('wk-selector').style.display = 'none';
-  ['diario', 'semanal', 'drills', 'muro'].forEach(function(m) {
+  ['diario', 'semanal', 'drills', 'muro', 'eval'].forEach(function(m) {
     var el = document.getElementById('wk-' + m);
     if (el) el.style.display = m === modo ? 'block' : 'none';
   });
   // Cargar muro al entrar
   if (modo === 'muro') {
     initMuro();
+  }
+  // Cargar evaluación al entrar
+  if (modo === 'eval') {
+    initEval();
   }
   // Ocultar FABs según el modo
   setTimeout(function() {
@@ -3337,7 +3588,7 @@ function elegirModo(modo) {
 
 function volverSelector() {
   document.getElementById('wk-selector').style.display = 'block';
-  ['wk-diario', 'wk-semanal', 'wk-drills', 'wk-muro'].forEach(function(id) {
+  ['wk-diario', 'wk-semanal', 'wk-drills', 'wk-muro', 'wk-eval'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -4621,6 +4872,554 @@ async function borrarFoto() {
   await db.ref('fotos/' + muro.fotoActual.key).remove();
   cerrarVerFoto();
   cargarFotos();
+}
+
+// ============================================================
+// ============== CARRUSEL DE PATROCINADORES ==================
+// ============================================================
+
+/*
+  Para agregar/quitar patrocinadores:
+  1. Edita la lista PATROCINADORES de abajo
+  2. Cada uno necesita: logo (URL pública), nombre, link (sitio web o WhatsApp)
+  3. Recomendado: logos PNG con fondo transparente, ratio ~3:1 (ej. 300x100px)
+*/
+var PATROCINADORES = [
+  {
+    logo: 'https://ferrealberca.mx/wp-content/uploads/2021/02/LOGO-PNG.png',
+    nombre: 'Ferrealberca',
+    link: 'https://ferrealberca.mx/'
+  },
+  {
+    logo: 'https://static.wixstatic.com/media/485dba_15faaa67414a4b6aa50c2024cd4d5ae7~mv2.png/v1/fill/w_546,h_76,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/LOGO%20LAGUNERO%20PRIMERO%20NEGRO.png',
+    nombre: 'Lagunero Primero',
+    link: 'https://www.laguneroprimero.org/'
+  },
+  {
+    logo: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=432,fit=crop,q=95/YNqPKLvKkQULxrnr/imagen-de-whatsapp-2025-01-30-a-las-16.50.02_a68428da-YbNqVX5v8QFeqVPD.jpg',
+    nombre: 'Mendoza Abogados',
+    link: 'https://mendozabogados.com/contacto'
+  },
+  {
+    logo: 'https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg',
+    nombre: 'Laguna Swim',
+    link: 'https://lagunaswim.net'
+  }
+];
+
+var sponsState = {
+  current: 0,
+  interval: null,
+  paused: false
+};
+
+function buildSponsCarousel() {
+  var track = document.getElementById('spons-track');
+  var dots = document.getElementById('spons-dots');
+  if (!track || !dots) return;
+
+  if (PATROCINADORES.length === 0) {
+    track.parentElement.style.display = 'none';
+    return;
+  }
+
+  track.innerHTML = '';
+  dots.innerHTML = '';
+
+  PATROCINADORES.forEach(function(p, i) {
+    // Slide
+    var slide = document.createElement('div');
+    slide.className = 'spons-slide' + (i === 0 ? ' active' : '');
+    slide.setAttribute('data-idx', i);
+    slide.innerHTML = '<img src="' + p.logo + '" alt="' + escapeHtml(p.nombre) + '" loading="lazy">';
+    slide.addEventListener('click', function() {
+      if (p.link) openUrl(p.link);
+    });
+    track.appendChild(slide);
+
+    // Dot (solo si hay más de uno)
+    if (PATROCINADORES.length > 1) {
+      var dot = document.createElement('button');
+      dot.className = 'spons-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('data-idx', i);
+      (function(idx) {
+        dot.addEventListener('click', function(e) {
+          e.stopPropagation();
+          showSpons(idx);
+          // Reiniciar timer
+          stopSpons();
+          startSpons();
+        });
+      })(i);
+      dots.appendChild(dot);
+    }
+  });
+
+  // Pausar al pasar el dedo (móvil) o el mouse (desktop)
+  track.addEventListener('mouseenter', function() { sponsState.paused = true; });
+  track.addEventListener('mouseleave', function() { sponsState.paused = false; });
+  track.addEventListener('touchstart', function() { sponsState.paused = true; });
+  track.addEventListener('touchend', function() {
+    setTimeout(function() { sponsState.paused = false; }, 500);
+  });
+
+  startSpons();
+}
+
+function showSpons(idx) {
+  sponsState.current = idx;
+  document.querySelectorAll('.spons-slide').forEach(function(s) {
+    s.classList.toggle('active', parseInt(s.getAttribute('data-idx')) === idx);
+  });
+  document.querySelectorAll('.spons-dot').forEach(function(d) {
+    d.classList.toggle('active', parseInt(d.getAttribute('data-idx')) === idx);
+  });
+}
+
+function startSpons() {
+  if (PATROCINADORES.length <= 1) return;
+  stopSpons();
+  sponsState.interval = setInterval(function() {
+    if (sponsState.paused) return;
+    var next = (sponsState.current + 1) % PATROCINADORES.length;
+    showSpons(next);
+  }, 3500);
+}
+
+function stopSpons() {
+  if (sponsState.interval) {
+    clearInterval(sponsState.interval);
+    sponsState.interval = null;
+  }
+}
+
+// Inicializar carrusel
+buildSponsCarousel();
+
+// ============================================================
+// ============== EVALUACION DE NIVELES =======================
+// ============================================================
+
+// Datos de los 5 niveles (80 ejercicios totales)
+var EVAL_NIVELES = {
+  'NB': {
+    nombre: 'Nivel Basico',
+    color: '#38bdf8',
+    grad: '#0ea5e9,#38bdf8',
+    bg: 'rgba(56,189,248,0.1)',
+    border: 'rgba(56,189,248,0.4)',
+    total: 20,
+    ejercicios: [
+      { n: 'Soplo de burbujas', d: 'Soplar burbujas por boca y nariz' },
+      { n: 'Inmersion progresiva', d: 'Meter la cabeza al agua poco a poco' },
+      { n: 'Apertura de ojos bajo el agua', d: 'Abrir los ojos debajo del agua' },
+      { n: 'Flotacion ventral con apoyo', d: 'Flotar boca abajo con tabla' },
+      { n: 'Flotacion dorsal con apoyo', d: 'Flotar boca arriba con tabla' },
+      { n: 'Estrella de mar', d: 'Flotar en posicion de estrella' },
+      { n: 'Deslizamiento ventral', d: 'Impulsarse desde la pared boca abajo' },
+      { n: 'Deslizamiento dorsal', d: 'Impulsarse desde la pared boca arriba' },
+      { n: 'Patada de crol con tabla', d: 'Patear con tabla piernas extendidas' },
+      { n: 'Patada de espalda con tabla', d: 'Patear boca arriba con tabla' },
+      { n: 'Recoger objetos del fondo', d: 'Sumergirse a recoger aros del fondo' },
+      { n: 'Respiracion lateral', d: 'Girar cabeza para respirar' },
+      { n: 'Brazada de crol con respiracion', d: 'Combinar brazada y respiracion lateral' },
+      { n: 'Coordinacion de brazos', d: 'Mover brazos en circulos en el agua' },
+      { n: 'Saltar al agua de pie', d: 'Saltar y recuperar flotacion' },
+      { n: 'Crol 10 metros', d: 'Nadar 10m crol sin parar' },
+      { n: 'Espalda 10 metros', d: 'Nadar 10m espalda sin parar' },
+      { n: 'Cambio de posicion', d: 'Girar de boca abajo a boca arriba' },
+      { n: 'Juego: Cazadores y conejos', d: 'Persecucion en el agua' },
+      { n: 'Juego: Pesca de tesoros', d: 'Recoger objetos flotantes en equipo' }
+    ]
+  },
+  'NI': {
+    nombre: 'Nivel Intermedio',
+    color: '#818cf8',
+    grad: '#4f46e5,#818cf8',
+    bg: 'rgba(99,102,241,0.1)',
+    border: 'rgba(99,102,241,0.4)',
+    total: 20,
+    ejercicios: [
+      { n: 'Planeo del Superman', d: 'Flotar boca abajo brazos extendidos' },
+      { n: 'Planeo dorsal estrella', d: 'Flotar boca arriba en estrella' },
+      { n: 'Patada de crol sin tabla', d: 'Patear sin tabla brazos al frente' },
+      { n: 'Patada de espalda sin tabla', d: 'Patear boca arriba sin tabla' },
+      { n: 'Respiracion bilateral', d: 'Respirar alternando lados cada 3 brazadas' },
+      { n: '6-3-6 Drill', d: '6 patadas costado, 3 brazadas, 6 patadas otro costado' },
+      { n: 'Crol 25 metros', d: 'Nadar 25m crol con tecnica' },
+      { n: 'Espalda 25 metros', d: 'Nadar 25m espalda con tecnica' },
+      { n: 'Viraje elemental crol', d: 'Tocar pared y girar para continuar' },
+      { n: 'Viraje elemental espalda', d: 'Tocar pared y girar en espalda' },
+      { n: 'Patada de pecho', d: 'Patada de rana con tabla' },
+      { n: 'Brazada de pecho', d: 'Brazada de pecho desde la superficie' },
+      { n: 'Pecho 15 metros', d: 'Nadar 15m pecho' },
+      { n: 'Brazada de mariposa simple', d: 'Brazada mariposa con patada delfin' },
+      { n: 'Patada de delfin', d: 'Ondulacion corporal tipo delfin' },
+      { n: 'Tiro subacuatico', d: 'Deslizar bajo el agua 5-8 metros' },
+      { n: 'Crol 50 metros', d: 'Nadar 50m crol sin parar' },
+      { n: 'Combinado elemental', d: '25 crol + 25 espalda continuo' },
+      { n: 'Salto de flecha', d: 'Saltar con brazos arriba pegados' },
+      { n: 'Juego: Lobo y ovejas', d: 'Persecucion y escapes en el agua' }
+    ]
+  },
+  'NA': {
+    nombre: 'Nivel Avanzado',
+    color: '#22c55e',
+    grad: '#15803d,#22c55e',
+    bg: 'rgba(34,197,94,0.1)',
+    border: 'rgba(34,197,94,0.4)',
+    total: 20,
+    ejercicios: [
+      { n: 'Crol ritmo constante 50m', d: 'Mantener ritmo de brazada constante' },
+      { n: 'Espalda ritmo constante 50m', d: 'Mantener ritmo constante espalda' },
+      { n: 'Crol 100 metros', d: 'Nadar 100m crol sin parar' },
+      { n: 'Espalda 100 metros', d: 'Nadar 100m espalda sin parar' },
+      { n: 'Pecho 50 metros', d: 'Nadar 50m pecho con tecnica' },
+      { n: 'Mariposa 25 metros', d: 'Nadar 25m mariposa' },
+      { n: 'Patada mariposa subacuatica', d: 'Patada delfin bajo el agua 10-15m' },
+      { n: 'Viraje de campana', d: 'Voltereta basica al llegar a la pared' },
+      { n: 'Viraje de espalda', d: 'Viraje reglamentario espalda' },
+      { n: 'Salto de banqueta', d: 'Salto desde banqueta entrada hidrodinamica' },
+      { n: 'Respiracion bilateral 100m', d: 'Respirar ambos lados en 100m' },
+      { n: 'Serie 4x50 crol', d: '4 reps 50m descanso 30 seg' },
+      { n: 'Crol con aletas 50m', d: '50m crol con aletas' },
+      { n: 'Combinado 100 metros', d: '25c+25e+25p+25m' },
+      { n: 'Drill recupero aereo', d: 'Recobrar brazo rozando el agua' },
+      { n: 'Drill brazada larga', d: 'Maxima longitud por brazada' },
+      { n: 'Pecho avanzado 100m', d: '100m pecho tecnica depurada' },
+      { n: 'Serie 8x25 velocidad', d: '8 reps 25m maxima velocidad' },
+      { n: 'Subacuatico 15 metros', d: 'Deslizar bajo el agua 15m' },
+      { n: 'Intervalos cronometrados', d: 'Cumplir tiempos de salida' }
+    ]
+  },
+  'PEQ': {
+    nombre: 'Pre-Equipo',
+    color: '#a855f7',
+    grad: '#7c3aed,#a855f7',
+    bg: 'rgba(168,85,247,0.1)',
+    border: 'rgba(168,85,247,0.4)',
+    total: 10,
+    ejercicios: [
+      { n: 'Crol ritmo de carrera', d: 'Ritmo de competencia 100m' },
+      { n: 'Viraje competitivo crol', d: 'Voltereta rapida y salida de pared' },
+      { n: 'Salida de plataforma', d: 'Salida oficial desde plataforma' },
+      { n: 'Serie 10x100 progresiva', d: 'Aumentar velocidad cada rep' },
+      { n: 'Combinado 200 metros', d: '50c+50e+50p+50m' },
+      { n: 'Tolerancia al lactato', d: '4x200m descanso corto' },
+      { n: 'Llegada a pared', d: 'Toque de pared preciso' },
+      { n: 'Tactica de carrera', d: 'Distribuir energia en 200m+' },
+      { n: 'Aguas abiertas basico', d: 'Avistamiento y drafting' },
+      { n: 'Test de rendimiento', d: 'Cumplir tiempos meta' }
+    ]
+  },
+  'EQ': {
+    nombre: 'Equipo',
+    color: '#ffd700',
+    grad: '#b8860b,#ffd700',
+    bg: 'rgba(255,215,0,0.1)',
+    border: 'rgba(255,215,0,0.4)',
+    total: 10,
+    ejercicios: [
+      { n: 'Start de elite', d: 'Salida con reaccion rapida' },
+      { n: 'Viraje de alta velocidad', d: 'Voltereta sin perdida de impulso' },
+      { n: 'Subacuatico 15m mariposa', d: 'Patada delfin 15m en competencia' },
+      { n: 'Serie velocidad maxima', d: '25m lanzados tiempo record' },
+      { n: 'Combinado 400 metros', d: 'Competencia simulada 400m' },
+      { n: 'Ritmo de competencia', d: 'Ritmo especifico para prueba clave' },
+      { n: 'Estrategia avanzada', d: 'Planificacion parciales 400m+' },
+      { n: 'Aguas abiertas avanzado', d: 'Avistamiento drafting y giros en boya' },
+      { n: 'Test distancia larga', d: '800m o 1500m ritmo controlado' },
+      { n: 'Certificacion final', d: 'Completar todos los ejercicios del nivel' }
+    ]
+  }
+};
+
+var evalState = {
+  nadadorActual: null,
+  esCoach: false
+};
+
+function initEval() {
+  if (!state.user) {
+    alert('Inicia sesion para acceder a la evaluacion.');
+    volverSelector();
+    showCoachLogin();
+    return;
+  }
+  evalState.esCoach = state.user.email === CONFIG.coach;
+  // Mostrar/ocultar botón de agregar
+  var addBtn = document.getElementById('eval-add-btn');
+  if (addBtn) addBtn.style.display = evalState.esCoach ? 'block' : 'none';
+
+  // Mostrar texto descriptivo
+  var infoEl = document.getElementById('eval-info-text');
+  if (infoEl) {
+    infoEl.textContent = evalState.esCoach
+      ? 'Selecciona un nadador para evaluar'
+      : 'Tu progreso en los niveles Laguna Swim';
+  }
+
+  volverListaNadadores();
+}
+
+function volverListaNadadores() {
+  document.getElementById('eval-lista-view').style.display = 'block';
+  document.getElementById('eval-detalle-view').style.display = 'none';
+  evalState.nadadorActual = null;
+  cargarNadadoresEval();
+}
+
+function cargarNadadoresEval() {
+  db.ref('nadadores').once('value').then(function(snap) {
+    var data = snap.val() || {};
+    var keys = Object.keys(data);
+    var listEl = document.getElementById('eval-nadadores-list');
+    var emptyEl = document.getElementById('eval-empty');
+    var emptyMsg = document.getElementById('eval-empty-msg');
+
+    listEl.innerHTML = '';
+
+    // Si no es coach, filtrar solo el nadador del usuario actual
+    var nadadores = [];
+    keys.forEach(function(k) {
+      var nd = data[k];
+      if (evalState.esCoach || (nd.uidPropietario === state.user.uid)) {
+        nadadores.push(Object.assign({ _id: k }, nd));
+      }
+    });
+
+    if (nadadores.length === 0) {
+      emptyEl.style.display = 'block';
+      emptyMsg.textContent = evalState.esCoach
+        ? 'Aun no hay nadadores registrados. Toca "+ Nadador" para empezar.'
+        : 'No estas registrado en el sistema de evaluacion. Pide a Sergio que te de de alta.';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    nadadores.forEach(function(nd) {
+      var ev = EVAL_NIVELES[nd.nivel] || EVAL_NIVELES['NB'];
+      var dominados = Object.values(nd.ejercicios || {}).filter(function(v) { return v === true; }).length;
+      var pct = ev.total > 0 ? Math.round((dominados / ev.total) * 100) : 0;
+      var listo = pct >= 90;
+
+      var card = document.createElement('div');
+      card.className = 'eval-nadador-card';
+      card.innerHTML =
+        '<div style="display:flex;align-items:center;gap:0.7rem">' +
+          '<div class="eval-nivel-badge eval-nivel-' + nd.nivel + '">' + nd.nivel + '</div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-weight:800;font-size:0.92rem">' + escapeHtml(nd.nombre) + '</div>' +
+            '<div style="font-size:0.68rem;color:var(--accent-soft)">' + nd.edad + ' anos - ' + ev.nombre + '</div>' +
+          '</div>' +
+          (listo ? '<div class="eval-listo-badge">LISTO</div>' : '') +
+          '<div style="text-align:right;flex-shrink:0">' +
+            '<div style="font-size:1rem;font-weight:800;color:' + ev.color + '">' + pct + '%</div>' +
+            '<div style="font-size:0.55rem;color:var(--accent-soft)">' + dominados + '/' + ev.total + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="eval-progress-bar">' +
+          '<div class="eval-progress-fill" style="width:' + pct + '%;background:linear-gradient(90deg,' + ev.grad + ')"></div>' +
+        '</div>';
+
+      (function(id, ndata) {
+        card.addEventListener('click', function() {
+          abrirDetalleNadador(id, ndata);
+        });
+      })(nd._id, nd);
+
+      listEl.appendChild(card);
+    });
+  });
+}
+
+function abrirAltaNadador() {
+  if (!evalState.esCoach) return;
+  document.getElementById('modal-alta-nadador').classList.remove('modal-hidden');
+}
+function cerrarAltaNadador() {
+  document.getElementById('modal-alta-nadador').classList.add('modal-hidden');
+  document.getElementById('ev-nombre').value = '';
+  document.getElementById('ev-edad').value = '';
+}
+
+function guardarNadador() {
+  if (!evalState.esCoach) { alert('Solo el entrenador puede registrar.'); return; }
+  var nombre = (document.getElementById('ev-nombre').value || '').trim();
+  var edad = parseInt(document.getElementById('ev-edad').value);
+  var nivel = document.getElementById('ev-nivel').value;
+  if (!nombre || !edad) { alert('Completa nombre y edad'); return; }
+
+  var id = 'n' + Date.now();
+  db.ref('nadadores/' + id).set({
+    id: id,
+    nombre: nombre,
+    edad: edad,
+    nivel: nivel,
+    ejercicios: {},
+    fechaAlta: new Date().toISOString(),
+    creadoPor: state.user.email,
+    uidPropietario: '' // Sergio puede vincular después si quiere
+  }).then(function() {
+    cerrarAltaNadador();
+    cargarNadadoresEval();
+  }).catch(function(e) {
+    alert('Error: ' + e.message);
+  });
+}
+
+function abrirDetalleNadador(id, nadador) {
+  evalState.nadadorActual = { id: id, data: nadador };
+  document.getElementById('eval-lista-view').style.display = 'none';
+  document.getElementById('eval-detalle-view').style.display = 'block';
+  renderDetalleNadador();
+}
+
+function renderDetalleNadador() {
+  if (!evalState.nadadorActual) return;
+  var id = evalState.nadadorActual.id;
+  var nd = evalState.nadadorActual.data;
+  var ev = EVAL_NIVELES[nd.nivel] || EVAL_NIVELES['NB'];
+  var dominados = Object.values(nd.ejercicios || {}).filter(function(v) { return v === true; }).length;
+  var pct = ev.total > 0 ? Math.round((dominados / ev.total) * 100) : 0;
+  var listo = pct >= 90;
+
+  // Header del nadador
+  var header = document.getElementById('eval-nadador-header');
+  header.innerHTML =
+    '<div style="background:' + ev.bg + ';border:1px solid ' + ev.border + ';border-radius:16px;padding:1rem;margin-bottom:0.8rem">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">' +
+        '<div>' +
+          '<div style="font-size:1.1rem;font-weight:800">' + escapeHtml(nd.nombre) + '</div>' +
+          '<div style="font-size:0.7rem;color:var(--accent-soft)">' + nd.edad + ' anos - ' + ev.nombre + '</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-size:1.4rem;font-weight:800;color:' + ev.color + '">' + pct + '%</div>' +
+          '<div style="font-size:0.6rem;color:var(--accent-soft)">' + dominados + '/' + ev.total + ' ejercicios</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="eval-progress-bar" style="height:8px">' +
+        '<div class="eval-progress-fill" style="width:' + pct + '%;background:linear-gradient(90deg,' + ev.grad + ')"></div>' +
+      '</div>' +
+    '</div>';
+
+  // Sección de diploma
+  var dipSection = document.getElementById('eval-diploma-section');
+  if (listo) {
+    dipSection.innerHTML =
+      '<div class="eval-diploma-card">' +
+        '<div style="font-size:1.5rem;margin-bottom:0.3rem">&#127942;</div>' +
+        '<div style="font-size:0.95rem;font-weight:800;color:var(--gold);margin-bottom:0.2rem">¡Diploma disponible!</div>' +
+        '<div style="font-size:0.7rem;color:#a08020;margin-bottom:0.6rem">' +
+          escapeHtml(nd.nombre) + ' completo el ' + pct + '% del ' + ev.nombre + '<br>' +
+          'Costo del diploma oficial: $200 MXN' +
+        '</div>' +
+        '<button class="btn btn-gold" onclick="solicitarDiplomaEval()" style="margin:0;font-size:0.85rem">' +
+          'Solicitar diploma por WhatsApp' +
+        '</button>' +
+      '</div>';
+  } else {
+    dipSection.innerHTML =
+      '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:0.8rem;text-align:center;margin:0.5rem 0">' +
+        '<div style="font-size:0.72rem;color:var(--accent-soft)">Faltan <strong style="color:#fff">' + (ev.total - dominados) + ' ejercicios</strong> para llegar al 90% (' + Math.ceil(ev.total * 0.9) + '/' + ev.total + ')</div>' +
+      '</div>';
+  }
+
+  // Lista de ejercicios
+  var listEl = document.getElementById('eval-ejercicios-list');
+  listEl.innerHTML = '';
+  ev.ejercicios.forEach(function(ejer, idx) {
+    var dominado = (nd.ejercicios || {})[idx] === true;
+    var row = document.createElement('div');
+    row.className = 'ejercicio-row' + (dominado ? ' dominado' : '');
+    row.innerHTML =
+      '<div class="ejercicio-num">' + (dominado ? '&#9989;' : (idx + 1)) + '</div>' +
+      '<div class="ejercicio-info">' +
+        '<div class="ejercicio-nombre' + (dominado ? ' dominado' : '') + '">' + escapeHtml(ejer.n) + '</div>' +
+        '<div class="ejercicio-desc">' + escapeHtml(ejer.d) + '</div>' +
+      '</div>' +
+      (evalState.esCoach
+        ? '<button class="ejercicio-toggle' + (dominado ? ' dominado' : '') + '" data-idx="' + idx + '">' + (dominado ? 'Dominado' : 'Marcar') + '</button>'
+        : (dominado ? '<div style="font-size:0.62rem;color:var(--success);font-weight:700;padding-top:4px">Dominado</div>' : '')
+      );
+
+    if (evalState.esCoach) {
+      row.querySelector('.ejercicio-toggle').addEventListener('click', function() {
+        toggleEjercicio(idx);
+      });
+    }
+    listEl.appendChild(row);
+  });
+}
+
+function toggleEjercicio(idx) {
+  if (!evalState.esCoach || !evalState.nadadorActual) return;
+  var id = evalState.nadadorActual.id;
+  var actual = (evalState.nadadorActual.data.ejercicios || {})[idx] === true;
+  var nuevo = !actual;
+
+  db.ref('nadadores/' + id + '/ejercicios/' + idx).set(nuevo).then(function() {
+    if (!evalState.nadadorActual.data.ejercicios) evalState.nadadorActual.data.ejercicios = {};
+    evalState.nadadorActual.data.ejercicios[idx] = nuevo;
+    renderDetalleNadador();
+  });
+}
+
+function solicitarDiplomaEval() {
+  if (!evalState.nadadorActual) return;
+  var nd = evalState.nadadorActual.data;
+  var ev = EVAL_NIVELES[nd.nivel] || EVAL_NIVELES['NB'];
+  var dominados = Object.values(nd.ejercicios || {}).filter(function(v) { return v === true; }).length;
+  var pct = Math.round((dominados / ev.total) * 100);
+
+  // 1. Generar lista de ejercicios dominados
+  var listaDominados = [];
+  ev.ejercicios.forEach(function(ejer, idx) {
+    if ((nd.ejercicios || {})[idx] === true) {
+      listaDominados.push((idx + 1) + '. ' + ejer.n);
+    }
+  });
+
+  // 2. Enviar correo con FormSubmit (sin mostrar redirect, con AJAX)
+  enviarCorreoDiploma(nd, ev, pct, dominados, listaDominados);
+
+  // 3. Abrir WhatsApp
+  var msg = 'Hola Sergio! Solicito el Diploma Oficial del Nivel *' + ev.nombre + '* para *' + nd.nombre +
+    '* (' + nd.edad + ' anos), quien completo el *' + pct + '%* (' + dominados + '/' + ev.total + ' ejercicios). ' +
+    'Costo: $200 MXN. Por favor confirmame el metodo de pago. Gracias!';
+  openUrl('https://wa.me/528713164850?text=' + encodeURIComponent(msg));
+}
+
+function enviarCorreoDiploma(nd, ev, pct, dominados, listaDominados) {
+  // FormSubmit usa AJAX endpoint con tu correo
+  var formData = new FormData();
+  formData.append('_subject', 'Solicitud Diploma Laguna Swim - ' + nd.nombre + ' - ' + ev.nombre);
+  formData.append('_template', 'box');
+  formData.append('_captcha', 'false');
+  formData.append('Nadador', nd.nombre);
+  formData.append('Edad', nd.edad + ' anos');
+  formData.append('Nivel completado', ev.nombre + ' (' + nd.nivel + ')');
+  formData.append('Porcentaje', pct + '%');
+  formData.append('Ejercicios dominados', dominados + ' de ' + ev.total);
+  formData.append('Fecha de solicitud', new Date().toLocaleString('es-MX'));
+  formData.append('Solicitado por', state.user.email);
+  formData.append('Lista de ejercicios dominados', listaDominados.length > 0 ? listaDominados.join('\n') : 'Ninguno aun');
+  formData.append('Costo del diploma', '$200 MXN');
+
+  // Endpoint AJAX de FormSubmit (no redirige al usuario)
+  fetch('https://formsubmit.co/ajax/' + CONFIG.coach, {
+    method: 'POST',
+    body: formData
+  }).then(function(r) {
+    return r.json();
+  }).then(function(data) {
+    if (data.success === 'true' || data.success === true) {
+      console.log('Correo enviado a Sergio');
+    }
+  }).catch(function(e) {
+    // Si falla el correo, no detenemos al usuario (WhatsApp ya se abrió)
+    console.warn('No se pudo enviar correo:', e.message);
+  });
 }
 </script>
 </body>
