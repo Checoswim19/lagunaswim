@@ -19,6 +19,9 @@
 :root {
   --bg-deep: #050f1c;
   --bg-main: #071e38;
+  --bg-team-top: #0a2956;
+  --bg-team-mid: #1e5a9e;
+  --bg-team-low: #6bb8e8;
   --bg-card: rgba(255,255,255,0.06);
   --bg-card-border: rgba(255,255,255,0.10);
   --accent: #38bdf8;
@@ -30,15 +33,20 @@
   --danger: #ef4444;
   --purple: #a855f7;
   --bnav-h: 65px;
+  --spons-h: 48px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; overscroll-behavior: none; }
+html {
+  background: var(--bg-team-top);
+}
 body {
   font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  background: var(--bg-main);
+  background: linear-gradient(180deg, var(--bg-team-top) 0%, var(--bg-team-mid) 60%, var(--bg-team-low) 100%);
+  background-attachment: fixed;
   color: #fff;
   min-height: 100vh;
-  padding-bottom: var(--bnav-h);
+  padding-bottom: calc(var(--bnav-h) + var(--spons-h));
 }
 /* ====== TABS / NAV ====== */
 .bnav {
@@ -869,7 +877,7 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 }
 .fab-btn {
   position: fixed;
-  bottom: calc(var(--bnav-h) + 16px);
+  bottom: calc(var(--bnav-h) + var(--spons-h) + 16px);
   right: 16px;
   width: 56px; height: 56px;
   border-radius: 50%;
@@ -970,6 +978,42 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   background: var(--accent);
   width: 18px;
   border-radius: 3px;
+}
+/* ====== BARRA FIJA DE PATROCINADORES ====== */
+.spons-bar {
+  position: fixed;
+  bottom: var(--bnav-h);
+  left: 0; right: 0;
+  height: var(--spons-h);
+  background: rgba(255,255,255,0.97);
+  border-top: 1px solid rgba(56,189,248,0.2);
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  z-index: 99;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
+}
+.spons-bar-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  width: 100%;
+  height: 100%;
+}
+.spons-bar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.spons-bar-item:active { background: rgba(56,189,248,0.1); }
+.spons-bar-item img {
+  max-height: 32px;
+  max-width: 100%;
+  object-fit: contain;
 }
 /* ====== EVALUACIÓN DE NIVELES ====== */
 .wk-mode-orange {
@@ -1197,6 +1241,11 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 </head>
 <body>
 
+<!-- ============ BARRA FIJA DE PATROCINADORES ============ -->
+<div class="spons-bar" id="spons-bar">
+  <div class="spons-bar-inner" id="spons-bar-inner"></div>
+</div>
+
 <!-- ============ BOTTOM NAV ============ -->
 <nav class="bnav">
   <button class="bnav-item active" onclick="showTab('timer')" id="nav-timer">
@@ -1301,12 +1350,7 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
       </div>
     </div>
 
-    <!-- Carrusel de patrocinadores -->
-    <div class="spons-wrap">
-      <div class="spons-label">PATROCINADORES</div>
-      <div class="spons-track" id="spons-track"></div>
-      <div class="spons-dots" id="spons-dots"></div>
-    </div>
+    <!-- Carrusel grande removido - ahora hay barra fija abajo -->
   </div>
 
   <!-- Selección de rol -->
@@ -5140,84 +5184,32 @@ var sponsState = {
 };
 
 function buildSponsCarousel() {
-  var track = document.getElementById('spons-track');
-  var dots = document.getElementById('spons-dots');
-  if (!track || !dots) return;
+  // Construir barra fija con los 4 logos visibles siempre
+  var barInner = document.getElementById('spons-bar-inner');
+  if (!barInner) return;
 
   if (PATROCINADORES.length === 0) {
-    track.parentElement.style.display = 'none';
+    document.getElementById('spons-bar').style.display = 'none';
+    document.body.style.paddingBottom = 'var(--bnav-h)';
     return;
   }
 
-  track.innerHTML = '';
-  dots.innerHTML = '';
-
-  PATROCINADORES.forEach(function(p, i) {
-    // Slide
-    var slide = document.createElement('div');
-    slide.className = 'spons-slide' + (i === 0 ? ' active' : '');
-    slide.setAttribute('data-idx', i);
-    slide.innerHTML = '<img src="' + p.logo + '" alt="' + escapeHtml(p.nombre) + '" loading="lazy">';
-    slide.addEventListener('click', function() {
+  barInner.innerHTML = '';
+  PATROCINADORES.forEach(function(p) {
+    var item = document.createElement('div');
+    item.className = 'spons-bar-item';
+    item.innerHTML = '<img src="' + p.logo + '" alt="' + escapeHtml(p.nombre) + '" loading="lazy">';
+    item.addEventListener('click', function() {
       if (p.link) openUrl(p.link);
     });
-    track.appendChild(slide);
-
-    // Dot (solo si hay más de uno)
-    if (PATROCINADORES.length > 1) {
-      var dot = document.createElement('button');
-      dot.className = 'spons-dot' + (i === 0 ? ' active' : '');
-      dot.setAttribute('data-idx', i);
-      (function(idx) {
-        dot.addEventListener('click', function(e) {
-          e.stopPropagation();
-          showSpons(idx);
-          // Reiniciar timer
-          stopSpons();
-          startSpons();
-        });
-      })(i);
-      dots.appendChild(dot);
-    }
-  });
-
-  // Pausar al pasar el dedo (móvil) o el mouse (desktop)
-  track.addEventListener('mouseenter', function() { sponsState.paused = true; });
-  track.addEventListener('mouseleave', function() { sponsState.paused = false; });
-  track.addEventListener('touchstart', function() { sponsState.paused = true; });
-  track.addEventListener('touchend', function() {
-    setTimeout(function() { sponsState.paused = false; }, 500);
-  });
-
-  startSpons();
-}
-
-function showSpons(idx) {
-  sponsState.current = idx;
-  document.querySelectorAll('.spons-slide').forEach(function(s) {
-    s.classList.toggle('active', parseInt(s.getAttribute('data-idx')) === idx);
-  });
-  document.querySelectorAll('.spons-dot').forEach(function(d) {
-    d.classList.toggle('active', parseInt(d.getAttribute('data-idx')) === idx);
+    barInner.appendChild(item);
   });
 }
 
-function startSpons() {
-  if (PATROCINADORES.length <= 1) return;
-  stopSpons();
-  sponsState.interval = setInterval(function() {
-    if (sponsState.paused) return;
-    var next = (sponsState.current + 1) % PATROCINADORES.length;
-    showSpons(next);
-  }, 3500);
-}
-
-function stopSpons() {
-  if (sponsState.interval) {
-    clearInterval(sponsState.interval);
-    sponsState.interval = null;
-  }
-}
+// Funciones del carrusel anterior (ya no se usan pero las dejo por compatibilidad)
+function showSpons(idx) { /* deprecated */ }
+function startSpons() { /* deprecated */ }
+function stopSpons() { /* deprecated */ }
 
 // Inicializar carrusel
 buildSponsCarousel();
