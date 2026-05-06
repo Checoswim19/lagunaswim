@@ -995,8 +995,8 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 }
 .spons-bar-inner {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.4rem;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.25rem;
   width: 100%;
   height: 100%;
 }
@@ -1005,13 +1005,14 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
+  padding: 3px;
+  border-radius: 5px;
   transition: background 0.15s;
+  min-width: 0;
 }
 .spons-bar-item:active { background: rgba(56,189,248,0.1); }
 .spons-bar-item img {
-  max-height: 32px;
+  max-height: 30px;
   max-width: 100%;
   object-fit: contain;
 }
@@ -5174,6 +5175,16 @@ var PATROCINADORES = [
     logo: 'https://res.cloudinary.com/dg84htrzg/image/upload/v1776700825/logo_laguna_swim_rym5fq.jpg',
     nombre: 'Laguna Swim',
     link: 'https://lagunaswim.net'
+  },
+  {
+    logo: 'https://res.cloudinary.com/dg84htrzg/image/upload/v1778099160/rincon_tk62uj.jpg',
+    nombre: 'Rincon de la Noa',
+    link: ''
+  },
+  {
+    logo: 'https://res.cloudinary.com/dg84htrzg/image/upload/v1778099160/margo_uvgdwf.jpg',
+    nombre: 'Margo Sublimacion y Bordados',
+    link: ''
   }
 ];
 
@@ -5199,9 +5210,13 @@ function buildSponsCarousel() {
     var item = document.createElement('div');
     item.className = 'spons-bar-item';
     item.innerHTML = '<img src="' + p.logo + '" alt="' + escapeHtml(p.nombre) + '" loading="lazy">';
-    item.addEventListener('click', function() {
-      if (p.link) openUrl(p.link);
-    });
+    if (p.link) {
+      item.addEventListener('click', function() {
+        openUrl(p.link);
+      });
+    } else {
+      item.style.cursor = 'default';
+    }
     barInner.appendChild(item);
   });
 }
