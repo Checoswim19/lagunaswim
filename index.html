@@ -1021,6 +1021,159 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   background: rgba(234,88,12,0.06);
   border: 2px solid rgba(234,88,12,0.3);
 }
+/* ====== PREMIOS LAGUNA SWIM ====== */
+.wk-mode-trophy {
+  background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(184,134,11,0.05));
+  border: 2px solid rgba(255,215,0,0.4);
+}
+.premios-header {
+  background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(184,134,11,0.06));
+  border: 2px solid rgba(255,215,0,0.35);
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.premios-header-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+.premios-header-sub {
+  font-size: 0.7rem;
+  color: #a08020;
+  margin-top: 4px;
+}
+.premios-progreso-card {
+  background: linear-gradient(135deg, rgba(56,189,248,0.08), rgba(56,189,248,0.03));
+  border: 1px solid rgba(56,189,248,0.3);
+  border-radius: 14px;
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+}
+.premios-foto-grande {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  flex-shrink: 0;
+  background: rgba(56,189,248,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.semana-dias-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+  margin: 0.6rem 0;
+}
+.dia-cell {
+  text-align: center;
+  padding: 0.4rem 0;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.dia-cell.entrenado {
+  background: rgba(34,197,94,0.18);
+  border-color: rgba(34,197,94,0.5);
+}
+.dia-cell-name {
+  font-size: 0.6rem;
+  color: var(--accent-soft);
+  font-weight: 700;
+}
+.dia-cell-icon {
+  font-size: 0.95rem;
+  margin-top: 2px;
+}
+.meta-input {
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.78rem;
+  width: 60px;
+  text-align: center;
+}
+.coach-nadador-row {
+  display: flex; align-items: center; gap: 0.7rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.4rem;
+}
+.coach-nadador-info { flex: 1; min-width: 0; }
+.coach-nadador-name { font-size: 0.85rem; font-weight: 700; }
+.coach-nadador-meta { font-size: 0.65rem; color: var(--accent-soft); margin-top: 1px; }
+.logro-row {
+  display: flex; align-items: center; gap: 0.7rem;
+  background: linear-gradient(135deg, rgba(255,215,0,0.06), rgba(255,215,0,0.02));
+  border: 1px solid rgba(255,215,0,0.25);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.4rem;
+}
+.logro-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  width: 40px;
+  text-align: center;
+}
+.logro-info { flex: 1; min-width: 0; }
+.logro-titulo { font-size: 0.85rem; font-weight: 800; color: var(--gold); }
+.logro-detalle { font-size: 0.68rem; color: var(--accent-soft); margin-top: 2px; }
+.logro-fecha { font-size: 0.6rem; color: rgba(255,255,255,0.35); margin-top: 2px; }
+.btn-foto-upload {
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+.btn-vincular {
+  background: rgba(168,85,247,0.15);
+  border: 1px solid rgba(168,85,247,0.4);
+  color: var(--purple);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.autoriz-box {
+  background: rgba(255,215,0,0.06);
+  border: 1px solid rgba(255,215,0,0.25);
+  border-radius: 10px;
+  padding: 0.7rem;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.85);
+  margin: 0.6rem 0;
+}
+.autoriz-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.6rem 0;
+  cursor: pointer;
+}
+.autoriz-checkbox input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
 .eval-nadador-card {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
@@ -2098,6 +2251,14 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         </div>
         <div style="margin-left:auto;color:#ea580c;font-size:1.2rem">&#8250;</div>
       </div>
+      <div onclick="elegirModo('premios')" class="wk-mode-card wk-mode-trophy" style="display:flex;align-items:center;gap:1rem;text-align:left;margin-top:0.6rem">
+        <div style="font-size:2rem">&#127942;</div>
+        <div>
+          <div style="font-size:0.9rem;font-weight:800;color:var(--gold)">Premios Laguna Swim</div>
+          <div style="font-size:0.68rem;color:var(--accent-soft)">Postales por logros + comparte tu progreso <span style="color:var(--success);font-weight:800">- GRATIS</span></div>
+        </div>
+        <div style="margin-left:auto;color:var(--gold);font-size:1.2rem">&#8250;</div>
+      </div>
     </div>
 
     <!-- Modo: Sesión del día -->
@@ -2361,6 +2522,111 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         <div id="eval-ejercicios-list"></div>
       </div>
     </div>
+
+    <!-- Modo: Premios Laguna Swim -->
+    <div id="wk-premios" style="display:none">
+      <button class="eval-back-btn" onclick="volverSelector()">&#8592; Regresar</button>
+
+      <div class="premios-header">
+        <div class="premios-header-title">&#127942; PREMIOS LAGUNA SWIM</div>
+        <div class="premios-header-sub">Postales por logros - Fuertes y Valientes</div>
+      </div>
+
+      <!-- Vista Coach -->
+      <div id="premios-coach-view" style="display:none">
+        <div style="font-size:0.78rem;color:var(--accent-soft);margin-bottom:0.6rem">
+          Configura la meta semanal de cada nadador. Toca un nadador para vincularlo con su cuenta.
+        </div>
+        <div id="coach-nadadores-list"></div>
+        <div id="coach-no-nadadores" style="display:none;text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.82rem">
+          Aun no hay nadadores. Ve a "Evaluacion de niveles" para registrarlos primero.
+        </div>
+      </div>
+
+      <!-- Vista Nadador/Padre -->
+      <div id="premios-nadador-view" style="display:none">
+        <div id="premios-progreso-container"></div>
+        <div id="premios-mis-logros-container" style="margin-top:1rem"></div>
+      </div>
+
+      <!-- Vista visitante sin sesion -->
+      <div id="premios-no-auth" style="display:none;text-align:center;padding:1.5rem">
+        <div style="font-size:2.5rem;margin-bottom:0.5rem">&#128274;</div>
+        <div style="font-size:0.9rem;color:var(--accent);font-weight:700;margin-bottom:0.5rem">Inicia sesion</div>
+        <div style="font-size:0.78rem;color:var(--accent-soft);margin-bottom:1rem">
+          Para ver tus premios necesitas iniciar sesion con tu cuenta de nadador o padre.
+        </div>
+        <button class="btn btn-sky" onclick="showCoachLogin()">Iniciar sesion</button>
+      </div>
+
+      <!-- Vista logros del equipo (todos los padres pueden ver) -->
+      <div id="premios-equipo-section" style="margin-top:1.5rem">
+        <div style="font-size:0.7rem;font-weight:800;letter-spacing:1.5px;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(255,215,0,0.2);padding-bottom:0.3rem">
+          &#127942; LOGROS DEL EQUIPO ESTA SEMANA
+        </div>
+        <div id="logros-equipo-list">
+          <div style="text-align:center;padding:1rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Configurar meta semanal del nadador -->
+<div class="modal-overlay modal-hidden" id="modal-meta-nadador">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-weight:800;font-size:1rem;color:var(--gold)">&#127919; Configurar nadador</div>
+      <button onclick="cerrarMetaNadador()" style="background:none;border:none;color:var(--accent-soft);font-size:1.3rem;cursor:pointer">&#10005;</button>
+    </div>
+    <div id="meta-nadador-info" style="margin-bottom:1rem"></div>
+    <label>Meta semanal de entrenamientos</label>
+    <select id="meta-dias-semana">
+      <option value="2">2 dias por semana</option>
+      <option value="3">3 dias por semana</option>
+      <option value="4" selected>4 dias por semana</option>
+      <option value="5">5 dias por semana</option>
+      <option value="6">6 dias por semana</option>
+    </select>
+    <label>Vincular a correo (opcional)</label>
+    <input id="meta-correo" placeholder="papa-juan@gmail.com" type="email">
+    <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);margin-bottom:0.6rem">
+      Cuando el padre/nadador inicie sesion con este correo, vera los logros de este nadador.
+    </div>
+    <button class="btn btn-gold" onclick="guardarMetaNadador()">Guardar configuracion</button>
+    <button class="btn btn-gray" onclick="cerrarMetaNadador()">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: Subir foto + autorización -->
+<div class="modal-overlay modal-hidden" id="modal-foto-perfil">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-weight:800;font-size:1rem;color:var(--gold)">&#128247; Foto de perfil</div>
+      <button onclick="cerrarFotoPerfil()" style="background:none;border:none;color:var(--accent-soft);font-size:1.3rem;cursor:pointer">&#10005;</button>
+    </div>
+    <div style="font-size:0.75rem;color:var(--accent-soft);margin-bottom:0.5rem">
+      Sube una foto del nadador. Aparecera en sus postales de logros.
+    </div>
+    <input type="file" id="foto-perfil-input" accept="image/*" onchange="prevFotoPerfil(this)" style="font-size:0.8rem;padding:0.5rem">
+    <div id="foto-perfil-preview" style="margin:0.5rem 0"></div>
+
+    <div class="autoriz-box">
+      <strong style="color:var(--gold)">Autorizacion de uso de imagen</strong><br><br>
+      Autorizo a Laguna Swim International a utilizar la fotografia del nadador en postales digitales que se compartiran dentro de la app del equipo, y reconozco que los miembros podran descargarlas y compartirlas en sus redes sociales personales (WhatsApp, Facebook, Instagram, TikTok) como parte de la celebracion de logros del equipo.<br><br>
+      Esta autorizacion puede revocarse en cualquier momento contactando al entrenador.
+    </div>
+
+    <label class="autoriz-checkbox">
+      <input type="checkbox" id="check-autorizo">
+      <span style="font-size:0.78rem">Acepto y autorizo el uso de la foto en postales del equipo Laguna Swim.</span>
+    </label>
+
+    <div id="foto-perfil-progress" style="display:none;text-align:center;padding:0.6rem;color:var(--accent)">
+      <div class="spinner"></div> Subiendo...
+    </div>
+    <button class="btn btn-gold" id="btn-subir-foto-perfil" onclick="subirFotoPerfil()">Guardar foto</button>
+    <button class="btn btn-gray" onclick="cerrarFotoPerfil()">Cancelar</button>
   </div>
 </div>
 
@@ -3955,7 +4221,7 @@ function selDrillEstilo(estilo, btn) {
 
 function elegirModo(modo) {
   document.getElementById('wk-selector').style.display = 'none';
-  ['diario', 'semanal', 'drills', 'muro', 'eval'].forEach(function(m) {
+  ['diario', 'semanal', 'drills', 'muro', 'eval', 'premios'].forEach(function(m) {
     var el = document.getElementById('wk-' + m);
     if (el) el.style.display = m === modo ? 'block' : 'none';
   });
@@ -3966,6 +4232,10 @@ function elegirModo(modo) {
   // Cargar evaluación al entrar
   if (modo === 'eval') {
     initEval();
+  }
+  // Cargar premios al entrar
+  if (modo === 'premios') {
+    initPremios();
   }
   // Ocultar FABs según el modo
   setTimeout(function() {
@@ -3978,7 +4248,7 @@ function elegirModo(modo) {
 
 function volverSelector() {
   document.getElementById('wk-selector').style.display = 'block';
-  ['wk-diario', 'wk-semanal', 'wk-drills', 'wk-muro', 'wk-eval'].forEach(function(id) {
+  ['wk-diario', 'wk-semanal', 'wk-drills', 'wk-muro', 'wk-eval', 'wk-premios'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -4544,12 +4814,21 @@ function drawDiploma(canvas, datos, W, H) {
   var ctx = canvas.getContext('2d');
 
   function render(logo) {
-    // Fondo gradient
-    var bg = ctx.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, '#041225');
-    bg.addColorStop(1, '#0a2a4a');
+    // Fondo gradient del equipo (azul fuerte → medio → claro)
+    var bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0a2956');
+    bg.addColorStop(0.5, '#1e5a9e');
+    bg.addColorStop(0.85, '#3d7fc4');
+    bg.addColorStop(1, '#5a9fd6');
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
+
+    // Velo oscuro sutil en la parte inferior para legibilidad de firma
+    var velo = ctx.createLinearGradient(0, H * 0.75, 0, H);
+    velo.addColorStop(0, 'rgba(0,0,0,0)');
+    velo.addColorStop(1, 'rgba(0,30,70,0.45)');
+    ctx.fillStyle = velo;
+    ctx.fillRect(0, Math.round(H * 0.75), W, Math.round(H * 0.25));
 
     // Borde dorado externo
     ctx.strokeStyle = '#b8860b';
@@ -4706,25 +4985,26 @@ function drawDiploma(canvas, datos, W, H) {
     ctx.lineTo(W - 50, Math.round(H * 0.848));
     ctx.stroke();
 
-    // Firma izquierda
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    // Firma izquierda - credenciales completas
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
     ctx.font = 'bold ' + Math.round(W * 0.017) + 'px system-ui';
     ctx.textAlign = 'left';
-    ctx.fillText('Sergio Elias Villarreal Limas', 60, Math.round(H * 0.893));
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    ctx.font = Math.round(W * 0.014) + 'px system-ui';
-    ctx.fillText('Entrenador - Laguna Swim International', 60, Math.round(H * 0.921));
-    ctx.fillText('Mas de 30 anos de experiencia en natacion de elite', 60, Math.round(H * 0.949));
+    ctx.fillText('Sergio Elias Villarreal Limas', 60, Math.round(H * 0.875));
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = Math.round(W * 0.0125) + 'px system-ui';
+    ctx.fillText('Licenciado en Acondicionamiento Fisico y Recreacion', 60, Math.round(H * 0.902));
+    ctx.fillText('Nivel 4 American Swimming Coach', 60, Math.round(H * 0.928));
+    ctx.fillText('Director Laguna Swim International', 60, Math.round(H * 0.954));
 
     // Lado derecho
     ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
     ctx.font = Math.round(W * 0.014) + 'px system-ui';
     ctx.fillText('Emitido: ' + datos.fecha, W - 60, Math.round(H * 0.893));
-    ctx.fillStyle = '#38bdf8';
+    ctx.fillStyle = '#7dd3fc';
     ctx.font = 'bold ' + Math.round(W * 0.014) + 'px system-ui';
     ctx.fillText('lagunaswim.net', W - 60, Math.round(H * 0.921));
-    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
     ctx.font = Math.round(W * 0.012) + 'px system-ui';
     var folio = 'LS-' + datos.dist + String(datos.style || '').substring(0, 2).toUpperCase() + '-' + String(Date.now()).slice(-6);
     ctx.fillText('Folio: ' + folio, W - 60, Math.round(H * 0.949));
@@ -5666,8 +5946,11 @@ function renderDetalleNadador() {
           escapeHtml(nd.nombre) + ' completo el ' + pct + '% del ' + ev.nombre + '<br>' +
           'Costo del diploma oficial: $200 MXN' +
         '</div>' +
+        '<button class="btn btn-sky" onclick="verDiplomaEval()" style="margin:0 0 0.4rem;font-size:0.82rem">' +
+          'Ver vista previa del diploma' +
+        '</button>' +
         '<button class="btn btn-gold" onclick="solicitarDiplomaEval()" style="margin:0;font-size:0.85rem">' +
-          'Solicitar diploma por WhatsApp' +
+          'Solicitar diploma oficial por WhatsApp' +
         '</button>' +
       '</div>';
   } else {
@@ -6249,6 +6532,836 @@ auth.onAuthStateChanged(function(u) {
     if (b2) b2.style.display = esCoach ? 'block' : 'none';
   }, 200);
 });
+
+// ============================================================
+// ============== PREMIOS LAGUNA SWIM ========================
+// ============================================================
+
+var premios = {
+  nadadorActual: null,
+  fotoBase64: null,
+  fotoType: null,
+  metaNadadorActual: null
+};
+
+function initPremios() {
+  // Detectar quién entra
+  if (!state.user) {
+    document.getElementById('premios-coach-view').style.display = 'none';
+    document.getElementById('premios-nadador-view').style.display = 'none';
+    document.getElementById('premios-no-auth').style.display = 'block';
+    cargarLogrosEquipo(); // los logros del equipo se ven sin sesión
+    return;
+  }
+
+  document.getElementById('premios-no-auth').style.display = 'none';
+  var esCoach = state.user.email === CONFIG.coach;
+
+  if (esCoach) {
+    document.getElementById('premios-coach-view').style.display = 'block';
+    document.getElementById('premios-nadador-view').style.display = 'none';
+    cargarNadadoresCoach();
+  } else {
+    document.getElementById('premios-coach-view').style.display = 'none';
+    document.getElementById('premios-nadador-view').style.display = 'block';
+    cargarVistaNadador();
+  }
+
+  cargarLogrosEquipo();
+  // Trigger automático: revisar si hay logros pendientes de calcular esta semana
+  procesarLogrosSemana();
+}
+
+// ===== VISTA COACH =====
+function cargarNadadoresCoach() {
+  db.ref('nadadores').once('value').then(function(snap) {
+    var lista = document.getElementById('coach-nadadores-list');
+    var empty = document.getElementById('coach-no-nadadores');
+    var data = snap.val() || {};
+    var keys = Object.keys(data);
+
+    if (keys.length === 0) {
+      lista.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    var nadadores = keys.map(function(k) { return Object.assign({ _id: k }, data[k]); });
+    nadadores.sort(function(a, b) { return (a.nombre || '').localeCompare(b.nombre || ''); });
+
+    lista.innerHTML = '';
+    nadadores.forEach(function(n) {
+      var meta = n.metaSemanal || 4;
+      var vinculado = n.correoVinculado ? '✓ ' + n.correoVinculado : 'sin vincular';
+      var fotoUrl = n.fotoUrl;
+      var fotoHtml = fotoUrl
+        ? '<img src="' + fotoUrl + '" style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0">'
+        : '<div style="width:38px;height:38px;border-radius:50%;background:rgba(168,85,247,0.2);color:var(--purple);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">' + (n.nombre || '?').charAt(0).toUpperCase() + '</div>';
+
+      var row = document.createElement('div');
+      row.className = 'coach-nadador-row';
+      row.innerHTML =
+        fotoHtml +
+        '<div class="coach-nadador-info">' +
+          '<div class="coach-nadador-name">' + escapeHtml(n.nombre) + '</div>' +
+          '<div class="coach-nadador-meta">Meta: ' + meta + '/sem - ' + vinculado + '</div>' +
+        '</div>' +
+        '<button class="btn-vincular" data-id="' + n._id + '">Configurar</button>';
+
+      var btn = row.querySelector('.btn-vincular');
+      btn.addEventListener('click', function() {
+        abrirMetaNadador(n._id, n);
+      });
+      lista.appendChild(row);
+    });
+  });
+}
+
+function abrirMetaNadador(id, nadador) {
+  premios.metaNadadorActual = { id: id, data: nadador };
+  document.getElementById('meta-nadador-info').innerHTML =
+    '<div style="font-size:0.9rem;font-weight:700">' + escapeHtml(nadador.nombre) + '</div>' +
+    '<div style="font-size:0.7rem;color:var(--accent-soft)">' + nadador.edad + ' anos</div>';
+  document.getElementById('meta-dias-semana').value = nadador.metaSemanal || 4;
+  document.getElementById('meta-correo').value = nadador.correoVinculado || '';
+  document.getElementById('modal-meta-nadador').classList.remove('modal-hidden');
+}
+function cerrarMetaNadador() {
+  document.getElementById('modal-meta-nadador').classList.add('modal-hidden');
+  premios.metaNadadorActual = null;
+}
+
+function guardarMetaNadador() {
+  if (!premios.metaNadadorActual) return;
+  var id = premios.metaNadadorActual.id;
+  var meta = parseInt(document.getElementById('meta-dias-semana').value);
+  var correo = document.getElementById('meta-correo').value.trim().toLowerCase();
+  var updates = { metaSemanal: meta };
+  if (correo) updates.correoVinculado = correo;
+  db.ref('nadadores/' + id).update(updates).then(function() {
+    cerrarMetaNadador();
+    cargarNadadoresCoach();
+  });
+}
+
+// ===== VISTA NADADOR/PADRE =====
+function cargarVistaNadador() {
+  // Buscar el nadador vinculado al correo del usuario actual
+  var correo = state.user.email.toLowerCase();
+  db.ref('nadadores').orderByChild('correoVinculado').equalTo(correo).once('value').then(function(snap) {
+    var cont = document.getElementById('premios-progreso-container');
+    var logrosCont = document.getElementById('premios-mis-logros-container');
+
+    if (!snap.exists()) {
+      cont.innerHTML =
+        '<div style="text-align:center;padding:1.5rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:14px">' +
+          '<div style="font-size:2rem;margin-bottom:0.5rem">&#127919;</div>' +
+          '<div style="font-size:0.88rem;font-weight:700;color:var(--accent);margin-bottom:0.4rem">Aun no estas vinculado</div>' +
+          '<div style="font-size:0.72rem;color:var(--accent-soft);line-height:1.5">' +
+            'Pide a Sergio que vincule tu correo (' + escapeHtml(correo) + ') con tu nadador para ver tu progreso aqui.' +
+          '</div>' +
+        '</div>';
+      logrosCont.innerHTML = '';
+      return;
+    }
+
+    var nadadorId, nadador;
+    snap.forEach(function(child) {
+      nadadorId = child.key;
+      nadador = child.val();
+    });
+    premios.nadadorActual = { id: nadadorId, data: nadador };
+
+    renderProgresoNadador(nadadorId, nadador);
+    cargarMisLogros(nadadorId);
+  });
+}
+
+function renderProgresoNadador(nadadorId, nadador) {
+  var cont = document.getElementById('premios-progreso-container');
+  var meta = nadador.metaSemanal || 4;
+  var fotoUrl = nadador.fotoUrl;
+  var fotoHtml = fotoUrl
+    ? '<img class="premios-foto-grande" src="' + fotoUrl + '" alt="">'
+    : '<div class="premios-foto-grande">' + (nadador.nombre || '?').charAt(0).toUpperCase() + '</div>';
+
+  // Obtener sesiones de la semana actual
+  var lunes = getLunes(0);
+  var diasEntrenados = {};
+  var promesas = [];
+  for (var i = 0; i < 7; i++) {
+    var dia = new Date(lunes);
+    dia.setDate(lunes.getDate() + i);
+    var key = fmtFechaYMD(dia);
+    promesas.push(
+      (function(k, idx) {
+        return db.ref('sesiones/' + k).once('value').then(function(s) {
+          if (!s.exists()) return;
+          // Buscar si existe sesión de este nadador
+          s.forEach(function(child) {
+            var sesion = child.val();
+            // Match por nadadorId si existe, o por correo si no
+            if (sesion.nadadorId === nadadorId || sesion.email === state.user.email) {
+              diasEntrenados[idx] = true;
+            }
+          });
+        });
+      })(key, i)
+    );
+  }
+
+  Promise.all(promesas).then(function() {
+    var totalEntrenamientos = Object.keys(diasEntrenados).length;
+    var pct = Math.round((totalEntrenamientos / meta) * 100);
+    if (pct > 100) pct = 100;
+    var cumplio = totalEntrenamientos >= meta;
+
+    var diasNombres = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+    var diasGridHtml = '';
+    for (var i = 0; i < 7; i++) {
+      var entrenado = diasEntrenados[i];
+      diasGridHtml += '<div class="dia-cell' + (entrenado ? ' entrenado' : '') + '">' +
+        '<div class="dia-cell-name">' + diasNombres[i] + '</div>' +
+        '<div class="dia-cell-icon">' + (entrenado ? '&#9989;' : '&#9675;') + '</div>' +
+      '</div>';
+    }
+
+    var fotoUploadBtn = !nadador.fotoUrl
+      ? '<button class="btn-foto-upload" onclick="abrirFotoPerfil()">&#128247; Subir foto del nadador</button>'
+      : '';
+
+    cont.innerHTML =
+      '<div class="premios-progreso-card">' +
+        '<div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.5rem">' +
+          fotoHtml +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-size:1rem;font-weight:800">' + escapeHtml(nadador.nombre) + '</div>' +
+            '<div style="font-size:0.72rem;color:var(--accent-soft)">' + nadador.edad + ' anos - ' + (EVAL_NIVELES[nadador.nivel] ? EVAL_NIVELES[nadador.nivel].nombre : nadador.nivel) + '</div>' +
+            '<div style="font-size:0.7rem;color:var(--gold);margin-top:3px;font-weight:700">' +
+              'Meta semanal: ' + meta + ' entrenamientos' +
+            '</div>' +
+          '</div>' +
+          (cumplio
+            ? '<div class="eval-listo-badge">CUMPLIDO</div>'
+            : '<div style="font-size:1.4rem;font-weight:800;color:var(--accent)">' + totalEntrenamientos + '/' + meta + '</div>')+
+        '</div>' +
+        '<div class="semana-dias-grid">' + diasGridHtml + '</div>' +
+        (cumplio
+          ? '<div style="text-align:center;font-size:0.8rem;color:var(--success);font-weight:700;margin-top:0.4rem">&#127881; Meta semanal cumplida!</div>'
+          : '<div style="text-align:center;font-size:0.72rem;color:var(--accent-soft)">Faltan ' + (meta - totalEntrenamientos) + ' entrenamiento' + (meta - totalEntrenamientos === 1 ? '' : 's') + ' esta semana</div>') +
+        fotoUploadBtn +
+      '</div>';
+  });
+}
+
+function cargarMisLogros(nadadorId) {
+  db.ref('logros').orderByChild('nadadorId').equalTo(nadadorId).once('value').then(function(snap) {
+    var cont = document.getElementById('premios-mis-logros-container');
+    var logros = [];
+    if (snap.exists()) {
+      snap.forEach(function(child) {
+        logros.push(Object.assign({ _id: child.key }, child.val()));
+      });
+    }
+    logros.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+
+    var html =
+      '<div style="font-size:0.7rem;font-weight:800;letter-spacing:1.5px;color:var(--accent);margin-bottom:0.5rem;border-bottom:1px solid rgba(56,189,248,0.2);padding-bottom:0.3rem">' +
+        '&#127942; MIS LOGROS' +
+      '</div>';
+
+    if (logros.length === 0) {
+      html += '<div style="text-align:center;padding:1rem;color:var(--accent-soft);font-size:0.78rem">' +
+        'Aun no hay logros. Sigue entrenando y aparecean aqui!' +
+      '</div>';
+    } else {
+      logros.forEach(function(l) {
+        html += renderLogroRow(l);
+      });
+    }
+    cont.innerHTML = html;
+  });
+}
+
+function renderLogroRow(logro) {
+  var iconos = {
+    asistencia: '&#127942;',
+    mejora_tiempo: '&#9889;',
+    actitud: '&#11088;',
+    competencia: '&#127754;'
+  };
+  var titulos = {
+    asistencia: 'Meta Semanal Cumplida',
+    mejora_tiempo: 'Mejora de Tiempo',
+    actitud: 'Mejor Actitud de la Semana',
+    competencia: 'Represento al Equipo'
+  };
+  var fecha = logro.timestamp ? new Date(logro.timestamp).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  var detalle = '';
+  if (logro.tipo === 'asistencia' && logro.detalle) {
+    detalle = logro.detalle.cumplio + '/' + logro.detalle.meta + ' entrenamientos en semana ' + (logro.semana || '');
+  } else if (logro.tipo === 'mejora_tiempo' && logro.detalle) {
+    detalle = logro.detalle.distancia + 'm ' + logro.detalle.estilo + ': ' + logro.detalle.antes + ' → ' + logro.detalle.ahora;
+  }
+
+  return '<div class="logro-row">' +
+    '<div class="logro-icon">' + (iconos[logro.tipo] || '&#127942;') + '</div>' +
+    '<div class="logro-info">' +
+      '<div class="logro-titulo">' + (titulos[logro.tipo] || 'Logro') + '</div>' +
+      (detalle ? '<div class="logro-detalle">' + escapeHtml(detalle) + '</div>' : '') +
+      '<div class="logro-fecha">' + fecha + '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// ===== LOGROS DEL EQUIPO (visible para todos) =====
+function cargarLogrosEquipo() {
+  var lista = document.getElementById('logros-equipo-list');
+  if (!lista) return;
+
+  // Solo logros de la última semana
+  var unaSemanaAtras = Date.now() - 7 * 86400000;
+  db.ref('logros').orderByChild('timestamp').startAt(unaSemanaAtras).once('value').then(function(snap) {
+    var logros = [];
+    if (snap.exists()) {
+      snap.forEach(function(child) {
+        logros.push(Object.assign({ _id: child.key }, child.val()));
+      });
+    }
+    logros.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+
+    if (logros.length === 0) {
+      lista.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--accent-soft);font-size:0.78rem">' +
+        'Aun no hay logros esta semana. Quien sera el primero?' +
+      '</div>';
+      return;
+    }
+
+    var html = '';
+    logros.slice(0, 20).forEach(function(l) {
+      var iconos = {
+        asistencia: '&#127942;',
+        mejora_tiempo: '&#9889;',
+        actitud: '&#11088;',
+        competencia: '&#127754;'
+      };
+      var titulos = {
+        asistencia: 'cumplio su meta semanal',
+        mejora_tiempo: 'mejoro su tiempo',
+        actitud: 'mejor actitud de la semana',
+        competencia: 'represento al equipo'
+      };
+      html +=
+        '<div class="logro-row">' +
+          '<div class="logro-icon">' + (iconos[l.tipo] || '&#127942;') + '</div>' +
+          '<div class="logro-info">' +
+            '<div class="logro-titulo" style="font-size:0.78rem">' + escapeHtml(l.nadadorNombre || 'Un nadador') + '</div>' +
+            '<div class="logro-detalle">' + (titulos[l.tipo] || 'gano un logro') + '</div>' +
+          '</div>' +
+        '</div>';
+    });
+    lista.innerHTML = html;
+  });
+}
+
+// ===== DETECCIÓN AUTOMÁTICA DE LOGROS =====
+function getNumeroSemana(date) {
+  var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  var dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  var weekNum = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return d.getUTCFullYear() + '-W' + String(weekNum).padStart(2, '0');
+}
+
+function procesarLogrosSemana() {
+  // Solo procesar si es domingo
+  var ahora = new Date();
+  if (ahora.getDay() !== 0) return;
+
+  var hoy = fmtFechaYMD(ahora);
+  // Verificar si ya procesamos hoy (cache local)
+  var ultimaProcesada = localStorage.getItem('logros_procesados');
+  if (ultimaProcesada === hoy) return;
+
+  // Calcular logros de la semana que acaba de terminar (lunes a sábado)
+  var sabado = new Date(ahora);
+  sabado.setDate(ahora.getDate() - 1); // ayer
+  var lunesPasado = new Date(sabado);
+  lunesPasado.setDate(sabado.getDate() - 5);
+  var semanaKey = getNumeroSemana(lunesPasado);
+
+  db.ref('nadadores').once('value').then(function(snapN) {
+    if (!snapN.exists()) return;
+    var nadadores = [];
+    snapN.forEach(function(child) {
+      nadadores.push(Object.assign({ _id: child.key }, child.val()));
+    });
+
+    // Obtener todas las sesiones de los 6 días
+    var promesasSesiones = [];
+    for (var i = 0; i < 6; i++) {
+      var dia = new Date(lunesPasado);
+      dia.setDate(lunesPasado.getDate() + i);
+      var key = fmtFechaYMD(dia);
+      promesasSesiones.push(
+        db.ref('sesiones/' + key).once('value').then(function(s) {
+          var lista = [];
+          if (s.exists()) {
+            s.forEach(function(c) {
+              lista.push(Object.assign({ uid: c.key }, c.val()));
+            });
+          }
+          return lista;
+        })
+      );
+    }
+
+    Promise.all(promesasSesiones).then(function(diasSesiones) {
+      // Por cada nadador, contar entrenamientos
+      nadadores.forEach(function(n) {
+        var meta = n.metaSemanal || 4;
+        var entrenamientos = 0;
+        diasSesiones.forEach(function(diaLista) {
+          var entrenoEseDia = diaLista.some(function(s) {
+            return s.nadadorId === n._id || (n.correoVinculado && s.email && s.email.toLowerCase() === n.correoVinculado.toLowerCase());
+          });
+          if (entrenoEseDia) entrenamientos++;
+        });
+
+        if (entrenamientos >= meta) {
+          // Verificar si ya existe el logro de esta semana
+          db.ref('logros').orderByChild('nadadorId').equalTo(n._id).once('value').then(function(s) {
+            var yaExiste = false;
+            if (s.exists()) {
+              s.forEach(function(c) {
+                var l = c.val();
+                if (l.tipo === 'asistencia' && l.semana === semanaKey) {
+                  yaExiste = true;
+                }
+              });
+            }
+            if (!yaExiste) {
+              var key = db.ref('logros').push().key;
+              db.ref('logros/' + key).set({
+                nadadorId: n._id,
+                nadadorNombre: n.nombre,
+                tipo: 'asistencia',
+                semana: semanaKey,
+                detalle: { meta: meta, cumplio: entrenamientos },
+                timestamp: Date.now(),
+                postalGenerada: false,
+                postalUrl: ''
+              });
+            }
+          });
+        }
+      });
+
+      // Marcar que procesamos hoy
+      localStorage.setItem('logros_procesados', hoy);
+    });
+  });
+}
+
+// ===== SUBIR FOTO DE PERFIL DEL NADADOR =====
+function abrirFotoPerfil() {
+  if (!premios.nadadorActual) {
+    alert('Primero el coach debe vincularte con tu nadador.');
+    return;
+  }
+  document.getElementById('modal-foto-perfil').classList.remove('modal-hidden');
+}
+
+function cerrarFotoPerfil() {
+  document.getElementById('modal-foto-perfil').classList.add('modal-hidden');
+  premios.fotoBase64 = null;
+  document.getElementById('foto-perfil-input').value = '';
+  document.getElementById('foto-perfil-preview').innerHTML = '';
+  document.getElementById('check-autorizo').checked = false;
+}
+
+function prevFotoPerfil(input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    alert('La foto es muy grande (max 5MB).');
+    input.value = '';
+    return;
+  }
+  premios.fotoType = file.type;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    premios.fotoBase64 = e.target.result.split(',')[1];
+    document.getElementById('foto-perfil-preview').innerHTML =
+      '<img src="' + e.target.result + '" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px">';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function subirFotoPerfil() {
+  if (!premios.nadadorActual) return;
+  if (!premios.fotoBase64) { alert('Elige una foto primero'); return; }
+  if (!document.getElementById('check-autorizo').checked) {
+    alert('Debes aceptar la autorizacion de uso de imagen.');
+    return;
+  }
+
+  var progress = document.getElementById('foto-perfil-progress');
+  var btn = document.getElementById('btn-subir-foto-perfil');
+  progress.style.display = 'block';
+  btn.style.display = 'none';
+
+  try {
+    var fd = new FormData();
+    fd.append('file', 'data:' + premios.fotoType + ';base64,' + premios.fotoBase64);
+    fd.append('upload_preset', CONFIG.uploadPreset);
+    fd.append('folder', 'laguna_swim/perfiles');
+    var res = await fetch('https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/image/upload', {
+      method: 'POST',
+      body: fd
+    });
+    var data = await res.json();
+    if (!data.secure_url) throw new Error('Error en Cloudinary');
+
+    await db.ref('nadadores/' + premios.nadadorActual.id).update({
+      fotoUrl: data.secure_url,
+      autorizacionFoto: true,
+      fechaAutorizacion: new Date().toISOString()
+    });
+
+    cerrarFotoPerfil();
+    cargarVistaNadador();
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+  progress.style.display = 'none';
+  btn.style.display = 'block';
+}
+
+// ===== ACTUALIZAR registroSesion para incluir nadadorId si está vinculado =====
+var _origGuardarSesion = window.guardarSesion;
+window.guardarSesion = function() {
+  if (!state.user) return;
+  // Buscar nadador vinculado al correo del usuario
+  db.ref('nadadores').orderByChild('correoVinculado').equalTo(state.user.email.toLowerCase()).once('value').then(function(snap) {
+    var nadadorId = null;
+    if (snap.exists()) {
+      snap.forEach(function(child) { nadadorId = child.key; });
+    }
+    // Guardar sesión con nadadorId si existe
+    var dist = parseInt(document.getElementById('reg-distancia').value) || 0;
+    if (!dist) { alert('Pon al menos los metros nadados'); return; }
+    var fecha = document.getElementById('reg-fecha').value || fmtFechaYMD(new Date());
+    var nombre = state.user.displayName || state.user.email.split('@')[0];
+
+    var sesion = {
+      nombre: nombre,
+      email: state.user.email,
+      tiempo: document.getElementById('reg-tiempo').value || '',
+      distancia: dist,
+      fc_avg: parseInt(document.getElementById('reg-fc-avg').value) || 0,
+      fc_max: parseInt(document.getElementById('reg-fc-max').value) || 0,
+      swolf: parseInt(document.getElementById('reg-swolf').value) || 0,
+      pace: document.getElementById('reg-pace').value || '',
+      calorias: parseInt(document.getElementById('reg-calorias').value) || 0,
+      nota: document.getElementById('reg-nota').value || '',
+      timestamp: Date.now()
+    };
+    if (nadadorId) sesion.nadadorId = nadadorId;
+
+    db.ref('sesiones/' + fecha + '/' + state.user.uid).set(sesion).then(function() {
+      cerrarRegistroSesion();
+      ['reg-distancia', 'reg-tiempo', 'reg-fc-avg', 'reg-fc-max', 'reg-swolf', 'reg-pace', 'reg-calorias', 'reg-nota'].forEach(function(f) {
+        var e = document.getElementById(f);
+        if (e) e.value = '';
+      });
+      cargarSesiones();
+    }).catch(function(e) {
+      alert('Error: ' + e.message);
+    });
+  });
+};
+
+// ============================================================
+// ============== DIPLOMA DE EVALUACION =======================
+// ============================================================
+
+// Dibuja diploma de evaluación de niveles (mismo estilo que ranking pero adaptado)
+function drawDiplomaEval(canvas, datos, W, H) {
+  canvas.width = W;
+  canvas.height = H;
+  var ctx = canvas.getContext('2d');
+
+  function render(logo) {
+    // Fondo gradient del equipo (azul fuerte → medio → claro)
+    var bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0a2956');
+    bg.addColorStop(0.5, '#1e5a9e');
+    bg.addColorStop(0.85, '#3d7fc4');
+    bg.addColorStop(1, '#5a9fd6');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Velo oscuro sutil en la parte inferior
+    var velo = ctx.createLinearGradient(0, H * 0.75, 0, H);
+    velo.addColorStop(0, 'rgba(0,0,0,0)');
+    velo.addColorStop(1, 'rgba(0,30,70,0.45)');
+    ctx.fillStyle = velo;
+    ctx.fillRect(0, Math.round(H * 0.75), W, Math.round(H * 0.25));
+
+    // Borde dorado externo
+    ctx.strokeStyle = '#b8860b';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(14, 14, W - 28, H - 28);
+    ctx.strokeStyle = 'rgba(184,134,11,0.4)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(24, 24, W - 48, H - 48);
+
+    // Esquinas decorativas
+    var corner = function(x, y, rx, ry) {
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x, y + ry);
+      ctx.lineTo(x, y);
+      ctx.lineTo(x + rx, y);
+      ctx.stroke();
+    };
+    corner(30, 30, 30, 30);
+    corner(W - 30, 30, -30, 30);
+    corner(30, H - 30, 30, -30);
+    corner(W - 30, H - 30, -30, -30);
+
+    // Logo
+    if (logo) {
+      var ls = Math.round(W * 0.08);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(62 + ls / 2, 42 + ls / 2, ls / 2 + 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.strokeStyle = '#b8860b';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(62 + ls / 2, 42 + ls / 2, ls / 2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(logo, 62, 42, ls, ls);
+      ctx.restore();
+    }
+
+    // Línea separadora superior
+    ctx.strokeStyle = 'rgba(184,134,11,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(50, Math.round(H * 0.2));
+    ctx.lineTo(W - 50, Math.round(H * 0.2));
+    ctx.stroke();
+
+    // Título marca
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = 'bold ' + Math.round(W * 0.026) + 'px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('LAGUNA SWIM INTERNATIONAL', W / 2, Math.round(H * 0.115));
+
+    // Lema
+    ctx.fillStyle = 'rgba(255,215,0,0.85)';
+    ctx.font = 'italic ' + Math.round(W * 0.016) + 'px system-ui';
+    ctx.fillText('"Fuertes y Valientes" - Josue 1:9', W / 2, Math.round(H * 0.155));
+
+    // Título diploma
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold ' + Math.round(W * 0.034) + 'px system-ui';
+    ctx.fillText('CERTIFICADO DE NIVEL', W / 2, Math.round(H * 0.265));
+
+    // "Se otorga a:"
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = Math.round(W * 0.018) + 'px system-ui';
+    ctx.fillText('Se otorga a:', W / 2, Math.round(H * 0.32));
+
+    // Nombre (con auto-fit)
+    var nf = Math.round(W * 0.042);
+    ctx.font = 'bold ' + nf + 'px system-ui';
+    while (ctx.measureText(datos.nombre).width > W - 180 && nf > 16) {
+      nf--;
+      ctx.font = 'bold ' + nf + 'px system-ui';
+    }
+    ctx.fillStyle = '#fff';
+    ctx.fillText(datos.nombre, W / 2, Math.round(H * 0.398));
+
+    // Línea bajo el nombre
+    var nw = ctx.measureText(datos.nombre).width;
+    ctx.strokeStyle = 'rgba(125,211,252,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - nw / 2, Math.round(H * 0.41));
+    ctx.lineTo(W / 2 + nw / 2, Math.round(H * 0.41));
+    ctx.stroke();
+
+    // Texto certificación
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = Math.round(W * 0.019) + 'px system-ui';
+    ctx.fillText('Por haber completado satisfactoriamente el', W / 2, Math.round(H * 0.46));
+
+    // Nombre del nivel
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = 'bold ' + Math.round(W * 0.028) + 'px system-ui';
+    ctx.fillText(datos.nivelNombre, W / 2, Math.round(H * 0.508));
+
+    // Línea separadora
+    ctx.strokeStyle = 'rgba(184,134,11,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(50, Math.round(H * 0.55));
+    ctx.lineTo(W - 50, Math.round(H * 0.55));
+    ctx.stroke();
+
+    // Bloques: ejercicios + porcentaje
+    var bW = Math.round(W * 0.27);
+    var bH = Math.round(H * 0.165);
+    var gap = Math.round(W * 0.042);
+    var tW = 2 * bW + gap;
+    var bx = [(W - tW) / 2, (W - tW) / 2 + bW + gap];
+    var by = Math.round(H * 0.575);
+
+    var blq = function(x, t, v, s, col) {
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.strokeStyle = col + '88';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x + 8, by);
+      ctx.lineTo(x + bW - 8, by);
+      ctx.arcTo(x + bW, by, x + bW, by + 8, 8);
+      ctx.lineTo(x + bW, by + bH - 8);
+      ctx.arcTo(x + bW, by + bH, x + bW - 8, by + bH, 8);
+      ctx.lineTo(x + 8, by + bH);
+      ctx.arcTo(x, by + bH, x, by + bH - 8, 8);
+      ctx.lineTo(x, by + 8);
+      ctx.arcTo(x, by, x + 8, by, 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.font = Math.round(W * 0.014) + 'px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(t, x + bW / 2, by + Math.round(bH * 0.22));
+      ctx.fillStyle = col;
+      ctx.font = 'bold ' + Math.round(W * 0.036) + 'px system-ui';
+      ctx.fillText(v, x + bW / 2, by + Math.round(bH * 0.62));
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.font = Math.round(W * 0.013) + 'px system-ui';
+      ctx.fillText(s, x + bW / 2, by + Math.round(bH * 0.86));
+    };
+
+    blq(bx[0], 'EJERCICIOS DOMINADOS', datos.dominados + '/' + datos.total, 'evaluados por el coach', '#7dd3fc');
+    blq(bx[1], 'PORCENTAJE LOGRADO', datos.pct + '%', datos.edad + ' anos', '#ffd700');
+
+    // Línea inferior
+    ctx.strokeStyle = 'rgba(184,134,11,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(50, Math.round(H * 0.848));
+    ctx.lineTo(W - 50, Math.round(H * 0.848));
+    ctx.stroke();
+
+    // Firma izquierda - credenciales completas
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.font = 'bold ' + Math.round(W * 0.017) + 'px system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('Sergio Elias Villarreal Limas', 60, Math.round(H * 0.875));
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = Math.round(W * 0.0125) + 'px system-ui';
+    ctx.fillText('Licenciado en Acondicionamiento Fisico y Recreacion', 60, Math.round(H * 0.902));
+    ctx.fillText('Nivel 4 American Swimming Coach', 60, Math.round(H * 0.928));
+    ctx.fillText('Director Laguna Swim International', 60, Math.round(H * 0.954));
+
+    // Lado derecho
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.font = Math.round(W * 0.014) + 'px system-ui';
+    ctx.fillText('Emitido: ' + datos.fecha, W - 60, Math.round(H * 0.893));
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = 'bold ' + Math.round(W * 0.014) + 'px system-ui';
+    ctx.fillText('lagunaswim.net', W - 60, Math.round(H * 0.921));
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.font = Math.round(W * 0.012) + 'px system-ui';
+    var folio = 'LSE-' + (datos.nivel || 'NV') + '-' + String(Date.now()).slice(-6);
+    ctx.fillText('Folio: ' + folio, W - 60, Math.round(H * 0.949));
+  }
+
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function() { render(img); };
+  img.onerror = function() { render(null); };
+  img.src = CONFIG.logo;
+}
+
+// Vista previa del diploma de evaluación (reutiliza modal existente)
+function verDiplomaEval() {
+  if (!evalState.nadadorActual) return;
+  var nd = evalState.nadadorActual.data;
+  var ev = EVAL_NIVELES[nd.nivel] || EVAL_NIVELES['NB'];
+  var dominados = Object.values(nd.ejercicios || {}).filter(function(v) { return v === true; }).length;
+  var pct = Math.round((dominados / ev.total) * 100);
+
+  var datos = {
+    nombre: nd.nombre,
+    edad: nd.edad,
+    nivel: nd.nivel,
+    nivelNombre: ev.nombre,
+    dominados: dominados,
+    total: ev.total,
+    pct: pct,
+    fecha: new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }),
+    _esEval: true
+  };
+
+  // Reusar modal y canvas existentes
+  rk.diploma = datos;
+  document.getElementById('dip-pos').textContent = pct + '%';
+  document.getElementById('dip-total').textContent = ev.nombre;
+  document.getElementById('dip-tiempo-card').textContent = dominados + '/' + ev.total;
+  drawDiplomaEval(document.getElementById('dip-preview'), datos, 700, 495);
+  document.getElementById('diploma-modal').classList.remove('modal-hidden');
+}
+
+// Override de descargarDiploma para detectar si es de evaluación
+var _origDescargarDiploma = window.descargarDiploma;
+window.descargarDiploma = function() {
+  if (!rk.diploma) return;
+  var cv = document.getElementById('dip-full');
+  // Si es diploma de evaluación, usar la función específica
+  if (rk.diploma._esEval) {
+    drawDiplomaEval(cv, rk.diploma, 1122, 794);
+  } else {
+    drawDiploma(cv, rk.diploma, 1122, 794);
+  }
+  setTimeout(function() {
+    try {
+      var pdf = new window.jspdf.jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [1122, 794],
+        hotfixes: ['px_scaling']
+      });
+      pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 1122, 794);
+      pdf.save('Diploma_' + rk.diploma.nombre.replace(/\s+/g, '_') + '.pdf');
+      closeDipModal();
+    } catch (e) {
+      cv.toBlob(function(blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'Diploma_' + rk.diploma.nombre.replace(/\s+/g, '_') + '.png';
+        a.click();
+        URL.revokeObjectURL(url);
+        closeDipModal();
+      });
+    }
+  }, 400);
+};
 </script>
 </body>
 </html>
