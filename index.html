@@ -2990,6 +2990,42 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
   </div>
 </div>
 
+<!-- Modal: Activar suscripción manual (solo Sergio) -->
+<div class="modal-overlay modal-hidden" id="modal-activar-subs">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-weight:800;font-size:1rem;color:var(--gold)">&#128176; Activar suscripcion</div>
+      <button onclick="cerrarActivarSubs()" style="background:none;border:none;color:var(--accent-soft);font-size:1.3rem;cursor:pointer">&#10005;</button>
+    </div>
+    <div style="font-size:0.75rem;color:var(--accent-soft);margin-bottom:0.6rem;line-height:1.5">
+      Activa manualmente la suscripcion de un usuario que ya te pago por WhatsApp/transferencia.
+    </div>
+    <label>Correo del usuario *</label>
+    <input id="subs-correo" type="email" placeholder="papa-juan@gmail.com">
+    <label>Duracion</label>
+    <select id="subs-duracion">
+      <option value="365">1 ano - $200 (estandar)</option>
+      <option value="180">6 meses - $120</option>
+      <option value="30">1 mes - $30</option>
+      <option value="7">7 dias (prueba extra)</option>
+    </select>
+    <label>Monto recibido (MXN)</label>
+    <input id="subs-monto" type="number" placeholder="200">
+    <label>Metodo de pago</label>
+    <select id="subs-metodo">
+      <option value="transferencia">Transferencia bancaria</option>
+      <option value="oxxo">OXXO</option>
+      <option value="mercadopago">MercadoPago</option>
+      <option value="efectivo">Efectivo</option>
+      <option value="cortesia">Cortesia (sin pago)</option>
+    </select>
+    <label>Nota (opcional)</label>
+    <input id="subs-nota" placeholder="Ej: pago confirmado 8 mayo 2026">
+    <button class="btn btn-gold" onclick="activarSubsManual()">Activar suscripcion</button>
+    <button class="btn btn-gray" onclick="cerrarActivarSubs()">Cancelar</button>
+  </div>
+</div>
+
 <!-- Modal: Registrar sesión -->
 <div class="modal-overlay modal-hidden" id="modal-sesion">
   <div class="modal-box">
@@ -3262,6 +3298,17 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
 
   <div id="fotos-intl-container">
     <div style="text-align:center;padding:1rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>
+  </div>
+
+  <!-- Panel admin: solo visible para Sergio -->
+  <div id="admin-subs-section" style="display:none">
+    <div class="intl-section-head">
+      <span>&#128176; Suscripciones del muro</span>
+      <button class="intl-add-btn" onclick="abrirActivarSubs()">&#43; Activar</button>
+    </div>
+    <div id="admin-subs-list">
+      <div style="text-align:center;padding:0.8rem;color:var(--accent-soft);font-size:0.75rem">Cargando suscripciones...</div>
+    </div>
   </div>
 
   <div class="footer-bar">
@@ -8161,25 +8208,26 @@ function mostrarBloqueoMuro() {
 
 function iniciarPagoMuro() {
   if (!state.user) { showCoachLogin(); return; }
-  // DEMO: simulamos el pago. Cuando integres MercadoPago real, esto se reemplaza.
-  var ok = confirm('MODO DEMO\n\nSimular pago de $' + MURO_PRECIO + ' MXN por 1 año de suscripcion al muro?\n\n(Cuando MercadoPago este activo, esto abrira la pasarela real.)');
-  if (!ok) return;
 
-  var ahora = Date.now();
-  var expira = ahora + 365 * 86400000;
-  db.ref('suscripciones_muro/' + state.user.uid).update({
-    pagada: true,
-    inicio: ahora,
-    expira: expira,
-    monto: MURO_PRECIO,
-    pagadoPor: state.user.email,
-    fechaPago: new Date().toISOString()
-  }).then(function() {
-    var bm = document.getElementById('modal-bloqueo-muro');
-    if (bm) bm.remove();
-    alert('Suscripcion activa! Tienes acceso al muro hasta ' + new Date(expira).toLocaleDateString('es-MX'));
-    actualizarBannerMuro();
-  });
+  // Generar mensaje WhatsApp con datos del usuario
+  var nombre = state.user.displayName || state.user.email.split('@')[0];
+  var msg = 'Hola Sergio! Quiero suscribirme al *Muro de Laguna Swim* por *$' + MURO_PRECIO + ' MXN al ano*.\n\n' +
+    '*Mis datos:*\n' +
+    '- Correo: ' + state.user.email + '\n' +
+    '- Nombre: ' + nombre + '\n\n' +
+    'Por favor mandame el metodo de pago (transferencia, OXXO o MercadoPago). Despues te envio el comprobante. Gracias!';
+
+  // Cerrar modal de bloqueo si está abierto
+  var bm = document.getElementById('modal-bloqueo-muro');
+  if (bm) bm.remove();
+
+  // Abrir WhatsApp
+  openUrl('https://wa.me/528713164850?text=' + encodeURIComponent(msg));
+
+  // Notificar al usuario qué hacer después
+  setTimeout(function() {
+    alert('Te abrimos WhatsApp para enviar tu solicitud a Sergio.\n\nUna vez que confirmes el pago, Sergio activara tu suscripcion manualmente.');
+  }, 500);
 }
 
 // Marcar primera sesión cuando el usuario registra su primera publicación
@@ -8237,6 +8285,171 @@ window.initMuro = function() {
   _origInitMuro();
   setTimeout(actualizarBannerMuro, 100);
 };
+
+// ============================================================
+// ====== PANEL ADMIN: ACTIVAR SUSCRIPCIONES MANUAL ===========
+// ============================================================
+
+function abrirActivarSubs() {
+  if (!state.user || state.user.email !== CONFIG.coach) return;
+  document.getElementById('modal-activar-subs').classList.remove('modal-hidden');
+}
+function cerrarActivarSubs() {
+  document.getElementById('modal-activar-subs').classList.add('modal-hidden');
+  ['subs-correo', 'subs-monto', 'subs-nota'].forEach(function(f) {
+    var el = document.getElementById(f);
+    if (el) el.value = '';
+  });
+}
+
+async function activarSubsManual() {
+  if (!state.user || state.user.email !== CONFIG.coach) return;
+  var correo = document.getElementById('subs-correo').value.trim().toLowerCase();
+  var dias = parseInt(document.getElementById('subs-duracion').value);
+  var monto = parseInt(document.getElementById('subs-monto').value) || 0;
+  var metodo = document.getElementById('subs-metodo').value;
+  var nota = document.getElementById('subs-nota').value || '';
+
+  if (!correo) { alert('Pon el correo del usuario'); return; }
+  if (!dias) { alert('Selecciona duracion'); return; }
+
+  // Buscar el UID del usuario por correo en Firebase Auth NO es trivial desde el cliente.
+  // Workaround: guardamos por correo y la app usa correo como índice secundario.
+  // Si el usuario ya entró alguna vez, su uid existe en suscripciones_muro
+  // Pero si nunca ha entrado, lo guardamos por correo y se vincula al primer login.
+
+  var ahora = Date.now();
+  var expira = ahora + dias * 86400000;
+  var subsData = {
+    correo: correo,
+    pagada: true,
+    primeraSesion: ahora,
+    inicio: ahora,
+    expira: expira,
+    monto: monto,
+    metodo: metodo,
+    nota: nota,
+    activadoPor: state.user.email,
+    fechaActivacion: new Date().toISOString()
+  };
+
+  // Buscar si ya existe un usuario con ese correo en suscripciones
+  var snap = await db.ref('suscripciones_muro').once('value');
+  var existe = false;
+  var uidExistente = null;
+  if (snap.exists()) {
+    snap.forEach(function(c) {
+      var v = c.val();
+      if (v.correo && v.correo.toLowerCase() === correo) {
+        existe = true;
+        uidExistente = c.key;
+      }
+    });
+  }
+
+  // Si existe, actualizar; si no, crear con ID basado en correo
+  var key = uidExistente || ('manual_' + correo.replace(/[^a-z0-9]/g, '_'));
+  await db.ref('suscripciones_muro/' + key).update(subsData);
+
+  // También guardar en colección de pagos para historial
+  var pagoKey = db.ref('pagos_muro').push().key;
+  await db.ref('pagos_muro/' + pagoKey).set(subsData);
+
+  cerrarActivarSubs();
+  alert('Suscripcion activada para ' + correo + '\nVigente hasta: ' + new Date(expira).toLocaleDateString('es-MX'));
+  cargarAdminSubs();
+}
+
+function cargarAdminSubs() {
+  if (!state.user || state.user.email !== CONFIG.coach) return;
+  var lista = document.getElementById('admin-subs-list');
+  if (!lista) return;
+
+  db.ref('suscripciones_muro').once('value').then(function(snap) {
+    var arr = [];
+    if (snap.exists()) {
+      snap.forEach(function(c) {
+        arr.push(Object.assign({ uid: c.key }, c.val()));
+      });
+    }
+    // Solo mostrar las pagadas
+    arr = arr.filter(function(x) { return x.pagada; });
+    arr.sort(function(a, b) { return (b.expira || 0) - (a.expira || 0); });
+
+    if (arr.length === 0) {
+      lista.innerHTML = '<div style="text-align:center;padding:0.8rem;color:var(--accent-soft);font-size:0.75rem">Aun no hay suscripciones activadas</div>';
+      return;
+    }
+
+    var ahora = Date.now();
+    var html = '';
+    arr.forEach(function(s) {
+      var dias = Math.ceil((s.expira - ahora) / 86400000);
+      var activa = dias > 0;
+      var color = activa ? (dias < 30 ? 'var(--gold)' : 'var(--success)') : 'var(--danger)';
+      var label = activa ? (dias + ' dias') : 'EXPIRADA';
+
+      html +=
+        '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.8rem;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.6rem">' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-size:0.78rem;font-weight:700">' + escapeHtml(s.correo || s.uid) + '</div>' +
+            '<div style="font-size:0.62rem;color:var(--accent-soft)">' + (s.metodo || '-') + ' - $' + (s.monto || 0) + '</div>' +
+          '</div>' +
+          '<div style="text-align:right;flex-shrink:0">' +
+            '<div style="font-size:0.85rem;font-weight:800;color:' + color + '">' + label + '</div>' +
+            '<div style="font-size:0.55rem;color:rgba(255,255,255,0.4)">' +
+              (s.expira ? 'hasta ' + new Date(s.expira).toLocaleDateString('es-MX') : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    });
+    lista.innerHTML = html;
+  });
+}
+
+// Hook a la pestaña Sergio para mostrar/cargar admin subs
+(function() {
+  var prevST3 = window.showTab;
+  window.showTab = function(t) {
+    prevST3(t);
+    if (t === 'profile') {
+      var sec = document.getElementById('admin-subs-section');
+      var esCoach = state.user && state.user.email === CONFIG.coach;
+      if (sec) sec.style.display = esCoach ? 'block' : 'none';
+      if (esCoach) cargarAdminSubs();
+    }
+  };
+})();
+
+// ============================================================
+// ====== VINCULACION CORREO -> UID al iniciar sesion =========
+// ============================================================
+// Si Sergio activó la suscripción del correo X (con clave manual_X),
+// cuando ese usuario inicie sesión por primera vez, transferimos sus datos
+// de la clave manual a su UID real.
+
+auth.onAuthStateChanged(async function(u) {
+  if (!u || !u.email) return;
+  if (u.email === CONFIG.coach) return;
+
+  try {
+    var correoKey = 'manual_' + u.email.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    var snapM = await db.ref('suscripciones_muro/' + correoKey).once('value');
+    if (snapM.exists()) {
+      var data = snapM.val();
+      // Verificar si el usuario ya tiene una entrada con su UID
+      var snapU = await db.ref('suscripciones_muro/' + u.uid).once('value');
+      if (!snapU.exists() || !snapU.val().pagada) {
+        // Mover datos al UID real
+        await db.ref('suscripciones_muro/' + u.uid).update(data);
+        await db.ref('suscripciones_muro/' + correoKey).remove();
+        console.log('Suscripcion vinculada de correo a UID:', u.email);
+      }
+    }
+  } catch (e) {
+    console.warn('Error vinculando suscripcion:', e);
+  }
+});
 </script>
 </body>
 </html>
