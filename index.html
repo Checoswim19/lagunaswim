@@ -1895,7 +1895,9 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
         <option value="100">100m</option>
         <option value="200">200m</option>
         <option value="400">400m</option>
+        <option value="500">500m</option>
         <option value="800">800m</option>
+        <option value="1000">1000m</option>
         <option value="1500">1500m</option>
       </select>
       <label>Estilo</label>
@@ -2244,7 +2246,9 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
         <option value="100">100m</option>
         <option value="200">200m</option>
         <option value="400">400m</option>
+        <option value="500">500m</option>
         <option value="800">800m</option>
+        <option value="1000">1000m</option>
         <option value="1500">1500m</option>
       </select>
       <select id="rank-style" onchange="filterRanking()">
@@ -2338,7 +2342,9 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
         <option value="100">100m</option>
         <option value="200">200m</option>
         <option value="400">400m</option>
+        <option value="500">500m</option>
         <option value="800">800m</option>
+        <option value="1000">1000m</option>
         <option value="1500">1500m</option>
       </select>
       <label>Estilo</label>
@@ -4363,7 +4369,7 @@ function calcProyectar() {
   }
   // Fórmula de Riegel: T2 = T1 * (D2/D1)^exp
   var exp = { lineal: 1.0, natacion: 1.06, resistencia: 1.12 }[calcFactor] || 1.06;
-  var distancias = [25, 50, 100, 200, 400, 800, 1500];
+  var distancias = [25, 50, 100, 200, 400, 500, 800, 1000, 1500];
   var html = '';
   distancias.forEach(function(d) {
     var msProyectado = Math.round(ms * Math.pow(d / distBase, exp));
@@ -7422,58 +7428,58 @@ window.guardarSesion = function() {
   Para cambiar las frases, solo edita esta lista. La app calcula sola qué semana es.
 */
 var FRASES_SEMANA = [
-  "Frase 1 - Pendiente de Sergio",
-  "Frase 2 - Pendiente de Sergio",
-  "Frase 3 - Pendiente de Sergio",
-  "Frase 4 - Pendiente de Sergio",
-  "Frase 5 - Pendiente de Sergio",
-  "Frase 6 - Pendiente de Sergio",
-  "Frase 7 - Pendiente de Sergio",
-  "Frase 8 - Pendiente de Sergio",
-  "Frase 9 - Pendiente de Sergio",
-  "Frase 10 - Pendiente de Sergio",
-  "Frase 11 - Pendiente de Sergio",
-  "Frase 12 - Pendiente de Sergio",
-  "Frase 13 - Pendiente de Sergio",
-  "Frase 14 - Pendiente de Sergio",
-  "Frase 15 - Pendiente de Sergio",
-  "Frase 16 - Pendiente de Sergio",
-  "Frase 17 - Pendiente de Sergio",
-  "Frase 18 - Pendiente de Sergio",
-  "Frase 19 - Pendiente de Sergio",
-  "Frase 20 - Pendiente de Sergio",
-  "Frase 21 - Pendiente de Sergio",
-  "Frase 22 - Pendiente de Sergio",
-  "Frase 23 - Pendiente de Sergio",
-  "Frase 24 - Pendiente de Sergio",
-  "Frase 25 - Pendiente de Sergio",
-  "Frase 26 - Pendiente de Sergio",
-  "Frase 27 - Pendiente de Sergio",
-  "Frase 28 - Pendiente de Sergio",
-  "Frase 29 - Pendiente de Sergio",
-  "Frase 30 - Pendiente de Sergio",
-  "Frase 31 - Pendiente de Sergio",
-  "Frase 32 - Pendiente de Sergio",
-  "Frase 33 - Pendiente de Sergio",
-  "Frase 34 - Pendiente de Sergio",
-  "Frase 35 - Pendiente de Sergio",
-  "Frase 36 - Pendiente de Sergio",
-  "Frase 37 - Pendiente de Sergio",
-  "Frase 38 - Pendiente de Sergio",
-  "Frase 39 - Pendiente de Sergio",
-  "Frase 40 - Pendiente de Sergio",
-  "Frase 41 - Pendiente de Sergio",
-  "Frase 42 - Pendiente de Sergio",
-  "Frase 43 - Pendiente de Sergio",
-  "Frase 44 - Pendiente de Sergio",
-  "Frase 45 - Pendiente de Sergio",
-  "Frase 46 - Pendiente de Sergio",
-  "Frase 47 - Pendiente de Sergio",
-  "Frase 48 - Pendiente de Sergio",
-  "Frase 49 - Pendiente de Sergio",
-  "Frase 50 - Pendiente de Sergio",
-  "Frase 51 - Pendiente de Sergio",
-  "Frase 52 - Pendiente de Sergio"
+  "Just keep swimming. - Dory, Buscando a Nemo",
+  "El agua no crea barreras; tu mente si. - Proverbio hindu",
+  "It's not about being the best. It's about being better than you were yesterday. - Rocky Balboa",
+  "Los que confian en el Senor renovaran sus fuerzas; nadaran sin cansarse, iran de largo sin fatigarse. - Isaias 40:31",
+  "Conocete a ti mismo en la piscina: alli no hay mascaras. - Adaptacion de Socrates",
+  "El viaje de mil kilometros comienza con una primer brazada. - Lao Tse (adaptado)",
+  "I am the master of my fate, I am the captain of my soul. - Invictus",
+  "Todo lo puedo en Cristo que me fortalece... incluso nadar cada dia sin falta. - Filipenses 4:13",
+  "El que dice que puede y el que dice que no puede, ambos tienen razon. - Confucio",
+  "Dolor es agua salada que entra; la gloria es la que no te saca. - Dicho de entrenadores griegos",
+  "You miss 100% of the shots you don't take. - Wayne Gretzky. Aplica a cada brazada.",
+  "No sabeis que los que nadan en el estadio, todos nadan, pero uno se lleva el premio? Nada asi, para alcanzarlo. - 1 Corintios 9:24",
+  "El alma no puede ser cortada, quemada, mojada o secada. Tampoco tu voluntad. - Bhagavad Gita (adaptado)",
+  "What we do in life echoes in eternity. - Gladiator",
+  "El agua que obedece a todas las formas, al final las rompe todas. - Filosofia china del Tai Chi",
+  "Esfuerzate y se valiente; no temas ni desmayes, porque el Senor tu Dios estara contigo en cada carril. - Josue 1:9",
+  "La regularidad es mas poderosa que la intensidad. Una brazada al dia vence al sprint de un dia. - Marco Aurelio",
+  "Every champion was once a contender who refused to give up. - Rocky",
+  "No cuentes los dias, haz que los dias cuenten. Una brazada a la vez. - Muhammad Ali (adaptado)",
+  "Y todo lo que hagais, hacedlo de corazon, como para el Senor y no para los hombres... incluso nadar cuando no tienes ganas. - Colosenses 3:23",
+  "La victoria es para los que perseveran. - Aristoteles",
+  "Just when you think you can't go on, your body finds an extra gear. That's your spirit. - The Pursuit of Happyness",
+  "El loto crece en el barro; tu creces en el cloro. - Refran hindu adaptado",
+  "Sabemos que los problemas producen perseverancia; la perseverancia, caracter; el caracter, esperanza... y la esperanza te mete otra vez al agua. - Romanos 5:3-4",
+  "No hay nada mas fuerte que un corazon agradecido que se levanta a las 5 a.m. para nadar. - Proverbio japones moderno",
+  "It's not the length of the pool, it's the depth of your will. - Michael Phelps",
+  "El guerrero no se entrena para vencer al otro, sino a su propio miedo. - Cultura samurai (adaptado)",
+  "No nos cansemos de hacer el bien (y de nadar); porque a su tiempo segaremos, si no desmayamos. - Galatas 6:9",
+  "El agua es tu espejo: mirate y sigue avanzando. - Dicho de entrenadores chinos",
+  "You can't put a limit on anything. The more you dream, the farther you get. - Forrest Gump",
+  "El karma de un nadador: cada brazada que das hoy, te impulsa manana. - Adaptacion del Bhagavad Gita",
+  "Despojemonos de todo peso... y nademos con paciencia la carrera que tenemos por delante. - Hebreos 12:1",
+  "La incomodidad de hoy es la fortaleza de manana. Eso es ley. - Cultura espartana",
+  "Float like a butterfly, sting like a bee. But keep moving. - Muhammad Ali",
+  "Una hora en el agua limpia todo el polvo de tu mente. - Proverbio hindu del yoga",
+  "He peleado la buena batalla, he acabado la carrera (de natacion), he guardado la fe... y la he nadado sin faltar un dia. - 2 Timoteo 4:7",
+  "El hombre de agua no teme a la lluvia, ni al frio, ni a su propia pereza. - Proverbio griego",
+  "Win or lose, you show up. That's the only promise that matters. - Creed",
+  "No te ahogues en un vaso de agua. Nada en el. - Filosofia zen",
+  "Dios es quien me cine de fuerza... quien entrena mis manos para la batalla y mis brazos para la brazada. - Salmo 18:32-34",
+  "El placer en el trabajo pone perfeccion en la obra. Asi que disfruta la quemazon. - Aristoteles",
+  "It's not the critic who counts. It's the one in the water. - Theodore Roosevelt",
+  "El rio que no avanza se convierte en lago muerto. Tu avanza. - Cultura hindu",
+  "Velad, estad firmes en la fe, portaos varonilmente, esforzaos... y naden todas sus semanas. - 1 Corintios 16:13-14",
+  "Cuando el agua te quema los pulmones, recuerda: es tu ego rindiendose. - Inspirado en 300 (adaptado)",
+  "The miracle isn't that I finished. The miracle is that I had the courage to start every single day. - Terry Fox",
+  "No hay viento favorable para el que no sabe a donde va. Traza tu carril. - Seneca",
+  "La alegria del Senor es vuestra fuerza... tambien para nadar cuando no queda nada. - Nehemias 8:10",
+  "Una gota de agua horada la piedra. No por su fuerza, sino por su constancia. - Ovidio",
+  "You have power over your mind - not outside events. Realize this, and you will swim. - Marco Aurelio",
+  "El miedo desaparece cuando tus brazos entran al agua. Siempre. - Adaptacion de epopeya china El viaje al Oeste",
+  "Cuando pases por las aguas, yo estare contigo; cuando pases por los rios, no te anegaran. Esta semana, a nadar sin faltar un dia. - Isaias 43:2"
 ];
 
 // Calcular número de semana ISO (1-53) de la fecha actual
@@ -7872,7 +7878,10 @@ function cerrarAgregarVideo() {
 }
 
 function guardarVideo() {
-  if (!state.user || state.user.email !== CONFIG.coach) return;
+  if (!state.user || state.user.email !== CONFIG.coach) {
+    alert('Solo el entrenador puede agregar videos.');
+    return;
+  }
   var url = document.getElementById('video-url').value.trim();
   var titulo = document.getElementById('video-titulo').value.trim();
   var desc = document.getElementById('video-desc').value.trim();
@@ -7880,22 +7889,32 @@ function guardarVideo() {
     alert('Necesitas link y titulo');
     return;
   }
+  // Validar URL básica
+  if (url.indexOf('http') !== 0) {
+    alert('El link debe empezar con http:// o https://');
+    return;
+  }
   var plat = detectarPlataforma(url);
   var key = db.ref('videos').push().key;
-  db.ref('videos/' + key).set({
+  var data = {
     url: url,
     titulo: titulo,
-    descripcion: desc,
-    categoria: videos.cat,
+    descripcion: desc || '',
+    categoria: videos.cat || 'tecnica',
     plataforma: plat.plat,
     plataformaLabel: plat.label,
     embed: plat.embed,
     thumbAuto: plat.thumb || '',
     timestamp: Date.now(),
     addedBy: state.user.email
-  }).then(function() {
+  };
+  db.ref('videos/' + key).set(data).then(function() {
     cerrarAgregarVideo();
     cargarVideos();
+    alert('Video agregado correctamente!');
+  }).catch(function(err) {
+    alert('Error al guardar: ' + err.message);
+    console.error('Error guardando video:', err, data);
   });
 }
 
@@ -8018,8 +8037,8 @@ function borrarVideo(key) {
 //   monto: 300
 // }
 
-var MURO_PRECIO = 300; // MXN al año
-var MURO_TRIAL_DIAS = 7;
+var MURO_PRECIO = 200; // MXN al año
+var MURO_TRIAL_DIAS = 30;
 
 // Verificar estado de suscripción del usuario actual al muro
 async function verificarSubsMuro() {
@@ -8077,13 +8096,13 @@ async function actualizarBannerMuro() {
     cont.innerHTML =
       '<div class="muro-subs-banner gratis">' +
         '<div class="muro-subs-icon">&#127881;</div>' +
-        '<div class="muro-subs-text"><strong>Bienvenido!</strong> Registra tu primera sesion y obtienes 7 dias gratis.</div>' +
+        '<div class="muro-subs-text"><strong>Bienvenido!</strong> Registra tu primera sesion y obtienes 30 dias gratis.</div>' +
       '</div>';
   } else if (s.estado === 'trial') {
     cont.innerHTML =
       '<div class="muro-subs-banner gratis">' +
         '<div class="muro-subs-icon">&#9203;</div>' +
-        '<div class="muro-subs-text"><strong>Semana de prueba</strong> - Te quedan ' + s.diasRestantes + ' dia' + (s.diasRestantes === 1 ? '' : 's') + '</div>' +
+        '<div class="muro-subs-text"><strong>Mes de prueba</strong> - Te quedan ' + s.diasRestantes + ' dia' + (s.diasRestantes === 1 ? '' : 's') + '</div>' +
         '<button class="muro-subs-btn" onclick="iniciarPagoMuro()">Suscribirse</button>' +
       '</div>';
   } else if (s.estado === 'pagada') {
@@ -8125,13 +8144,13 @@ function mostrarBloqueoMuro() {
     '<div class="modal-box">' +
       '<div style="text-align:center">' +
         '<div style="font-size:2.5rem;margin-bottom:0.4rem">&#128274;</div>' +
-        '<div style="font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem">Tu prueba gratis termino</div>' +
+        '<div style="font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem">Tu mes gratis termino</div>' +
         '<div style="font-size:0.85rem;color:var(--accent-soft);line-height:1.5;margin-bottom:0.8rem">' +
           'Para seguir publicando entrenamientos, fotos y videos en el muro, suscribete por solo:' +
         '</div>' +
         '<div class="muro-bloqueo-precio">$' + MURO_PRECIO + ' MXN / año</div>' +
         '<div style="font-size:0.7rem;color:var(--accent-soft);margin-bottom:1rem">' +
-          'Equivale a $25 al mes - menos que un cafe' +
+          'Equivale a menos de $17 al mes' +
         '</div>' +
       '</div>' +
       '<button class="btn btn-gold" onclick="iniciarPagoMuro()">Suscribirme ahora</button>' +
