@@ -1342,6 +1342,219 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   display: flex; flex-direction: column;
   padding: 1rem;
 }
+/* ============================================================
+   NUEVO: RETO 50M - CSS del juego, splash y leaderboard
+   ============================================================ */
+.reto50-splash-overlay {
+  position: fixed; inset: 0;
+  background: linear-gradient(180deg, rgba(5,15,28,0.97) 0%, rgba(7,30,56,0.97) 100%);
+  z-index: 300;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  animation: reto50FadeIn 0.4s ease-out;
+}
+@keyframes reto50FadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.reto50-splash-card {
+  background: linear-gradient(180deg, #0a2956 0%, #1e5a9e 100%);
+  border: 2px solid var(--accent);
+  border-radius: 20px;
+  padding: 1.8rem 1.5rem;
+  width: 100%; max-width: 420px;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 4px rgba(56,189,248,0.15);
+  position: relative;
+}
+.reto50-splash-brand {
+  font-size: 0.65rem; letter-spacing: 4px;
+  color: var(--accent); text-transform: uppercase;
+  font-weight: 700; margin-bottom: 0.4rem;
+}
+.reto50-splash-emoji {
+  font-size: 3.5rem; margin: 0.3rem 0 0.5rem;
+}
+.reto50-splash-title {
+  font-size: 1.7rem; font-weight: 900;
+  letter-spacing: -0.5px; line-height: 1;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(180deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.reto50-splash-desc {
+  font-size: 0.85rem; color: var(--accent-soft);
+  line-height: 1.5; margin-bottom: 1.3rem;
+}
+.reto50-splash-features {
+  display: flex; gap: 0.8rem; justify-content: center;
+  margin-bottom: 1.3rem; flex-wrap: wrap;
+}
+.reto50-splash-feature {
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.3);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.7rem; font-weight: 600;
+  color: #fff;
+}
+.reto50-splash-feature em { color: var(--gold); font-style: normal; font-weight: 800; }
+.reto50-splash-btn {
+  display: block; width: 100%;
+  padding: 0.9rem;
+  background: var(--gold);
+  color: #071e38;
+  border: none; border-radius: 12px;
+  font-size: 0.95rem; font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--gold-dim), 0 6px 16px rgba(255,215,0,0.3);
+  transition: all 0.15s;
+  margin-bottom: 0.6rem;
+}
+.reto50-splash-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--gold-dim);
+}
+.reto50-splash-skip {
+  display: block; width: 100%;
+  padding: 0.6rem;
+  background: transparent;
+  color: var(--accent-soft);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  font-size: 0.75rem; font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 1.5px; text-transform: uppercase;
+}
+.reto50-splash-motto {
+  margin-top: 1rem;
+  font-size: 0.65rem; letter-spacing: 3px;
+  color: var(--gold); opacity: 0.7;
+  text-transform: uppercase; font-style: italic;
+}
+
+/* Botón "Reto 50m" en pantalla Cronómetro */
+.reto50-card {
+  background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(255,215,0,0.1) 100%);
+  border: 1.5px solid var(--accent);
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  margin-top: 0.8rem;
+  display: flex; align-items: center; gap: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.reto50-card:active { transform: scale(0.98); }
+.reto50-card::before {
+  content: 'NUEVO';
+  position: absolute;
+  top: 6px; right: 8px;
+  background: var(--gold);
+  color: #071e38;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.reto50-card-icon {
+  font-size: 2rem;
+  width: 50px; text-align: center;
+  flex-shrink: 0;
+}
+.reto50-card-body { flex: 1; min-width: 0; }
+.reto50-card-title {
+  font-weight: 800; font-size: 0.95rem;
+  color: var(--gold);
+  margin-bottom: 2px;
+}
+.reto50-card-sub {
+  font-size: 0.7rem; color: var(--accent-soft);
+  line-height: 1.3;
+}
+.reto50-card-arrow {
+  color: var(--accent); font-size: 1.4rem;
+}
+
+/* Modal contenedor del juego en iframe */
+.reto50-game-modal {
+  position: fixed; inset: 0;
+  background: #001d3d;
+  z-index: 400;
+  display: flex; flex-direction: column;
+}
+.reto50-game-modal.modal-hidden { display: none !important; }
+.reto50-game-iframe {
+  flex: 1; width: 100%; height: 100%;
+  border: none;
+  background: #001d3d;
+}
+
+/* Sección Leaderboard en Cronómetro */
+.reto50-lb-acc-head {
+  background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.08) 100%);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  margin-top: 0.8rem;
+  display: flex; align-items: center;
+  cursor: pointer;
+}
+.reto50-lb-body {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0 0 12px 12px;
+  margin-top: -2px;
+  padding: 0.8rem;
+}
+.reto50-lb-row {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.55rem 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.82rem;
+}
+.reto50-lb-row:last-child { border-bottom: none; }
+.reto50-lb-row.gold { background: rgba(255,215,0,0.08); border-radius: 6px; margin: 2px 0; }
+.reto50-lb-rank {
+  width: 28px; text-align: center;
+  font-weight: 800; color: var(--accent-soft);
+  font-size: 0.75rem;
+}
+.reto50-lb-row.gold .reto50-lb-rank { color: var(--gold); font-size: 0.95rem; }
+.reto50-lb-name {
+  flex: 1; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  font-size: 0.78rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.reto50-lb-time {
+  font-family: 'Courier New', monospace;
+  color: var(--accent); font-weight: 800;
+  font-size: 0.85rem;
+}
+.reto50-lb-delete {
+  background: rgba(239,68,68,0.15);
+  border: 1px solid rgba(239,68,68,0.4);
+  color: #fca5a5;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+.reto50-lb-empty {
+  text-align: center; padding: 1rem;
+  color: var(--accent-soft);
+  font-size: 0.78rem;
+}
+/* ============================================================
+   FIN NUEVO RETO 50M CSS
+   ============================================================ */
+
 .video-modal-iframe {
   width: 100%;
   aspect-ratio: 16/9;
@@ -1737,6 +1950,40 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   <div class="spons-bar-inner" id="spons-bar-inner"></div>
 </div>
 
+<!-- ============================================================
+     NUEVO: RETO 50M - Splash de bienvenida y modal del juego
+     ============================================================ -->
+<div class="reto50-splash-overlay modal-hidden" id="reto50-splash">
+  <div class="reto50-splash-card">
+    <div class="reto50-splash-brand">Laguna Swim International</div>
+    <div class="reto50-splash-emoji">🏊‍♂️🏆</div>
+    <div class="reto50-splash-title">RETO 50M LIBRE</div>
+    <div class="reto50-splash-desc">
+      Compite contra 3 rivales virtuales en una alberca olímpica.
+      Mueve los brazos como en crol — la cámara detecta tus brazadas reales.
+    </div>
+    <div class="reto50-splash-features">
+      <div class="reto50-splash-feature">📹 <em>Cámara</em> en vivo</div>
+      <div class="reto50-splash-feature">🏆 <em>Top 10</em> global</div>
+    </div>
+    <button class="reto50-splash-btn" onclick="reto50AbrirJuego(true)">
+      🚀 Jugar ahora
+    </button>
+    <button class="reto50-splash-skip" onclick="reto50CerrarSplash()">
+      Saltar intro
+    </button>
+    <div class="reto50-splash-motto">Fuertes y Valientes · Josué 1:9</div>
+  </div>
+</div>
+
+<!-- Modal contenedor del juego (iframe) -->
+<div class="reto50-game-modal modal-hidden" id="reto50-game-modal">
+  <iframe id="reto50-iframe" class="reto50-game-iframe" src="about:blank" title="Reto 50m Libre" allow="camera; autoplay"></iframe>
+</div>
+<!-- ============================================================
+     FIN NUEVO RETO 50M
+     ============================================================ -->
+
 <!-- ============ BOTTOM NAV ============ -->
 <nav class="bnav">
   <button class="bnav-item active" onclick="showTab('timer')" id="nav-timer">
@@ -1785,6 +2032,34 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
         <div style="margin-left:auto;color:var(--accent-soft);font-size:1.2rem">&#8250;</div>
       </div>
     </div>
+
+    <!-- ============ NUEVO: RETO 50M - Botón de acceso al juego ============ -->
+    <div class="reto50-card" onclick="reto50AbrirJuego(false)">
+      <div class="reto50-card-icon">🏊‍♂️</div>
+      <div class="reto50-card-body">
+        <div class="reto50-card-title">Reto 50m Libre</div>
+        <div class="reto50-card-sub">Compite con la cámara contra 3 rivales · Top 10 global</div>
+      </div>
+      <div class="reto50-card-arrow">&#8250;</div>
+    </div>
+
+    <!-- Top 10 Global Leaderboard (acordeón) -->
+    <div onclick="reto50ToggleLB()" class="reto50-lb-acc-head">
+      <div style="display:flex;align-items:center;gap:0.6rem;flex:1">
+        <span style="font-size:1.3rem">&#127942;</span>
+        <div>
+          <div style="font-size:0.88rem;font-weight:800;color:var(--gold)">Top 10 Reto 50m</div>
+          <div style="font-size:0.65rem;color:var(--accent-soft)">Ranking global de la comunidad</div>
+        </div>
+      </div>
+      <span id="reto50-lb-arrow" style="color:var(--gold);font-size:1.2rem">&#8964;</span>
+    </div>
+    <div id="reto50-lb-body" class="reto50-lb-body" style="display:none">
+      <div id="reto50-lb-list">
+        <div class="reto50-lb-empty">Cargando ranking...</div>
+      </div>
+    </div>
+    <!-- ============ FIN NUEVO RETO 50M ============ -->
 
     <!-- Acordeón Calculadora -->
     <div onclick="toggleCalc()" class="acc-head">
@@ -8513,6 +8788,290 @@ auth.onAuthStateChanged(async function(u) {
     console.warn('Error vinculando suscripcion:', e);
   }
 });
+
+/* ============================================================
+   NUEVO: RETO 50M - Lógica de splash, juego y leaderboard
+   ============================================================ */
+
+var RETO50 = {
+  splashKey: 'reto50_splash_last',
+  splashIntervalDays: 30,         // 1 vez al mes
+  iframeSrc: 'reto-50m.html',     // archivo del juego en el mismo dominio
+  lbCache: null,
+  lbCacheTime: 0,
+  lbCacheMs: 30000,               // cache 30 segundos
+};
+
+// ===== SPLASH =====
+function reto50DebeMostrarSplash() {
+  try {
+    var last = localStorage.getItem(RETO50.splashKey);
+    if (!last) return true;
+    var diff = Date.now() - parseInt(last, 10);
+    var dias = diff / (1000 * 60 * 60 * 24);
+    return dias >= RETO50.splashIntervalDays;
+  } catch (e) { return false; }
+}
+
+function reto50MarcarSplashVisto() {
+  try { localStorage.setItem(RETO50.splashKey, String(Date.now())); } catch (e) {}
+}
+
+function reto50CerrarSplash() {
+  document.getElementById('reto50-splash').classList.add('modal-hidden');
+  reto50MarcarSplashVisto();
+}
+
+function reto50MostrarSplashSiCorresponde() {
+  if (!reto50DebeMostrarSplash()) return;
+  setTimeout(function() {
+    document.getElementById('reto50-splash').classList.remove('modal-hidden');
+  }, 1500);
+}
+
+// ===== ABRIR / CERRAR JUEGO =====
+function reto50AbrirJuego(desdeSplash) {
+  if (desdeSplash) {
+    reto50MarcarSplashVisto();
+    document.getElementById('reto50-splash').classList.add('modal-hidden');
+  }
+  var modal = document.getElementById('reto50-game-modal');
+  var iframe = document.getElementById('reto50-iframe');
+  // Cargar el iframe sólo cuando se abre (para no penalizar la carga del index)
+  if (iframe.src === 'about:blank' || !iframe.src.endsWith(RETO50.iframeSrc)) {
+    iframe.src = RETO50.iframeSrc + '?t=' + Date.now();
+  }
+  modal.classList.remove('modal-hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function reto50CerrarJuego() {
+  var modal = document.getElementById('reto50-game-modal');
+  var iframe = document.getElementById('reto50-iframe');
+  modal.classList.add('modal-hidden');
+  // Detener el juego liberando el iframe
+  iframe.src = 'about:blank';
+  document.body.style.overflow = '';
+  // Refrescar el leaderboard por si hubo un cambio
+  reto50CargarLeaderboard(true);
+}
+
+// ===== POSTMESSAGE BRIDGE CON EL IFRAME =====
+window.addEventListener('message', function(event) {
+  var msg = event.data;
+  if (!msg || msg.source !== 'laguna-swim-game') return;
+
+  if (msg.type === 'GAME_READY') {
+    // El juego ya cargó. Enviar Top 10 inicial si tenemos cache.
+    if (RETO50.lbCache) {
+      reto50EnviarLBaIframe(RETO50.lbCache);
+    }
+  }
+  else if (msg.type === 'CLOSE_GAME') {
+    reto50CerrarJuego();
+  }
+  else if (msg.type === 'RACE_FINISHED') {
+    reto50GuardarResultado(msg.data);
+  }
+  else if (msg.type === 'REQUEST_LEADERBOARD') {
+    reto50CargarLeaderboard().then(function(top) {
+      reto50EnviarLBaIframe(top);
+    });
+  }
+});
+
+function reto50EnviarLBaIframe(top10) {
+  try {
+    var iframe = document.getElementById('reto50-iframe');
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({
+        target: 'laguna-swim-game',
+        type: 'LEADERBOARD_DATA',
+        data: top10
+      }, '*');
+    }
+  } catch (e) {}
+}
+
+// ===== FIREBASE: GUARDAR RESULTADO =====
+async function reto50GuardarResultado(data) {
+  // Validaciones cliente (Firebase también valida en reglas)
+  if (!data || typeof data !== 'object') return;
+  if (!data.nickname || typeof data.nickname !== 'string') return;
+  if (!data.time || data.time < 30 || data.time > 300) return; // anti-trampa
+  var nick = String(data.nickname).toUpperCase().replace(/[^A-Z0-9_-]/g, '').substring(0, 14);
+  if (nick.length < 3) return;
+
+  var entry = {
+    nickname: nick,
+    time: Math.round(data.time * 100) / 100,
+    position: parseInt(data.position) || 4,
+    strokes: parseInt(data.strokes) || 0,
+    efficiency: parseInt(data.efficiency) || 0,
+    mode: String(data.mode || 'unknown').substring(0, 20),
+    timestamp: firebase.database.ServerValue.TIMESTAMP,
+    userId: (state && state.user) ? state.user.uid : 'anonymous',
+  };
+
+  try {
+    await db.ref('races_leaderboard').push(entry);
+    // Invalidar cache para próxima consulta
+    RETO50.lbCache = null;
+    RETO50.lbCacheTime = 0;
+    // Recargar leaderboard y enviarlo al iframe
+    var top = await reto50CargarLeaderboard(true);
+    reto50EnviarLBaIframe(top);
+  } catch (e) {
+    console.warn('Error guardando resultado Reto 50m:', e);
+  }
+}
+
+// ===== FIREBASE: CARGAR LEADERBOARD =====
+async function reto50CargarLeaderboard(forzar) {
+  var ahora = Date.now();
+  if (!forzar && RETO50.lbCache && (ahora - RETO50.lbCacheTime) < RETO50.lbCacheMs) {
+    return RETO50.lbCache;
+  }
+
+  try {
+    var snap = await db.ref('races_leaderboard')
+      .orderByChild('time')
+      .limitToFirst(50)
+      .once('value');
+
+    var rows = [];
+    snap.forEach(function(child) {
+      var v = child.val();
+      if (v && v.time && v.nickname) {
+        rows.push({
+          key: child.key,
+          nickname: v.nickname,
+          time: v.time,
+          timestamp: v.timestamp || 0,
+        });
+      }
+    });
+
+    // Deduplicar por nickname (quedarse con el mejor tiempo de cada uno)
+    var bestByNick = {};
+    rows.forEach(function(r) {
+      var n = r.nickname.toUpperCase();
+      if (!bestByNick[n] || r.time < bestByNick[n].time) {
+        bestByNick[n] = r;
+      }
+    });
+    var unique = Object.values(bestByNick).sort(function(a, b) { return a.time - b.time; });
+    var top10 = unique.slice(0, 10);
+
+    RETO50.lbCache = top10;
+    RETO50.lbCacheTime = ahora;
+    return top10;
+  } catch (e) {
+    console.warn('Error cargando leaderboard:', e);
+    return [];
+  }
+}
+
+// ===== RENDER LEADERBOARD EN PANTALLA HOME =====
+function reto50FormatTime(sec) {
+  var m = Math.floor(sec / 60);
+  var s = Math.floor(sec % 60);
+  var d = Math.floor((sec * 10) % 10);
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0') + '.' + d;
+}
+
+async function reto50RenderLeaderboard() {
+  var list = document.getElementById('reto50-lb-list');
+  if (!list) return;
+  list.innerHTML = '<div class="reto50-lb-empty">Cargando ranking...</div>';
+
+  var top = await reto50CargarLeaderboard();
+  if (!top || top.length === 0) {
+    list.innerHTML = '<div class="reto50-lb-empty">Sé el primero en el ranking 🏊‍♂️</div>';
+    return;
+  }
+
+  var esCoach = !!(state && state.isCoach);
+  list.innerHTML = '';
+  top.forEach(function(entry, idx) {
+    var row = document.createElement('div');
+    row.className = 'reto50-lb-row' + (idx === 0 ? ' gold' : '');
+    var medal = ['🥇','🥈','🥉'][idx] || (idx + 1) + '°';
+    var deleteBtn = esCoach ? '<button class="reto50-lb-delete" onclick="event.stopPropagation();reto50BorrarEntry(\'' + entry.key + '\',\'' + entry.nickname.replace(/'/g, '') + '\')">🗑️</button>' : '';
+    row.innerHTML =
+      '<div class="reto50-lb-rank">' + medal + '</div>' +
+      '<div class="reto50-lb-name">' + entry.nickname + '</div>' +
+      '<div class="reto50-lb-time">' + reto50FormatTime(entry.time) + '</div>' +
+      deleteBtn;
+    list.appendChild(row);
+  });
+}
+
+// Borrar entry (solo coach)
+async function reto50BorrarEntry(key, nickname) {
+  if (!state || !state.isCoach) return;
+  if (!confirm('¿Borrar entrada de "' + nickname + '" del ranking?')) return;
+  try {
+    await db.ref('races_leaderboard/' + key).remove();
+    RETO50.lbCache = null;
+    reto50RenderLeaderboard();
+  } catch (e) {
+    alert('Error al borrar: ' + e.message);
+  }
+}
+
+// Toggle acordeón leaderboard
+function reto50ToggleLB() {
+  var body = document.getElementById('reto50-lb-body');
+  var arrow = document.getElementById('reto50-lb-arrow');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    arrow.innerHTML = '&#8963;'; // up
+    reto50RenderLeaderboard();
+  } else {
+    body.style.display = 'none';
+    arrow.innerHTML = '&#8964;'; // down
+  }
+}
+
+// Cerrar juego con tecla ESC
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var modal = document.getElementById('reto50-game-modal');
+    if (modal && !modal.classList.contains('modal-hidden')) {
+      reto50CerrarJuego();
+    }
+  }
+});
+
+// Suscripción real-time al leaderboard (refresca cuando alguien más nada)
+try {
+  db.ref('races_leaderboard').on('child_added', function() {
+    var body = document.getElementById('reto50-lb-body');
+    if (body && body.style.display === 'block') {
+      RETO50.lbCache = null;
+      reto50RenderLeaderboard();
+    }
+  });
+  db.ref('races_leaderboard').on('child_removed', function() {
+    var body = document.getElementById('reto50-lb-body');
+    if (body && body.style.display === 'block') {
+      RETO50.lbCache = null;
+      reto50RenderLeaderboard();
+    }
+  });
+} catch (e) {}
+
+// Mostrar splash de bienvenida si toca
+window.addEventListener('load', function() {
+  reto50MostrarSplashSiCorresponde();
+  // Precargar leaderboard en background
+  reto50CargarLeaderboard();
+});
+
+/* ============================================================
+   FIN NUEVO RETO 50M JS
+   ============================================================ */
 </script>
 </body>
 </html>
