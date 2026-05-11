@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Reto 50m Libre · Laguna Swim International</title>
+<meta name="description" content="Compite en una carrera virtual de natación 50m libre contra rivales con la cámara de tu dispositivo.">
+<style>
+  :root {
+    --pool-water-deep: #2d7da8;
+    --pool-water: #4a9bc4;
+    --pool-water-mid: #6bb6dc;
+    --pool-water-shimmer: #8fc9e3;
+    --pool-tile-border: #1a4d6b;
+    --pool-inner-tile: #e8f1f5;
+    --deck-light: #d8d6cc;
+    --deck-mid: #c4c2b8;
+    --deck-grout: #a8a6a0;
+    --deck-dark: #908e88;
+    --t-mark: #0d2438;
+    --accent: #ffd60a;
+    --accent-hot: #ff6b35;
+    --rival-1: #ef476f;
+    --rival-2: #06d6a0;
+    --rival-3: #ffd166;
+    --text-bright: #ffffff;
+    --text-dim: rgba(255,255,255,0.7);
+    --bg-deck: #001d3d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg-deck);
+    color: var(--text-bright);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .game-shell {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #001d3d;
+  }
+
+  /* HUD */
+  .hud {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--accent);
+  }
+  .hud-cell {
+    padding: 10px 12px;
+    background: rgba(0,20,40,0.75);
+    text-align: center;
+  }
+  .hud-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .hud-value {
+    font-family: 'Courier New', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .hud-value.accent { color: var(--accent); }
+  .hud-value.hot { color: var(--accent-hot); }
+
+  /* Botón cerrar (solo visible en iframe) */
+  .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 60;
+    width: 36px;
+    height: 36px;
+    background: rgba(0,0,0,0.6);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .close-btn:hover {
+    background: var(--accent);
+    color: var(--bg-deck);
+  }
+  body.embedded .close-btn { display: flex; }
+
+  /* Pool area */
+  .pool-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px;
+    background:
+      repeating-linear-gradient(90deg, transparent 0px, transparent 39px, var(--deck-grout) 39px, var(--deck-grout) 40px),
+      repeating-linear-gradient(0deg, transparent 0px, transparent 39px, var(--deck-grout) 39px, var(--deck-grout) 40px),
+      linear-gradient(135deg, var(--deck-light) 0%, var(--deck-mid) 100%);
+  }
+
+  .deck-drain {
+    position: absolute;
+    width: 16px; height: 16px;
+    background: var(--deck-dark);
+    border: 1px solid #777;
+    border-radius: 2px;
+  }
+  .deck-drain.tl { top: 12px; left: 12px; }
+  .deck-drain.tr { top: 12px; right: 12px; }
+  .deck-drain.bl { bottom: 12px; left: 12px; }
+  .deck-drain.br { bottom: 12px; right: 12px; }
+
+  .pool {
+    position: absolute;
+    top: 8%; bottom: 8%; left: 5%; right: 5%;
+    background: linear-gradient(180deg,
+      var(--pool-water-deep) 0%,
+      var(--pool-water) 12%,
+      var(--pool-water-mid) 50%,
+      var(--pool-water) 88%,
+      var(--pool-water-deep) 100%);
+    box-shadow: inset 0 0 80px rgba(26,77,107,0.5), 0 0 30px rgba(0,0,0,0.4);
+    overflow: hidden;
+  }
+  .pool::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, var(--pool-inner-tile) 0%, var(--pool-inner-tile) 14px, transparent 14px, transparent calc(100% - 14px), var(--pool-inner-tile) calc(100% - 14px), var(--pool-inner-tile) 100%),
+      linear-gradient(90deg, var(--pool-inner-tile) 0%, var(--pool-inner-tile) 14px, transparent 14px, transparent calc(100% - 14px), var(--pool-inner-tile) calc(100% - 14px), var(--pool-inner-tile) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .pool::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 3px solid var(--pool-tile-border);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .water-shimmer {
+    position: absolute;
+    inset: 14px;
+    background:
+      radial-gradient(ellipse at 25% 30%, rgba(255,255,255,0.18) 0%, transparent 45%),
+      radial-gradient(ellipse at 75% 70%, rgba(255,255,255,0.12) 0%, transparent 40%);
+    pointer-events: none;
+    animation: shimmer 4s ease-in-out infinite;
+    z-index: 3;
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+
+  .water-caustics {
+    position: absolute;
+    inset: 14px;
+    background:
+      repeating-linear-gradient(45deg, transparent 0px, transparent 22px, rgba(255,255,255,0.05) 22px, rgba(255,255,255,0.05) 24px),
+      repeating-linear-gradient(-45deg, transparent 0px, transparent 20px, rgba(255,255,255,0.04) 20px, rgba(255,255,255,0.04) 22px);
+    pointer-events: none;
+    z-index: 3;
+    animation: caustics 10s ease-in-out infinite;
+  }
+  @keyframes caustics {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(10px, 5px); }
+  }
+
+  .lane-floor-line {
+    position: absolute;
+    left: 14px; right: 14px;
+    height: 4px;
+    background: var(--t-mark);
+    z-index: 4;
+    opacity: 0.88;
+    border-radius: 1px;
+  }
+  .lane-floor-line::before, .lane-floor-line::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    width: 16px; height: 16px;
+    background: var(--t-mark);
+    border-radius: 1px;
+  }
+  .lane-floor-line::before { left: 0; }
+  .lane-floor-line::after { right: 0; }
+
+  .lane-divider {
+    position: absolute;
+    left: 14px; right: 14px;
+    height: 10px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .lane-divider::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 1.5px;
+    background: rgba(255,255,255,0.35);
+    transform: translateY(-50%);
+  }
+  .buoy {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5), inset -1.5px -1.5px 2px rgba(0,0,0,0.3), inset 1.5px 1.5px 2px rgba(255,255,255,0.5);
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+  .buoy.white { background: radial-gradient(circle at 30% 30%, #fff, #d4d4d4 70%); }
+  .buoy.red { background: radial-gradient(circle at 30% 30%, #ff8a6c, #cc3a18 70%); }
+  .buoy.blue { background: radial-gradient(circle at 30% 30%, #5a9bd7, #1a4d6b 70%); }
+
+  .pool-marker {
+    position: absolute;
+    top: 14px; bottom: 14px;
+    width: 3px;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(255,214,10,0.7);
+    z-index: 6;
+  }
+  .pool-marker.finish {
+    background: repeating-linear-gradient(0deg, #000 0px, #000 14px, #fff 14px, #fff 28px);
+    width: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.6);
+  }
+  .marker-label {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    font-weight: 800;
+    text-shadow: 0 0 8px rgba(0,0,0,0.9);
+    white-space: nowrap;
+    background: rgba(0,8,20,0.85);
+    padding: 3px 7px;
+    border-radius: 3px;
+    z-index: 10;
+  }
+  .pool-marker.finish .marker-label { color: white; }
+
+  .starting-blocks {
+    position: absolute;
+    top: 14px; bottom: 14px;
+    left: 0;
+    width: 10px;
+    background: linear-gradient(90deg, #2a2a2a, #4a4a4a);
+    z-index: 7;
+    border-right: 2px solid var(--pool-tile-border);
+  }
+
+  .swimmer-pool {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+  }
+  .swimmer {
+    position: absolute;
+    width: 50px; height: 22px;
+    transition: left 0.15s linear;
+  }
+  .swimmer svg {
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  }
+  .nameplate {
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 800;
+    text-shadow: 0 0 6px rgba(0,0,0,0.9);
+    white-space: nowrap;
+  }
+  .swimmer.player .nameplate { color: var(--accent); }
+  .swimmer.r1 .nameplate { color: var(--rival-1); }
+  .swimmer.r2 .nameplate { color: var(--rival-2); }
+  .swimmer.r3 .nameplate { color: var(--rival-3); }
+
+  .wake {
+    position: absolute;
+    top: 50%; right: 100%;
+    transform: translateY(-50%);
+    width: 35px; height: 18px;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .swimmer.swimming .wake { opacity: 1; }
+
+  .splash {
+    position: absolute;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(202,240,248,0.4) 50%, transparent 80%);
+    pointer-events: none;
+    animation: splashOut 0.5s ease-out forwards;
+    z-index: 9;
+  }
+  @keyframes splashOut {
+    0% { transform: scale(0.3); opacity: 1; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+  /* Overlays */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,8,20,0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    text-align: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .overlay.hidden { display: none; }
+
+  .brand {
+    font-size: 10px;
+    letter-spacing: 6px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .title {
+    font-size: clamp(28px, 6vw, 58px);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 0.95;
+    margin-bottom: 8px;
+    background: linear-gradient(180deg, #fff 0%, var(--pool-water-mid) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle {
+    font-size: clamp(12px, 1.8vw, 15px);
+    color: var(--text-dim);
+    max-width: 540px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  /* Nickname input */
+  .nickname-box {
+    background: rgba(0,150,199,0.08);
+    border: 1px solid rgba(72,202,228,0.25);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 360px;
+  }
+  .nickname-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .nickname-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(0,0,0,0.4);
+    border: 2px solid rgba(72,202,228,0.4);
+    border-radius: 6px;
+    color: var(--text-bright);
+    font-family: inherit;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .nickname-input:focus {
+    border-color: var(--accent);
+  }
+  .nickname-input::placeholder {
+    color: rgba(255,255,255,0.3);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .nickname-hint {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .reference-times {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: rgba(0,150,199,0.08);
+    border: 1px solid rgba(72,202,228,0.2);
+    border-radius: 8px;
+    padding: 12px 18px;
+  }
+  .ref-time { text-align: center; }
+  .ref-time-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .ref-time-value {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .mode-picker {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 600px;
+  }
+  .mode-card {
+    background: rgba(0,150,199,0.1);
+    border: 2px solid rgba(72,202,228,0.3);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 150px;
+    max-width: 200px;
+  }
+  .mode-card:hover {
+    border-color: var(--accent);
+    background: rgba(255,214,10,0.08);
+    transform: translateY(-2px);
+  }
+  .mode-card.recommended {
+    border-color: var(--accent);
+    background: rgba(255,214,10,0.05);
+  }
+  .mode-card.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .mode-icon { font-size: 28px; margin-bottom: 6px; }
+  .mode-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    color: var(--text-bright);
+  }
+  .mode-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+  .mode-tag {
+    display: inline-block;
+    margin-top: 6px;
+    background: var(--accent);
+    color: var(--bg-deck);
+    font-size: 8px;
+    letter-spacing: 2px;
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-weight: 800;
+  }
+
+  .motto {
+    margin-top: 16px;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    opacity: 0.7;
+    text-transform: uppercase;
+  }
+
+  .privacy-note {
+    margin-top: 10px;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    max-width: 400px;
+    line-height: 1.4;
+    opacity: 0.7;
+  }
+
+  .start-btn {
+    padding: 14px 40px;
+    background: var(--accent);
+    color: var(--bg-deck);
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    box-shadow: 0 5px 0 #cca600, 0 8px 20px rgba(255,214,10,0.4);
+  }
+  .start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 #cca600, 0 12px 24px rgba(255,214,10,0.5);
+  }
+  .start-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #cca600;
+  }
+  .start-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .start-btn.secondary {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--text-dim);
+    box-shadow: none;
+    margin-top: 12px;
+    font-size: 11px;
+  }
+  .start-btn.secondary:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: none;
+    transform: none;
+  }
+
+  /* Camera */
+  .camera-preview {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    width: 150px;
+    height: 110px;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+    z-index: 25;
+    display: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  }
+  .camera-preview.active { display: block; }
+  .camera-preview video, .camera-preview canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+  }
+  .camera-label {
+    position: absolute;
+    top: 4px; left: 6px;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: 800;
+    background: rgba(0,0,0,0.7);
+    padding: 2px 6px;
+    border-radius: 3px;
+    z-index: 2;
+  }
+  .arm-indicator {
+    position: absolute;
+    bottom: 4px;
+    width: 30%;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    z-index: 2;
+  }
+  .arm-indicator.left { left: 6px; }
+  .arm-indicator.right { right: 6px; }
+  .arm-indicator.detected {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* Countdown */
+  .countdown {
+    position: absolute;
+    inset: 60px 0 0 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,8,20,0.6);
+    backdrop-filter: blur(6px);
+  }
+  .countdown.hidden { display: none; }
+  .countdown-num {
+    font-size: clamp(120px, 22vw, 220px);
+    font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 60px rgba(255,214,10,0.8);
+    animation: countPulse 1s ease-out;
+  }
+  @keyframes countPulse {
+    0% { transform: scale(0.3); opacity: 0; }
+    20% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Finish */
+  .finish-podium {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0 16px;
+    width: 100%;
+    max-width: 480px;
+    flex-direction: column;
+  }
+  .podium-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(0,150,199,0.1);
+    border: 1px solid rgba(72,202,228,0.25);
+    border-radius: 6px;
+  }
+  .podium-row.player {
+    background: rgba(255,214,10,0.12);
+    border-color: var(--accent);
+  }
+  .podium-pos {
+    font-size: 20px;
+    font-weight: 900;
+    width: 32px;
+    color: var(--text-dim);
+  }
+  .podium-row.gold .podium-pos { color: var(--accent); }
+  .podium-row.silver .podium-pos { color: #c0c0c0; }
+  .podium-row.bronze .podium-pos { color: #cd7f32; }
+  .podium-name {
+    flex: 1;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .podium-time {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .best-badge {
+    background: var(--accent-hot);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 9px;
+    letter-spacing: 3px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    animation: pulseBadge 1.5s ease-in-out infinite;
+  }
+  @keyframes pulseBadge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  /* Global leaderboard */
+  .leaderboard-section {
+    width: 100%;
+    max-width: 480px;
+    margin: 12px 0 16px;
+  }
+  .leaderboard-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 800;
+  }
+  .leaderboard-list {
+    background: rgba(0,150,199,0.05);
+    border: 1px solid rgba(72,202,228,0.15);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    border-bottom: 1px solid rgba(72,202,228,0.1);
+    font-size: 11px;
+  }
+  .leaderboard-row:last-child { border-bottom: none; }
+  .leaderboard-row.me {
+    background: rgba(255,214,10,0.1);
+  }
+  .lb-rank {
+    width: 22px;
+    font-weight: 800;
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+  .lb-name {
+    flex: 1;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .lb-time {
+    font-family: 'Courier New', monospace;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Touch mode */
+  .touch-zones {
+    position: absolute;
+    inset: 60px 0 0 0;
+    z-index: 15;
+    display: none;
+    pointer-events: none;
+  }
+  body.touch-mode .touch-zones { display: block; }
+  .touch-zone {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 50%;
+    pointer-events: auto;
+  }
+  .touch-zone.left { left: 0; }
+  .touch-zone.right { right: 0; }
+  .touch-zone .indicator {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px; height: 56px;
+    border: 3px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: rgba(255,255,255,0.6);
+    pointer-events: none;
+    transition: all 0.1s;
+    background: rgba(0,0,0,0.3);
+  }
+  .touch-zone.active .indicator {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg-deck);
+    transform: translateX(-50%) scale(1.2);
+  }
+
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid rgba(255,214,10,0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 16px auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .status-msg {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  .status-msg.error { color: var(--accent-hot); }
+</style>
+</head>
+<body>
+
+<div class="game-shell">
+
+  <button class="close-btn" id="closeBtn" title="Cerrar">×</button>
+
+  <div class="hud">
+    <div class="hud-cell">
+      <div class="hud-label">Tiempo</div>
+      <div class="hud-value" id="hudTime">00:00.0</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Metros</div>
+      <div class="hud-value accent" id="hudMeters">0.0</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">SPM</div>
+      <div class="hud-value" id="hudSpm">0</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Pos</div>
+      <div class="hud-value hot" id="hudPos">--</div>
+    </div>
+  </div>
+
+  <div class="pool-area" id="poolArea">
+    <div class="deck-drain tl"></div>
+    <div class="deck-drain tr"></div>
+    <div class="deck-drain bl"></div>
+    <div class="deck-drain br"></div>
+
+    <div class="pool" id="pool">
+      <div class="water-shimmer"></div>
+      <div class="water-caustics"></div>
+      <div class="starting-blocks"></div>
+
+      <div class="pool-marker" id="marker25" style="left: 50%">
+        <span class="marker-label">25 M</span>
+      </div>
+      <div class="pool-marker finish" id="markerFinish" style="right: 14px">
+        <span class="marker-label">META · 50 M</span>
+      </div>
+
+      <div class="swimmer-pool" id="swimmerPool"></div>
+    </div>
+  </div>
+
+  <div class="camera-preview" id="cameraPreview">
+    <div class="camera-label">Cámara</div>
+    <video id="cameraVideo" autoplay playsinline muted></video>
+    <canvas id="cameraCanvas"></canvas>
+    <div class="arm-indicator left" id="armIndL"></div>
+    <div class="arm-indicator right" id="armIndR"></div>
+  </div>
+
+  <div class="touch-zones">
+    <div class="touch-zone left" id="zoneLeft"><div class="indicator">←</div></div>
+    <div class="touch-zone right" id="zoneRight"><div class="indicator">→</div></div>
+  </div>
+
+  <!-- START -->
+  <div class="overlay" id="overlayStart">
+    <div class="brand">Laguna Swim International</div>
+    <h1 class="title">RETO 50M<br>LIBRE</h1>
+    <p class="subtitle">Compite contra 3 rivales virtuales en una alberca olímpica. Alterna brazadas izquierda y derecha al ritmo justo para nadar como un verdadero atleta.</p>
+
+    <div class="nickname-box">
+      <div class="nickname-label">Tu nickname</div>
+      <input type="text" class="nickname-input" id="nicknameInput" placeholder="Ej. PEDROM" maxlength="14" autocomplete="off">
+      <div class="nickname-hint">3 a 14 caracteres. Aparecerá en el ranking global.</div>
+    </div>
+
+    <div class="reference-times">
+      <div class="ref-time">
+        <div class="ref-time-label">Récord rival</div>
+        <div class="ref-time-value">00:40.0</div>
+      </div>
+      <div class="ref-time">
+        <div class="ref-time-label">Meta competitiva</div>
+        <div class="ref-time-value">00:45.0</div>
+      </div>
+      <div class="ref-time">
+        <div class="ref-time-label">Meta amateur</div>
+        <div class="ref-time-value">00:60.0</div>
+      </div>
+    </div>
+
+    <div class="mode-picker">
+      <div class="mode-card recommended" id="modeCamera">
+        <div class="mode-icon">📹</div>
+        <div class="mode-title">Cámara</div>
+        <div class="mode-desc">Levanta los brazos frente a la cámara.</div>
+        <div class="mode-tag">Recomendado</div>
+      </div>
+      <div class="mode-card" id="modeKeyboard">
+        <div class="mode-icon">⌨️</div>
+        <div class="mode-title">Teclado</div>
+        <div class="mode-desc">Alterna <b>A</b> y <b>L</b>.</div>
+      </div>
+      <div class="mode-card" id="modeTouch">
+        <div class="mode-icon">📱</div>
+        <div class="mode-title">Táctil</div>
+        <div class="mode-desc">Toca izq. y der. en pantalla.</div>
+      </div>
+    </div>
+
+    <div class="privacy-note">
+      🔒 La cámara funciona sólo en tu dispositivo. Ningún video se sube ni se guarda. Sólo guardamos tu nickname y tu mejor tiempo.
+    </div>
+    <div class="motto">Fuertes y Valientes · Joshua 1:9</div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="overlay hidden" id="overlayLoading">
+    <div class="brand">Cargando</div>
+    <h2 class="title" style="font-size: clamp(20px, 4vw, 32px)">Preparando cámara<br>y detector de pose</h2>
+    <div class="spinner"></div>
+    <p class="status-msg" id="loadingStatus">Pidiendo permiso de cámara…</p>
+    <button class="start-btn secondary" id="btnCancelCamera">Cancelar</button>
+  </div>
+
+  <!-- CAMERA READY -->
+  <div class="overlay hidden" id="overlayCameraReady">
+    <div class="brand">Cámara lista</div>
+    <h2 class="title" style="font-size: clamp(22px, 5vw, 42px)">Posiciónate</h2>
+    <p class="subtitle">Párate frente a la cámara. Levanta cada brazo arriba del hombro alternando izquierdo y derecho como en crol.</p>
+    <button class="start-btn" id="btnStartRace">Empezar carrera</button>
+    <button class="start-btn secondary" id="btnBackToMode">Cambiar modo</button>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown hidden" id="countdown">
+    <div class="countdown-num" id="countdownNum">3</div>
+  </div>
+
+  <!-- FINISH -->
+  <div class="overlay hidden" id="overlayFinish">
+    <div class="brand">Resultados</div>
+    <h2 class="title" style="font-size: clamp(24px, 5vw, 44px)" id="finalTitle">¡Carrera terminada!</h2>
+    <div class="best-badge hidden" id="newRecordBadge">🏆 Nuevo récord personal</div>
+    <div class="finish-podium" id="finishPodium"></div>
+
+    <div class="leaderboard-section" id="leaderboardSection" style="display:none">
+      <div class="leaderboard-title">🏆 Top 10 Global · Laguna Swim</div>
+      <div class="leaderboard-list" id="leaderboardList">
+        <div class="leaderboard-row" style="justify-content:center;color:var(--text-dim)">Cargando ranking...</div>
+      </div>
+    </div>
+
+    <button class="start-btn" id="btnRestart">Otra vez</button>
+    <button class="start-btn secondary" id="btnChangeMode">Cambiar modo</button>
+    <div class="motto">Coach Sergio · ASCA Level 4</div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js" crossorigin="anonymous"></script>
+
+<script>
+  // ============ CONFIG ============
+  const TOTAL_DISTANCE = 50;
+  const RACE_LANES = 4;
+  const PROPULSION = 0.72;
+  const DECAY = 0.45;
+  const MAX_VELOCITY = 1.45;
+  const TOO_FAST_MS = 200;
+  const TOO_SLOW_MS = 1800;
+  const IDEAL_MIN_MS = 380;
+  const IDEAL_MAX_MS = 850;
+
+  // ============ EMBED DETECTION ============
+  const isEmbedded = window.parent !== window;
+  if (isEmbedded) {
+    document.body.classList.add('embedded');
+  }
+
+  // ============ POSTMESSAGE COMMUNICATION ============
+  function sendToParent(type, data) {
+    if (!isEmbedded) return;
+    try {
+      window.parent.postMessage({
+        source: 'laguna-swim-game',
+        type: type,
+        data: data
+      }, '*');
+    } catch (e) {
+      console.log('postMessage failed', e);
+    }
+  }
+
+  // Escuchar mensajes del padre (top 10 leaderboard)
+  window.addEventListener('message', (event) => {
+    const msg = event.data;
+    if (!msg || msg.target !== 'laguna-swim-game') return;
+    if (msg.type === 'LEADERBOARD_DATA') {
+      renderLeaderboard(msg.data);
+    }
+  });
+
+  // ============ NICKNAME ============
+  let playerNickname = '';
+
+  // Cargar nickname guardado
+  function loadSavedNickname() {
+    try {
+      const saved = localStorage.getItem('laguna_swim_nickname');
+      if (saved) {
+        playerNickname = saved;
+        $('nicknameInput').value = saved;
+        updatePlayerNameplate(saved);
+      }
+    } catch (e) {}
+  }
+
+  function saveNickname(nick) {
+    try { localStorage.setItem('laguna_swim_nickname', nick); } catch (e) {}
+  }
+
+  function getNickname() {
+    const input = $('nicknameInput').value.trim().toUpperCase();
+    if (input.length < 3) return null;
+    return input.substring(0, 14);
+  }
+
+  function updatePlayerNameplate(nick) {
+    const sw = $('swimmer-player');
+    if (sw) {
+      const np = sw.querySelector('.nameplate');
+      if (np) np.textContent = nick || 'TÚ';
+    }
+  }
+
+  // ============ STATE ============
+  let mode = null;
+  let pose = null;
+  let cameraStream = null;
+  let cameraLoop = null;
+
+  let state = {
+    running: false,
+    finished: false,
+    distance: 0,
+    velocity: 0,
+    lastArm: null,
+    lastStrokeTime: 0,
+    startTime: 0,
+    elapsed: 0,
+    strokes: 0,
+    goodStrokes: 0,
+    strokeIntervals: [],
+    rivals: [],
+    playerFinishedAt: null,
+  };
+
+  let poseState = {
+    leftArmReadyToFire: true,
+    rightArmReadyToFire: true,
+  };
+
+  const $ = id => document.getElementById(id);
+  const pool = $('pool');
+  const swimmerPool = $('swimmerPool');
+
+  // ============ BUILD POOL ============
+  function buildPool() {
+    for (let i = 0; i < RACE_LANES; i++) {
+      const line = document.createElement('div');
+      line.className = 'lane-floor-line';
+      line.style.top = `calc(${((i + 0.5) / RACE_LANES) * 100}% - 2px)`;
+      pool.appendChild(line);
+    }
+    const dividerCount = RACE_LANES + 1;
+    for (let i = 0; i < dividerCount; i++) {
+      const div = document.createElement('div');
+      div.className = 'lane-divider';
+      div.style.top = `calc(${(i / (dividerCount - 1)) * 100}% - 5px)`;
+      for (let j = 0; j < 28; j++) {
+        const buoy = document.createElement('div');
+        buoy.className = 'buoy';
+        const m = j % 5;
+        if (m === 0) buoy.classList.add('red');
+        else if (m === 3) buoy.classList.add('blue');
+        else buoy.classList.add('white');
+        div.appendChild(buoy);
+      }
+      pool.appendChild(div);
+    }
+  }
+  buildPool();
+
+  function makeSwimmerSVG(capColor) {
+    return `
+      <svg viewBox="0 0 50 22" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="6" cy="11" rx="4" ry="2" fill="#0d2438"/>
+        <ellipse cx="22" cy="11" rx="14" ry="4" fill="#0d2438"/>
+        <ellipse class="arm-back" cx="15" cy="11" rx="7" ry="2" fill="#f4c89a"/>
+        <ellipse class="arm-front" cx="33" cy="11" rx="7" ry="2" fill="#f4c89a"/>
+        <circle cx="40" cy="11" r="5" fill="${capColor}"/>
+        <ellipse cx="42" cy="10" rx="1.5" ry="1" fill="#001d3d"/>
+        <circle cx="42" cy="9.7" r="0.4" fill="#fff"/>
+      </svg>
+    `;
+  }
+
+  function buildSwimmers() {
+    const config = [
+      { id: 'r1', cls: 'r1', cap: '#ef476f', name: 'RIVAL 1', lane: 0 },
+      { id: 'r2', cls: 'r2', cap: '#06d6a0', name: 'RIVAL 2', lane: 1 },
+      { id: 'player', cls: 'player', cap: '#ffd60a', name: 'TÚ', lane: 2 },
+      { id: 'r3', cls: 'r3', cap: '#ffd166', name: 'RIVAL 3', lane: 3 },
+    ];
+    config.forEach(c => {
+      const sw = document.createElement('div');
+      sw.className = `swimmer ${c.cls}`;
+      sw.id = `swimmer-${c.id}`;
+      sw.innerHTML = `<div class="wake"></div>${makeSwimmerSVG(c.cap)}<div class="nameplate">${c.name}</div>`;
+      sw.style.top = `calc(${((c.lane + 0.5) / RACE_LANES) * 100}% - 11px)`;
+      sw.style.left = '14px';
+      swimmerPool.appendChild(sw);
+    });
+  }
+  buildSwimmers();
+
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    const d = Math.floor((sec * 10) % 10);
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${d}`;
+  }
+
+  // ============ STROKE ============
+  function stroke(arm) {
+    if (!state.running || state.finished) return;
+    if (state.distance >= TOTAL_DISTANCE) return;
+
+    const now = performance.now();
+    const interval = state.lastStrokeTime ? now - state.lastStrokeTime : 500;
+    state.strokes++;
+    let quality = 0;
+
+    if (state.lastArm === arm && state.lastStrokeTime > 0) quality = -0.3;
+    else if (interval < TOO_FAST_MS) quality = 0.35;
+    else if (interval > TOO_SLOW_MS) quality = 0.5;
+    else if (interval >= IDEAL_MIN_MS && interval <= IDEAL_MAX_MS) { quality = 1.4; state.goodStrokes++; }
+    else { quality = 0.85; state.goodStrokes++; }
+
+    if (quality > 0) state.velocity += PROPULSION * quality;
+    else state.velocity = Math.max(0, state.velocity + (PROPULSION * quality));
+    state.velocity = Math.min(state.velocity, MAX_VELOCITY);
+
+    animatePlayerArm(arm);
+    createSplash(arm, quality);
+
+    if (state.lastStrokeTime > 0) {
+      state.strokeIntervals.push(interval);
+      if (state.strokeIntervals.length > 8) state.strokeIntervals.shift();
+    }
+    state.lastArm = arm;
+    state.lastStrokeTime = now;
+  }
+
+  function animatePlayerArm(arm) {
+    const sw = $('swimmer-player');
+    const armEl = arm === 'L' ? sw.querySelector('.arm-back') : sw.querySelector('.arm-front');
+    if (!armEl) return;
+    armEl.style.transition = 'transform 0.15s ease-out';
+    armEl.style.transformOrigin = arm === 'L' ? '15px 11px' : '33px 11px';
+    armEl.style.transform = `rotate(${arm === 'L' ? -35 : 35}deg)`;
+    setTimeout(() => {
+      armEl.style.transition = 'transform 0.25s ease-in';
+      armEl.style.transform = 'rotate(0deg)';
+    }, 150);
+  }
+
+  function createSplash(arm, quality) {
+    const sw = $('swimmer-player');
+    const rect = sw.getBoundingClientRect();
+    const poolRect = pool.getBoundingClientRect();
+    const splash = document.createElement('div');
+    splash.className = 'splash';
+    splash.style.left = `${rect.right - poolRect.left - 25}px`;
+    splash.style.top = `${rect.top - poolRect.top + (arm === 'L' ? -2 : 12)}px`;
+    if (quality < 0) splash.style.background = 'radial-gradient(circle, rgba(255,107,53,0.8) 0%, transparent 70%)';
+    pool.appendChild(splash);
+    setTimeout(() => splash.remove(), 500);
+  }
+
+  // ============ RIVALS ============
+  function initRivals() {
+    state.rivals = [
+      { id: 'r1', name: 'Rival 1', distance: 0, finishedAt: null,
+        speedProfile: (p) => Math.max(0.6, 1.25 - p*0.35 + (Math.random()-0.5)*0.08) },
+      { id: 'r2', name: 'Rival 2', distance: 0, finishedAt: null,
+        speedProfile: (p) => Math.max(0.9, 1.32 + Math.sin(p*Math.PI*3)*0.08 + (Math.random()-0.5)*0.06) },
+      { id: 'r3', name: 'Rival 3', distance: 0, finishedAt: null,
+        speedProfile: (p) => Math.max(0.4, 0.95 + (Math.random()-0.5)*0.25 + (Math.random()<0.05?-0.3:0)) },
+    ];
+  }
+
+  function updateRivals(dt) {
+    state.rivals.forEach(r => {
+      if (r.distance >= TOTAL_DISTANCE) {
+        if (r.finishedAt === null) r.finishedAt = state.elapsed;
+        return;
+      }
+      const speed = r.speedProfile(r.distance / TOTAL_DISTANCE);
+      r.distance += Math.max(0, speed) * dt;
+      r.distance = Math.min(r.distance, TOTAL_DISTANCE);
+
+      const el = $(`swimmer-${r.id}`);
+      const poolWidth = pool.clientWidth;
+      const startX = 14;
+      const endX = poolWidth - 64;
+      const pct = r.distance / TOTAL_DISTANCE;
+      el.style.left = `${startX + (endX - startX) * pct}px`;
+      el.classList.add('swimming');
+    });
+  }
+
+  // ============ MAIN LOOP ============
+  let lastFrame = 0;
+  function loop(timestamp) {
+    if (!state.running) return;
+    const dt = lastFrame ? Math.min((timestamp - lastFrame) / 1000, 0.05) : 0.016;
+    lastFrame = timestamp;
+
+    state.velocity = Math.max(0, state.velocity - DECAY * dt);
+    state.distance += state.velocity * dt;
+    state.distance = Math.min(state.distance, TOTAL_DISTANCE);
+
+    if (state.distance >= TOTAL_DISTANCE && state.playerFinishedAt === null) {
+      state.playerFinishedAt = state.elapsed;
+    }
+
+    updateRivals(dt);
+    state.elapsed = (performance.now() - state.startTime) / 1000;
+
+    $('hudTime').textContent = formatTime(state.elapsed);
+    $('hudMeters').textContent = state.distance.toFixed(1);
+
+    let spm = 0;
+    if (state.strokeIntervals.length >= 2) {
+      const avg = state.strokeIntervals.reduce((a,b)=>a+b,0) / state.strokeIntervals.length;
+      spm = Math.round(60000 / avg);
+    }
+    $('hudSpm').textContent = spm;
+
+    const playerEl = $('swimmer-player');
+    const poolWidth = pool.clientWidth;
+    const startX = 14;
+    const endX = poolWidth - 64;
+    const pct = state.distance / TOTAL_DISTANCE;
+    playerEl.style.left = `${startX + (endX - startX) * pct}px`;
+    if (state.velocity > 0.3) playerEl.classList.add('swimming');
+    else playerEl.classList.remove('swimming');
+
+    let ahead = 0;
+    state.rivals.forEach(r => { if (r.distance > state.distance) ahead++; });
+    const pos = ahead + 1;
+    $('hudPos').textContent = `${pos}/${RACE_LANES}`;
+    $('hudPos').style.color = pos === 1 ? '#06d6a0' : pos === 2 ? '#ffd60a' : '#ff6b35';
+
+    const allDone = state.distance >= TOTAL_DISTANCE && state.rivals.every(r => r.distance >= TOTAL_DISTANCE);
+    if (allDone || (state.playerFinishedAt && state.elapsed - state.playerFinishedAt > 10)) {
+      finish();
+      return;
+    }
+    if (state.rivals.every(r => r.distance >= TOTAL_DISTANCE) && state.elapsed > 90) {
+      finish();
+      return;
+    }
+    requestAnimationFrame(loop);
+  }
+
+  // ============ COUNTDOWN ============
+  function runCountdown(callback) {
+    const overlay = $('countdown');
+    const num = $('countdownNum');
+    overlay.classList.remove('hidden');
+    let n = 3;
+    num.textContent = n;
+    num.style.animation = 'none'; void num.offsetWidth;
+    num.style.animation = 'countPulse 1s ease-out';
+
+    const iv = setInterval(() => {
+      n--;
+      if (n > 0) {
+        num.textContent = n;
+        num.style.animation = 'none'; void num.offsetWidth;
+        num.style.animation = 'countPulse 1s ease-out';
+      } else if (n === 0) {
+        num.textContent = '¡YA!';
+        num.style.animation = 'none'; void num.offsetWidth;
+        num.style.animation = 'countPulse 0.6s ease-out';
+      } else {
+        clearInterval(iv);
+        overlay.classList.add('hidden');
+        callback();
+      }
+    }, 1000);
+  }
+
+  // ============ START ============
+  function startRace() {
+    const nick = getNickname();
+    if (!nick) {
+      alert('Por favor escribe un nickname de al menos 3 caracteres.');
+      $('nicknameInput').focus();
+      return false;
+    }
+    playerNickname = nick;
+    saveNickname(nick);
+    updatePlayerNameplate(nick);
+
+    state = {
+      running: false, finished: false,
+      distance: 0, velocity: 0,
+      lastArm: null, lastStrokeTime: 0,
+      startTime: 0, elapsed: 0,
+      strokes: 0, goodStrokes: 0,
+      strokeIntervals: [], rivals: [],
+      playerFinishedAt: null,
+    };
+    initRivals();
+    document.querySelectorAll('.swimmer').forEach(s => {
+      s.style.left = '14px';
+      s.classList.remove('swimming');
+    });
+
+    $('overlayStart').classList.add('hidden');
+    $('overlayCameraReady').classList.add('hidden');
+    $('overlayFinish').classList.add('hidden');
+
+    runCountdown(() => {
+      state.running = true;
+      state.startTime = performance.now();
+      lastFrame = 0;
+      requestAnimationFrame(loop);
+    });
+    return true;
+  }
+
+  async function finish() {
+    state.running = false;
+    state.finished = true;
+
+    const racers = [
+      { name: playerNickname || 'TÚ', isPlayer: true, time: state.playerFinishedAt, dist: state.distance },
+      ...state.rivals.map(r => ({
+        name: r.name.toUpperCase(), isPlayer: false,
+        time: r.finishedAt, dist: r.distance,
+      })),
+    ];
+    racers.sort((a, b) => {
+      const aDone = a.dist >= TOTAL_DISTANCE;
+      const bDone = b.dist >= TOTAL_DISTANCE;
+      if (aDone && bDone) return a.time - b.time;
+      if (aDone) return -1;
+      if (bDone) return 1;
+      return b.dist - a.dist;
+    });
+
+    const podium = $('finishPodium');
+    podium.innerHTML = '';
+    const medalClass = ['gold','silver','bronze',''];
+    racers.forEach((r, idx) => {
+      const row = document.createElement('div');
+      row.className = `podium-row ${medalClass[idx] || ''} ${r.isPlayer ? 'player' : ''}`;
+      const medal = ['🥇','🥈','🥉','4°'][idx];
+      const timeStr = (r.dist >= TOTAL_DISTANCE && r.time !== null) ? formatTime(r.time) : `${r.dist.toFixed(1)}m`;
+      row.innerHTML = `<div class="podium-pos">${medal}</div><div class="podium-name">${r.name}</div><div class="podium-time">${timeStr}</div>`;
+      podium.appendChild(row);
+    });
+
+    const playerPos = racers.findIndex(r => r.isPlayer) + 1;
+    const titles = ['¡GANASTE! 🏆','Segundo lugar 🥈','Tercer lugar 🥉','Sigue entrenando 💪'];
+    $('finalTitle').textContent = titles[playerPos - 1] || titles[3];
+
+    let isNewRecord = false;
+    if (state.distance >= TOTAL_DISTANCE && state.playerFinishedAt !== null) {
+      try {
+        const prev = localStorage.getItem('lagunaswim_race_best');
+        const prevTime = prev ? parseFloat(prev) : null;
+        if (prevTime === null || state.playerFinishedAt < prevTime) {
+          localStorage.setItem('lagunaswim_race_best', String(state.playerFinishedAt));
+          $('newRecordBadge').classList.remove('hidden');
+          isNewRecord = true;
+        } else {
+          $('newRecordBadge').classList.add('hidden');
+        }
+      } catch (e) {
+        $('newRecordBadge').classList.add('hidden');
+      }
+    } else {
+      $('newRecordBadge').classList.add('hidden');
+    }
+
+    // Enviar resultado al padre (Firebase) si terminó la carrera
+    if (state.distance >= TOTAL_DISTANCE && state.playerFinishedAt !== null) {
+      const efficiency = state.strokes > 0 ? Math.round((state.goodStrokes / state.strokes) * 100) : 0;
+      sendToParent('RACE_FINISHED', {
+        nickname: playerNickname,
+        time: state.playerFinishedAt,
+        position: playerPos,
+        strokes: state.strokes,
+        efficiency: efficiency,
+        mode: mode,
+        isNewRecord: isNewRecord,
+        timestamp: Date.now(),
+      });
+      // Pedir al padre el leaderboard global
+      sendToParent('REQUEST_LEADERBOARD', {});
+      $('leaderboardSection').style.display = 'block';
+    } else {
+      $('leaderboardSection').style.display = 'none';
+    }
+
+    setTimeout(() => {
+      $('overlayFinish').classList.remove('hidden');
+    }, 800);
+  }
+
+  function renderLeaderboard(entries) {
+    const list = $('leaderboardList');
+    if (!entries || entries.length === 0) {
+      list.innerHTML = '<div class="leaderboard-row" style="justify-content:center;color:var(--text-dim)">Sé el primero en el ranking</div>';
+      return;
+    }
+    list.innerHTML = '';
+    entries.slice(0, 10).forEach((entry, idx) => {
+      const row = document.createElement('div');
+      row.className = 'leaderboard-row';
+      if (entry.nickname && entry.nickname.toUpperCase() === playerNickname.toUpperCase()) {
+        row.classList.add('me');
+      }
+      row.innerHTML = `
+        <div class="lb-rank">${idx+1}°</div>
+        <div class="lb-name">${entry.nickname || 'ANÓNIMO'}</div>
+        <div class="lb-time">${formatTime(entry.time)}</div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  // ============ KEYBOARD ============
+  document.addEventListener('keydown', (e) => {
+    if (e.repeat) return;
+    if (mode !== 'keyboard') return;
+    if (!state.running) return;
+    const k = e.key.toLowerCase();
+    if (k === 'a') stroke('L');
+    else if (k === 'l') stroke('R');
+  });
+
+  // ============ TOUCH ============
+  function setupTouch(zone, arm) {
+    const trigger = (e) => {
+      e.preventDefault();
+      if (mode !== 'touch') return;
+      stroke(arm);
+      zone.classList.add('active');
+      setTimeout(() => zone.classList.remove('active'), 120);
+    };
+    zone.addEventListener('touchstart', trigger, { passive: false });
+    zone.addEventListener('mousedown', (e) => { if (mode === 'touch') trigger(e); });
+  }
+  setupTouch($('zoneLeft'), 'L');
+  setupTouch($('zoneRight'), 'R');
+
+  // ============ CAMERA + POSE ============
+  async function setupCamera() {
+    const status = $('loadingStatus');
+    $('overlayStart').classList.add('hidden');
+    $('overlayLoading').classList.remove('hidden');
+    status.classList.remove('error');
+    status.textContent = 'Pidiendo permiso de cámara…';
+
+    try {
+      cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 480, facingMode: 'user' },
+        audio: false,
+      });
+    } catch (err) {
+      status.textContent = 'No se pudo acceder a la cámara. Usa modo Teclado o Táctil.';
+      status.classList.add('error');
+      return false;
+    }
+
+    const video = $('cameraVideo');
+    video.srcObject = cameraStream;
+    await new Promise(res => video.onloadedmetadata = res);
+    await video.play();
+
+    status.textContent = 'Cargando detector de pose…';
+
+    try {
+      pose = new Pose({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`,
+      });
+      pose.setOptions({
+        modelComplexity: 0,
+        smoothLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
+      pose.onResults(onPoseResults);
+    } catch (err) {
+      status.textContent = 'No se pudo cargar el detector. Usa modo Teclado.';
+      status.classList.add('error');
+      return false;
+    }
+
+    const canvas = $('cameraCanvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    async function detect() {
+      if (!cameraStream) return;
+      try { await pose.send({ image: video }); } catch (e) {}
+      cameraLoop = requestAnimationFrame(detect);
+    }
+    detect();
+
+    $('cameraPreview').classList.add('active');
+    $('overlayLoading').classList.add('hidden');
+    $('overlayCameraReady').classList.remove('hidden');
+    return true;
+  }
+
+  function onPoseResults(results) {
+    const canvas = $('cameraCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!results.poseLandmarks) return;
+
+    const lm = results.poseLandmarks;
+    const leftShoulder = lm[11];
+    const leftWrist = lm[15];
+    const rightShoulder = lm[12];
+    const rightWrist = lm[16];
+    if (!leftShoulder || !leftWrist || !rightShoulder || !rightWrist) return;
+
+    const THRESHOLD = 0.08;
+    const leftUp = leftWrist.y < leftShoulder.y - THRESHOLD && (leftWrist.visibility || 1) > 0.4;
+    const rightUp = rightWrist.y < rightShoulder.y - THRESHOLD && (rightWrist.visibility || 1) > 0.4;
+
+    $('armIndL').classList.toggle('detected', leftUp);
+    $('armIndR').classList.toggle('detected', rightUp);
+
+    drawLandmark(ctx, leftShoulder, canvas, leftUp ? '#ffd60a' : '#48cae4');
+    drawLandmark(ctx, leftWrist, canvas, leftUp ? '#ffd60a' : '#ffffff');
+    drawLandmark(ctx, rightShoulder, canvas, rightUp ? '#ffd60a' : '#48cae4');
+    drawLandmark(ctx, rightWrist, canvas, rightUp ? '#ffd60a' : '#ffffff');
+    drawLine(ctx, leftShoulder, leftWrist, canvas, leftUp ? '#ffd60a' : 'rgba(255,255,255,0.5)');
+    drawLine(ctx, rightShoulder, rightWrist, canvas, rightUp ? '#ffd60a' : 'rgba(255,255,255,0.5)');
+
+    if (state.running) {
+      if (leftUp && poseState.leftArmReadyToFire) { stroke('L'); poseState.leftArmReadyToFire = false; }
+      if (!leftUp && !poseState.leftArmReadyToFire && leftWrist.y > leftShoulder.y + 0.02) poseState.leftArmReadyToFire = true;
+      if (rightUp && poseState.rightArmReadyToFire) { stroke('R'); poseState.rightArmReadyToFire = false; }
+      if (!rightUp && !poseState.rightArmReadyToFire && rightWrist.y > rightShoulder.y + 0.02) poseState.rightArmReadyToFire = true;
+    }
+  }
+
+  function drawLandmark(ctx, p, canvas, color) {
+    if (!p) return;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(p.x * canvas.width, p.y * canvas.height, 5, 0, Math.PI*2);
+    ctx.fill();
+  }
+  function drawLine(ctx, p1, p2, canvas, color) {
+    if (!p1 || !p2) return;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(p1.x * canvas.width, p1.y * canvas.height);
+    ctx.lineTo(p2.x * canvas.width, p2.y * canvas.height);
+    ctx.stroke();
+  }
+  function stopCamera() {
+    if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+    if (cameraLoop) { cancelAnimationFrame(cameraLoop); cameraLoop = null; }
+    $('cameraPreview').classList.remove('active');
+  }
+
+  // ============ MODE SELECTION ============
+  function validateAndProceed(action) {
+    const nick = getNickname();
+    if (!nick) {
+      alert('Por favor escribe un nickname de al menos 3 caracteres.');
+      $('nicknameInput').focus();
+      return;
+    }
+    playerNickname = nick;
+    saveNickname(nick);
+    updatePlayerNameplate(nick);
+    action();
+  }
+
+  $('modeCamera').addEventListener('click', () => {
+    validateAndProceed(async () => {
+      mode = 'camera';
+      document.body.classList.remove('touch-mode');
+      const ok = await setupCamera();
+      if (!ok) {
+        setTimeout(() => {
+          $('overlayLoading').classList.add('hidden');
+          $('overlayStart').classList.remove('hidden');
+        }, 2500);
+      }
+    });
+  });
+
+  $('modeKeyboard').addEventListener('click', () => {
+    validateAndProceed(() => {
+      mode = 'keyboard';
+      document.body.classList.remove('touch-mode');
+      stopCamera();
+      startRace();
+    });
+  });
+
+  $('modeTouch').addEventListener('click', () => {
+    validateAndProceed(() => {
+      mode = 'touch';
+      document.body.classList.add('touch-mode');
+      stopCamera();
+      startRace();
+    });
+  });
+
+  $('btnCancelCamera').addEventListener('click', () => {
+    stopCamera();
+    $('overlayLoading').classList.add('hidden');
+    $('overlayStart').classList.remove('hidden');
+  });
+  $('btnStartRace').addEventListener('click', () => {
+    $('overlayCameraReady').classList.add('hidden');
+    startRace();
+  });
+  $('btnBackToMode').addEventListener('click', () => {
+    stopCamera();
+    $('overlayCameraReady').classList.add('hidden');
+    $('overlayStart').classList.remove('hidden');
+  });
+  $('btnRestart').addEventListener('click', () => { startRace(); });
+  $('btnChangeMode').addEventListener('click', () => {
+    stopCamera();
+    document.body.classList.remove('touch-mode');
+    $('overlayFinish').classList.add('hidden');
+    $('overlayStart').classList.remove('hidden');
+  });
+  $('closeBtn').addEventListener('click', () => {
+    stopCamera();
+    sendToParent('CLOSE_GAME', {});
+  });
+
+  if ('ontouchstart' in window && navigator.maxTouchPoints > 0) {
+    $('modeTouch').classList.add('recommended');
+    $('modeCamera').classList.remove('recommended');
+  }
+
+  // Avisar al padre que el juego está listo
+  if (isEmbedded) {
+    sendToParent('GAME_READY', {});
+  }
+
+  loadSavedNickname();
+</script>
+</body>
+</html>
