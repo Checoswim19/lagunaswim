@@ -835,7 +835,275 @@
     letter-spacing: 1px;
   }
   .status-msg.error { color: var(--accent-hot); }
+
+  /* ============ NUEVO: MODO DUELO ============ */
+  .duel-btn-main {
+    margin-top: 16px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #ff6b35 0%, #ef476f 100%);
+    color: white;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 0 #aa2244, 0 6px 18px rgba(239,71,111,0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .duel-btn-main:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #aa2244, 0 10px 22px rgba(239,71,111,0.6);
+  }
+  .duel-btn-main:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #aa2244;
+  }
+  .duel-btn-main .icon { font-size: 18px; }
+
+  /* QR display */
+  .qr-display {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin: 14px auto;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qr-display canvas, .qr-display img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .duel-code-box {
+    background: rgba(255,214,10,0.08);
+    border: 2px dashed var(--accent);
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin: 14px 0;
+    text-align: center;
+  }
+  .duel-code-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .duel-code-value {
+    font-family: 'Courier New', monospace;
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 360px;
+  }
+  .share-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 11px 14px;
+    background: rgba(0,150,199,0.15);
+    border: 1.5px solid rgba(72,202,228,0.4);
+    border-radius: 10px;
+    color: var(--text-bright);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .share-btn:hover {
+    border-color: var(--accent);
+    background: rgba(255,214,10,0.1);
+  }
+  .share-btn.whatsapp {
+    background: rgba(37,211,102,0.15);
+    border-color: rgba(37,211,102,0.5);
+  }
+  .share-btn.whatsapp:hover {
+    background: rgba(37,211,102,0.25);
+  }
+  .share-btn .icon { font-size: 16px; }
+
+  .copied-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: var(--bg-deck);
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    animation: toastIn 0.3s ease-out;
+  }
+  @keyframes toastIn {
+    from { transform: translate(-50%, 30px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+  }
+
+  /* Lobby (esperando rival / esperando creador) */
+  .lobby-players {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0;
+    width: 100%;
+    max-width: 380px;
+  }
+  .lobby-player {
+    flex: 1;
+    background: rgba(0,150,199,0.1);
+    border: 2px solid rgba(72,202,228,0.3);
+    border-radius: 12px;
+    padding: 14px 8px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .lobby-player.ready {
+    border-color: #06d6a0;
+    background: rgba(6,214,160,0.1);
+  }
+  .lobby-player.waiting {
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(0,0,0,0.2);
+  }
+  .lobby-player-emoji {
+    font-size: 30px;
+    margin-bottom: 6px;
+  }
+  .lobby-player-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .lobby-player-status {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .lobby-player.ready .lobby-player-status {
+    color: #06d6a0;
+  }
+  .lobby-vs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 40px;
+  }
+
+  /* QR scanner area */
+  .qr-scanner-box {
+    width: 280px;
+    max-width: 90vw;
+    margin: 12px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+  }
+  #qr-reader { width: 100%; }
+  #qr-reader video { width: 100% !important; }
+
+  /* Disconnect modal */
+  .disconnect-msg {
+    background: rgba(239,71,111,0.15);
+    border: 2px solid var(--rival-1);
+    color: var(--text-bright);
+    padding: 18px 24px;
+    border-radius: 12px;
+    margin: 16px 0;
+    max-width: 420px;
+    text-align: center;
+  }
+  .disconnect-icon { font-size: 36px; margin-bottom: 8px; }
+  .disconnect-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--rival-1);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .disconnect-desc {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  /* Score display arriba durante el duelo */
+  .duel-vs-badge {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 18;
+    background: rgba(0,8,20,0.85);
+    border: 1.5px solid var(--accent);
+    border-radius: 50px;
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+  }
+  body.duel-mode .duel-vs-badge { display: flex; }
+  .duel-vs-nick {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .duel-vs-nick.you { color: var(--accent); }
+  .duel-vs-nick.rival { color: var(--rival-1); }
+  .duel-vs-sep { color: var(--text-dim); font-size: 10px; font-weight: 600; }
+
+  /* Ocultar elementos cuando estamos en modo duelo */
+  body.duel-mode .reference-times { display: none; }
+  body.duel-mode #hudPos { font-size: 14px; }
+  /* ============ FIN MODO DUELO CSS ============ */
 </style>
+<!-- ============ NUEVO: Firebase + QR libs para modo duelo ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 
@@ -897,6 +1165,13 @@
     <div class="touch-zone right" id="zoneRight"><div class="indicator">→</div></div>
   </div>
 
+  <!-- Badge VS durante duelo -->
+  <div class="duel-vs-badge" id="duelVsBadge">
+    <span class="duel-vs-nick you" id="duelVsYou">TÚ</span>
+    <span class="duel-vs-sep">VS</span>
+    <span class="duel-vs-nick rival" id="duelVsRival">RIVAL</span>
+  </div>
+
   <!-- START -->
   <div class="overlay" id="overlayStart">
     <div class="brand">Laguna Swim International</div>
@@ -946,8 +1221,121 @@
     <div class="privacy-note">
       🔒 La cámara funciona sólo en tu dispositivo. Ningún video se sube ni se guarda. Sólo guardamos tu nickname y tu mejor tiempo.
     </div>
+
+    <!-- ============ NUEVO: Botón Reto 1v1 ============ -->
+    <button class="duel-btn-main" id="btnDuelo" onclick="iniciarDuelo()">
+      <span class="icon">⚔️</span> Retar 1v1 con QR
+    </button>
+    <!-- ============ FIN ============ -->
+
     <div class="motto">Fuertes y Valientes · Joshua 1:9</div>
   </div>
+
+  <!-- ============ NUEVO: OVERLAYS DEL DUELO ============ -->
+
+  <!-- Lobby creador: esperando rival -->
+  <div class="overlay hidden" id="overlayDueloCreador">
+    <div class="brand">Duelo 1v1 · Esperando rival</div>
+    <h2 class="title" style="font-size: clamp(22px, 5vw, 38px)">Comparte el código</h2>
+    <p class="subtitle">Tu rival debe escanear este QR o entrar al enlace para unirse al duelo.</p>
+
+    <div class="qr-display" id="duelQRDisplay"></div>
+
+    <div class="duel-code-box">
+      <div class="duel-code-label">Código</div>
+      <div class="duel-code-value" id="duelCodeValue">------</div>
+    </div>
+
+    <div class="share-buttons">
+      <button class="share-btn" id="btnCopyLink">
+        <span class="icon">📋</span> Copiar enlace
+      </button>
+      <button class="share-btn" id="btnShareQR">
+        <span class="icon">📤</span> Compartir
+      </button>
+      <button class="share-btn whatsapp" id="btnWhatsApp">
+        <span class="icon">💬</span> WhatsApp
+      </button>
+    </div>
+
+    <div class="lobby-players">
+      <div class="lobby-player ready" id="lobbyCreator">
+        <div class="lobby-player-emoji">🏊‍♂️</div>
+        <div class="lobby-player-name" id="lobbyCreatorName">TÚ</div>
+        <div class="lobby-player-status">Listo</div>
+      </div>
+      <div class="lobby-vs">VS</div>
+      <div class="lobby-player waiting" id="lobbyRival">
+        <div class="lobby-player-emoji">⏳</div>
+        <div class="lobby-player-name" id="lobbyRivalName">Esperando...</div>
+        <div class="lobby-player-status">Sin rival</div>
+      </div>
+    </div>
+
+    <button class="start-btn" id="btnIniciarDuelo" style="display:none">¡Empezar carrera!</button>
+    <button class="start-btn secondary" id="btnCancelarDuelo">Cancelar duelo</button>
+  </div>
+
+  <!-- Pantalla escanear QR (cuando el rival viene por enlace) -->
+  <div class="overlay hidden" id="overlayDueloUnirse">
+    <div class="brand">Duelo 1v1 · Únete</div>
+    <h2 class="title" style="font-size: clamp(22px, 5vw, 38px)">¡Te están retando!</h2>
+    <p class="subtitle">Has sido invitado a una carrera 1 vs 1. Escribe tu nickname para entrar.</p>
+
+    <div class="duel-code-box">
+      <div class="duel-code-label">Código del duelo</div>
+      <div class="duel-code-value" id="duelCodeJoin">------</div>
+    </div>
+
+    <div class="nickname-box">
+      <div class="nickname-label">Tu nickname</div>
+      <input type="text" class="nickname-input" id="nicknameInputJoin" placeholder="Ej. PEDROM" maxlength="14" autocomplete="off">
+      <div class="nickname-hint">3 a 14 caracteres</div>
+    </div>
+
+    <button class="start-btn" id="btnUnirseConfirm">Entrar al duelo</button>
+    <button class="start-btn secondary" id="btnUnirseCancel">Cancelar</button>
+  </div>
+
+  <!-- Lobby unirse: esperando que creador inicie -->
+  <div class="overlay hidden" id="overlayDueloRival">
+    <div class="brand">Duelo 1v1 · Esperando inicio</div>
+    <h2 class="title" style="font-size: clamp(22px, 5vw, 38px)">¡Listo!</h2>
+    <p class="subtitle">Esperando que el creador inicie la carrera...</p>
+
+    <div class="lobby-players">
+      <div class="lobby-player ready" id="lobbyCreatorR">
+        <div class="lobby-player-emoji">🏊‍♂️</div>
+        <div class="lobby-player-name" id="lobbyCreatorRName">Creador</div>
+        <div class="lobby-player-status">Listo</div>
+      </div>
+      <div class="lobby-vs">VS</div>
+      <div class="lobby-player ready">
+        <div class="lobby-player-emoji">🏊‍♂️</div>
+        <div class="lobby-player-name" id="lobbyMyName">TÚ</div>
+        <div class="lobby-player-status">Listo</div>
+      </div>
+    </div>
+
+    <div class="spinner"></div>
+    <p class="status-msg" style="margin-top:8px">Aguarda...</p>
+    <button class="start-btn secondary" id="btnSalirRival">Salir</button>
+  </div>
+
+  <!-- Modal desconexión -->
+  <div class="overlay hidden" id="overlayDesconectado">
+    <div class="disconnect-msg">
+      <div class="disconnect-icon">📶❌</div>
+      <div class="disconnect-title">Conexión perdida</div>
+      <div class="disconnect-desc">
+        Se requiere conexión estable a internet para jugar duelos en tiempo real.
+        El duelo fue cancelado. Verifica tu WiFi o datos móviles e intenta de nuevo.
+      </div>
+    </div>
+    <button class="start-btn" id="btnVolverInicio">Volver al inicio</button>
+  </div>
+
+  <!-- ============ FIN OVERLAYS DUELO ============ -->
 
   <!-- LOADING -->
   <div class="overlay hidden" id="overlayLoading">
@@ -1127,7 +1515,36 @@
   }
   buildPool();
 
-  function makeSwimmerSVG(capColor) {
+  function makeSwimmerSVG(capColor, isLaguna) {
+    // Si isLaguna=true, usar estilo Laguna Swim (gorra dorada con detalle, goggles azules)
+    if (isLaguna) {
+      return `
+        <svg viewBox="0 0 50 22" xmlns="http://www.w3.org/2000/svg">
+          <!-- Estela de agua -->
+          <ellipse cx="6" cy="11" rx="4" ry="2.2" fill="#0d2438"/>
+          <ellipse cx="6" cy="11" rx="3" ry="1.5" fill="#1a4d6b" opacity="0.6"/>
+          <!-- Cuerpo (azul marino Laguna) -->
+          <ellipse cx="22" cy="11" rx="14" ry="4.2" fill="#071e38"/>
+          <!-- Sombra del cuerpo en agua -->
+          <ellipse cx="22" cy="13" rx="13" ry="2" fill="#1a4d6b" opacity="0.4"/>
+          <!-- Brazo trasero (piel) -->
+          <ellipse class="arm-back" cx="15" cy="11" rx="7" ry="2" fill="#f4c89a"/>
+          <!-- Brazo delantero -->
+          <ellipse class="arm-front" cx="33" cy="11" rx="7" ry="2" fill="#f4c89a"/>
+          <!-- Gorra (color principal del equipo) -->
+          <circle cx="40" cy="11" r="5.2" fill="${capColor}"/>
+          <!-- Línea decorativa de la gorra -->
+          <path d="M 35.5 11.5 Q 40 13.5 44.5 11.5" stroke="#071e38" stroke-width="0.6" fill="none" opacity="0.7"/>
+          <!-- Goggles azules tipo Laguna -->
+          <ellipse cx="42" cy="9.5" rx="2" ry="1.4" fill="#1e5a9e"/>
+          <ellipse cx="42" cy="9.5" rx="1.5" ry="1" fill="#38bdf8"/>
+          <circle cx="42" cy="9.3" r="0.5" fill="#fff"/>
+          <!-- Strap goggles -->
+          <path d="M 44 9.5 Q 45.5 11 44.5 12.5" stroke="#1e5a9e" stroke-width="0.6" fill="none"/>
+        </svg>
+      `;
+    }
+    // Versión original (rivales NPCs)
     return `
       <svg viewBox="0 0 50 22" xmlns="http://www.w3.org/2000/svg">
         <ellipse cx="6" cy="11" rx="4" ry="2" fill="#0d2438"/>
@@ -1143,16 +1560,16 @@
 
   function buildSwimmers() {
     const config = [
-      { id: 'r1', cls: 'r1', cap: '#ef476f', name: 'RIVAL 1', lane: 0 },
-      { id: 'r2', cls: 'r2', cap: '#06d6a0', name: 'RIVAL 2', lane: 1 },
-      { id: 'player', cls: 'player', cap: '#ffd60a', name: 'TÚ', lane: 2 },
-      { id: 'r3', cls: 'r3', cap: '#ffd166', name: 'RIVAL 3', lane: 3 },
+      { id: 'r1', cls: 'r1', cap: '#ef476f', name: 'RIVAL 1', lane: 0, laguna: false },
+      { id: 'r2', cls: 'r2', cap: '#06d6a0', name: 'RIVAL 2', lane: 1, laguna: false },
+      { id: 'player', cls: 'player', cap: '#ffd700', name: 'TÚ', lane: 2, laguna: true },
+      { id: 'r3', cls: 'r3', cap: '#ffd166', name: 'RIVAL 3', lane: 3, laguna: false },
     ];
     config.forEach(c => {
       const sw = document.createElement('div');
       sw.className = `swimmer ${c.cls}`;
       sw.id = `swimmer-${c.id}`;
-      sw.innerHTML = `<div class="wake"></div>${makeSwimmerSVG(c.cap)}<div class="nameplate">${c.name}</div>`;
+      sw.innerHTML = `<div class="wake"></div>${makeSwimmerSVG(c.cap, c.laguna)}<div class="nameplate">${c.name}</div>`;
       sw.style.top = `calc(${((c.lane + 0.5) / RACE_LANES) * 100}% - 11px)`;
       sw.style.left = '14px';
       swimmerPool.appendChild(sw);
@@ -1707,6 +2124,731 @@
   }
 
   loadSavedNickname();
+
+  // ============================================================
+  // NUEVO: MODO DUELO 1v1 EN TIEMPO REAL
+  // ============================================================
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
+    authDomain: "laguna-swim-chrono.firebaseapp.com",
+    databaseURL: "https://laguna-swim-chrono-default-rtdb.firebaseio.com",
+    projectId: "laguna-swim-chrono",
+    storageBucket: "laguna-swim-chrono.firebasestorage.app",
+    messagingSenderId: "618459577354",
+    appId: "1:618459577354:web:2e26bda92112ce241c33f3"
+  };
+
+  let duelDb = null;
+  let duelState = {
+    isDuelMode: false,
+    isCreator: false,
+    duelId: null,
+    duelRef: null,
+    myNickname: '',
+    rivalNickname: '',
+    myProgressRef: null,
+    rivalProgressRef: null,
+    rivalLastUpdate: 0,
+    rivalCheckInterval: null,
+    listeners: [],
+    rivalDistance: 0,
+    rivalVelocity: 0,
+    raceStarted: false,
+  };
+
+  function initFirebase() {
+    if (duelDb) return duelDb;
+    try {
+      if (!firebase.apps || firebase.apps.length === 0) {
+        firebase.initializeApp(FIREBASE_CONFIG);
+      }
+      duelDb = firebase.database();
+      return duelDb;
+    } catch (e) {
+      console.error('Firebase init failed:', e);
+      return null;
+    }
+  }
+
+  // Generar código corto sin caracteres confusos
+  function generateDuelCode() {
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  }
+
+  // ===== ENTRY POINTS =====
+
+  // Botón "Retar 1v1" del overlay inicial
+  window.iniciarDuelo = function() {
+    const nick = getNickname();
+    if (!nick) {
+      alert('Por favor escribe un nickname de al menos 3 caracteres.');
+      $('nicknameInput').focus();
+      return;
+    }
+    playerNickname = nick;
+    saveNickname(nick);
+
+    // Verificar conexión
+    if (!navigator.onLine) {
+      alert('Necesitas conexión a internet para crear un duelo.');
+      return;
+    }
+
+    const db = initFirebase();
+    if (!db) {
+      alert('No se pudo conectar a Firebase. Intenta más tarde.');
+      return;
+    }
+
+    crearDuelo(nick);
+  };
+
+  // Crear duelo (creador)
+  async function crearDuelo(nick) {
+    duelState.isCreator = true;
+    duelState.myNickname = nick;
+    const code = generateDuelCode();
+    duelState.duelId = code;
+
+    const now = Date.now();
+    const duelData = {
+      creator: { nickname: nick, lane: 0 },
+      rival: null,
+      status: 'waiting',
+      startTimestamp: null,
+      progress: { creator: { meters: 0, lastUpdate: now, strokes: 0 } },
+      finish: null,
+      winner: null,
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
+      expiresAt: now + 600000, // 10 min
+    };
+
+    try {
+      duelState.duelRef = duelDb.ref('duels/' + code);
+      await duelState.duelRef.set(duelData);
+
+      // Configurar auto-remove al cerrar la pestaña
+      duelState.duelRef.onDisconnect().remove();
+
+      mostrarLobbyCreador(code, nick);
+      escucharRivalUnirse();
+    } catch (e) {
+      console.error('Error crearDuelo:', e);
+      alert('Error al crear el duelo. Verifica tu conexión.');
+    }
+  }
+
+  function mostrarLobbyCreador(code, nick) {
+    $('overlayStart').classList.add('hidden');
+    $('overlayDueloCreador').classList.remove('hidden');
+    $('duelCodeValue').textContent = code;
+    $('lobbyCreatorName').textContent = nick;
+
+    // Generar QR
+    const duelUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'reto-50m.html?duelo=' + code;
+    generarQR(duelUrl);
+
+    // Botones de compartir
+    $('btnCopyLink').onclick = () => copiarTexto(duelUrl);
+    $('btnShareQR').onclick = () => compartirSistema(duelUrl, code);
+    $('btnWhatsApp').onclick = () => abrirWhatsApp(duelUrl, code);
+    $('btnCancelarDuelo').onclick = cancelarDuelo;
+    $('btnIniciarDuelo').onclick = iniciarCarreraDuelo;
+  }
+
+  function generarQR(text) {
+    const display = $('duelQRDisplay');
+    display.innerHTML = '';
+    try {
+      const qr = qrcode(0, 'M');
+      qr.addData(text);
+      qr.make();
+      display.innerHTML = qr.createImgTag(5, 0);
+    } catch (e) {
+      console.error('QR generation failed', e);
+      display.innerHTML = '<div style="color:#000;font-size:11px">No se pudo generar QR</div>';
+    }
+  }
+
+  function copiarTexto(text) {
+    try {
+      navigator.clipboard.writeText(text).then(() => mostrarToast('¡Enlace copiado!'));
+    } catch (e) {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); mostrarToast('¡Enlace copiado!'); } catch (e2) {}
+      document.body.removeChild(ta);
+    }
+  }
+
+  function compartirSistema(url, code) {
+    const text = `¡Te reto a una carrera 50m libre! Código: ${code}`;
+    if (navigator.share) {
+      navigator.share({ title: 'Reto 50m Libre · Laguna Swim', text: text, url: url })
+        .catch(() => {});
+    } else {
+      copiarTexto(url + '\n' + text);
+    }
+  }
+
+  function abrirWhatsApp(url, code) {
+    const text = encodeURIComponent(`🏊‍♂️ ¡Te reto a una carrera 50m libre!\n\nCódigo: ${code}\nEntra aquí: ${url}`);
+    window.open('https://wa.me/?text=' + text, '_blank');
+  }
+
+  function mostrarToast(msg) {
+    const t = document.createElement('div');
+    t.className = 'copied-toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2000);
+  }
+
+  function escucharRivalUnirse() {
+    if (!duelState.duelRef) return;
+    const handler = duelState.duelRef.child('rival').on('value', snap => {
+      const rival = snap.val();
+      if (rival && rival.nickname) {
+        duelState.rivalNickname = rival.nickname;
+        $('lobbyRival').classList.remove('waiting');
+        $('lobbyRival').classList.add('ready');
+        $('lobbyRival').querySelector('.lobby-player-emoji').textContent = '🏊‍♂️';
+        $('lobbyRivalName').textContent = rival.nickname;
+        $('lobbyRival').querySelector('.lobby-player-status').textContent = 'Listo';
+        $('btnIniciarDuelo').style.display = 'inline-block';
+      }
+    });
+    duelState.listeners.push({ ref: duelState.duelRef.child('rival'), event: 'value', handler });
+  }
+
+  function cancelarDuelo() {
+    if (duelState.duelRef) {
+      duelState.duelRef.remove().catch(() => {});
+    }
+    limpiarDuelo();
+    $('overlayDueloCreador').classList.add('hidden');
+    $('overlayDueloRival').classList.add('hidden');
+    $('overlayStart').classList.remove('hidden');
+  }
+
+  async function iniciarCarreraDuelo() {
+    if (!duelState.duelRef) return;
+    try {
+      // Establecer startTimestamp = serverTime + 3000ms
+      // Como no podemos sumar al timestamp servidor directamente, usamos un truco:
+      // 1) Escribir un timestamp servidor en otro nodo
+      // 2) Leer ese timestamp servidor para calcular offset
+      // En la práctica, basta con timestamp local del creador + 3000ms
+      const startTime = Date.now() + 4000; // 4 segundos para que ambos clientes lo reciban
+      await duelState.duelRef.update({
+        status: 'racing',
+        startTimestamp: startTime,
+      });
+      // El propio cliente creador también arranca con este timestamp
+      // (lo capturará el listener de cambios)
+    } catch (e) {
+      console.error('Error iniciar duelo:', e);
+      alert('Error al iniciar. Intenta de nuevo.');
+    }
+  }
+
+  // ===== UNIRSE A UN DUELO (desde URL ?duelo=ABC123) =====
+  function checkUrlForDuel() {
+    const params = new URLSearchParams(window.location.search);
+    const duelCode = params.get('duelo');
+    if (duelCode) {
+      mostrarPantallaUnirse(duelCode.toUpperCase());
+    }
+  }
+
+  function mostrarPantallaUnirse(code) {
+    $('overlayStart').classList.add('hidden');
+    $('overlayDueloUnirse').classList.remove('hidden');
+    $('duelCodeJoin').textContent = code;
+    duelState.duelId = code;
+
+    // Pre-cargar nickname guardado si existe
+    const saved = localStorage.getItem('laguna_swim_nickname');
+    if (saved) $('nicknameInputJoin').value = saved;
+
+    $('btnUnirseConfirm').onclick = () => confirmarUnirse(code);
+    $('btnUnirseCancel').onclick = () => {
+      $('overlayDueloUnirse').classList.add('hidden');
+      $('overlayStart').classList.remove('hidden');
+      // Limpiar URL
+      try { window.history.replaceState({}, '', window.location.pathname); } catch (e) {}
+    };
+  }
+
+  async function confirmarUnirse(code) {
+    const nick = $('nicknameInputJoin').value.trim().toUpperCase().substring(0, 14);
+    if (nick.length < 3) {
+      alert('Nickname debe tener al menos 3 caracteres.');
+      return;
+    }
+    if (!navigator.onLine) {
+      alert('Necesitas conexión a internet.');
+      return;
+    }
+    saveNickname(nick);
+    playerNickname = nick;
+    duelState.myNickname = nick;
+    duelState.isCreator = false;
+
+    const db = initFirebase();
+    if (!db) {
+      alert('Error de conexión.');
+      return;
+    }
+
+    try {
+      duelState.duelRef = duelDb.ref('duels/' + code);
+      const snap = await duelState.duelRef.once('value');
+      const data = snap.val();
+
+      if (!data) {
+        alert('El duelo no existe o ya expiró.');
+        $('overlayDueloUnirse').classList.add('hidden');
+        $('overlayStart').classList.remove('hidden');
+        return;
+      }
+      if (data.rival) {
+        alert('Este duelo ya tiene un rival. Pide otro código.');
+        return;
+      }
+      if (data.status !== 'waiting') {
+        alert('Este duelo ya empezó o terminó.');
+        return;
+      }
+
+      duelState.rivalNickname = data.creator.nickname;
+
+      // Inscribirse como rival
+      await duelState.duelRef.update({
+        rival: { nickname: nick, lane: 1 },
+        'progress/rival': {
+          meters: 0,
+          lastUpdate: Date.now(),
+          strokes: 0,
+        },
+      });
+
+      // Auto-cleanup
+      duelState.duelRef.child('rival').onDisconnect().remove();
+
+      mostrarLobbyRival(data.creator.nickname, nick);
+      escucharInicioCarrera();
+    } catch (e) {
+      console.error('Error unirse:', e);
+      alert('Error al unirse al duelo.');
+    }
+  }
+
+  function mostrarLobbyRival(creatorName, myName) {
+    $('overlayDueloUnirse').classList.add('hidden');
+    $('overlayDueloRival').classList.remove('hidden');
+    $('lobbyCreatorRName').textContent = creatorName;
+    $('lobbyMyName').textContent = myName;
+    $('btnSalirRival').onclick = cancelarDuelo;
+  }
+
+  function escucharInicioCarrera() {
+    if (!duelState.duelRef) return;
+    const handler = duelState.duelRef.child('status').on('value', snap => {
+      const status = snap.val();
+      if (status === 'racing') {
+        duelState.duelRef.child('startTimestamp').once('value').then(s => {
+          const startTime = s.val();
+          if (startTime) lanzarCarreraDuelo(startTime);
+        });
+      }
+    });
+    duelState.listeners.push({ ref: duelState.duelRef.child('status'), event: 'value', handler });
+  }
+
+  // ===== LANZAR LA CARRERA EN MODO DUELO =====
+  function lanzarCarreraDuelo(startTimestamp) {
+    document.body.classList.add('duel-mode');
+    duelState.isDuelMode = true;
+    duelState.raceStarted = false;
+
+    // Reconfigurar nadadores: solo player y rival visible (ocultar r2, r3)
+    $('swimmer-r2').style.display = 'none';
+    $('swimmer-r3').style.display = 'none';
+    // r1 será nuestro rival humano
+    $('swimmer-r1').style.display = 'block';
+    $('swimmer-r1').querySelector('.nameplate').textContent = duelState.rivalNickname.substring(0, 12);
+
+    // Reposicionar verticalmente: rival arriba, tú abajo
+    $('swimmer-r1').style.top = `calc(${(0.5 / 2) * 100}% - 11px)`;
+    $('swimmer-player').style.top = `calc(${(1.5 / 2) * 100}% - 11px)`;
+    $('swimmer-r1').style.left = '14px';
+    $('swimmer-player').style.left = '14px';
+
+    // Actualizar nombre del player con su nickname
+    updatePlayerNameplate(duelState.myNickname);
+
+    // Mostrar badge VS
+    $('duelVsYou').textContent = duelState.myNickname.substring(0, 12);
+    $('duelVsRival').textContent = duelState.rivalNickname.substring(0, 12);
+
+    // Cerrar todos los overlays
+    $('overlayDueloCreador').classList.add('hidden');
+    $('overlayDueloRival').classList.add('hidden');
+    $('overlayStart').classList.add('hidden');
+
+    // Forzar modo teclado/touch (sin cámara en duelos para simplicidad)
+    // Detección de dispositivo
+    if ('ontouchstart' in window && navigator.maxTouchPoints > 0) {
+      mode = 'touch';
+      document.body.classList.add('touch-mode');
+    } else {
+      mode = 'keyboard';
+    }
+
+    // Suscribirse al progreso del rival
+    duelState.rivalProgressRef = duelState.duelRef.child('progress').child(duelState.isCreator ? 'rival' : 'creator');
+    const rivalHandler = duelState.rivalProgressRef.on('value', snap => {
+      const v = snap.val();
+      if (v) {
+        duelState.rivalDistance = v.meters || 0;
+        duelState.rivalLastUpdate = Date.now();
+      }
+    });
+    duelState.listeners.push({ ref: duelState.rivalProgressRef, event: 'value', handler: rivalHandler });
+
+    // Suscribirse a finish del rival
+    duelState.duelRef.child('finish').on('value', snap => {
+      const f = snap.val();
+      if (f && f.creator && f.rival) {
+        // Ambos terminaron
+        determinarGanador(f);
+      }
+    });
+
+    // Detector de desconexión (rival)
+    duelState.rivalCheckInterval = setInterval(() => {
+      const ahora = Date.now();
+      if (duelState.rivalLastUpdate && (ahora - duelState.rivalLastUpdate) > 8000) {
+        mostrarDesconexion();
+      }
+      if (!navigator.onLine) {
+        mostrarDesconexion();
+      }
+    }, 2000);
+
+    // Esperar al startTimestamp y arrancar
+    const ahora = Date.now();
+    const espera = Math.max(0, startTimestamp - ahora);
+    setTimeout(() => {
+      iniciarCarreraDuelEjecutar();
+    }, espera);
+
+    // Cuenta regresiva visual sincronizada
+    iniciarCuentaRegresivaDuelo(startTimestamp);
+  }
+
+  function iniciarCuentaRegresivaDuelo(startTimestamp) {
+    const overlay = $('countdown');
+    const num = $('countdownNum');
+    overlay.classList.remove('hidden');
+
+    const tick = () => {
+      const ahora = Date.now();
+      const restante = startTimestamp - ahora;
+      if (restante > 0) {
+        const segundos = Math.ceil(restante / 1000);
+        if (num.textContent !== String(segundos)) {
+          num.textContent = segundos;
+          num.style.animation = 'none'; void num.offsetWidth;
+          num.style.animation = 'countPulse 1s ease-out';
+        }
+        setTimeout(tick, 100);
+      } else {
+        num.textContent = '¡YA!';
+        num.style.animation = 'none'; void num.offsetWidth;
+        num.style.animation = 'countPulse 0.6s ease-out';
+        setTimeout(() => overlay.classList.add('hidden'), 800);
+      }
+    };
+    tick();
+  }
+
+  function iniciarCarreraDuelEjecutar() {
+    state = {
+      running: true,
+      finished: false,
+      distance: 0,
+      velocity: 0,
+      lastArm: null,
+      lastStrokeTime: 0,
+      startTime: performance.now(),
+      elapsed: 0,
+      strokes: 0,
+      goodStrokes: 0,
+      strokeIntervals: [],
+      rivals: [],  // sin NPCs en duelo
+      playerFinishedAt: null,
+    };
+    duelState.raceStarted = true;
+    lastFrame = 0;
+    requestAnimationFrame(loopDuelo);
+  }
+
+  // Loop modificado para duelo (sin NPCs, con rival real)
+  function loopDuelo(timestamp) {
+    if (!state.running || !duelState.isDuelMode) return;
+    const dt = lastFrame ? Math.min((timestamp - lastFrame) / 1000, 0.05) : 0.016;
+    lastFrame = timestamp;
+
+    // Decay y movimiento del player
+    state.velocity = Math.max(0, state.velocity - DECAY * dt);
+    state.distance += state.velocity * dt;
+    state.distance = Math.min(state.distance, TOTAL_DISTANCE);
+
+    if (state.distance >= TOTAL_DISTANCE && state.playerFinishedAt === null) {
+      state.playerFinishedAt = state.elapsed;
+      // Reportar finish a Firebase
+      reportarFinishADuelo();
+    }
+
+    state.elapsed = (performance.now() - state.startTime) / 1000;
+
+    $('hudTime').textContent = formatTime(state.elapsed);
+    $('hudMeters').textContent = state.distance.toFixed(1);
+
+    let spm = 0;
+    if (state.strokeIntervals.length >= 2) {
+      const avg = state.strokeIntervals.reduce((a,b)=>a+b,0) / state.strokeIntervals.length;
+      spm = Math.round(60000 / avg);
+    }
+    $('hudSpm').textContent = spm;
+
+    // Posición visual player (carril abajo)
+    const playerEl = $('swimmer-player');
+    const poolWidth = pool.clientWidth;
+    const startX = 14;
+    const endX = poolWidth - 64;
+    const pct = state.distance / TOTAL_DISTANCE;
+    playerEl.style.left = `${startX + (endX - startX) * pct}px`;
+    if (state.velocity > 0.3) playerEl.classList.add('swimming');
+    else playerEl.classList.remove('swimming');
+
+    // Posición visual rival (carril arriba) - leído de Firebase
+    const rivalEl = $('swimmer-r1');
+    const rivalPct = Math.min(1, duelState.rivalDistance / TOTAL_DISTANCE);
+    rivalEl.style.left = `${startX + (endX - startX) * rivalPct}px`;
+    if (duelState.rivalDistance > 1) rivalEl.classList.add('swimming');
+
+    // Posición en carrera
+    const yoVoy = state.distance;
+    const elVa = duelState.rivalDistance;
+    const pos = yoVoy >= elVa ? 1 : 2;
+    $('hudPos').textContent = pos === 1 ? '1°' : '2°';
+    $('hudPos').style.color = pos === 1 ? '#06d6a0' : '#ff6b35';
+
+    // Reportar mi progreso a Firebase (throttle 5x/seg)
+    if (!loopDuelo._lastReport || (timestamp - loopDuelo._lastReport) > 200) {
+      reportarProgresoFirebase();
+      loopDuelo._lastReport = timestamp;
+    }
+
+    // Check si ya terminaron ambos (lo maneja Firebase listener)
+    if (state.playerFinishedAt && duelState.rivalDistance >= TOTAL_DISTANCE) {
+      // Esperar 1.5s para mostrar resultado y limpiar
+      if (!loopDuelo._endedAt) loopDuelo._endedAt = timestamp;
+      if (timestamp - loopDuelo._endedAt > 1500) {
+        state.running = false;
+        return;
+      }
+    }
+
+    requestAnimationFrame(loopDuelo);
+  }
+
+  async function reportarProgresoFirebase() {
+    if (!duelState.duelRef) return;
+    const myKey = duelState.isCreator ? 'creator' : 'rival';
+    try {
+      await duelState.duelRef.child('progress').child(myKey).update({
+        meters: Math.round(state.distance * 100) / 100,
+        lastUpdate: Date.now(),
+        strokes: state.strokes,
+      });
+    } catch (e) {
+      console.warn('reportar progreso failed', e);
+    }
+  }
+
+  async function reportarFinishADuelo() {
+    if (!duelState.duelRef) return;
+    const myKey = duelState.isCreator ? 'creator' : 'rival';
+    const eff = state.strokes > 0 ? Math.round((state.goodStrokes / state.strokes) * 100) : 0;
+    try {
+      await duelState.duelRef.child('finish').child(myKey).set({
+        time: state.playerFinishedAt,
+        strokes: state.strokes,
+        efficiency: eff,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+      });
+    } catch (e) {
+      console.warn('reportar finish failed', e);
+    }
+  }
+
+  async function determinarGanador(finishData) {
+    if (state.finished) return;
+    state.finished = true;
+    state.running = false;
+
+    const myKey = duelState.isCreator ? 'creator' : 'rival';
+    const rivalKey = duelState.isCreator ? 'rival' : 'creator';
+
+    const myTime = finishData[myKey].time;
+    const rivalTime = finishData[rivalKey].time;
+
+    let yoGane = false;
+    let titulo = '';
+    if (myTime < rivalTime) {
+      yoGane = true;
+      titulo = '¡GANASTE! 🏆';
+    } else if (myTime > rivalTime) {
+      titulo = 'Segundo lugar';
+    } else {
+      titulo = 'Empate 🤝';
+    }
+
+    // Solo el creador escribe al ranking (para evitar doble escritura)
+    if (duelState.isCreator) {
+      actualizarRankingDuelos(duelState.myNickname, yoGane);
+      actualizarRankingDuelos(duelState.rivalNickname, !yoGane && myTime !== rivalTime);
+    }
+
+    // Mostrar resultado
+    $('finalTitle').textContent = titulo;
+    $('newRecordBadge').classList.add('hidden');
+
+    const podium = $('finishPodium');
+    podium.innerHTML = '';
+
+    const racers = [
+      { name: duelState.myNickname, time: myTime, isPlayer: true },
+      { name: duelState.rivalNickname, time: rivalTime, isPlayer: false },
+    ].sort((a, b) => a.time - b.time);
+
+    racers.forEach((r, idx) => {
+      const row = document.createElement('div');
+      const cls = idx === 0 ? 'gold' : 'silver';
+      row.className = `podium-row ${cls} ${r.isPlayer ? 'player' : ''}`;
+      const medal = ['🥇','🥈'][idx];
+      row.innerHTML = `<div class="podium-pos">${medal}</div><div class="podium-name">${r.name}</div><div class="podium-time">${formatTime(r.time)}</div>`;
+      podium.appendChild(row);
+    });
+
+    $('leaderboardSection').style.display = 'none';
+
+    setTimeout(() => {
+      $('overlayFinish').classList.remove('hidden');
+    }, 800);
+
+    // Limpiar duelo
+    setTimeout(() => {
+      if (duelState.duelRef && duelState.isCreator) {
+        duelState.duelRef.remove().catch(() => {});
+      }
+      limpiarDuelo();
+    }, 5000);
+  }
+
+  async function actualizarRankingDuelos(nickname, ganador) {
+    if (!duelDb) return;
+    const ref = duelDb.ref('duels_rankings/' + nickname);
+    try {
+      await ref.transaction(curr => {
+        if (!curr) {
+          return {
+            nickname: nickname,
+            wins: ganador ? 1 : 0,
+            losses: ganador ? 0 : 1,
+            totalDuels: 1,
+            lastDuelAt: Date.now(),
+          };
+        }
+        return {
+          nickname: nickname,
+          wins: (curr.wins || 0) + (ganador ? 1 : 0),
+          losses: (curr.losses || 0) + (ganador ? 0 : 1),
+          totalDuels: (curr.totalDuels || 0) + 1,
+          lastDuelAt: Date.now(),
+        };
+      });
+    } catch (e) {
+      console.warn('updateRanking failed', e);
+    }
+  }
+
+  function mostrarDesconexion() {
+    if (duelState.isDuelMode === false) return;
+    state.running = false;
+    duelState.isDuelMode = false;
+    document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
+    $('overlayDesconectado').classList.remove('hidden');
+    $('btnVolverInicio').onclick = () => {
+      limpiarDuelo();
+      $('overlayDesconectado').classList.add('hidden');
+      document.body.classList.remove('duel-mode');
+      document.body.classList.remove('touch-mode');
+      // Restaurar nadadores
+      $('swimmer-r2').style.display = '';
+      $('swimmer-r3').style.display = '';
+      $('overlayStart').classList.remove('hidden');
+    };
+    if (duelState.duelRef && duelState.isCreator) {
+      duelState.duelRef.remove().catch(() => {});
+    }
+  }
+
+  function limpiarDuelo() {
+    // Quitar listeners
+    duelState.listeners.forEach(l => {
+      try { l.ref.off(l.event, l.handler); } catch (e) {}
+    });
+    duelState.listeners = [];
+    if (duelState.rivalCheckInterval) {
+      clearInterval(duelState.rivalCheckInterval);
+      duelState.rivalCheckInterval = null;
+    }
+    if (duelState.duelRef) {
+      try { duelState.duelRef.onDisconnect().cancel(); } catch (e) {}
+      try { duelState.duelRef.child('rival').onDisconnect().cancel(); } catch (e) {}
+      duelState.duelRef = null;
+    }
+    duelState.isDuelMode = false;
+    duelState.isCreator = false;
+    duelState.duelId = null;
+    duelState.rivalDistance = 0;
+    duelState.rivalLastUpdate = 0;
+  }
+
+  // ===== INICIALIZACIÓN: check URL para join automático =====
+  checkUrlForDuel();
+
+  // Detector de online/offline
+  window.addEventListener('offline', () => {
+    if (duelState.isDuelMode) mostrarDesconexion();
+  });
+
+  // ============================================================
+  // FIN MODO DUELO 1v1
+  // ============================================================
 </script>
 </body>
 </html>
