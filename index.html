@@ -2059,6 +2059,23 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
         <div class="reto50-lb-empty">Cargando ranking...</div>
       </div>
     </div>
+
+    <!-- Top 10 Duelos 1v1 -->
+    <div onclick="reto50ToggleDuelosLB()" class="reto50-lb-acc-head" style="background:linear-gradient(135deg, rgba(239,71,111,0.12) 0%, rgba(255,107,53,0.08) 100%);border-color:rgba(239,71,111,0.4)">
+      <div style="display:flex;align-items:center;gap:0.6rem;flex:1">
+        <span style="font-size:1.3rem">&#9876;&#65039;</span>
+        <div>
+          <div style="font-size:0.88rem;font-weight:800;color:#ff6b8e">Top 10 Duelos 1v1</div>
+          <div style="font-size:0.65rem;color:var(--accent-soft)">Más victorias en duelos cara a cara</div>
+        </div>
+      </div>
+      <span id="reto50-duelos-arrow" style="color:#ff6b8e;font-size:1.2rem">&#8964;</span>
+    </div>
+    <div id="reto50-duelos-body" class="reto50-lb-body" style="display:none">
+      <div id="reto50-duelos-list">
+        <div class="reto50-lb-empty">Cargando ranking de duelos...</div>
+      </div>
+    </div>
     <!-- ============ FIN NUEVO RETO 50M ============ -->
 
     <!-- Acordeón Calculadora -->
@@ -9033,6 +9050,124 @@ function reto50ToggleLB() {
     arrow.innerHTML = '&#8964;'; // down
   }
 }
+
+// ===== RANKING DE DUELOS 1v1 =====
+var RETO50_DUELOS = {
+  cache: null,
+  cacheTime: 0,
+  cacheMs: 30000,
+};
+
+async function reto50CargarDuelosRanking(forzar) {
+  var ahora = Date.now();
+  if (!forzar && RETO50_DUELOS.cache && (ahora - RETO50_DUELOS.cacheTime) < RETO50_DUELOS.cacheMs) {
+    return RETO50_DUELOS.cache;
+  }
+  try {
+    var snap = await db.ref('duels_rankings')
+      .orderByChild('wins')
+      .limitToLast(20)
+      .once('value');
+    var rows = [];
+    snap.forEach(function(child) {
+      var v = child.val();
+      if (v && v.nickname) {
+        rows.push({
+          nickname: v.nickname,
+          wins: v.wins || 0,
+          losses: v.losses || 0,
+          totalDuels: v.totalDuels || 0,
+          lastDuelAt: v.lastDuelAt || 0,
+        });
+      }
+    });
+    // Ordenar por wins desc, luego winRate, luego totalDuels desc
+    rows.sort(function(a, b) {
+      if (b.wins !== a.wins) return b.wins - a.wins;
+      var rateA = a.totalDuels > 0 ? a.wins / a.totalDuels : 0;
+      var rateB = b.totalDuels > 0 ? b.wins / b.totalDuels : 0;
+      if (rateB !== rateA) return rateB - rateA;
+      return b.totalDuels - a.totalDuels;
+    });
+    var top10 = rows.slice(0, 10);
+    RETO50_DUELOS.cache = top10;
+    RETO50_DUELOS.cacheTime = ahora;
+    return top10;
+  } catch (e) {
+    console.warn('Error cargando duelos ranking:', e);
+    return [];
+  }
+}
+
+async function reto50RenderDuelosLB() {
+  var list = document.getElementById('reto50-duelos-list');
+  if (!list) return;
+  list.innerHTML = '<div class="reto50-lb-empty">Cargando ranking de duelos...</div>';
+  var top = await reto50CargarDuelosRanking();
+  if (!top || top.length === 0) {
+    list.innerHTML = '<div class="reto50-lb-empty">Aún no hay duelos jugados. ¡Sé el primero!</div>';
+    return;
+  }
+  var esCoach = !!(state && state.isCoach);
+  list.innerHTML = '';
+  top.forEach(function(entry, idx) {
+    var row = document.createElement('div');
+    row.className = 'reto50-lb-row' + (idx === 0 ? ' gold' : '');
+    var medal = ['🥇','🥈','🥉'][idx] || (idx + 1) + '°';
+    var winRate = entry.totalDuels > 0 ? Math.round((entry.wins / entry.totalDuels) * 100) : 0;
+    var statsText = entry.wins + 'W · ' + entry.losses + 'L · ' + winRate + '%';
+    var deleteBtn = esCoach ? '<button class="reto50-lb-delete" onclick="event.stopPropagation();reto50BorrarDueloRanking(\'' + entry.nickname.replace(/'/g, '') + '\')">🗑️</button>' : '';
+    row.innerHTML =
+      '<div class="reto50-lb-rank">' + medal + '</div>' +
+      '<div class="reto50-lb-name">' + entry.nickname + '</div>' +
+      '<div class="reto50-lb-time" style="font-size:0.7rem;color:var(--accent-soft)">' + statsText + '</div>' +
+      deleteBtn;
+    list.appendChild(row);
+  });
+}
+
+async function reto50BorrarDueloRanking(nickname) {
+  if (!state || !state.isCoach) return;
+  if (!confirm('¿Borrar a "' + nickname + '" del ranking de duelos?')) return;
+  try {
+    await db.ref('duels_rankings/' + nickname).remove();
+    RETO50_DUELOS.cache = null;
+    reto50RenderDuelosLB();
+  } catch (e) {
+    alert('Error al borrar: ' + e.message);
+  }
+}
+
+function reto50ToggleDuelosLB() {
+  var body = document.getElementById('reto50-duelos-body');
+  var arrow = document.getElementById('reto50-duelos-arrow');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    arrow.innerHTML = '&#8963;';
+    reto50RenderDuelosLB();
+  } else {
+    body.style.display = 'none';
+    arrow.innerHTML = '&#8964;';
+  }
+}
+
+// Suscripción real-time al ranking de duelos
+try {
+  db.ref('duels_rankings').on('child_changed', function() {
+    var body = document.getElementById('reto50-duelos-body');
+    if (body && body.style.display === 'block') {
+      RETO50_DUELOS.cache = null;
+      reto50RenderDuelosLB();
+    }
+  });
+  db.ref('duels_rankings').on('child_added', function() {
+    var body = document.getElementById('reto50-duelos-body');
+    if (body && body.style.display === 'block') {
+      RETO50_DUELOS.cache = null;
+      reto50RenderDuelosLB();
+    }
+  });
+} catch (e) {}
 
 // Cerrar juego con tecla ESC
 document.addEventListener('keydown', function(e) {
