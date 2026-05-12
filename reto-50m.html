@@ -1222,10 +1222,18 @@
       🔒 La cámara funciona sólo en tu dispositivo. Ningún video se sube ni se guarda. Sólo guardamos tu nickname y tu mejor tiempo.
     </div>
 
-    <!-- ============ NUEVO: Botón Reto 1v1 ============ -->
-    <button class="duel-btn-main" id="btnDuelo" onclick="iniciarDuelo()">
-      <span class="icon">⚔️</span> Retar 1v1 con QR
-    </button>
+    <!-- ============ NUEVO: Botones Reto 1v1 ============ -->
+    <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px">
+      <button class="duel-btn-main" id="btnDuelo" onclick="iniciarDuelo()">
+        <span class="icon">⚔️</span> Retar 1v1
+      </button>
+      <button class="duel-btn-main" id="btnTengoCodigo" onclick="mostrarIngresarCodigo()" style="background: linear-gradient(135deg, #06d6a0 0%, #38bdf8 100%); box-shadow: 0 4px 0 #1a8270, 0 6px 18px rgba(6,214,160,0.5);">
+        <span class="icon">🔑</span> Tengo un código
+      </button>
+    </div>
+    <p style="font-size: 10px; color: var(--text-dim); margin-top: 8px; letter-spacing: 0.5px;">
+      📹 Los duelos 1v1 requieren cámara · Brazadas reales
+    </p>
     <!-- ============ FIN ============ -->
 
     <div class="motto">Fuertes y Valientes · Joshua 1:9</div>
@@ -1274,6 +1282,45 @@
 
     <button class="start-btn" id="btnIniciarDuelo" style="display:none">¡Empezar carrera!</button>
     <button class="start-btn secondary" id="btnCancelarDuelo">Cancelar duelo</button>
+  </div>
+
+  <!-- NUEVO: Pantalla escribir código manual -->
+  <div class="overlay hidden" id="overlayIngresarCodigo">
+    <div class="brand">Duelo 1v1 · Ingresar código</div>
+    <h2 class="title" style="font-size: clamp(22px, 5vw, 38px)">Escribe el código</h2>
+    <p class="subtitle">Ingresa los 6 caracteres del duelo que te pasaron por WhatsApp.</p>
+
+    <div class="duel-code-box" style="background:rgba(6,214,160,0.08); border-color:#06d6a0;">
+      <div class="duel-code-label">Código (6 caracteres)</div>
+      <input type="text"
+             id="codigoInput"
+             maxlength="6"
+             autocomplete="off"
+             autocapitalize="characters"
+             spellcheck="false"
+             placeholder="ABC123"
+             style="width: 100%;
+                    background: rgba(0,0,0,0.4);
+                    border: 2px solid #06d6a0;
+                    border-radius: 10px;
+                    color: var(--accent);
+                    font-family: 'Courier New', monospace;
+                    font-size: 36px;
+                    font-weight: 900;
+                    letter-spacing: 8px;
+                    text-align: center;
+                    text-transform: uppercase;
+                    padding: 12px;
+                    outline: none;
+                    margin-top: 6px;">
+    </div>
+
+    <button class="start-btn" id="btnConfirmarCodigo">Entrar al duelo</button>
+    <button class="start-btn secondary" id="btnCancelarCodigo">Volver</button>
+
+    <p style="font-size: 11px; color: var(--text-dim); margin-top: 14px; max-width: 320px; line-height: 1.5;">
+      📹 <b>Los duelos 1v1 requieren cámara</b> para que ambos jueguen en igualdad de condiciones (brazadas reales). Se te pedirá permiso en el siguiente paso.
+    </p>
   </div>
 
   <!-- Pantalla escanear QR (cuando el rival viene por enlace) -->
@@ -2170,6 +2217,95 @@
     }
   }
 
+  // NUEVO: Pedir cámara obligatoria para modo duelo
+  // Retorna true si la cámara está lista, false si falló
+  async function pedirCamaraParaDuelo() {
+    // Si ya está activa la cámara (porque jugó individual con cámara antes), reutilizar
+    if (cameraStream && pose) {
+      mode = 'camera';
+      $('cameraPreview').classList.add('active');
+      return true;
+    }
+
+    // Mostrar overlay de loading con mensaje específico de duelo
+    $('overlayStart').classList.add('hidden');
+    $('overlayIngresarCodigo').classList.add('hidden');
+    $('overlayDueloUnirse').classList.add('hidden');
+    $('overlayLoading').classList.remove('hidden');
+
+    const status = $('loadingStatus');
+    status.classList.remove('error');
+    status.innerHTML = '🏊‍♂️ Los duelos requieren cámara para que ambos<br>jueguen en igualdad. Pidiendo permiso…';
+
+    try {
+      cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 480, facingMode: 'user' },
+        audio: false,
+      });
+    } catch (err) {
+      // Sin permiso o sin cámara
+      status.classList.add('error');
+      status.innerHTML = '❌ <b>Cámara no disponible</b><br><br>' +
+        'Los duelos 1v1 requieren cámara para ser justos<br>' +
+        '(ambos jugadores deben mover los brazos reales).<br><br>' +
+        'Soluciones:<br>' +
+        '• Da permiso de cámara en tu navegador<br>' +
+        '• Usa otro dispositivo con cámara<br>' +
+        '• Juega en modo individual con teclado/táctil';
+      // Botón para volver
+      setTimeout(() => {
+        $('overlayLoading').classList.add('hidden');
+        $('overlayStart').classList.remove('hidden');
+      }, 5000);
+      return false;
+    }
+
+    const video = $('cameraVideo');
+    video.srcObject = cameraStream;
+    await new Promise(res => video.onloadedmetadata = res);
+    await video.play();
+
+    status.innerHTML = '🤖 Cargando detector de pose…<br><small>(~3 segundos)</small>';
+
+    try {
+      pose = new Pose({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`,
+      });
+      pose.setOptions({
+        modelComplexity: 0,
+        smoothLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
+      pose.onResults(onPoseResults);
+    } catch (err) {
+      status.classList.add('error');
+      status.innerHTML = '❌ No se pudo cargar el detector de pose.<br>Intenta de nuevo.';
+      stopCamera();
+      setTimeout(() => {
+        $('overlayLoading').classList.add('hidden');
+        $('overlayStart').classList.remove('hidden');
+      }, 3000);
+      return false;
+    }
+
+    const canvas = $('cameraCanvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    async function detect() {
+      if (!cameraStream) return;
+      try { await pose.send({ image: video }); } catch (e) {}
+      cameraLoop = requestAnimationFrame(detect);
+    }
+    detect();
+
+    mode = 'camera';
+    $('cameraPreview').classList.add('active');
+    $('overlayLoading').classList.add('hidden');
+    return true;
+  }
+
   // Generar código corto sin caracteres confusos
   function generateDuelCode() {
     const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
@@ -2183,7 +2319,7 @@
   // ===== ENTRY POINTS =====
 
   // Botón "Retar 1v1" del overlay inicial
-  window.iniciarDuelo = function() {
+  window.iniciarDuelo = async function() {
     const nick = getNickname();
     if (!nick) {
       alert('Por favor escribe un nickname de al menos 3 caracteres.');
@@ -2205,8 +2341,67 @@
       return;
     }
 
+    // CÁMARA OBLIGATORIA — pedir permiso antes de crear el duelo
+    const camOk = await pedirCamaraParaDuelo();
+    if (!camOk) return;  // mensaje ya mostrado por la función
+
     crearDuelo(nick);
   };
+
+  // NUEVO: Botón "Tengo un código" del overlay inicial
+  window.mostrarIngresarCodigo = function() {
+    // No requerimos nickname todavía — se pide en la siguiente pantalla
+    $('overlayStart').classList.add('hidden');
+    $('overlayIngresarCodigo').classList.remove('hidden');
+
+    // Limpiar y enfocar el input
+    const input = $('codigoInput');
+    input.value = '';
+    setTimeout(() => input.focus(), 100);
+
+    // Auto-uppercase mientras se escribe
+    input.oninput = function(e) {
+      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      // Si llega a 6 caracteres, listo para confirmar (sin auto-submit para que pueda revisar)
+    };
+
+    // Enter para confirmar
+    input.onkeydown = function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        confirmarCodigoIngresado();
+      }
+    };
+
+    // Configurar botones
+    $('btnConfirmarCodigo').onclick = confirmarCodigoIngresado;
+    $('btnCancelarCodigo').onclick = function() {
+      $('overlayIngresarCodigo').classList.add('hidden');
+      $('overlayStart').classList.remove('hidden');
+    };
+  };
+
+  function confirmarCodigoIngresado() {
+    const code = $('codigoInput').value.trim().toUpperCase();
+    if (code.length !== 6) {
+      alert('El código debe tener exactamente 6 caracteres.');
+      $('codigoInput').focus();
+      return;
+    }
+    if (!/^[A-Z0-9]+$/.test(code)) {
+      alert('El código solo puede tener letras y números.');
+      $('codigoInput').focus();
+      return;
+    }
+    if (!navigator.onLine) {
+      alert('Necesitas conexión a internet.');
+      return;
+    }
+
+    // Cerrar este overlay y abrir el de unirse (que pide nickname)
+    $('overlayIngresarCodigo').classList.add('hidden');
+    mostrarPantallaUnirse(code);
+  }
 
   // Crear duelo (creador)
   async function crearDuelo(nick) {
@@ -2245,9 +2440,15 @@
 
   function mostrarLobbyCreador(code, nick) {
     $('overlayStart').classList.add('hidden');
+    $('overlayLoading').classList.add('hidden');
     $('overlayDueloCreador').classList.remove('hidden');
     $('duelCodeValue').textContent = code;
     $('lobbyCreatorName').textContent = nick;
+
+    // Marcar que YO ya tengo cámara lista (Firebase)
+    duelState.duelRef.child('cameraReady/creator').set(true)
+      .then(() => console.log('[DUELO] cameraReady/creator escrito OK'))
+      .catch((e) => console.error('[DUELO] Error escribiendo cameraReady/creator:', e));
 
     // Generar QR
     const duelUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'reto-50m.html?duelo=' + code;
@@ -2314,19 +2515,32 @@
 
   function escucharRivalUnirse() {
     if (!duelState.duelRef) return;
-    const handler = duelState.duelRef.child('rival').on('value', snap => {
+    console.log('[DUELO] Escuchando entrada del rival en', duelState.duelRef.toString());
+    // Escuchar entrada del rival
+    const handlerRival = duelState.duelRef.child('rival').on('value', snap => {
       const rival = snap.val();
+      console.log('[DUELO] Cambio en rival:', rival);
       if (rival && rival.nickname) {
         duelState.rivalNickname = rival.nickname;
         $('lobbyRival').classList.remove('waiting');
-        $('lobbyRival').classList.add('ready');
         $('lobbyRival').querySelector('.lobby-player-emoji').textContent = '🏊‍♂️';
         $('lobbyRivalName').textContent = rival.nickname;
-        $('lobbyRival').querySelector('.lobby-player-status').textContent = 'Listo';
-        $('btnIniciarDuelo').style.display = 'inline-block';
+        $('lobbyRival').querySelector('.lobby-player-status').textContent = 'Cargando cámara...';
       }
     });
-    duelState.listeners.push({ ref: duelState.duelRef.child('rival'), event: 'value', handler });
+    duelState.listeners.push({ ref: duelState.duelRef.child('rival'), event: 'value', handler: handlerRival });
+
+    // Escuchar readiness de cámara del rival
+    const handlerCam = duelState.duelRef.child('cameraReady/rival').on('value', snap => {
+      console.log('[DUELO] Cambio en cameraReady/rival:', snap.val());
+      if (snap.val() === true) {
+        $('lobbyRival').classList.add('ready');
+        $('lobbyRival').querySelector('.lobby-player-status').textContent = 'Listo · cámara OK';
+        $('btnIniciarDuelo').style.display = 'inline-block';
+        console.log('[DUELO] Botón empezar visible');
+      }
+    });
+    duelState.listeners.push({ ref: duelState.duelRef.child('cameraReady/rival'), event: 'value', handler: handlerCam });
   }
 
   function cancelarDuelo() {
@@ -2340,23 +2554,25 @@
   }
 
   async function iniciarCarreraDuelo() {
-    if (!duelState.duelRef) return;
+    console.log('[DUELO] Click empezar carrera. duelRef:', duelState.duelRef);
+    if (!duelState.duelRef) {
+      console.error('[DUELO] No hay duelRef!');
+      return;
+    }
+
+    // NOTA: ya el lobby valida que ambos tengan cámara antes de mostrar este botón.
+    // Confiamos en eso y arrancamos sin verificación adicional.
     try {
-      // Establecer startTimestamp = serverTime + 3000ms
-      // Como no podemos sumar al timestamp servidor directamente, usamos un truco:
-      // 1) Escribir un timestamp servidor en otro nodo
-      // 2) Leer ese timestamp servidor para calcular offset
-      // En la práctica, basta con timestamp local del creador + 3000ms
-      const startTime = Date.now() + 4000; // 4 segundos para que ambos clientes lo reciban
+      const startTime = Date.now() + 4000;
+      console.log('[DUELO] Escribiendo a Firebase status=racing, startTime=', startTime);
       await duelState.duelRef.update({
         status: 'racing',
         startTimestamp: startTime,
       });
-      // El propio cliente creador también arranca con este timestamp
-      // (lo capturará el listener de cambios)
+      console.log('[DUELO] Firebase actualizado correctamente. Esperando que ambos clientes reciban el evento.');
     } catch (e) {
-      console.error('Error iniciar duelo:', e);
-      alert('Error al iniciar. Intenta de nuevo.');
+      console.error('[DUELO] Error al actualizar Firebase:', e);
+      alert('Error al iniciar la carrera: ' + e.message + '\n\nVerifica las reglas Firebase de la colección "duels".');
     }
   }
 
@@ -2409,6 +2625,10 @@
       return;
     }
 
+    // CÁMARA OBLIGATORIA — pedir permiso antes de unirse
+    const camOk = await pedirCamaraParaDuelo();
+    if (!camOk) return;
+
     try {
       duelState.duelRef = duelDb.ref('duels/' + code);
       const snap = await duelState.duelRef.once('value');
@@ -2454,10 +2674,16 @@
 
   function mostrarLobbyRival(creatorName, myName) {
     $('overlayDueloUnirse').classList.add('hidden');
+    $('overlayLoading').classList.add('hidden');
     $('overlayDueloRival').classList.remove('hidden');
     $('lobbyCreatorRName').textContent = creatorName;
     $('lobbyMyName').textContent = myName;
     $('btnSalirRival').onclick = cancelarDuelo;
+
+    // Marcar que YO (rival) tengo cámara lista
+    duelState.duelRef.child('cameraReady/rival').set(true)
+      .then(() => console.log('[DUELO] cameraReady/rival escrito OK'))
+      .catch((e) => console.error('[DUELO] Error escribiendo cameraReady/rival:', e));
   }
 
   function escucharInicioCarrera() {
@@ -2505,14 +2731,10 @@
     $('overlayDueloRival').classList.add('hidden');
     $('overlayStart').classList.add('hidden');
 
-    // Forzar modo teclado/touch (sin cámara en duelos para simplicidad)
-    // Detección de dispositivo
-    if ('ontouchstart' in window && navigator.maxTouchPoints > 0) {
-      mode = 'touch';
-      document.body.classList.add('touch-mode');
-    } else {
-      mode = 'keyboard';
-    }
+    // CÁMARA OBLIGATORIA EN DUELO
+    // Si ya estaba en modo cámara desde antes, perfecto. Si no, la levantamos ahora.
+    mode = 'camera';
+    document.body.classList.remove('touch-mode');
 
     // Suscribirse al progreso del rival
     duelState.rivalProgressRef = duelState.duelRef.child('progress').child(duelState.isCreator ? 'rival' : 'creator');
