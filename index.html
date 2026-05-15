@@ -1555,6 +1555,596 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
    FIN NUEVO RETO 50M CSS
    ============================================================ */
 
+/* ============================================================
+   NUEVO V2: REDISEÑO PROPUESTA B - EQUIPO PROFESIONAL
+   Gradiente azul marino → azul cielo, estilo poster deportivo
+   ============================================================ */
+
+/* Variables del nuevo sistema visual */
+:root {
+  --depth-darkest: #020e1f;
+  --depth-deep: #051a3a;
+  --depth-mid: #0a3a6e;
+  --depth-shallow: #1a6bb5;
+  --depth-surface: #3ba0e3;
+  --depth-sky: #7ec8e8;
+  --gold-bright: #ffe44d;
+  --gold-deep: #8a6e00;
+}
+
+/* Aplicar gradiente de profundidad al body */
+body.v2-redesign {
+  background: linear-gradient(180deg,
+    var(--depth-darkest) 0%,
+    var(--depth-deep) 20%,
+    var(--depth-mid) 50%,
+    var(--depth-shallow) 100%) !important;
+  background-attachment: fixed !important;
+}
+
+/* Header sticky compacto con borde gold */
+.v2-app-header {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, rgba(2,14,31,0.95) 0%, rgba(5,26,58,0.92) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-bottom: 2px solid var(--gold);
+  z-index: 100;
+}
+.v2-app-header-logo {
+  width: 46px; height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.v2-app-header-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(255,215,0,0.3));
+}
+.v2-app-header-text { flex: 1; min-width: 0; }
+.v2-app-header-main {
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #fff;
+}
+.v2-app-header-main em {
+  color: var(--gold);
+  font-style: normal;
+}
+.v2-app-header-sub {
+  font-size: 0.55rem;
+  color: var(--gold-bright);
+  letter-spacing: 4px;
+  font-weight: 800;
+  margin-top: 3px;
+}
+.v2-app-header-status {
+  font-size: 0.6rem;
+  padding: 4px 9px;
+  background: rgba(6,214,160,0.15);
+  border: 1px solid rgba(6,214,160,0.4);
+  border-radius: 4px;
+  color: #06d6a0;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* Hero Poster Deportivo */
+.v2-hero-poster {
+  position: relative;
+  padding: 1.8rem 1rem 1.4rem;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at top, rgba(56,189,248,0.15) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(2,14,31,0.4) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255,215,0,0.2);
+  overflow: hidden;
+}
+.v2-hero-poster::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: -50px; right: -50px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg,
+    rgba(255,215,0,0.15) 0px,
+    rgba(255,215,0,0.15) 20px,
+    transparent 20px,
+    transparent 40px);
+}
+.v2-hero-poster::after {
+  content: '';
+  position: absolute;
+  top: 75%; left: -50px; right: -50px;
+  height: 1px;
+  background: repeating-linear-gradient(90deg,
+    rgba(126,200,232,0.2) 0px,
+    rgba(126,200,232,0.2) 15px,
+    transparent 15px,
+    transparent 30px);
+}
+.v2-hero-logo-big {
+  width: 140px; height: 140px;
+  margin: 0 auto 1rem;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.v2-hero-logo-big img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
+}
+.v2-hero-brand-big {
+  font-size: 2.3rem;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  line-height: 0.9;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(180deg, #ffffff 0%, #7ec8e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.v2-hero-brand-big em {
+  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: normal;
+}
+.v2-hero-int {
+  font-size: 0.7rem;
+  letter-spacing: 8px;
+  color: var(--gold);
+  font-weight: 800;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+.v2-hero-bar {
+  width: 60px;
+  height: 3px;
+  background: var(--gold);
+  margin: 0.7rem auto;
+}
+.v2-hero-tagline-big {
+  font-size: 0.92rem;
+  color: #fff;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.v2-hero-tagline-big::before, .v2-hero-tagline-big::after {
+  content: '"';
+  color: var(--gold);
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+.v2-hero-tagline-sub {
+  font-size: 0.62rem;
+  letter-spacing: 3px;
+  color: var(--gold-bright);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Banda de stats prominentes */
+.v2-stats-banner {
+  background: linear-gradient(180deg, rgba(2,14,31,0.6) 0%, transparent 100%);
+  border-top: 1px solid rgba(255,215,0,0.3);
+  border-bottom: 1px solid rgba(255,215,0,0.3);
+  padding: 0.9rem 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.v2-stat-item { position: relative; }
+.v2-stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 20%; bottom: 20%;
+  right: 0;
+  width: 1px;
+  background: rgba(255,215,0,0.25);
+}
+.v2-stat-num-big {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 10px rgba(255,215,0,0.3);
+}
+.v2-stat-lbl-big {
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 2px;
+  margin-top: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Section heads con barra gold */
+.v2-section {
+  padding: 0 1rem;
+  margin-top: 1.4rem;
+}
+.v2-section-head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.7rem;
+  gap: 0.5rem;
+}
+.v2-section-head-bar {
+  width: 4px;
+  height: 22px;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+.v2-section-head-text {
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #fff;
+}
+.v2-section-head-text em {
+  color: var(--gold);
+  font-style: normal;
+}
+.v2-section-head-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,215,0,0.3), transparent);
+}
+
+/* Hero card Reto 50m estilo poster */
+.v2-game-poster {
+  background: linear-gradient(135deg,
+    rgba(2,14,31,0.7) 0%,
+    rgba(255,107,53,0.25) 50%,
+    rgba(239,71,111,0.2) 100%);
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  padding: 1.2rem 1.1rem;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0.6rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+.v2-game-poster::before,
+.v2-game-poster::after {
+  content: '';
+  position: absolute;
+  width: 24px; height: 24px;
+  border: 3px solid var(--gold);
+}
+.v2-game-poster::before {
+  top: -3px; left: -3px;
+  border-right: none; border-bottom: none;
+}
+.v2-game-poster::after {
+  bottom: -3px; right: -3px;
+  border-left: none; border-top: none;
+}
+.v2-game-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ff6b35;
+  color: #fff;
+  font-size: 0.55rem;
+  letter-spacing: 2.5px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  font-weight: 900;
+  margin-bottom: 0.7rem;
+  text-transform: uppercase;
+}
+.v2-game-badge::before {
+  content: '●';
+  animation: v2blink 1.2s infinite;
+}
+@keyframes v2blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.v2-game-title {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  line-height: 0.95;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  color: #fff;
+}
+.v2-game-title em {
+  color: var(--gold);
+  font-style: normal;
+}
+.v2-game-subtitle {
+  font-size: 0.8rem;
+  color: rgba(126,200,232,0.85);
+  margin-bottom: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.v2-game-features {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.v2-game-feature {
+  font-size: 0.58rem;
+  padding: 4px 9px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 2px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #fff;
+}
+.v2-game-feature.hot {
+  background: rgba(255,107,53,0.2);
+  border-color: #ff6b35;
+  color: #ffa085;
+}
+.v2-game-btn {
+  display: flex;
+  width: 100%;
+  padding: 0.95rem;
+  background: var(--gold);
+  color: #051a3a;
+  border: none;
+  border-radius: 2px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 5px 0 var(--gold-deep), 0 8px 20px rgba(255,215,0,0.35);
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+}
+
+/* Grid de acciones (Entrena/Compite/Contacto/Tienda) */
+.v2-nav-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.v2-action-card {
+  background: linear-gradient(135deg,
+    rgba(2,14,31,0.5) 0%,
+    rgba(56,189,248,0.08) 100%);
+  border: 1px solid rgba(56,189,248,0.25);
+  border-left: 4px solid var(--gold);
+  border-radius: 2px;
+  padding: 1rem 0.9rem;
+  cursor: pointer;
+  position: relative;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.15s;
+  color: #fff;
+}
+.v2-action-card:active {
+  transform: translateY(2px);
+  border-left-color: var(--accent);
+}
+.v2-action-card.featured {
+  border-left-color: #ff6b35;
+  background: linear-gradient(135deg,
+    rgba(255,107,53,0.15) 0%,
+    rgba(56,189,248,0.1) 100%);
+}
+.v2-action-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+}
+.v2-action-title {
+  font-size: 0.88rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.v2-action-sub {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.65);
+  margin-top: 4px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+.v2-action-arrow {
+  align-self: flex-end;
+  color: var(--gold);
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+/* Evento poster con tape rojo */
+.v2-event-poster {
+  background: linear-gradient(135deg,
+    rgba(2,14,31,0.85) 0%,
+    rgba(10,58,110,0.7) 100%);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.v2-event-tape {
+  background: #ff6b35;
+  color: #fff;
+  padding: 5px 10px;
+  font-size: 0.55rem;
+  letter-spacing: 3px;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+}
+.v2-event-body {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.v2-event-flag { font-size: 2.5rem; flex-shrink: 0; }
+.v2-event-info { flex: 1; min-width: 0; color: #fff; }
+.v2-event-name {
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.v2-event-date {
+  font-size: 0.7rem;
+  color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+.v2-event-loc {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1px;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+.v2-event-arrow {
+  color: var(--gold);
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+/* Coach mini poster */
+.v2-coach-poster {
+  background: linear-gradient(90deg,
+    rgba(2,14,31,0.8) 0%,
+    rgba(10,58,110,0.5) 100%);
+  border: 1px solid rgba(255,215,0,0.2);
+  border-left: 4px solid var(--gold);
+  border-radius: 2px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+}
+.v2-coach-pic {
+  width: 56px; height: 56px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #1a4d6b, #051a3a);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  letter-spacing: 1px;
+}
+.v2-coach-info { flex: 1; min-width: 0; color: #fff; }
+.v2-coach-name {
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.v2-coach-title {
+  font-size: 0.65rem;
+  color: var(--gold-bright);
+  margin-top: 4px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.v2-coach-exp {
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.6);
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+.v2-coach-arrow {
+  color: var(--gold);
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+/* Bottom nav v2 con barra gold */
+body.v2-redesign .bnav {
+  background: linear-gradient(180deg, rgba(2,14,31,0.98) 0%, #000 100%) !important;
+  border-top: 2px solid var(--gold) !important;
+}
+body.v2-redesign .bnav-item {
+  font-size: 0.55rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+}
+body.v2-redesign .bnav-item.active {
+  color: var(--gold) !important;
+  position: relative;
+}
+body.v2-redesign .bnav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 3px;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+}
+body.v2-redesign .bnav-item .ico,
+body.v2-redesign .bnav-item .bnav-icon {
+  font-size: 1.3rem !important;
+}
+
+/* Sponsors bar adapted */
+body.v2-redesign .spons-bar {
+  background: linear-gradient(180deg, rgba(5,26,58,0.95), rgba(2,14,31,0.98)) !important;
+  border-top: 1px solid var(--gold) !important;
+}
+
+/* Card secciones internas más limpio */
+body.v2-redesign .card {
+  background: linear-gradient(135deg, rgba(2,14,31,0.5) 0%, rgba(56,189,248,0.05) 100%);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 4px;
+}
+
+/* ============================================================
+   FIN V2 REDISEÑO
+   ============================================================ */
+
 .video-modal-iframe {
   width: 100%;
   aspect-ratio: 16/9;
@@ -1943,7 +2533,18 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 }
 </style>
 </head>
-<body>
+<body class="v2-redesign">
+<!-- ============ NUEVO V2: HEADER REDISEÑADO ============ -->
+<div class="v2-app-header">
+  <div class="v2-app-header-logo">
+    <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" alt="Laguna Swim International">
+  </div>
+  <div class="v2-app-header-text">
+    <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
+    <div class="v2-app-header-sub">INTERNATIONAL</div>
+  </div>
+</div>
+<!-- ============ FIN V2 HEADER ============ -->
 
 <!-- ============ BARRA FIJA DE PATROCINADORES ============ -->
 <div class="spons-bar" id="spons-bar">
@@ -1987,19 +2588,19 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 <!-- ============ BOTTOM NAV ============ -->
 <nav class="bnav">
   <button class="bnav-item active" onclick="showTab('timer')" id="nav-timer">
-    <span class="bnav-icon">&#127937;</span><span class="bnav-label">Cronometro</span>
-  </button>
-  <button class="bnav-item" onclick="showTab('store')" id="nav-store">
-    <span class="bnav-icon">&#128218;</span><span class="bnav-label">Tienda</span>
+    <span class="bnav-icon">&#127968;</span><span class="bnav-label">Inicio</span>
   </button>
   <button class="bnav-item" onclick="showTab('ranking')" id="nav-ranking">
-    <span class="bnav-icon">&#127942;</span><span class="bnav-label">Ranking</span>
+    <span class="bnav-icon">&#127942;</span><span class="bnav-label">Competir</span>
+  </button>
+  <button class="bnav-item" onclick="showTab('store')" id="nav-store">
+    <span class="bnav-icon">&#128722;</span><span class="bnav-label">Tienda</span>
   </button>
   <button class="bnav-item" onclick="showTab('workout')" id="nav-workout">
-    <span class="bnav-icon">&#129409;</span><span class="bnav-label">Entrena</span>
+    <span class="bnav-icon">&#9881;&#65039;</span><span class="bnav-label">Tools</span>
   </button>
   <button class="bnav-item" onclick="showTab('profile')" id="nav-profile">
-    <span class="bnav-icon">&#128100;</span><span class="bnav-label">Sergio</span>
+    <span class="bnav-icon">&#128100;</span><span class="bnav-label">Coach</span>
   </button>
 </nav>
 
@@ -2008,77 +2609,161 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 
   <!-- Home / inicio -->
   <div id="s-home" class="screen active">
-    <div class="hdr">
-      <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" class="logo-img" alt="">
-      <div>
-        <div class="logo-main">LAGUNA <em>SWIM</em></div>
-        <div class="logo-sub">INTERNATIONAL</div>
+
+    <!-- ============ NUEVO V2: HERO POSTER DEPORTIVO ============ -->
+    <div class="v2-hero-poster">
+      <div class="v2-hero-logo-big">
+        <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" alt="Laguna Swim International">
       </div>
-      <span id="fb-status" class="hdr-status">...</span>
+      <div class="v2-hero-brand-big">LAGUNA <em>SWIM</em></div>
+      <div class="v2-hero-int">INTERNATIONAL</div>
+      <div class="v2-hero-bar"></div>
+      <div class="v2-hero-tagline-big">Fuertes y Valientes</div>
+      <div class="v2-hero-tagline-sub">Josué 1:9</div>
+      <span id="fb-status" class="hdr-status" style="position:absolute;top:10px;right:10px;font-size:0.55rem">...</span>
     </div>
-    <div style="text-align:center;padding:1rem 0 1.5rem">
-      <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" style="width:130px;height:130px;object-fit:contain;margin-bottom:0.6rem" alt="">
-      <div style="font-size:1.6rem;font-weight:800">LAGUNA <span style="color:var(--accent)">SWIM</span></div>
-      <div style="font-size:0.7rem;color:var(--accent-soft);letter-spacing:2px;margin-top:2px">INTERNATIONAL</div>
-      <div style="font-size:0.78rem;color:#e5c84a;margin-top:0.4rem;font-style:italic">"Fuertes y Valientes" - Josue 1:9</div>
+
+    <!-- BANDA DE STATS PROMINENTES -->
+    <div class="v2-stats-banner">
+      <div class="v2-stat-item">
+        <div class="v2-stat-num-big">30+</div>
+        <div class="v2-stat-lbl-big">Años Exp.</div>
+      </div>
+      <div class="v2-stat-item">
+        <div class="v2-stat-num-big">60+</div>
+        <div class="v2-stat-lbl-big">Medallas Panam</div>
+      </div>
+      <div class="v2-stat-item">
+        <div class="v2-stat-num-big">4</div>
+        <div class="v2-stat-lbl-big">Mundiales</div>
+      </div>
     </div>
-    <div class="card">
-      <div class="role-card" onclick="goTimer('s-role')">
-        <div style="font-size:2rem;width:45px;text-align:center">&#127919;</div>
-        <div>
-          <div style="font-weight:700">Iniciar sesion</div>
-          <div style="font-size:0.73rem;color:var(--accent-soft)">Entrenador o cronometrista</div>
+
+    <!-- SECCION: COMPETENCIA AHORA - Reto 50m hero -->
+    <div class="v2-section">
+      <div class="v2-section-head">
+        <div class="v2-section-head-bar"></div>
+        <div class="v2-section-head-text">Competencia <em>Ahora</em></div>
+        <div class="v2-section-head-line"></div>
+      </div>
+
+      <div class="v2-game-poster" onclick="reto50AbrirJuego(false)">
+        <span class="v2-game-badge">EN VIVO · NUEVO</span>
+        <div class="v2-game-title">RETO <em>50M</em> LIBRE</div>
+        <div class="v2-game-subtitle">
+          Compite con tu cámara contra rivales virtuales, o reta a un amigo en duelo 1v1 cara a cara
         </div>
-        <div style="margin-left:auto;color:var(--accent-soft);font-size:1.2rem">&#8250;</div>
+        <div class="v2-game-features">
+          <span class="v2-game-feature hot">📹 CÁMARA</span>
+          <span class="v2-game-feature">⚔️ 1V1</span>
+          <span class="v2-game-feature">🏆 TOP 10</span>
+        </div>
+        <button class="v2-game-btn" onclick="event.stopPropagation();reto50AbrirJuego(false)">
+          <span>JUGAR AHORA</span>
+          <span style="font-size:1.2rem">→</span>
+        </button>
       </div>
     </div>
 
-    <!-- ============ NUEVO: RETO 50M - Botón de acceso al juego ============ -->
-    <div class="reto50-card" onclick="reto50AbrirJuego(false)">
-      <div class="reto50-card-icon">🏊‍♂️</div>
-      <div class="reto50-card-body">
-        <div class="reto50-card-title">Reto 50m Libre</div>
-        <div class="reto50-card-sub">Compite con la cámara contra 3 rivales · Top 10 global</div>
+    <!-- SECCION: UNETE AL EQUIPO -->
+    <div class="v2-section">
+      <div class="v2-section-head">
+        <div class="v2-section-head-bar"></div>
+        <div class="v2-section-head-text">Únete <em>al Equipo</em></div>
+        <div class="v2-section-head-line"></div>
       </div>
-      <div class="reto50-card-arrow">&#8250;</div>
-    </div>
 
-    <!-- Top 10 Global Leaderboard (acordeón) -->
-    <div onclick="reto50ToggleLB()" class="reto50-lb-acc-head">
-      <div style="display:flex;align-items:center;gap:0.6rem;flex:1">
-        <span style="font-size:1.3rem">&#127942;</span>
-        <div>
-          <div style="font-size:0.88rem;font-weight:800;color:var(--gold)">Top 10 Reto 50m</div>
-          <div style="font-size:0.65rem;color:var(--accent-soft)">Ranking global de la comunidad</div>
+      <div class="v2-nav-grid">
+        <div class="v2-action-card featured" onclick="showTab('tab-profile')">
+          <div>
+            <div class="v2-action-icon">💪</div>
+            <div class="v2-action-title">ENTRENA</div>
+            <div class="v2-action-sub">Masters · Juvenil · Infantil</div>
+          </div>
+          <div class="v2-action-arrow">→</div>
+        </div>
+        <div class="v2-action-card" onclick="showTab('tab-ranking')">
+          <div>
+            <div class="v2-action-icon">🏆</div>
+            <div class="v2-action-title">COMPITE</div>
+            <div class="v2-action-sub">Rankings y eventos internacionales</div>
+          </div>
+          <div class="v2-action-arrow">→</div>
+        </div>
+        <div class="v2-action-card" onclick="window.open('https://wa.me/5218714419555?text=Hola%20Coach%20Sergio,%20me%20interesa%20informaci%C3%B3n%20de%20Laguna%20Swim','_blank')">
+          <div>
+            <div class="v2-action-icon">💬</div>
+            <div class="v2-action-title">CONTACTO</div>
+            <div class="v2-action-sub">Inscríbete por WhatsApp</div>
+          </div>
+          <div class="v2-action-arrow">→</div>
+        </div>
+        <div class="v2-action-card" onclick="showTab('tab-store')">
+          <div>
+            <div class="v2-action-icon">🛒</div>
+            <div class="v2-action-title">TIENDA</div>
+            <div class="v2-action-sub">Libros · Viajes Oceanman</div>
+          </div>
+          <div class="v2-action-arrow">→</div>
         </div>
       </div>
-      <span id="reto50-lb-arrow" style="color:var(--gold);font-size:1.2rem">&#8964;</span>
-    </div>
-    <div id="reto50-lb-body" class="reto50-lb-body" style="display:none">
-      <div id="reto50-lb-list">
-        <div class="reto50-lb-empty">Cargando ranking...</div>
-      </div>
     </div>
 
-    <!-- Top 10 Duelos 1v1 -->
-    <div onclick="reto50ToggleDuelosLB()" class="reto50-lb-acc-head" style="background:linear-gradient(135deg, rgba(239,71,111,0.12) 0%, rgba(255,107,53,0.08) 100%);border-color:rgba(239,71,111,0.4)">
-      <div style="display:flex;align-items:center;gap:0.6rem;flex:1">
-        <span style="font-size:1.3rem">&#9876;&#65039;</span>
-        <div>
-          <div style="font-size:0.88rem;font-weight:800;color:#ff6b8e">Top 10 Duelos 1v1</div>
-          <div style="font-size:0.65rem;color:var(--accent-soft)">Más victorias en duelos cara a cara</div>
+    <!-- SECCION: PROXIMO EVENTO -->
+    <div class="v2-section">
+      <div class="v2-section-head">
+        <div class="v2-section-head-bar"></div>
+        <div class="v2-section-head-text">Próximo <em>Evento</em></div>
+        <div class="v2-section-head-line"></div>
+      </div>
+
+      <div class="v2-event-poster" onclick="showTab('tab-ranking')">
+        <div class="v2-event-tape">⚠️ INSCRIPCIONES AGOTADAS</div>
+        <div class="v2-event-body">
+          <div class="v2-event-flag">🇲🇽</div>
+          <div class="v2-event-info">
+            <div class="v2-event-name">Oceanman Cozumel 2026</div>
+            <div class="v2-event-date">1-2 AGOSTO · 2026</div>
+            <div class="v2-event-loc">Cozumel, Quintana Roo</div>
+          </div>
+          <div class="v2-event-arrow">→</div>
         </div>
       </div>
-      <span id="reto50-duelos-arrow" style="color:#ff6b8e;font-size:1.2rem">&#8964;</span>
     </div>
-    <div id="reto50-duelos-body" class="reto50-lb-body" style="display:none">
-      <div id="reto50-duelos-list">
-        <div class="reto50-lb-empty">Cargando ranking de duelos...</div>
+
+    <!-- SECCION: COACH -->
+    <div class="v2-section">
+      <div class="v2-section-head">
+        <div class="v2-section-head-bar"></div>
+        <div class="v2-section-head-text">Tu <em>Coach</em></div>
+        <div class="v2-section-head-line"></div>
+      </div>
+
+      <div class="v2-coach-poster" onclick="showTab('tab-profile')">
+        <div class="v2-coach-pic">SV</div>
+        <div class="v2-coach-info">
+          <div class="v2-coach-name">Sergio Villarreal</div>
+          <div class="v2-coach-title">ASCA Level 4 Certified</div>
+          <div class="v2-coach-exp">30+ años · Lic. Acondicionamiento Físico</div>
+        </div>
+        <div class="v2-coach-arrow">→</div>
       </div>
     </div>
-    <!-- ============ FIN NUEVO RETO 50M ============ -->
 
-    <!-- Acordeón Calculadora -->
+    <div style="height: 1rem"></div>
+    <!-- ============ FIN V2 HOME ============ -->
+
+  </div>
+
+  <!-- Pantalla oculta: contiene la calculadora y otros elementos legacy del antiguo s-home, accesibles desde Tools -->
+  <div id="s-home-legacy" class="screen" style="display:none">
+    <!-- Contenedores ocultos para el JS existente del leaderboard -->
+    <div id="reto50-lb-body" style="display:none"><div id="reto50-lb-list"></div></div>
+    <div id="reto50-duelos-body" style="display:none"><div id="reto50-duelos-list"></div></div>
+    <span id="reto50-lb-arrow" style="display:none"></span>
+    <span id="reto50-duelos-arrow" style="display:none"></span>
+
+    <!-- Acordeón Calculadora (movida visualmente a Tools, pero el JS sigue refiriéndose a estos IDs) -->
     <div onclick="toggleCalc()" class="acc-head">
       <div style="display:flex;align-items:center;gap:0.6rem">
         <span style="font-size:1.3rem">&#128337;</span>
@@ -2097,42 +2782,26 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
         <div>
           <label>Distancia base</label>
           <select id="calc-dist-base" onchange="calcProyectar()" style="font-size:0.85rem;padding:0.5rem;margin-bottom:0">
-            <option value="25">25m</option>
-            <option value="50" selected>50m</option>
-            <option value="100">100m</option>
-            <option value="200">200m</option>
-            <option value="400">400m</option>
+            <option value="25">25 m</option>
+            <option value="50" selected>50 m</option>
+            <option value="100">100 m</option>
+            <option value="200">200 m</option>
+            <option value="400">400 m</option>
           </select>
         </div>
         <div>
-          <label>Tiempo (mm:ss.cc)</label>
-          <input id="calc-tiempo-base" placeholder="0:28.50" oninput="calcProyectar()"
-            style="font-size:1.1rem;font-weight:800;text-align:center;color:var(--gold);padding:0.4rem;margin-bottom:0">
+          <label>Tiempo</label>
+          <input type="text" id="calc-tiempo-base" placeholder="00:32.50" oninput="calcProyectar()" style="font-size:0.85rem;padding:0.5rem;margin-bottom:0">
         </div>
       </div>
-      <label>Factor de fatiga</label>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;margin-bottom:0.7rem">
-        <button class="calc-btn" id="cf-lineal" onclick="selCalcFactor(this,'lineal')">
-          Lineal<br><span style="font-size:0.55rem;opacity:0.7">Sprint puro</span>
-        </button>
-        <button class="calc-btn on" id="cf-natacion" onclick="selCalcFactor(this,'natacion')">
-          Natacion<br><span style="font-size:0.55rem;opacity:0.7">Estandar</span>
-        </button>
-        <button class="calc-btn" id="cf-resistencia" onclick="selCalcFactor(this,'resistencia')">
-          Resistencia<br><span style="font-size:0.55rem;opacity:0.7">Fondo</span>
-        </button>
-      </div>
-      <div id="calc-resultado" style="display:none">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--accent);margin-bottom:0.4rem">
-          Proyeccion de tiempos:
-        </div>
+      <div>
         <div id="calc-tabla" style="background:rgba(255,255,255,0.03);border-radius:10px;overflow:hidden"></div>
         <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-top:0.5rem;text-align:center">
           Estimacion - el rendimiento real depende de tecnica y condicion
         </div>
       </div>
     </div>
-
+  </div>
     <!-- Carrusel grande removido - ahora hay barra fija abajo -->
   </div>
 
@@ -2479,9 +3148,51 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
     <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" class="logo-img" alt="">
     <div>
       <div class="logo-main">LAGUNA <em>SWIM</em></div>
-      <div class="logo-sub">Ranking oficial</div>
+      <div class="logo-sub">COMPETIR</div>
     </div>
   </div>
+
+  <!-- ============ NUEVO V2: TOP 10 RETO 50M y DUELOS ============ -->
+  <div class="v2-section" style="margin-top: 1rem">
+    <div class="v2-section-head">
+      <div class="v2-section-head-bar"></div>
+      <div class="v2-section-head-text">Top 10 <em>Reto 50m</em></div>
+      <div class="v2-section-head-line"></div>
+    </div>
+
+    <div onclick="reto50ToggleLB()" class="reto50-lb-acc-head">
+      <div style="display:flex;align-items:center;gap:0.6rem;flex:1">
+        <span style="font-size:1.3rem">&#127942;</span>
+        <div>
+          <div style="font-size:0.88rem;font-weight:800;color:var(--gold)">Ranking Reto 50m</div>
+          <div style="font-size:0.65rem;color:var(--accent-soft)">Carrera contra rivales virtuales</div>
+        </div>
+      </div>
+      <span id="reto50-lb-arrow-v2" style="color:var(--gold);font-size:1.2rem">&#8964;</span>
+    </div>
+    <div id="reto50-lb-body-v2" class="reto50-lb-body" style="display:none">
+      <div id="reto50-lb-list-v2">
+        <div class="reto50-lb-empty">Cargando ranking...</div>
+      </div>
+    </div>
+
+    <div onclick="reto50ToggleDuelosLB()" class="reto50-lb-acc-head" style="background:linear-gradient(135deg, rgba(239,71,111,0.12) 0%, rgba(255,107,53,0.08) 100%);border-color:rgba(239,71,111,0.4)">
+      <div style="display:flex;align-items:center;gap:0.6rem;flex:1">
+        <span style="font-size:1.3rem">&#9876;&#65039;</span>
+        <div>
+          <div style="font-size:0.88rem;font-weight:800;color:#ff6b8e">Top 10 Duelos 1v1</div>
+          <div style="font-size:0.65rem;color:var(--accent-soft)">Cara a cara con cámara</div>
+        </div>
+      </div>
+      <span id="reto50-duelos-arrow-v2" style="color:#ff6b8e;font-size:1.2rem">&#8964;</span>
+    </div>
+    <div id="reto50-duelos-body-v2" class="reto50-lb-body" style="display:none">
+      <div id="reto50-duelos-list-v2">
+        <div class="reto50-lb-empty">Cargando ranking de duelos...</div>
+      </div>
+    </div>
+  </div>
+  <!-- ============ FIN V2 TOP 10 ============ -->
 
   <!-- Hall of Fame: Miguel De Lara (solo visible cuando filtran Pecho) -->
   <div class="hof-card" id="hof-miguel" style="display:none">
@@ -8998,7 +9709,8 @@ function reto50FormatTime(sec) {
 }
 
 async function reto50RenderLeaderboard() {
-  var list = document.getElementById('reto50-lb-list');
+  // V2: usar ID nuevo en tab Competir; fallback al viejo
+  var list = document.getElementById('reto50-lb-list-v2') || document.getElementById('reto50-lb-list');
   if (!list) return;
   list.innerHTML = '<div class="reto50-lb-empty">Cargando ranking...</div>';
 
@@ -9039,15 +9751,16 @@ async function reto50BorrarEntry(key, nickname) {
 
 // Toggle acordeón leaderboard
 function reto50ToggleLB() {
-  var body = document.getElementById('reto50-lb-body');
-  var arrow = document.getElementById('reto50-lb-arrow');
+  var body = document.getElementById('reto50-lb-body-v2') || document.getElementById('reto50-lb-body');
+  var arrow = document.getElementById('reto50-lb-arrow-v2') || document.getElementById('reto50-lb-arrow');
+  if (!body) return;
   if (body.style.display === 'none') {
     body.style.display = 'block';
-    arrow.innerHTML = '&#8963;'; // up
+    if (arrow) arrow.innerHTML = '&#8963;'; // up
     reto50RenderLeaderboard();
   } else {
     body.style.display = 'none';
-    arrow.innerHTML = '&#8964;'; // down
+    if (arrow) arrow.innerHTML = '&#8964;'; // down
   }
 }
 
@@ -9100,7 +9813,7 @@ async function reto50CargarDuelosRanking(forzar) {
 }
 
 async function reto50RenderDuelosLB() {
-  var list = document.getElementById('reto50-duelos-list');
+  var list = document.getElementById('reto50-duelos-list-v2') || document.getElementById('reto50-duelos-list');
   if (!list) return;
   list.innerHTML = '<div class="reto50-lb-empty">Cargando ranking de duelos...</div>';
   var top = await reto50CargarDuelosRanking();
@@ -9139,29 +9852,30 @@ async function reto50BorrarDueloRanking(nickname) {
 }
 
 function reto50ToggleDuelosLB() {
-  var body = document.getElementById('reto50-duelos-body');
-  var arrow = document.getElementById('reto50-duelos-arrow');
+  var body = document.getElementById('reto50-duelos-body-v2') || document.getElementById('reto50-duelos-body');
+  var arrow = document.getElementById('reto50-duelos-arrow-v2') || document.getElementById('reto50-duelos-arrow');
+  if (!body) return;
   if (body.style.display === 'none') {
     body.style.display = 'block';
-    arrow.innerHTML = '&#8963;';
+    if (arrow) arrow.innerHTML = '&#8963;';
     reto50RenderDuelosLB();
   } else {
     body.style.display = 'none';
-    arrow.innerHTML = '&#8964;';
+    if (arrow) arrow.innerHTML = '&#8964;';
   }
 }
 
 // Suscripción real-time al ranking de duelos
 try {
   db.ref('duels_rankings').on('child_changed', function() {
-    var body = document.getElementById('reto50-duelos-body');
+    var body = document.getElementById('reto50-duelos-body-v2') || document.getElementById('reto50-duelos-body');
     if (body && body.style.display === 'block') {
       RETO50_DUELOS.cache = null;
       reto50RenderDuelosLB();
     }
   });
   db.ref('duels_rankings').on('child_added', function() {
-    var body = document.getElementById('reto50-duelos-body');
+    var body = document.getElementById('reto50-duelos-body-v2') || document.getElementById('reto50-duelos-body');
     if (body && body.style.display === 'block') {
       RETO50_DUELOS.cache = null;
       reto50RenderDuelosLB();
@@ -9182,14 +9896,14 @@ document.addEventListener('keydown', function(e) {
 // Suscripción real-time al leaderboard (refresca cuando alguien más nada)
 try {
   db.ref('races_leaderboard').on('child_added', function() {
-    var body = document.getElementById('reto50-lb-body');
+    var body = document.getElementById('reto50-lb-body-v2') || document.getElementById('reto50-lb-body');
     if (body && body.style.display === 'block') {
       RETO50.lbCache = null;
       reto50RenderLeaderboard();
     }
   });
   db.ref('races_leaderboard').on('child_removed', function() {
-    var body = document.getElementById('reto50-lb-body');
+    var body = document.getElementById('reto50-lb-body-v2') || document.getElementById('reto50-lb-body');
     if (body && body.style.display === 'block') {
       RETO50.lbCache = null;
       reto50RenderLeaderboard();
