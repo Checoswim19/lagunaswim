@@ -3143,6 +3143,32 @@ body.v3-fluid .v2-coach-poster:active {
         <div class="v4-upload-arrow">→</div>
       </div>
 
+      <!-- NUEVO V4.1: Card visible con totales en vivo -->
+      <div id="v4-totales-card" onclick="verEntrenamientosPublicos()" style="margin-top: 0.8rem; max-width: 360px; width: 100%; cursor: pointer; background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.1) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 0.9rem 1rem; transition: all 0.2s;">
+        <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem;">
+          <div style="font-size: 1.6rem;">📊</div>
+          <div style="flex: 1;">
+            <div style="font-size: 0.78rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold);">ENTRENAMIENTOS DE LA SEMANA</div>
+            <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); margin-top: 2px;">Click para ver detalle completo</div>
+          </div>
+          <div style="color: var(--gold); font-size: 1.3rem; font-weight: 900;">→</div>
+        </div>
+        <div id="v4-totales-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+          <div style="text-align: center; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 8px;">
+            <div id="v4-stat-sesiones" style="font-size: 1.4rem; font-weight: 900; color: var(--gold); line-height: 1;">—</div>
+            <div style="font-size: 0.55rem; color: rgba(255,255,255,0.55); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase;">Sesiones</div>
+          </div>
+          <div style="text-align: center; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 8px;">
+            <div id="v4-stat-personas" style="font-size: 1.4rem; font-weight: 900; color: var(--gold); line-height: 1;">—</div>
+            <div style="font-size: 0.55rem; color: rgba(255,255,255,0.55); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase;">Personas</div>
+          </div>
+          <div style="text-align: center; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 8px;">
+            <div id="v4-stat-metros" style="font-size: 1.4rem; font-weight: 900; color: var(--gold); line-height: 1;">—</div>
+            <div style="font-size: 0.55rem; color: rgba(255,255,255,0.55); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase;">Metros</div>
+          </div>
+        </div>
+      </div>
+
       <div class="v3-hero-scroll-hint" onclick="document.querySelector('.v3-below-fold').scrollIntoView({behavior:'smooth'})">
         <span>Ver más</span>
         <span class="chev">⌄</span>
@@ -10623,7 +10649,7 @@ async function verEntrenamientosPublicos() {
   lista.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">Cargando...</div>';
 
   try {
-    var snap = await db.ref('entrenamientos_publicos').orderByChild('timestamp').limitToLast(100).once('value');
+    var snap = await db.ref('entrenamientos_publicos').orderByChild('timestamp').limitToLast(200).once('value');
     var entries = [];
     snap.forEach(function(child) {
       var v = child.val();
@@ -10639,16 +10665,39 @@ async function verEntrenamientosPublicos() {
 
     // Calcular totales
     var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var personasUnicas = new Set(entries.map(function(e) { return e.nombre; })).size;
+    var personasUnicas = new Set(entries.map(function(e) { return (e.nombre || '').toLowerCase().trim(); })).size;
+
+    // Agrupar por persona para el resumen
+    var porPersona = {};
+    entries.forEach(function(e) {
+      var nombre = (e.nombre || '').trim();
+      if (!porPersona[nombre]) {
+        porPersona[nombre] = { nombre: nombre, sesiones: 0, metros: 0, grupo: e.grupo, entries: [] };
+      }
+      porPersona[nombre].sesiones++;
+      porPersona[nombre].metros += (e.metros || 0);
+      porPersona[nombre].entries.push(e);
+    });
+    var personasArr = Object.values(porPersona).sort(function(a, b) { return b.metros - a.metros; });
 
     var html = '<div style="background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:8px;padding:0.8rem;margin-bottom:1rem;text-align:center">' +
-      '<div style="font-size:0.65rem;color:var(--gold);letter-spacing:2px;font-weight:800;margin-bottom:4px">TOTALES</div>' +
+      '<div style="font-size:0.65rem;color:var(--gold);letter-spacing:2px;font-weight:800;margin-bottom:6px">TOTALES DE LA SEMANA</div>' +
       '<div style="display:flex;justify-content:space-around;font-size:0.85rem">' +
-      '<div><strong style="color:var(--gold);font-size:1.3rem">' + entries.length + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Sesiones</span></div>' +
-      '<div><strong style="color:var(--gold);font-size:1.3rem">' + personasUnicas + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Personas</span></div>' +
-      '<div><strong style="color:var(--gold);font-size:1.3rem">' + totalMetros.toLocaleString() + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Metros</span></div>' +
+      '<div><strong style="color:var(--gold);font-size:1.5rem">' + entries.length + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Sesiones</span></div>' +
+      '<div><strong style="color:var(--gold);font-size:1.5rem">' + personasUnicas + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Personas</span></div>' +
+      '<div><strong style="color:var(--gold);font-size:1.5rem">' + totalMetros.toLocaleString() + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Metros</span></div>' +
       '</div></div>';
 
+    // Botones acción (Coach)
+    if (state && state.isCoach) {
+      html += '<div style="display: flex; gap: 0.4rem; margin-bottom: 1rem;">' +
+        '<button onclick="exportarEntrenamientosCSV()" style="flex:1; background: linear-gradient(135deg, #06d6a0, #38bdf8); color: white; border: none; padding: 0.6rem; border-radius: 8px; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; cursor: pointer;">📥 EXPORTAR CSV</button>' +
+        '<button onclick="toggleVistaEntrenamientos()" id="v4-toggle-vista" style="flex:1; background: rgba(56,189,248,0.2); color: var(--accent); border: 1px solid var(--accent); padding: 0.6rem; border-radius: 8px; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; cursor: pointer;">👥 POR PERSONA</button>' +
+        '</div>';
+    }
+
+    // Vista por defecto: lista cronológica
+    html += '<div id="v4-vista-cronologica">';
     entries.forEach(function(e) {
       var fecha = e.fecha || '';
       var hora = e.timestamp ? new Date(e.timestamp).toLocaleString('es-MX', {hour: '2-digit', minute:'2-digit'}) : '';
@@ -10664,13 +10713,142 @@ async function verEntrenamientosPublicos() {
         '<div class="v4-entry-desc">' + escapeHtml(e.descripcion || '') + '</div>' +
         '</div>';
     });
+    html += '</div>';
+
+    // Vista alternativa: por persona (oculta inicialmente)
+    html += '<div id="v4-vista-persona" style="display:none">';
+    personasArr.forEach(function(p, idx) {
+      var medal = idx < 3 ? ['🥇','🥈','🥉'][idx] : (idx + 1) + '°';
+      html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:10px;padding:0.9rem;margin-bottom:0.7rem">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">' +
+          '<div style="display:flex;align-items:center;gap:0.5rem">' +
+            '<div style="font-size:1.3rem">' + medal + '</div>' +
+            '<div>' +
+              '<div style="font-weight:900;color:var(--gold);font-size:1rem">' + escapeHtml(p.nombre) + '</div>' +
+              '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">' + (p.grupo || 'Sin grupo') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="text-align:right">' +
+            '<div style="font-size:1.2rem;font-weight:900;color:var(--accent)">' + p.metros.toLocaleString() + ' m</div>' +
+            '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5);letter-spacing:1px">' + p.sesiones + ' SESIONES</div>' +
+          '</div>' +
+        '</div>' +
+        '<details style="margin-top:0.4rem"><summary style="cursor:pointer;font-size:0.7rem;color:var(--accent-soft);letter-spacing:0.5px">Ver entrenamientos individuales</summary>' +
+        '<div style="margin-top:0.5rem;padding-left:0.5rem;border-left:2px solid rgba(56,189,248,0.3)">';
+      p.entries.forEach(function(e) {
+        html += '<div style="padding:0.4rem 0;font-size:0.75rem;color:rgba(255,255,255,0.75)">' +
+          '<strong style="color:#fff">' + (e.fecha || '') + '</strong> · ' +
+          '<span style="color:var(--gold)">' + (e.metros || 0).toLocaleString() + ' m</span>' +
+          '<div style="font-size:0.7rem;color:rgba(255,255,255,0.55);margin-top:2px">' + escapeHtml(e.descripcion || '') + '</div>' +
+          '</div>';
+      });
+      html += '</div></details></div>';
+    });
+    html += '</div>';
 
     lista.innerHTML = html;
   } catch (e) {
     console.error('Error cargando entrenamientos:', e);
-    lista.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff6b35">Error al cargar</div>';
+    lista.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff6b35">Error al cargar: ' + (e.message || '') + '</div>';
   }
 }
+
+// Toggle vista cronológica vs por persona
+function toggleVistaEntrenamientos() {
+  var cronoEl = document.getElementById('v4-vista-cronologica');
+  var personaEl = document.getElementById('v4-vista-persona');
+  var btn = document.getElementById('v4-toggle-vista');
+  if (cronoEl.style.display === 'none') {
+    cronoEl.style.display = 'block';
+    personaEl.style.display = 'none';
+    btn.innerHTML = '👥 POR PERSONA';
+  } else {
+    cronoEl.style.display = 'none';
+    personaEl.style.display = 'block';
+    btn.innerHTML = '📅 CRONOLÓGICO';
+  }
+}
+
+// Exportar a CSV para Excel/diplomas
+async function exportarEntrenamientosCSV() {
+  try {
+    var snap = await db.ref('entrenamientos_publicos').orderByChild('timestamp').once('value');
+    var rows = [['Nombre','Fecha','Metros','Grupo','Descripcion','HoraEnvio']];
+    snap.forEach(function(child) {
+      var v = child.val();
+      var hora = v.timestamp ? new Date(v.timestamp).toLocaleString('es-MX') : '';
+      rows.push([
+        (v.nombre || '').replace(/"/g, '""'),
+        v.fecha || '',
+        v.metros || 0,
+        v.grupo || '',
+        (v.descripcion || '').replace(/"/g, '""').replace(/\n/g, ' '),
+        hora
+      ]);
+    });
+    var csv = rows.map(function(r) {
+      return r.map(function(cell) {
+        var s = String(cell);
+        if (s.indexOf(',') > -1 || s.indexOf('"') > -1 || s.indexOf('\n') > -1) {
+          return '"' + s + '"';
+        }
+        return s;
+      }).join(',');
+    }).join('\n');
+    var BOM = '\uFEFF'; // Para que Excel detecte UTF-8
+    var blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    var fecha = new Date().toISOString().split('T')[0];
+    a.download = 'entrenamientos-laguna-' + fecha + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+  } catch (e) {
+    alert('Error exportando: ' + e.message);
+  }
+}
+
+// Cargar totales en vivo en la card del home
+async function cargarTotalesEntrenamientos() {
+  try {
+    var snap = await db.ref('entrenamientos_publicos').once('value');
+    var sesiones = 0;
+    var metros = 0;
+    var personas = new Set();
+    snap.forEach(function(child) {
+      var v = child.val();
+      sesiones++;
+      metros += (v.metros || 0);
+      if (v.nombre) personas.add(v.nombre.toLowerCase().trim());
+    });
+    var elS = document.getElementById('v4-stat-sesiones');
+    var elP = document.getElementById('v4-stat-personas');
+    var elM = document.getElementById('v4-stat-metros');
+    if (elS) elS.textContent = sesiones;
+    if (elP) elP.textContent = personas.size;
+    if (elM) elM.textContent = metros >= 1000 ? (metros / 1000).toFixed(1) + 'k' : metros.toLocaleString();
+  } catch (e) {
+    console.warn('No se pudieron cargar totales:', e);
+  }
+}
+
+// Cargar totales al inicio y suscribirse para refresco en vivo
+setTimeout(function() {
+  cargarTotalesEntrenamientos();
+  try {
+    db.ref('entrenamientos_publicos').on('child_added', function() {
+      cargarTotalesEntrenamientos();
+    });
+    db.ref('entrenamientos_publicos').on('child_removed', function() {
+      cargarTotalesEntrenamientos();
+    });
+  } catch (e) {}
+}, 1500);
 
 async function borrarEntrenamientoPublico(key) {
   if (!confirm('¿Borrar este entrenamiento?')) return;
