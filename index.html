@@ -2128,10 +2128,11 @@ body.v2-redesign .bnav-item .bnav-icon {
   font-size: 1.3rem !important;
 }
 
-/* Sponsors bar adapted */
+/* Sponsors bar mantiene fondo blanco - los logos lo requieren */
 body.v2-redesign .spons-bar {
-  background: linear-gradient(180deg, rgba(5,26,58,0.95), rgba(2,14,31,0.98)) !important;
-  border-top: 1px solid var(--gold) !important;
+  background: #ffffff !important;
+  border-top: 2px solid var(--gold) !important;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.3) !important;
 }
 
 /* Card secciones internas más limpio */
@@ -2143,6 +2144,249 @@ body.v2-redesign .card {
 
 /* ============================================================
    FIN V2 REDISEÑO
+   ============================================================ */
+
+/* ============================================================
+   NUEVO V3: INICIO ESTILO GOOGLE + FLUIDEZ
+   ============================================================ */
+
+/* ===== HERO ESTILO GOOGLE ===== */
+.v3-hero-google {
+  min-height: calc(100vh - var(--bnav-h) - var(--spons-h) - 70px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem 1.5rem 2rem;
+  position: relative;
+  animation: v3FadeIn 0.6s ease-out;
+}
+@keyframes v3FadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.v3-hero-logo-wrap {
+  width: 180px;
+  height: 180px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: v3LogoEntry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes v3LogoEntry {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+.v3-hero-logo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 30px rgba(255,215,0,0.25));
+}
+.v3-hero-brand {
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 0%, #7ec8e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+  animation: v3FadeUp 0.6s 0.15s ease-out backwards;
+}
+.v3-hero-brand em {
+  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: normal;
+}
+.v3-hero-int {
+  font-size: 0.7rem;
+  letter-spacing: 8px;
+  color: var(--gold);
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  animation: v3FadeUp 0.6s 0.25s ease-out backwards;
+}
+.v3-hero-tagline {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.5px;
+  margin-bottom: 2rem;
+  animation: v3FadeUp 0.6s 0.35s ease-out backwards;
+}
+.v3-hero-tagline::before,
+.v3-hero-tagline::after {
+  content: '"';
+  color: var(--gold);
+  opacity: 0.6;
+}
+@keyframes v3FadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* CTA principal único y prominente */
+.v3-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.95rem 2rem;
+  background: linear-gradient(135deg, var(--gold) 0%, #ffea4d 100%);
+  color: #051a3a;
+  border: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 50px;
+  box-shadow: 0 6px 24px rgba(255,215,0,0.4), 0 2px 0 #b89500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: v3FadeUp 0.6s 0.45s ease-out backwards, v3Pulse 2.5s 1.5s infinite;
+  position: relative;
+  overflow: hidden;
+}
+.v3-hero-cta::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.6s;
+}
+.v3-hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(255,215,0,0.5), 0 4px 0 #b89500;
+}
+.v3-hero-cta:hover::before { left: 100%; }
+.v3-hero-cta:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 12px rgba(255,215,0,0.3);
+}
+@keyframes v3Pulse {
+  0%, 100% { box-shadow: 0 6px 24px rgba(255,215,0,0.4), 0 2px 0 #b89500; }
+  50% { box-shadow: 0 6px 32px rgba(255,215,0,0.6), 0 2px 0 #b89500; }
+}
+.v3-hero-cta .icon { font-size: 1.1rem; }
+.v3-hero-cta-badge {
+  display: inline-block;
+  background: #ff6b35;
+  color: #fff;
+  font-size: 0.5rem;
+  padding: 2px 6px;
+  border-radius: 100px;
+  margin-left: 4px;
+  letter-spacing: 1.5px;
+  vertical-align: middle;
+}
+
+/* Indicador scroll abajo */
+.v3-hero-scroll-hint {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  font-weight: 700;
+  animation: v3ScrollHint 2s ease-in-out infinite;
+  cursor: pointer;
+}
+@keyframes v3ScrollHint {
+  0%, 100% { opacity: 0.4; transform: translate(-50%, 0); }
+  50% { opacity: 0.9; transform: translate(-50%, 6px); }
+}
+.v3-hero-scroll-hint .chev {
+  font-size: 1.2rem;
+  color: var(--gold);
+}
+
+/* ===== TRANSICIONES FLUIDAS GENERALES ===== */
+html { scroll-behavior: smooth; }
+
+body.v3-fluid * {
+  /* Transición global sutil para botones, cards, etc */
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+/* Tabs fade-in al activarse */
+body.v3-fluid .tab.active {
+  animation: v3TabIn 0.35s ease-out;
+}
+@keyframes v3TabIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards aparecen suavemente al scroll */
+body.v3-fluid .v2-section,
+body.v3-fluid .v3-section {
+  animation: v3FadeUp 0.5s ease-out;
+}
+
+/* Bottom nav items con feedback más vivo */
+body.v3-fluid .bnav-item {
+  transition: color 0.2s ease, background 0.2s ease;
+}
+body.v3-fluid .bnav-item:active {
+  background: rgba(255,215,0,0.08);
+}
+
+/* Botones generales con feedback táctil */
+body.v3-fluid button,
+body.v3-fluid .v2-action-card,
+body.v3-fluid .v2-game-poster,
+body.v3-fluid .v2-event-poster,
+body.v3-fluid .v2-coach-poster {
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+body.v3-fluid .v2-action-card:active,
+body.v3-fluid .v2-event-poster:active,
+body.v3-fluid .v2-coach-poster:active {
+  transform: scale(0.98);
+}
+
+/* ===== SECCIONES "ABAJO DEL FOLD" en home ===== */
+.v3-below-fold {
+  padding: 2rem 0 1rem;
+  border-top: 1px solid rgba(255,215,0,0.15);
+  margin-top: 1rem;
+  animation: v3FadeUp 0.6s ease-out;
+}
+.v3-below-divider {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.v3-below-divider-text {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 4px;
+  color: var(--gold);
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0 1rem;
+  background: var(--depth-deep);
+  position: relative;
+  top: -8px;
+}
+
+/* ============================================================
+   FIN V3
    ============================================================ */
 
 .video-modal-iframe {
@@ -2533,7 +2777,7 @@ body.v2-redesign .card {
 }
 </style>
 </head>
-<body class="v2-redesign">
+<body class="v2-redesign v3-fluid">
 <!-- ============ NUEVO V2: HEADER REDISEÑADO ============ -->
 <div class="v2-app-header">
   <div class="v2-app-header-logo">
@@ -2610,21 +2854,38 @@ body.v2-redesign .card {
   <!-- Home / inicio -->
   <div id="s-home" class="screen active">
 
-    <!-- ============ NUEVO V2: HERO POSTER DEPORTIVO ============ -->
-    <div class="v2-hero-poster">
-      <div class="v2-hero-logo-big">
+    <!-- ============ NUEVO V3: INICIO ESTILO GOOGLE ============ -->
+    <div class="v3-hero-google">
+      <span id="fb-status" class="hdr-status" style="position:absolute;top:10px;right:10px;font-size:0.55rem;opacity:0.5">...</span>
+
+      <div class="v3-hero-logo-wrap">
         <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" alt="Laguna Swim International">
       </div>
-      <div class="v2-hero-brand-big">LAGUNA <em>SWIM</em></div>
-      <div class="v2-hero-int">INTERNATIONAL</div>
-      <div class="v2-hero-bar"></div>
-      <div class="v2-hero-tagline-big">Fuertes y Valientes</div>
-      <div class="v2-hero-tagline-sub">Josué 1:9</div>
-      <span id="fb-status" class="hdr-status" style="position:absolute;top:10px;right:10px;font-size:0.55rem">...</span>
+
+      <div class="v3-hero-brand">LAGUNA <em>SWIM</em></div>
+      <div class="v3-hero-int">INTERNATIONAL</div>
+      <div class="v3-hero-tagline">Fuertes y Valientes · Josué 1:9</div>
+
+      <button class="v3-hero-cta" onclick="reto50AbrirJuego(false)">
+        <span class="icon">▶</span>
+        <span>Jugar Reto 50m</span>
+        <span class="v3-hero-cta-badge">NUEVO</span>
+      </button>
+
+      <div class="v3-hero-scroll-hint" onclick="document.querySelector('.v3-below-fold').scrollIntoView({behavior:'smooth'})">
+        <span>Ver más</span>
+        <span class="chev">⌄</span>
+      </div>
     </div>
 
-    <!-- BANDA DE STATS PROMINENTES -->
-    <div class="v2-stats-banner">
+    <!-- ============ ABAJO DEL FOLD ============ -->
+    <div class="v3-below-fold">
+      <div class="v3-below-divider">
+        <span class="v3-below-divider-text">— EQUIPO —</span>
+      </div>
+
+      <!-- BANDA DE STATS PROMINENTES -->
+      <div class="v2-stats-banner">
       <div class="v2-stat-item">
         <div class="v2-stat-num-big">30+</div>
         <div class="v2-stat-lbl-big">Años Exp.</div>
@@ -2636,32 +2897,6 @@ body.v2-redesign .card {
       <div class="v2-stat-item">
         <div class="v2-stat-num-big">4</div>
         <div class="v2-stat-lbl-big">Mundiales</div>
-      </div>
-    </div>
-
-    <!-- SECCION: COMPETENCIA AHORA - Reto 50m hero -->
-    <div class="v2-section">
-      <div class="v2-section-head">
-        <div class="v2-section-head-bar"></div>
-        <div class="v2-section-head-text">Competencia <em>Ahora</em></div>
-        <div class="v2-section-head-line"></div>
-      </div>
-
-      <div class="v2-game-poster" onclick="reto50AbrirJuego(false)">
-        <span class="v2-game-badge">EN VIVO · NUEVO</span>
-        <div class="v2-game-title">RETO <em>50M</em> LIBRE</div>
-        <div class="v2-game-subtitle">
-          Compite con tu cámara contra rivales virtuales, o reta a un amigo en duelo 1v1 cara a cara
-        </div>
-        <div class="v2-game-features">
-          <span class="v2-game-feature hot">📹 CÁMARA</span>
-          <span class="v2-game-feature">⚔️ 1V1</span>
-          <span class="v2-game-feature">🏆 TOP 10</span>
-        </div>
-        <button class="v2-game-btn" onclick="event.stopPropagation();reto50AbrirJuego(false)">
-          <span>JUGAR AHORA</span>
-          <span style="font-size:1.2rem">→</span>
-        </button>
       </div>
     </div>
 
@@ -2751,7 +2986,9 @@ body.v2-redesign .card {
     </div>
 
     <div style="height: 1rem"></div>
-    <!-- ============ FIN V2 HOME ============ -->
+    <!-- ============ FIN ABAJO DEL FOLD ============ -->
+    </div>
+    <!-- ============ FIN V3 HOME ============ -->
 
   </div>
 
@@ -4447,10 +4684,16 @@ function openUrl(u) { window.open(u, '_blank'); }
 
 // ===== TABS =====
 function showTab(t) {
+  // Acepta 'timer' o 'tab-timer' indistintamente
+  var key = (t || '').replace(/^tab-/, '');
   ['timer', 'store', 'ranking', 'workout', 'profile'].forEach(function(x) {
-    document.getElementById('tab-' + x).classList.toggle('active', x === t);
-    document.getElementById('nav-' + x).classList.toggle('active', x === t);
+    var tabEl = document.getElementById('tab-' + x);
+    var navEl = document.getElementById('nav-' + x);
+    if (tabEl) tabEl.classList.toggle('active', x === key);
+    if (navEl) navEl.classList.toggle('active', x === key);
   });
+  // Scroll suave al top al cambiar de tab
+  try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
 }
 
 var TIMER_SCREENS = ['s-home', 's-role', 's-setup', 's-lobby', 's-startup', 's-race', 's-results', 's-join', 's-tk'];
@@ -5449,6 +5692,82 @@ function toggleCalc() {
   body.style.display = open ? 'block' : 'none';
   if (arrow) arrow.innerHTML = open ? '&#8963;' : '&#8964;';
 }
+
+// ============ NUEVO V2: Funciones de calculadora para tab Tools ============
+function toggleCalcV2() {
+  var body = document.getElementById('calc-body-v2');
+  var arrow = document.getElementById('calc-arrow-v2');
+  if (!body) return;
+  var open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  if (arrow) arrow.innerHTML = open ? '&#8963;' : '&#8964;';
+}
+
+function selCalcFactorV2(btn, factor) {
+  calcFactor = factor;
+  ['lineal', 'natacion', 'resistencia'].forEach(function(f) {
+    var b = document.getElementById('cf-' + f + '-v2');
+    if (b) b.classList.remove('on');
+  });
+  btn.classList.add('on');
+  calcProyectarV2();
+}
+
+function calcProyectarV2() {
+  var distInput = document.getElementById('calc-dist-base-v2');
+  var tiempoInput = document.getElementById('calc-tiempo-base-v2');
+  if (!distInput || !tiempoInput) return;
+
+  var distBase = parseInt(distInput.value) || 50;
+  var tiempoStr = (tiempoInput.value || '').trim();
+  var resultDiv = document.getElementById('calc-resultado-v2');
+  var tablaDiv = document.getElementById('calc-tabla-v2');
+
+  if (!tiempoStr || !resultDiv || !tablaDiv) {
+    if (resultDiv) resultDiv.style.display = 'none';
+    return;
+  }
+  var ms = 0;
+  tiempoStr = tiempoStr.replace(',', '.');
+  var parts = tiempoStr.split(':');
+  if (parts.length === 2) {
+    ms = (parseInt(parts[0]) || 0) * 60000 + Math.round(parseFloat(parts[1]) * 1000);
+  } else {
+    ms = Math.round(parseFloat(tiempoStr) * 1000);
+  }
+  if (!ms || ms <= 0) {
+    resultDiv.style.display = 'none';
+    return;
+  }
+  var exp = { lineal: 1.0, natacion: 1.06, resistencia: 1.12 }[calcFactor] || 1.06;
+  var distancias = [25, 50, 100, 200, 400, 500, 800, 1000, 1500];
+  var html = '';
+  distancias.forEach(function(d) {
+    var msProyectado = Math.round(ms * Math.pow(d / distBase, exp));
+    var seg = msProyectado / 1000;
+    var min = Math.floor(seg / 60);
+    var segR = seg % 60;
+    var tiempoFmt = min > 0
+      ? (min + ':' + (segR < 10 ? '0' : '') + segR.toFixed(2))
+      : segR.toFixed(2);
+    var esBase = d === distBase;
+    var pace100 = Math.round(msProyectado / (d / 100));
+    var paceMin = Math.floor(pace100 / 60000);
+    var paceSeg = (pace100 % 60000) / 1000;
+    var paceFmt = paceMin + ':' + (paceSeg < 10 ? '0' : '') + paceSeg.toFixed(1) + '/100m';
+
+    html += '<div style="display:flex;align-items:center;padding:0.4rem 0.6rem;' +
+      (esBase ? 'background:rgba(255,215,0,0.15);font-weight:800;' : '') +
+      'border-bottom:1px solid rgba(255,255,255,0.06)">';
+    html += '<div style="width:50px;font-size:0.7rem;color:' + (esBase ? 'var(--gold)' : 'var(--accent-soft)') + '">' + d + 'm</div>';
+    html += '<div style="flex:1;font-family:Courier New,monospace;font-size:0.85rem;color:' + (esBase ? 'var(--gold)' : 'var(--text)') + '">' + tiempoFmt + '</div>';
+    html += '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5)">' + paceFmt + '</div>';
+    html += '</div>';
+  });
+  tablaDiv.innerHTML = html;
+  resultDiv.style.display = 'block';
+}
+// ============ FIN V2 ============
 
 function selCalcFactor(btn, factor) {
   calcFactor = factor;
