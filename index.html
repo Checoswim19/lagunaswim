@@ -3143,32 +3143,6 @@ body.v3-fluid .v2-coach-poster:active {
         <div class="v4-upload-arrow">→</div>
       </div>
 
-      <!-- NUEVO V4.1: Card visible con totales en vivo -->
-      <div id="v4-totales-card" onclick="verEntrenamientosPublicos()" style="margin-top: 0.8rem; max-width: 360px; width: 100%; cursor: pointer; background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.1) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 0.9rem 1rem; transition: all 0.2s;">
-        <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem;">
-          <div style="font-size: 1.6rem;">📊</div>
-          <div style="flex: 1;">
-            <div style="font-size: 0.78rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold);">ENTRENAMIENTOS DE LA SEMANA</div>
-            <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); margin-top: 2px;">Click para ver detalle completo</div>
-          </div>
-          <div style="color: var(--gold); font-size: 1.3rem; font-weight: 900;">→</div>
-        </div>
-        <div id="v4-totales-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
-          <div style="text-align: center; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 8px;">
-            <div id="v4-stat-sesiones" style="font-size: 1.4rem; font-weight: 900; color: var(--gold); line-height: 1;">—</div>
-            <div style="font-size: 0.55rem; color: rgba(255,255,255,0.55); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase;">Sesiones</div>
-          </div>
-          <div style="text-align: center; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 8px;">
-            <div id="v4-stat-personas" style="font-size: 1.4rem; font-weight: 900; color: var(--gold); line-height: 1;">—</div>
-            <div style="font-size: 0.55rem; color: rgba(255,255,255,0.55); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase;">Personas</div>
-          </div>
-          <div style="text-align: center; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 8px;">
-            <div id="v4-stat-metros" style="font-size: 1.4rem; font-weight: 900; color: var(--gold); line-height: 1;">—</div>
-            <div style="font-size: 0.55rem; color: rgba(255,255,255,0.55); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase;">Metros</div>
-          </div>
-        </div>
-      </div>
-
       <div class="v3-hero-scroll-hint" onclick="document.querySelector('.v3-below-fold').scrollIntoView({behavior:'smooth'})">
         <span>Ver más</span>
         <span class="chev">⌄</span>
@@ -4242,39 +4216,53 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         <button class="wk-btn" id="muro-tab-videos" onclick="switchMuroTab('videos')">Videos</button>
       </div>
 
-      <!-- TAB SESIONES -->
+      <!-- TAB SESIONES (REDISEÑADA: ahora muestra entrenamientos públicos del equipo) -->
       <div id="muro-sesiones">
-        <div class="muro-week-bar">
-          <button class="muro-arrow" onclick="cambiarSemana(-1)">&#8249;</button>
-          <div style="text-align:center">
-            <div style="font-size:0.82rem;font-weight:800" id="muro-semana-label">Esta semana</div>
-            <div style="font-size:0.65rem;color:var(--accent-soft)" id="muro-semana-rango">-</div>
-          </div>
-          <button class="muro-arrow" id="muro-arrow-next" onclick="cambiarSemana(1)">&#8250;</button>
-        </div>
-
-        <div id="muro-resumen" style="display:none">
-          <div class="muro-stats">
-            <div class="muro-stat">
-              <div class="muro-stat-num" id="res-sesiones">0</div>
-              <div class="muro-stat-lbl">Sesiones</div>
-            </div>
-            <div class="muro-stat">
-              <div class="muro-stat-num" id="res-metros">0</div>
-              <div class="muro-stat-lbl">Metros</div>
-            </div>
-            <div class="muro-stat">
-              <div class="muro-stat-num" id="res-calorias">0</div>
-              <div class="muro-stat-lbl">Calorias</div>
+        <!-- Card grande con totales en vivo -->
+        <div style="background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.1) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 1rem; margin-bottom: 1rem;">
+          <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem">
+            <div style="font-size:1.6rem">📊</div>
+            <div style="flex:1">
+              <div style="font-size:0.85rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)">Entrenamientos del Equipo</div>
+              <div style="font-size:0.68rem;color:rgba(255,255,255,0.6);margin-top:2px">Totales en vivo</div>
             </div>
           </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem">
+            <div style="text-align:center;padding:0.6rem;background:rgba(0,0,0,0.25);border-radius:8px">
+              <div id="muro-stat-sesiones" style="font-size:1.5rem;font-weight:900;color:var(--gold);line-height:1">—</div>
+              <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Sesiones</div>
+            </div>
+            <div style="text-align:center;padding:0.6rem;background:rgba(0,0,0,0.25);border-radius:8px">
+              <div id="muro-stat-personas" style="font-size:1.5rem;font-weight:900;color:var(--gold);line-height:1">—</div>
+              <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Personas</div>
+            </div>
+            <div style="text-align:center;padding:0.6rem;background:rgba(0,0,0,0.25);border-radius:8px">
+              <div id="muro-stat-metros" style="font-size:1.5rem;font-weight:900;color:var(--gold);line-height:1">—</div>
+              <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Metros</div>
+            </div>
+          </div>
         </div>
 
-        <div id="muro-lista">
-          <div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>
+        <!-- Botones acción (solo Coach) -->
+        <div id="muro-pub-acciones" style="display:none;gap:0.4rem;margin-bottom:1rem">
+          <button onclick="exportarEntrenamientosCSV()" style="flex:1;background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem;letter-spacing:1px;cursor:pointer">📥 EXPORTAR CSV</button>
+          <button onclick="toggleMuroVistaPub()" id="muro-toggle-vista" style="flex:1;background:rgba(56,189,248,0.2);color:var(--accent);border:1px solid var(--accent);padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem;letter-spacing:1px;cursor:pointer">👥 POR PERSONA</button>
         </div>
 
-        <button class="fab-btn" id="fab-sesion" onclick="abrirRegistroSesion()" title="Registrar sesion">&#43;</button>
+        <!-- Botón GRANDE para subir entrenamiento -->
+        <div onclick="abrirModalEntrenamiento()" style="background:linear-gradient(135deg, rgba(6,214,160,0.18) 0%, rgba(56,189,248,0.15) 100%);border:2px solid #06d6a0;border-radius:12px;padding:0.9rem 1rem;cursor:pointer;margin-bottom:1rem;display:flex;align-items:center;gap:0.7rem">
+          <div style="font-size:1.6rem;background:rgba(6,214,160,0.2);width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center">📝</div>
+          <div style="flex:1">
+            <div style="font-size:0.85rem;font-weight:900;letter-spacing:0.5px;color:#06d6a0;text-transform:uppercase">Subir mi entrenamiento</div>
+            <div style="font-size:0.68rem;color:rgba(255,255,255,0.7);margin-top:2px">Sin registro · 1 minuto</div>
+          </div>
+          <div style="color:#06d6a0;font-size:1.3rem">→</div>
+        </div>
+
+        <!-- Lista de entrenamientos públicos -->
+        <div id="muro-pub-lista">
+          <div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando entrenamientos...</div>
+        </div>
       </div>
 
       <!-- TAB FOTOS -->
@@ -7241,44 +7229,164 @@ function cambiarSemana(dir) {
   cargarSesiones();
 }
 
-// ===== SESIONES =====
-function cargarSesiones() {
-  var lunes = getLunes(muro.weekOffset);
-  var domingo = new Date(lunes);
-  domingo.setDate(lunes.getDate() + 6);
+// ===== SESIONES (REDISEÑADA: ahora carga entrenamientos públicos) =====
+var muroPubState = {
+  entries: [],
+  vistaPersona: false
+};
 
-  // Labels
-  document.getElementById('muro-semana-label').textContent =
-    muro.weekOffset === 0 ? 'Esta semana' :
-    muro.weekOffset === -1 ? 'Semana pasada' :
-    'Sem ' + fmtFechaCorta(lunes);
-  document.getElementById('muro-semana-rango').textContent =
-    fmtFechaCorta(lunes) + ' - ' + fmtFechaCorta(domingo);
-  document.getElementById('muro-arrow-next').disabled = (muro.weekOffset >= 0);
+async function cargarSesiones() {
+  // Esta función ahora carga los entrenamientos públicos (el sistema viejo de sesiones queda obsoleto)
+  await cargarEntrenamientosPublicosEnMuro();
+}
 
-  var lista = document.getElementById('muro-lista');
-  lista.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>';
+async function cargarEntrenamientosPublicosEnMuro() {
+  var lista = document.getElementById('muro-pub-lista');
+  if (!lista) return;
 
-  // Pedir las 7 fechas
-  var sesiones = [];
-  var done = 0;
-  for (var i = 0; i < 7; i++) {
-    var dia = new Date(lunes);
-    dia.setDate(lunes.getDate() + i);
-    var key = fmtFechaYMD(dia);
-    (function(k) {
-      db.ref('sesiones/' + k).once('value').then(function(snap) {
-        if (snap.exists()) {
-          snap.forEach(function(child) {
-            sesiones.push(Object.assign({ fecha: k, uid: child.key }, child.val()));
-          });
-        }
-        done++;
-        if (done === 7) renderSesiones(sesiones);
-      });
-    })(key);
+  try {
+    var snap = await db.ref('entrenamientos_publicos').orderByChild('timestamp').limitToLast(200).once('value');
+    var entries = [];
+    snap.forEach(function(child) {
+      var v = child.val();
+      v.key = child.key;
+      entries.push(v);
+    });
+    entries.reverse(); // Más recientes primero
+    muroPubState.entries = entries;
+
+    // Actualizar totales
+    var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
+    var personasUnicas = new Set(entries.map(function(e) { return (e.nombre || '').toLowerCase().trim(); })).size;
+
+    var elS = document.getElementById('muro-stat-sesiones');
+    var elP = document.getElementById('muro-stat-personas');
+    var elM = document.getElementById('muro-stat-metros');
+    if (elS) elS.textContent = entries.length;
+    if (elP) elP.textContent = personasUnicas;
+    if (elM) elM.textContent = totalMetros >= 1000 ? (totalMetros / 1000).toFixed(1) + 'k' : totalMetros.toLocaleString();
+
+    // Mostrar/ocultar botones Coach
+    var accs = document.getElementById('muro-pub-acciones');
+    if (accs) accs.style.display = (state && state.isCoach) ? 'flex' : 'none';
+
+    if (entries.length === 0) {
+      lista.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5);font-size:0.82rem"><div style="font-size:2rem;margin-bottom:0.5rem">🏊‍♂️</div>Aún no hay entrenamientos.<br>¡Sé el primero en subir!</div>';
+      return;
+    }
+
+    renderMuroEntrenamientos();
+  } catch (e) {
+    console.error('Error cargando entrenamientos públicos:', e);
+    lista.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff6b35">Error al cargar: ' + (e.message || '') + '</div>';
   }
 }
+
+function renderMuroEntrenamientos() {
+  var lista = document.getElementById('muro-pub-lista');
+  if (!lista) return;
+  var entries = muroPubState.entries;
+  var esCoach = !!(state && state.isCoach);
+
+  if (muroPubState.vistaPersona) {
+    // Agrupar por persona
+    var porPersona = {};
+    entries.forEach(function(e) {
+      var nombre = (e.nombre || '').trim();
+      if (!porPersona[nombre]) {
+        porPersona[nombre] = { nombre: nombre, sesiones: 0, metros: 0, grupo: e.grupo, entries: [] };
+      }
+      porPersona[nombre].sesiones++;
+      porPersona[nombre].metros += (e.metros || 0);
+      porPersona[nombre].entries.push(e);
+    });
+    var personasArr = Object.values(porPersona).sort(function(a, b) { return b.metros - a.metros; });
+
+    var html = '';
+    personasArr.forEach(function(p, idx) {
+      var medal = idx < 3 ? ['🥇','🥈','🥉'][idx] : (idx + 1) + '°';
+      html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:10px;padding:0.9rem;margin-bottom:0.7rem">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">' +
+          '<div style="display:flex;align-items:center;gap:0.5rem">' +
+            '<div style="font-size:1.3rem">' + medal + '</div>' +
+            '<div>' +
+              '<div style="font-weight:900;color:var(--gold);font-size:1rem">' + escapeHtml(p.nombre) + '</div>' +
+              '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">' + (p.grupo || 'Sin grupo') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="text-align:right">' +
+            '<div style="font-size:1.2rem;font-weight:900;color:var(--accent)">' + p.metros.toLocaleString() + ' m</div>' +
+            '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5);letter-spacing:1px">' + p.sesiones + ' SESIONES</div>' +
+          '</div>' +
+        '</div>' +
+        '<details style="margin-top:0.4rem"><summary style="cursor:pointer;font-size:0.7rem;color:var(--accent-soft);letter-spacing:0.5px">Ver entrenamientos individuales</summary>' +
+        '<div style="margin-top:0.5rem;padding-left:0.5rem;border-left:2px solid rgba(56,189,248,0.3)">';
+      p.entries.forEach(function(e) {
+        html += '<div style="padding:0.4rem 0;font-size:0.75rem;color:rgba(255,255,255,0.75)">' +
+          '<strong style="color:#fff">' + (e.fecha || '') + '</strong> · ' +
+          '<span style="color:var(--gold)">' + (e.metros || 0).toLocaleString() + ' m</span>' +
+          '<div style="font-size:0.7rem;color:rgba(255,255,255,0.55);margin-top:2px">' + escapeHtml(e.descripcion || '') + '</div>' +
+          '</div>';
+      });
+      html += '</div></details></div>';
+    });
+    lista.innerHTML = html;
+  } else {
+    // Vista cronológica
+    var html = '';
+    entries.forEach(function(e) {
+      var fecha = e.fecha || '';
+      var hora = e.timestamp ? new Date(e.timestamp).toLocaleString('es-MX', {hour: '2-digit', minute:'2-digit'}) : '';
+      var deleteBtn = esCoach
+        ? '<button onclick="borrarEntrenamientoMuro(\'' + e.key + '\')" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">🗑️</button>'
+        : '';
+      html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.8rem 1rem;margin-bottom:0.6rem">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">' +
+          '<div style="font-weight:800;color:var(--gold);font-size:0.9rem">' + escapeHtml(e.nombre) + '</div>' +
+          '<div><span style="background:rgba(56,189,248,0.2);color:#38bdf8;padding:2px 8px;border-radius:50px;font-size:0.7rem;font-weight:800">' + (e.metros || 0).toLocaleString() + ' m</span>' + deleteBtn + '</div>' +
+        '</div>' +
+        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.4);letter-spacing:0.5px">' + fecha + ' · ' + (e.grupo || 'Sin grupo') + ' · ' + hora + '</div>' +
+        '<div style="font-size:0.78rem;color:rgba(255,255,255,0.75);margin-top:0.4rem;line-height:1.4">' + escapeHtml(e.descripcion || '') + '</div>' +
+        '</div>';
+    });
+    lista.innerHTML = html;
+  }
+}
+
+function toggleMuroVistaPub() {
+  muroPubState.vistaPersona = !muroPubState.vistaPersona;
+  var btn = document.getElementById('muro-toggle-vista');
+  if (btn) btn.innerHTML = muroPubState.vistaPersona ? '📅 CRONOLÓGICO' : '👥 POR PERSONA';
+  renderMuroEntrenamientos();
+}
+
+async function borrarEntrenamientoMuro(key) {
+  if (!confirm('¿Borrar este entrenamiento?')) return;
+  try {
+    await db.ref('entrenamientos_publicos/' + key).remove();
+    cargarEntrenamientosPublicosEnMuro(); // Refrescar
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+// Suscripción en vivo para refrescar muro cuando alguien sube
+try {
+  db.ref('entrenamientos_publicos').on('child_added', function() {
+    var muroVisible = document.getElementById('wk-muro');
+    var sesVisible = document.getElementById('muro-sesiones');
+    if (muroVisible && muroVisible.style.display !== 'none' && sesVisible && sesVisible.style.display !== 'none') {
+      cargarEntrenamientosPublicosEnMuro();
+    }
+  });
+  db.ref('entrenamientos_publicos').on('child_removed', function() {
+    var muroVisible = document.getElementById('wk-muro');
+    var sesVisible = document.getElementById('muro-sesiones');
+    if (muroVisible && muroVisible.style.display !== 'none' && sesVisible && sesVisible.style.display !== 'none') {
+      cargarEntrenamientosPublicosEnMuro();
+    }
+  });
+} catch (e) {}
 
 function renderSesiones(sesiones) {
   muro.sesiones = sesiones;
@@ -10813,41 +10921,13 @@ async function exportarEntrenamientosCSV() {
   }
 }
 
-// Cargar totales en vivo en la card del home
-async function cargarTotalesEntrenamientos() {
-  try {
-    var snap = await db.ref('entrenamientos_publicos').once('value');
-    var sesiones = 0;
-    var metros = 0;
-    var personas = new Set();
-    snap.forEach(function(child) {
-      var v = child.val();
-      sesiones++;
-      metros += (v.metros || 0);
-      if (v.nombre) personas.add(v.nombre.toLowerCase().trim());
-    });
-    var elS = document.getElementById('v4-stat-sesiones');
-    var elP = document.getElementById('v4-stat-personas');
-    var elM = document.getElementById('v4-stat-metros');
-    if (elS) elS.textContent = sesiones;
-    if (elP) elP.textContent = personas.size;
-    if (elM) elM.textContent = metros >= 1000 ? (metros / 1000).toFixed(1) + 'k' : metros.toLocaleString();
-  } catch (e) {
-    console.warn('No se pudieron cargar totales:', e);
-  }
-}
-
 // Cargar totales al inicio y suscribirse para refresco en vivo
+async function cargarTotalesEntrenamientos() {
+  // La card del home se quitó. Esta función queda como no-op para no romper hooks viejos.
+  // El muro tiene su propia función cargarEntrenamientosPublicosEnMuro()
+}
 setTimeout(function() {
-  cargarTotalesEntrenamientos();
-  try {
-    db.ref('entrenamientos_publicos').on('child_added', function() {
-      cargarTotalesEntrenamientos();
-    });
-    db.ref('entrenamientos_publicos').on('child_removed', function() {
-      cargarTotalesEntrenamientos();
-    });
-  } catch (e) {}
+  // Hook real-time para el muro (si está visible)
 }, 1500);
 
 async function borrarEntrenamientoPublico(key) {
