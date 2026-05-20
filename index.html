@@ -3143,6 +3143,44 @@ body.v3-fluid .v2-coach-poster:active {
         <div class="v4-upload-arrow">→</div>
       </div>
 
+      <!-- NUEVO V4.2: Tabla pública de entrenamientos de la semana (visible para todos) -->
+      <div id="v4-home-tabla" style="margin-top: 1rem; max-width: 420px; width: 100%; background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.08) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 1rem; text-align: left;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">
+          <div style="font-size:1.4rem">🏆</div>
+          <div style="flex:1">
+            <div style="font-size:0.78rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)">Entrenamientos de la Semana</div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);margin-top:1px">Ranking del equipo en vivo</div>
+          </div>
+        </div>
+
+        <!-- Totales -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;margin-bottom:0.8rem">
+          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
+            <div id="home-stat-sesiones" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
+            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Sesiones</div>
+          </div>
+          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
+            <div id="home-stat-personas" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
+            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Personas</div>
+          </div>
+          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
+            <div id="home-stat-metros" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
+            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Metros</div>
+          </div>
+        </div>
+
+        <!-- Top 5 ranking -->
+        <div style="font-size:0.6rem;color:var(--accent-soft);letter-spacing:1.5px;font-weight:800;margin-bottom:0.4rem;text-transform:uppercase">🥇 Top 5 por metros</div>
+        <div id="home-top5" style="font-size:0.82rem">
+          <div style="text-align:center;padding:0.8rem;color:rgba(255,255,255,0.4);font-size:0.7rem">Cargando...</div>
+        </div>
+
+        <!-- Botón ver todos -->
+        <button onclick="verEntrenamientosPublicos()" style="width:100%;margin-top:0.7rem;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);color:var(--accent);padding:0.6rem;border-radius:8px;font-weight:700;font-size:0.75rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase">
+          Ver todos los entrenamientos →
+        </button>
+      </div>
+
       <div class="v3-hero-scroll-hint" onclick="document.querySelector('.v3-below-fold').scrollIntoView({behavior:'smooth'})">
         <span>Ver más</span>
         <span class="chev">⌄</span>
@@ -7340,9 +7378,16 @@ function renderMuroEntrenamientos() {
       var deleteBtn = esCoach
         ? '<button onclick="borrarEntrenamientoMuro(\'' + e.key + '\')" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">🗑️</button>'
         : '';
+      // Badge de vinculación
+      var vincBadge = '';
+      if (e.nadadorId) {
+        vincBadge = '<span style="background:rgba(34,197,94,0.18);color:#22c55e;padding:2px 8px;border-radius:50px;font-size:0.62rem;font-weight:700;margin-left:6px" title="Vinculado a nadador del equipo">🔗 Vinculado</span>';
+      } else if (esCoach) {
+        vincBadge = '<button onclick="abrirVincularManual(\'' + e.key + '\',\'' + (e.nombre || '').replace(/[\'"\\\\]/g, '') + '\')" style="background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.4);color:#a855f7;border-radius:4px;padding:2px 8px;font-size:0.65rem;cursor:pointer;font-weight:700;margin-left:6px">+ Vincular</button>';
+      }
       html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.8rem 1rem;margin-bottom:0.6rem">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">' +
-          '<div style="font-weight:800;color:var(--gold);font-size:0.9rem">' + escapeHtml(e.nombre) + '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;flex-wrap:wrap;gap:4px">' +
+          '<div style="font-weight:800;color:var(--gold);font-size:0.9rem">' + escapeHtml(e.nombre) + vincBadge + '</div>' +
           '<div><span style="background:rgba(56,189,248,0.2);color:#38bdf8;padding:2px 8px;border-radius:50px;font-size:0.7rem;font-weight:800">' + (e.metros || 0).toLocaleString() + ' m</span>' + deleteBtn + '</div>' +
         '</div>' +
         '<div style="font-size:0.65rem;color:rgba(255,255,255,0.4);letter-spacing:0.5px">' + fecha + ' · ' + (e.grupo || 'Sin grupo') + ' · ' + hora + '</div>' +
@@ -7350,6 +7395,66 @@ function renderMuroEntrenamientos() {
         '</div>';
     });
     lista.innerHTML = html;
+  }
+}
+
+// Vincular manualmente un entrenamiento huérfano a un nadador
+async function abrirVincularManual(entryKey, nombreActual) {
+  if (!state || !state.isCoach) return;
+  try {
+    var snap = await db.ref('nadadores').once('value');
+    if (!snap.exists()) {
+      alert('No hay nadadores registrados. Primero registra nadadores en "Evaluación de niveles".');
+      return;
+    }
+    var opciones = [];
+    snap.forEach(function(child) {
+      var nd = child.val();
+      opciones.push({ id: child.key, nombre: nd.nombre });
+    });
+    opciones.sort(function(a, b) { return (a.nombre || '').localeCompare(b.nombre || ''); });
+
+    // Crear modal sencillo con select
+    var modalHtml = '<div id="modal-vincular-temp" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem">' +
+      '<div style="background:#0d2a4a;border:2px solid var(--gold);border-radius:16px;padding:1.5rem;max-width:400px;width:100%">' +
+        '<div style="font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:0.5rem">Vincular entrenamiento</div>' +
+        '<div style="font-size:0.78rem;color:var(--accent-soft);margin-bottom:1rem">Subido por: <strong>' + escapeHtml(nombreActual) + '</strong></div>' +
+        '<label style="display:block;font-size:0.7rem;color:var(--gold);font-weight:800;text-transform:uppercase;margin-bottom:0.4rem">Vincular a nadador</label>' +
+        '<select id="vinc-select" style="width:100%;padding:0.7rem;background:rgba(0,0,0,0.4);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;font-size:0.9rem;margin-bottom:1rem">' +
+          '<option value="">-- Selecciona --</option>';
+    opciones.forEach(function(o) {
+      modalHtml += '<option value="' + o.id + '">' + escapeHtml(o.nombre) + '</option>';
+    });
+    modalHtml += '</select>' +
+        '<button onclick="confirmarVincular(\'' + entryKey + '\')" style="width:100%;padding:0.8rem;background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;border-radius:8px;font-weight:800;cursor:pointer;margin-bottom:0.5rem">Vincular</button>' +
+        '<button onclick="document.getElementById(\'modal-vincular-temp\').remove()" style="width:100%;padding:0.6rem;background:rgba(255,255,255,0.1);color:white;border:none;border-radius:8px;cursor:pointer">Cancelar</button>' +
+      '</div></div>';
+    var div = document.createElement('div');
+    div.innerHTML = modalHtml;
+    document.body.appendChild(div.firstChild);
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+async function confirmarVincular(entryKey) {
+  var nadadorId = document.getElementById('vinc-select').value;
+  if (!nadadorId) { alert('Selecciona un nadador'); return; }
+  try {
+    // Obtener nombre del nadador
+    var snapN = await db.ref('nadadores/' + nadadorId).once('value');
+    var nadador = snapN.val();
+    if (!nadador) { alert('Nadador no encontrado'); return; }
+    // Actualizar el entrenamiento
+    await db.ref('entrenamientos_publicos/' + entryKey + '/nadadorId').set(nadadorId);
+    // Generar logros para ese nadador
+    await generarLogrosAutomaticos(nadadorId, nadador.nombre);
+    // Cerrar modal y refrescar
+    var m = document.getElementById('modal-vincular-temp');
+    if (m) m.remove();
+    cargarEntrenamientosPublicosEnMuro();
+  } catch (e) {
+    alert('Error: ' + e.message);
   }
 }
 
@@ -8856,36 +8961,46 @@ function renderProgresoNadador(nadadorId, nadador) {
     ? '<img class="premios-foto-grande" src="' + fotoUrl + '" alt="">'
     : '<div class="premios-foto-grande">' + (nadador.nombre || '?').charAt(0).toUpperCase() + '</div>';
 
-  // Obtener sesiones de la semana actual
-  var lunes = getLunes(0);
-  var diasEntrenados = {};
-  var promesas = [];
-  for (var i = 0; i < 7; i++) {
-    var dia = new Date(lunes);
-    dia.setDate(lunes.getDate() + i);
-    var key = fmtFechaYMD(dia);
-    promesas.push(
-      (function(k, idx) {
-        return db.ref('sesiones/' + k).once('value').then(function(s) {
-          if (!s.exists()) return;
-          // Buscar si existe sesión de este nadador
-          s.forEach(function(child) {
-            var sesion = child.val();
-            // Match por nadadorId si existe, o por correo si no
-            if (sesion.nadadorId === nadadorId || sesion.email === state.user.email) {
-              diasEntrenados[idx] = true;
-            }
-          });
-        });
-      })(key, i)
-    );
-  }
+  // Obtener entrenamientos públicos vinculados a este nadador
+  db.ref('entrenamientos_publicos').orderByChild('nadadorId').equalTo(nadadorId).once('value').then(function(snap) {
+    var entries = [];
+    if (snap.exists()) {
+      snap.forEach(function(child) {
+        entries.push(child.val());
+      });
+    }
 
-  Promise.all(promesas).then(function() {
-    var totalEntrenamientos = Object.keys(diasEntrenados).length;
-    var pct = Math.round((totalEntrenamientos / meta) * 100);
+    // Stats acumuladas
+    var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
+    var totalSesiones = entries.length;
+
+    // Esta semana (últimos 7 días)
+    var hace7dias = Date.now() - (7 * 86400000);
+    var entriesSemana = entries.filter(function(e) { return (e.timestamp || 0) >= hace7dias; });
+    var metrosSemana = entriesSemana.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
+    var sesionesSemana = entriesSemana.length;
+
+    // Este mes (últimos 30 días)
+    var hace30dias = Date.now() - (30 * 86400000);
+    var entriesMes = entries.filter(function(e) { return (e.timestamp || 0) >= hace30dias; });
+    var metrosMes = entriesMes.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
+
+    // Días entrenados esta semana (mapeo por día de la semana)
+    var diasEntrenados = {};
+    var lunes = getLunes(0);
+    entriesSemana.forEach(function(e) {
+      if (!e.timestamp) return;
+      var d = new Date(e.timestamp);
+      d.setHours(0,0,0,0);
+      var diffDias = Math.floor((d - lunes) / 86400000);
+      if (diffDias >= 0 && diffDias < 7) {
+        diasEntrenados[diffDias] = true;
+      }
+    });
+
+    var pct = Math.round((sesionesSemana / meta) * 100);
     if (pct > 100) pct = 100;
-    var cumplio = totalEntrenamientos >= meta;
+    var cumplio = sesionesSemana >= meta;
 
     var diasNombres = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
     var diasGridHtml = '';
@@ -8901,25 +9016,47 @@ function renderProgresoNadador(nadadorId, nadador) {
       ? '<button class="btn-foto-upload" onclick="abrirFotoPerfil()">&#128247; Subir foto del nadador</button>'
       : '';
 
+    // Formatear metros (con k si >= 1000)
+    var fmtMet = function(m) {
+      return m >= 1000 ? (m / 1000).toFixed(1) + ' km' : m.toLocaleString() + ' m';
+    };
+
     cont.innerHTML =
       '<div class="premios-progreso-card">' +
-        '<div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.5rem">' +
+        '<div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.7rem">' +
           fotoHtml +
           '<div style="flex:1;min-width:0">' +
             '<div style="font-size:1rem;font-weight:800">' + escapeHtml(nadador.nombre) + '</div>' +
-            '<div style="font-size:0.72rem;color:var(--accent-soft)">' + nadador.edad + ' anos - ' + (EVAL_NIVELES[nadador.nivel] ? EVAL_NIVELES[nadador.nivel].nombre : nadador.nivel) + '</div>' +
+            '<div style="font-size:0.72rem;color:var(--accent-soft)">' + nadador.edad + ' años - ' + (EVAL_NIVELES[nadador.nivel] ? EVAL_NIVELES[nadador.nivel].nombre : nadador.nivel) + '</div>' +
             '<div style="font-size:0.7rem;color:var(--gold);margin-top:3px;font-weight:700">' +
               'Meta semanal: ' + meta + ' entrenamientos' +
             '</div>' +
           '</div>' +
           (cumplio
             ? '<div class="eval-listo-badge">CUMPLIDO</div>'
-            : '<div style="font-size:1.4rem;font-weight:800;color:var(--accent)">' + totalEntrenamientos + '/' + meta + '</div>')+
+            : '<div style="font-size:1.4rem;font-weight:800;color:var(--accent)">' + sesionesSemana + '/' + meta + '</div>')+
         '</div>' +
+
+        // Stats de metros
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.7rem">' +
+          '<div style="text-align:center;padding:0.6rem;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:8px">' +
+            '<div style="font-size:1.1rem;font-weight:900;color:var(--accent);line-height:1">' + fmtMet(metrosSemana) + '</div>' +
+            '<div style="font-size:0.55rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Esta semana</div>' +
+          '</div>' +
+          '<div style="text-align:center;padding:0.6rem;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);border-radius:8px">' +
+            '<div style="font-size:1.1rem;font-weight:900;color:var(--gold);line-height:1">' + fmtMet(metrosMes) + '</div>' +
+            '<div style="font-size:0.55rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Este mes</div>' +
+          '</div>' +
+          '<div style="text-align:center;padding:0.6rem;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);border-radius:8px">' +
+            '<div style="font-size:1.1rem;font-weight:900;color:var(--purple);line-height:1">' + fmtMet(totalMetros) + '</div>' +
+            '<div style="font-size:0.55rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Total</div>' +
+          '</div>' +
+        '</div>' +
+
         '<div class="semana-dias-grid">' + diasGridHtml + '</div>' +
         (cumplio
-          ? '<div style="text-align:center;font-size:0.8rem;color:var(--success);font-weight:700;margin-top:0.4rem">&#127881; Meta semanal cumplida!</div>'
-          : '<div style="text-align:center;font-size:0.72rem;color:var(--accent-soft)">Faltan ' + (meta - totalEntrenamientos) + ' entrenamiento' + (meta - totalEntrenamientos === 1 ? '' : 's') + ' esta semana</div>') +
+          ? '<div style="text-align:center;font-size:0.8rem;color:var(--success);font-weight:700;margin-top:0.4rem">&#127881; ¡Meta semanal cumplida!</div>'
+          : '<div style="text-align:center;font-size:0.72rem;color:var(--accent-soft);margin-top:0.4rem">Faltan ' + (meta - sesionesSemana) + ' entrenamiento' + (meta - sesionesSemana === 1 ? '' : 's') + ' esta semana</div>') +
         fotoUploadBtn +
       '</div>';
   });
@@ -8959,17 +9096,38 @@ function renderLogroRow(logro) {
     asistencia: '&#127942;',
     mejora_tiempo: '&#9889;',
     actitud: '&#11088;',
-    competencia: '&#127754;'
+    competencia: '&#127754;',
+    hito_kilometros: '&#128170;',
+    meta_semanal: '&#127919;',
+    mes_top: '&#128293;'
   };
   var titulos = {
     asistencia: 'Meta Semanal Cumplida',
     mejora_tiempo: 'Mejora de Tiempo',
     actitud: 'Mejor Actitud de la Semana',
-    competencia: 'Represento al Equipo'
+    competencia: 'Represento al Equipo',
+    hito_kilometros: 'Hito de Kilómetros',
+    meta_semanal: 'Meta Semanal Cumplida',
+    mes_top: 'Mes Top'
   };
   var fecha = logro.timestamp ? new Date(logro.timestamp).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+
+  // Si el logro tiene título e icono propios (nuevos tipos), usarlos
+  if (logro.titulo) {
+    var iconoUsado = logro.icono || iconos[logro.tipo] || '&#127942;';
+    return '<div class="logro-row">' +
+      '<div class="logro-icon">' + iconoUsado + '</div>' +
+      '<div class="logro-info">' +
+        '<div class="logro-titulo">' + escapeHtml(logro.titulo) + '</div>' +
+        (logro.detalle && typeof logro.detalle === 'string' ? '<div class="logro-detalle">' + escapeHtml(logro.detalle) + '</div>' : '') +
+        '<div class="logro-fecha">' + fecha + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // Compatibilidad con logros antiguos (detalle como objeto)
   var detalle = '';
-  if (logro.tipo === 'asistencia' && logro.detalle) {
+  if (logro.tipo === 'asistencia' && logro.detalle && typeof logro.detalle === 'object') {
     detalle = logro.detalle.cumplio + '/' + logro.detalle.meta + ' entrenamientos en semana ' + (logro.semana || '');
   } else if (logro.tipo === 'mejora_tiempo' && logro.detalle) {
     detalle = logro.detalle.distancia + 'm ' + logro.detalle.estilo + ': ' + logro.detalle.antes + ' → ' + logro.detalle.ahora;
@@ -10713,7 +10871,32 @@ async function enviarEntrenamientoPublico() {
   btn.textContent = 'Enviando...';
 
   try {
-    // Enviar a Firebase (colección pública)
+    // 1) Buscar si hay un nadador registrado con nombre similar (auto-vinculación)
+    var nadadorIdVinculado = null;
+    var nadadorNombreOficial = null;
+    try {
+      var snapN = await db.ref('nadadores').once('value');
+      if (snapN.exists()) {
+        var nombreNorm = normalizarNombre(nombre);
+        snapN.forEach(function(child) {
+          var nd = child.val();
+          if (nd && nd.nombre) {
+            var ndNorm = normalizarNombre(nd.nombre);
+            // Match exacto o "contains" en ambos sentidos
+            if (ndNorm === nombreNorm ||
+                ndNorm.indexOf(nombreNorm) >= 0 ||
+                nombreNorm.indexOf(ndNorm) >= 0) {
+              nadadorIdVinculado = child.key;
+              nadadorNombreOficial = nd.nombre;
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('No se pudo buscar nadador para vincular:', e);
+    }
+
+    // 2) Enviar a Firebase (colección pública)
     var data = {
       nombre: nombre,
       fecha: fecha,
@@ -10723,11 +10906,22 @@ async function enviarEntrenamientoPublico() {
       timestamp: firebase.database.ServerValue.TIMESTAMP,
       anonymous: true,
     };
+    if (nadadorIdVinculado) {
+      data.nadadorId = nadadorIdVinculado;
+    }
     await db.ref('entrenamientos_publicos').push(data);
+
+    // 3) Si quedó vinculado, generar logros automáticos
+    if (nadadorIdVinculado) {
+      generarLogrosAutomaticos(nadadorIdVinculado, nadadorNombreOficial || nombre).catch(function(e) {
+        console.warn('Error generando logros:', e);
+      });
+    }
 
     btn.textContent = 'Enviar mi entrenamiento';
     btn.disabled = false;
-    successEl.textContent = '✅ ¡Listo, ' + nombre + '! Tu entrenamiento fue guardado.';
+    var vinculadoMsg = nadadorIdVinculado ? ' Tu progreso se sumó a tus logros 🏆' : '';
+    successEl.textContent = '✅ ¡Listo, ' + nombre + '! Tu entrenamiento fue guardado.' + vinculadoMsg;
     successEl.style.display = 'block';
 
     // Limpiar campos (excepto nombre)
@@ -10746,6 +10940,135 @@ async function enviarEntrenamientoPublico() {
     btn.textContent = 'Enviar mi entrenamiento';
     btn.disabled = false;
   }
+}
+
+// Normalizar nombres para comparación (sin acentos, minúsculas, sin espacios extras)
+function normalizarNombre(s) {
+  if (!s) return '';
+  return s
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar acentos
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Generar logros automáticos cuando un nadador vinculado sube entrenamiento
+async function generarLogrosAutomaticos(nadadorId, nombreOficial) {
+  try {
+    // 1) Obtener todos los entrenamientos públicos de este nadador
+    var snap = await db.ref('entrenamientos_publicos').orderByChild('nadadorId').equalTo(nadadorId).once('value');
+    var entries = [];
+    snap.forEach(function(child) {
+      entries.push(child.val());
+    });
+    if (entries.length === 0) return;
+
+    // 2) Calcular estadísticas
+    var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
+    var totalSesiones = entries.length;
+
+    // Metros de la semana actual (últimos 7 días)
+    var hace7dias = Date.now() - (7 * 86400000);
+    var entriesSemana = entries.filter(function(e) { return (e.timestamp || 0) >= hace7dias; });
+    var metrosSemana = entriesSemana.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
+    var sesionesSemana = entriesSemana.length;
+
+    // Metros del mes actual (últimos 30 días)
+    var hace30dias = Date.now() - (30 * 86400000);
+    var entriesMes = entries.filter(function(e) { return (e.timestamp || 0) >= hace30dias; });
+    var metrosMes = entriesMes.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
+
+    // 3) Actualizar perfil del nadador con estadísticas
+    await db.ref('nadadores/' + nadadorId + '/stats').update({
+      totalMetros: totalMetros,
+      totalSesiones: totalSesiones,
+      metrosSemana: metrosSemana,
+      sesionesSemana: sesionesSemana,
+      metrosMes: metrosMes,
+      ultimoEntrenamiento: Date.now()
+    });
+
+    // 4) Generar logros por hitos (sin duplicar)
+    var hitos = [];
+
+    // Hitos de metros acumulados
+    var hitosKm = [5000, 10000, 25000, 50000, 100000, 200000, 500000, 1000000];
+    hitosKm.forEach(function(hito) {
+      if (totalMetros >= hito) {
+        hitos.push({
+          tipo: 'hito_kilometros',
+          codigo: 'km_' + hito,
+          titulo: '¡' + (hito / 1000) + ' km acumulados!',
+          detalle: nombreOficial + ' alcanzó ' + (hito / 1000) + ' km totales nadados',
+          metrosObjetivo: hito,
+          icono: hito >= 100000 ? '🏆' : (hito >= 25000 ? '🥇' : '💪')
+        });
+      }
+    });
+
+    // Hito semanal: meta cumplida
+    var meta = 3; // default
+    try {
+      var snapMeta = await db.ref('nadadores/' + nadadorId + '/metaSemanal').once('value');
+      if (snapMeta.exists()) meta = parseInt(snapMeta.val()) || 3;
+    } catch (e) {}
+
+    if (sesionesSemana >= meta) {
+      var semanaKey = obtenerSemanaActual();
+      hitos.push({
+        tipo: 'meta_semanal',
+        codigo: 'meta_' + semanaKey,
+        titulo: 'Meta semanal cumplida',
+        detalle: nombreOficial + ' nadó ' + sesionesSemana + ' veces esta semana (' + metrosSemana.toLocaleString() + ' m)',
+        icono: '🎯'
+      });
+    }
+
+    // Hito mensual top: 50 km en un mes
+    if (metrosMes >= 50000) {
+      var mesKey = new Date().toISOString().substring(0, 7); // YYYY-MM
+      hitos.push({
+        tipo: 'mes_top',
+        codigo: 'mestop_' + mesKey,
+        titulo: 'Mes Top - 50+ km',
+        detalle: nombreOficial + ' lleva ' + (metrosMes / 1000).toFixed(1) + ' km este mes',
+        icono: '🔥'
+      });
+    }
+
+    // 5) Guardar logros nuevos (sin duplicar)
+    for (var i = 0; i < hitos.length; i++) {
+      var h = hitos[i];
+      // Verificar si ya existe
+      var logroId = nadadorId + '_' + h.codigo;
+      var existSnap = await db.ref('logros/' + logroId).once('value');
+      if (!existSnap.exists()) {
+        await db.ref('logros/' + logroId).set({
+          nadadorId: nadadorId,
+          nadadorNombre: nombreOficial,
+          tipo: h.tipo,
+          codigo: h.codigo,
+          titulo: h.titulo,
+          detalle: h.detalle,
+          icono: h.icono || '🏊‍♂️',
+          timestamp: Date.now()
+        });
+      }
+    }
+
+    return hitos.length;
+  } catch (e) {
+    console.error('Error generando logros:', e);
+  }
+}
+
+function obtenerSemanaActual() {
+  var d = new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+  var week1 = new Date(d.getFullYear(), 0, 4);
+  var n = 1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  return d.getFullYear() + '-W' + String(n).padStart(2, '0');
 }
 
 // Función para que el Coach vea los entrenamientos enviados
@@ -10921,13 +11244,78 @@ async function exportarEntrenamientosCSV() {
   }
 }
 
-// Cargar totales al inicio y suscribirse para refresco en vivo
+// Cargar totales + Top 5 en la tabla pública del home (visible para TODOS)
 async function cargarTotalesEntrenamientos() {
-  // La card del home se quitó. Esta función queda como no-op para no romper hooks viejos.
-  // El muro tiene su propia función cargarEntrenamientosPublicosEnMuro()
+  try {
+    var snap = await db.ref('entrenamientos_publicos').once('value');
+    var sesiones = 0;
+    var metros = 0;
+    var personas = {};
+    snap.forEach(function(child) {
+      var v = child.val();
+      sesiones++;
+      metros += (v.metros || 0);
+      var nombre = (v.nombre || '').trim();
+      if (nombre) {
+        var key = nombre.toLowerCase();
+        if (!personas[key]) {
+          personas[key] = { nombre: nombre, metros: 0, sesiones: 0, grupo: v.grupo };
+        }
+        personas[key].metros += (v.metros || 0);
+        personas[key].sesiones++;
+      }
+    });
+
+    // Actualizar totales
+    var elS = document.getElementById('home-stat-sesiones');
+    var elP = document.getElementById('home-stat-personas');
+    var elM = document.getElementById('home-stat-metros');
+    if (elS) elS.textContent = sesiones;
+    if (elP) elP.textContent = Object.keys(personas).length;
+    if (elM) elM.textContent = metros >= 1000 ? (metros / 1000).toFixed(1) + 'k' : metros.toLocaleString();
+
+    // Top 5 por metros
+    var top5 = Object.values(personas).sort(function(a, b) { return b.metros - a.metros; }).slice(0, 5);
+    var top5El = document.getElementById('home-top5');
+    if (top5El) {
+      if (top5.length === 0) {
+        top5El.innerHTML = '<div style="text-align:center;padding:0.8rem;color:rgba(255,255,255,0.4);font-size:0.72rem;font-style:italic">¡Sé el primero en subir tu entrenamiento!</div>';
+      } else {
+        var html = '';
+        top5.forEach(function(p, idx) {
+          var medal = ['🥇','🥈','🥉','🏅','🏅'][idx];
+          var bgColor = idx === 0 ? 'rgba(255,215,0,0.12)' : (idx === 1 ? 'rgba(192,192,192,0.08)' : (idx === 2 ? 'rgba(205,127,50,0.08)' : 'rgba(255,255,255,0.03)'));
+          html += '<div style="display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0.6rem;background:' + bgColor + ';border-radius:7px;margin-bottom:3px">' +
+            '<div style="font-size:1rem;width:24px;text-align:center">' + medal + '</div>' +
+            '<div style="flex:1;min-width:0;overflow:hidden">' +
+              '<div style="font-weight:700;color:#fff;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(p.nombre) + '</div>' +
+              '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5)">' + p.sesiones + ' sesion' + (p.sesiones === 1 ? '' : 'es') + '</div>' +
+            '</div>' +
+            '<div style="font-weight:900;color:var(--gold);font-size:0.95rem;text-align:right;white-space:nowrap">' + (p.metros >= 1000 ? (p.metros / 1000).toFixed(1) + ' km' : p.metros.toLocaleString() + ' m') + '</div>' +
+          '</div>';
+        });
+        top5El.innerHTML = html;
+      }
+    }
+  } catch (e) {
+    console.warn('No se pudieron cargar totales:', e);
+    var top5El = document.getElementById('home-top5');
+    if (top5El) top5El.innerHTML = '<div style="text-align:center;padding:0.8rem;color:#ff6b35;font-size:0.7rem">Error al cargar</div>';
+  }
 }
 setTimeout(function() {
-  // Hook real-time para el muro (si está visible)
+  cargarTotalesEntrenamientos();
+  try {
+    db.ref('entrenamientos_publicos').on('child_added', function() {
+      cargarTotalesEntrenamientos();
+    });
+    db.ref('entrenamientos_publicos').on('child_removed', function() {
+      cargarTotalesEntrenamientos();
+    });
+    db.ref('entrenamientos_publicos').on('child_changed', function() {
+      cargarTotalesEntrenamientos();
+    });
+  } catch (e) {}
 }, 1500);
 
 async function borrarEntrenamientoPublico(key) {
