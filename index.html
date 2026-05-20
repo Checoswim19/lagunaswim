@@ -5972,17 +5972,13 @@ var BOOKS = [
 function buyBook(id) {
   state.curBook = BOOKS[id];
   if (!state.curBook) return;
-  document.getElementById('pay-title').textContent = state.curBook.title;
-  document.getElementById('pay-amount').textContent = '$' + state.curBook.price + ' MXN';
-  document.getElementById('pay-email').value = '';
-  document.getElementById('pay-modal').classList.remove('modal-hidden');
+  // En vez del modal de pago, abrir WhatsApp directamente
+  var msg = 'Hola Sergio! Me interesa comprar el libro:\n\n*' + state.curBook.title + '* - $' + state.curBook.price + ' MXN (PDF)\n\nPor favor mandame el metodo de pago. Despues te envio el comprobante y me envias el PDF.';
+  openUrl('https://wa.me/528713164850?text=' + encodeURIComponent(msg));
 }
 function doPay() {
-  var em = document.getElementById('pay-email').value.trim();
-  if (!em || !em.includes('@')) { alert('Ingresa tu correo'); return; }
-  if (!state.curBook) return;
+  // Función legacy - ya no se usa
   closePayModal();
-  alert('Pago registrado! "' + state.curBook.title + '" sera enviado a ' + em + '.\n\n(Configura MercadoPago Access Token para cobro real.)');
 }
 function closePayModal() {
   document.getElementById('pay-modal').classList.add('modal-hidden');
@@ -6180,30 +6176,15 @@ function refreshWorkoutTab() {
     acceso.style.display = 'none';
     return;
   }
+  // SIN COBRO - Acceso libre para todos los usuarios logueados
+  loginWall.style.display = 'none';
+  subsWall.style.display = 'none';
+  acceso.style.display = 'block';
   if (state.user.email === CONFIG.coach) {
-    loginWall.style.display = 'none';
-    subsWall.style.display = 'none';
-    acceso.style.display = 'block';
     setSubsBadge('Entrenador Sergio - Acceso ilimitado', 'coach');
-    return;
+  } else {
+    setSubsBadge('Herramientas Laguna Swim - Acceso libre', 'ok');
   }
-  db.ref('suscripciones/' + state.user.uid).once('value').then(function(snap) {
-    var d = snap.val();
-    var now = Date.now();
-    if (d && d.activoHasta > now && d.restantes > 0) {
-      wk.subs = d;
-      loginWall.style.display = 'none';
-      subsWall.style.display = 'none';
-      acceso.style.display = 'block';
-      var dias = Math.ceil((d.activoHasta - now) / 86400000);
-      setSubsBadge(d.restantes + ' entrenamientos - ' + dias + ' dias', d.restantes > 2 ? 'ok' : 'low');
-    } else {
-      wk.subs = null;
-      loginWall.style.display = 'none';
-      subsWall.style.display = 'block';
-      acceso.style.display = 'none';
-    }
-  });
 }
 
 function setSubsBadge(txt, kind) {
@@ -6216,19 +6197,13 @@ function setSubsBadge(txt, kind) {
 }
 
 function tieneAccesoWorkout() {
-  if (!state.user) return false;
-  if (state.user.email === CONFIG.coach) return true;
-  return wk.subs && wk.subs.activoHasta > Date.now() && wk.subs.restantes > 0;
+  // SIN COBRO - Acceso libre para todos los usuarios logueados
+  return !!state.user;
 }
 
 async function descontarEntrenamiento() {
-  if (!state.user || state.user.email === CONFIG.coach) return;
-  if (!wk.subs) return;
-  wk.subs.restantes = Math.max(0, wk.subs.restantes - 1);
-  await db.ref('suscripciones/' + state.user.uid + '/restantes').set(wk.subs.restantes);
-  // Refrescar badge
-  var dias = Math.ceil((wk.subs.activoHasta - Date.now()) / 86400000);
-  setSubsBadge(wk.subs.restantes + ' entrenamientos - ' + dias + ' dias', wk.subs.restantes > 2 ? 'ok' : 'low');
+  // SIN COBRO - Función no-op, queda por compatibilidad
+  return;
 }
 
 function iniciarPagoSubs() {
@@ -10037,39 +10012,15 @@ var MURO_TRIAL_DIAS = 30;
 
 // Verificar estado de suscripción del usuario actual al muro
 async function verificarSubsMuro() {
+  // SIN COBRO - Acceso libre para todos
   if (!state.user) return { estado: 'no-auth', puedePublicar: false };
-  // Sergio siempre tiene acceso
   if (state.user.email === CONFIG.coach) {
     return { estado: 'coach', puedePublicar: true };
   }
-
-  var snap = await db.ref('suscripciones_muro/' + state.user.uid).once('value');
-  var data = snap.val();
-  var ahora = Date.now();
-
-  if (!data || !data.primeraSesion) {
-    // Aún no ha registrado ninguna sesión = puede registrar la primera
-    return { estado: 'primera-vez', puedePublicar: true };
-  }
-
-  // Si tiene suscripción pagada y no expirada
-  if (data.pagada && data.expira && data.expira > ahora) {
-    var diasRestantes = Math.ceil((data.expira - ahora) / 86400000);
-    return { estado: 'pagada', puedePublicar: true, diasRestantes: diasRestantes, expira: data.expira };
-  }
-
-  // Verificar trial
-  var finTrial = data.primeraSesion + MURO_TRIAL_DIAS * 86400000;
-  if (ahora < finTrial) {
-    var diasTrial = Math.ceil((finTrial - ahora) / 86400000);
-    return { estado: 'trial', puedePublicar: true, diasRestantes: diasTrial };
-  }
-
-  // Trial expirado y sin pago
-  return { estado: 'expirada', puedePublicar: false };
+  return { estado: 'libre', puedePublicar: true };
 }
 
-// Mostrar banner según estado
+// Mostrar banner según estado (SIN COBRO - solo informativo)
 async function actualizarBannerMuro() {
   var cont = document.getElementById('muro-subs-banner-container');
   if (!cont) return;
@@ -10079,40 +10030,17 @@ async function actualizarBannerMuro() {
     cont.innerHTML =
       '<div class="muro-subs-banner activa">' +
         '<div class="muro-subs-icon">&#128274;</div>' +
-        '<div class="muro-subs-text">Inicia sesion para publicar tus entrenamientos. La lectura es libre para todos.</div>' +
+        '<div class="muro-subs-text">Inicia sesion para publicar sesiones y fotos. La lectura es libre.</div>' +
       '</div>';
   } else if (s.estado === 'coach') {
     cont.innerHTML =
       '<div class="muro-subs-banner activa">' +
         '<div class="muro-subs-icon">&#128081;</div>' +
-        '<div class="muro-subs-text"><strong>Modo entrenador</strong> - Acceso ilimitado al muro</div>' +
+        '<div class="muro-subs-text"><strong>Modo entrenador</strong> - Acceso ilimitado</div>' +
       '</div>';
-  } else if (s.estado === 'primera-vez') {
-    cont.innerHTML =
-      '<div class="muro-subs-banner gratis">' +
-        '<div class="muro-subs-icon">&#127881;</div>' +
-        '<div class="muro-subs-text"><strong>Bienvenido!</strong> Registra tu primera sesion y obtienes 30 dias gratis.</div>' +
-      '</div>';
-  } else if (s.estado === 'trial') {
-    cont.innerHTML =
-      '<div class="muro-subs-banner gratis">' +
-        '<div class="muro-subs-icon">&#9203;</div>' +
-        '<div class="muro-subs-text"><strong>Mes de prueba</strong> - Te quedan ' + s.diasRestantes + ' dia' + (s.diasRestantes === 1 ? '' : 's') + '</div>' +
-        '<button class="muro-subs-btn" onclick="iniciarPagoMuro()">Suscribirse</button>' +
-      '</div>';
-  } else if (s.estado === 'pagada') {
-    cont.innerHTML =
-      '<div class="muro-subs-banner activa">' +
-        '<div class="muro-subs-icon">&#9989;</div>' +
-        '<div class="muro-subs-text"><strong>Suscripcion activa</strong> - ' + s.diasRestantes + ' dias restantes</div>' +
-      '</div>';
-  } else if (s.estado === 'expirada') {
-    cont.innerHTML =
-      '<div class="muro-subs-banner expirada">' +
-        '<div class="muro-subs-icon">&#9888;</div>' +
-        '<div class="muro-subs-text"><strong>Tu prueba termino</strong> - Suscribete para seguir publicando</div>' +
-        '<button class="muro-subs-btn" onclick="iniciarPagoMuro()">$' + MURO_PRECIO + '/ano</button>' +
-      '</div>';
+  } else {
+    // Cualquier usuario logueado - acceso libre
+    cont.innerHTML = '';
   }
 }
 
@@ -10361,10 +10289,9 @@ function cargarAdminSubs() {
   window.showTab = function(t) {
     prevST3(t);
     if (t === 'profile') {
+      // Panel de suscripciones DESACTIVADO (sin cobro)
       var sec = document.getElementById('admin-subs-section');
-      var esCoach = state.user && state.user.email === CONFIG.coach;
-      if (sec) sec.style.display = esCoach ? 'block' : 'none';
-      if (esCoach) cargarAdminSubs();
+      if (sec) sec.style.display = 'none';
     }
   };
 })();
