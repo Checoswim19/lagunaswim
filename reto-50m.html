@@ -486,6 +486,29 @@
     min-width: 150px;
     max-width: 200px;
   }
+
+  /* Selector de estilo (Libre / Mariposa) */
+  .style-btn {
+    background: rgba(0,150,199,0.08);
+    border: 2px solid rgba(72,202,228,0.25);
+    border-radius: 12px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #fff;
+    font-family: inherit;
+    text-align: center;
+    min-width: 100px;
+  }
+  .style-btn:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .style-btn.active {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(255,214,10,0.15), rgba(255,107,53,0.1));
+    box-shadow: 0 4px 18px rgba(255,214,10,0.3);
+  }
   .mode-card:hover {
     border-color: var(--accent);
     background: rgba(255,214,10,0.08);
@@ -1175,8 +1198,32 @@
   <!-- START -->
   <div class="overlay" id="overlayStart">
     <div class="brand">Laguna Swim International</div>
-    <h1 class="title">RETO 50M<br>LIBRE</h1>
-    <p class="subtitle">Compite contra 3 rivales virtuales en una alberca olímpica. Alterna brazadas izquierda y derecha al ritmo justo para nadar como un verdadero atleta.</p>
+    <h1 class="title" id="mainTitle">RETO 50M<br>LIBRE</h1>
+    <p class="subtitle" id="mainSubtitle">Compite contra 3 rivales virtuales en una alberca olímpica. Alterna brazadas izquierda y derecha al ritmo justo para nadar como un verdadero atleta.</p>
+
+    <!-- NUEVO: Selector de estilo (4 estilos) -->
+    <div class="style-picker" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px auto 18px;max-width:340px">
+      <button class="style-btn active" id="styleLibre" onclick="selectStyle('libre')">
+        <span style="font-size:1.4rem;display:block;line-height:1">🏊‍♂️</span>
+        <span style="font-size:0.7rem;letter-spacing:1px;font-weight:800">LIBRE</span>
+        <span style="font-size:0.55rem;color:rgba(255,255,255,0.6);display:block;margin-top:2px">Crol · Alternados</span>
+      </button>
+      <button class="style-btn" id="styleDorso" onclick="selectStyle('dorso')">
+        <span style="font-size:1.4rem;display:block;line-height:1">🛌</span>
+        <span style="font-size:0.7rem;letter-spacing:1px;font-weight:800">DORSO</span>
+        <span style="font-size:0.55rem;color:rgba(255,255,255,0.6);display:block;margin-top:2px">Espalda · Alternados</span>
+      </button>
+      <button class="style-btn" id="stylePecho" onclick="selectStyle('pecho')">
+        <span style="font-size:1.4rem;display:block;line-height:1">🐸</span>
+        <span style="font-size:0.7rem;letter-spacing:1px;font-weight:800">PECHO</span>
+        <span style="font-size:0.55rem;color:rgba(255,255,255,0.6);display:block;margin-top:2px">Manos juntas</span>
+      </button>
+      <button class="style-btn" id="styleMariposa" onclick="selectStyle('mariposa')">
+        <span style="font-size:1.4rem;display:block;line-height:1">🦋</span>
+        <span style="font-size:0.7rem;letter-spacing:1px;font-weight:800">MARIPOSA</span>
+        <span style="font-size:0.55rem;color:rgba(255,255,255,0.6);display:block;margin-top:2px">Brazos juntos</span>
+      </button>
+    </div>
 
     <div class="nickname-box">
       <div class="nickname-label">Tu nickname</div>
@@ -1415,7 +1462,7 @@
     <div class="finish-podium" id="finishPodium"></div>
 
     <div class="leaderboard-section" id="leaderboardSection" style="display:none">
-      <div class="leaderboard-title">🏆 Top 10 Global · Laguna Swim</div>
+      <div class="leaderboard-title" id="leaderboardTitle">🏆 Top 10 · Laguna Swim</div>
       <div class="leaderboard-list" id="leaderboardList">
         <div class="leaderboard-row" style="justify-content:center;color:var(--text-dim)">Cargando ranking...</div>
       </div>
@@ -1509,6 +1556,7 @@
   let pose = null;
   let cameraStream = null;
   let cameraLoop = null;
+  let swimStyle = 'libre'; // 'libre' o 'mariposa'
 
   let state = {
     running: false,
@@ -1524,12 +1572,91 @@
     strokeIntervals: [],
     rivals: [],
     playerFinishedAt: null,
+    swimStyle: 'libre', // copia local en state
   };
 
   let poseState = {
     leftArmReadyToFire: true,
     rightArmReadyToFire: true,
+    butterflyReadyToFire: true, // Para mariposa: ambos brazos
   };
+
+  // ============ NUEVO: Selector de 4 estilos ============
+  var STYLE_CONFIG = {
+    libre: {
+      titleHTML: 'RETO 50M<br>LIBRE',
+      subtitle: 'Compite contra 3 rivales virtuales en una alberca olímpica. Alterna brazadas izquierda y derecha al ritmo justo, como un verdadero atleta.',
+      times: ['00:40.0', '00:45.0', '00:60.0'],
+      keyboardDesc: 'Alterna <b>A</b> y <b>L</b>.',
+      touchDesc: 'Toca izq. y der. en pantalla.',
+      npcFactor: 1.0,
+    },
+    dorso: {
+      titleHTML: 'RETO 50M<br>DORSO',
+      subtitle: 'Nada de espalda. Alterna brazadas con los brazos hacia atrás del cuerpo. Más técnico, más elegante.',
+      times: ['00:45.0', '00:50.0', '01:05.0'],
+      keyboardDesc: 'Alterna <b>A</b> y <b>L</b>.',
+      touchDesc: 'Toca izq. y der. en pantalla.',
+      npcFactor: 0.95,
+    },
+    pecho: {
+      titleHTML: 'RETO 50M<br>PECHO',
+      subtitle: 'Estilo de braza. Junta las manos al frente y empuja hacia atrás simultáneamente. El más técnico de los cuatro.',
+      times: ['00:55.0', '01:05.0', '01:25.0'],
+      keyboardDesc: 'Presiona <b>ESPACIO</b>.',
+      touchDesc: 'Toca el centro de pantalla.',
+      npcFactor: 0.75,
+    },
+    mariposa: {
+      titleHTML: 'RETO 50M<br>MARIPOSA',
+      subtitle: 'El estilo más exigente. Mueve AMBOS BRAZOS al mismo tiempo, como en mariposa real. Más cansado, más glorioso.',
+      times: ['00:50.0', '01:00.0', '01:15.0'],
+      keyboardDesc: 'Presiona <b>ESPACIO</b>.',
+      touchDesc: 'Toca el centro de pantalla.',
+      npcFactor: 0.78,
+    },
+  };
+
+  function selectStyle(estilo) {
+    if (!STYLE_CONFIG[estilo]) estilo = 'libre';
+    swimStyle = estilo;
+    state.swimStyle = estilo;
+    var cfg = STYLE_CONFIG[estilo];
+
+    // Actualizar botones
+    ['libre','dorso','pecho','mariposa'].forEach(function(s) {
+      var btn = document.getElementById('style' + s.charAt(0).toUpperCase() + s.slice(1));
+      if (btn) btn.classList.toggle('active', s === estilo);
+    });
+
+    // Actualizar título y subtítulo
+    var t = document.getElementById('mainTitle');
+    var s = document.getElementById('mainSubtitle');
+    if (t) t.innerHTML = cfg.titleHTML;
+    if (s) s.textContent = cfg.subtitle;
+
+    // Actualizar referencias de tiempo
+    var refs = document.querySelectorAll('.ref-time-value');
+    if (refs.length >= 3 && cfg.times) {
+      refs[0].textContent = cfg.times[0];
+      refs[1].textContent = cfg.times[1];
+      refs[2].textContent = cfg.times[2];
+    }
+
+    // Actualizar instrucciones de modos
+    var mk = document.getElementById('modeKeyboard');
+    if (mk) {
+      var d = mk.querySelector('.mode-desc');
+      if (d) d.innerHTML = cfg.keyboardDesc;
+    }
+    var mt = document.getElementById('modeTouch');
+    if (mt) {
+      var d2 = mt.querySelector('.mode-desc');
+      if (d2) d2.innerHTML = cfg.touchDesc;
+    }
+  }
+  // Exponer globalmente para onclick
+  window.selectStyle = selectStyle;
 
   const $ = id => document.getElementById(id);
   const pool = $('pool');
@@ -1640,19 +1767,64 @@
     const interval = state.lastStrokeTime ? now - state.lastStrokeTime : 500;
     state.strokes++;
     let quality = 0;
+    var estilo = state.swimStyle || 'libre';
 
-    if (state.lastArm === arm && state.lastStrokeTime > 0) quality = -0.3;
-    else if (interval < TOO_FAST_MS) quality = 0.35;
-    else if (interval > TOO_SLOW_MS) quality = 0.5;
-    else if (interval >= IDEAL_MIN_MS && interval <= IDEAL_MAX_MS) { quality = 1.4; state.goodStrokes++; }
-    else { quality = 0.85; state.goodStrokes++; }
+    if (estilo === 'mariposa') {
+      // MARIPOSA: ambos brazos juntos, ritmo más lento ideal
+      if (interval < TOO_FAST_MS * 0.9) quality = 0.35;
+      else if (interval > TOO_SLOW_MS * 1.2) quality = 0.5;
+      else if (interval >= IDEAL_MIN_MS * 1.1 && interval <= IDEAL_MAX_MS * 1.4) {
+        quality = 1.6; state.goodStrokes++;
+      } else {
+        quality = 0.9; state.goodStrokes++;
+      }
+    } else if (estilo === 'pecho') {
+      // PECHO: ciclo más lento (brazada + patada + planeo), recompensa ritmo pausado
+      if (interval < TOO_FAST_MS * 1.1) quality = 0.3; // muy rápido en pecho = mala técnica
+      else if (interval > TOO_SLOW_MS * 1.5) quality = 0.45; // demasiado lento
+      else if (interval >= IDEAL_MIN_MS * 1.3 && interval <= IDEAL_MAX_MS * 1.6) {
+        quality = 1.5; state.goodStrokes++; // ritmo pausado y consistente es ideal
+      } else {
+        quality = 0.85; state.goodStrokes++;
+      }
+    } else if (estilo === 'dorso') {
+      // DORSO: igual que libre (alternados) pero ligeramente más lento
+      if (state.lastArm === arm && state.lastStrokeTime > 0) quality = -0.3;
+      else if (interval < TOO_FAST_MS) quality = 0.35;
+      else if (interval > TOO_SLOW_MS) quality = 0.5;
+      else if (interval >= IDEAL_MIN_MS && interval <= IDEAL_MAX_MS) {
+        quality = 1.35; state.goodStrokes++;
+      } else {
+        quality = 0.85; state.goodStrokes++;
+      }
+    } else {
+      // LIBRE (crol): alternados con ritmo natural
+      if (state.lastArm === arm && state.lastStrokeTime > 0) quality = -0.3;
+      else if (interval < TOO_FAST_MS) quality = 0.35;
+      else if (interval > TOO_SLOW_MS) quality = 0.5;
+      else if (interval >= IDEAL_MIN_MS && interval <= IDEAL_MAX_MS) {
+        quality = 1.4; state.goodStrokes++;
+      } else {
+        quality = 0.85; state.goodStrokes++;
+      }
+    }
 
     if (quality > 0) state.velocity += PROPULSION * quality;
     else state.velocity = Math.max(0, state.velocity + (PROPULSION * quality));
     state.velocity = Math.min(state.velocity, MAX_VELOCITY);
 
-    animatePlayerArm(arm);
-    createSplash(arm, quality);
+    // Animar brazos según estilo
+    if (estilo === 'mariposa' || estilo === 'pecho') {
+      // Ambos brazos juntos
+      animatePlayerArm('L');
+      animatePlayerArm('R');
+      createSplash('L', quality);
+      createSplash('R', quality);
+    } else {
+      // Libre / dorso: un brazo a la vez
+      animatePlayerArm(arm);
+      createSplash(arm, quality);
+    }
 
     if (state.lastStrokeTime > 0) {
       state.strokeIntervals.push(interval);
@@ -1690,13 +1862,16 @@
 
   // ============ RIVALS ============
   function initRivals() {
+    // Factor de velocidad según estilo (libre=1.0, dorso=0.95, mariposa=0.78, pecho=0.75)
+    var cfg = STYLE_CONFIG[state.swimStyle] || STYLE_CONFIG.libre;
+    var factor = cfg.npcFactor || 1.0;
     state.rivals = [
       { id: 'r1', name: 'Rival 1', distance: 0, finishedAt: null,
-        speedProfile: (p) => Math.max(0.6, 1.25 - p*0.35 + (Math.random()-0.5)*0.08) },
+        speedProfile: (p) => Math.max(0.6 * factor, (1.25 - p*0.35 + (Math.random()-0.5)*0.08) * factor) },
       { id: 'r2', name: 'Rival 2', distance: 0, finishedAt: null,
-        speedProfile: (p) => Math.max(0.9, 1.32 + Math.sin(p*Math.PI*3)*0.08 + (Math.random()-0.5)*0.06) },
+        speedProfile: (p) => Math.max(0.9 * factor, (1.32 + Math.sin(p*Math.PI*3)*0.08 + (Math.random()-0.5)*0.06) * factor) },
       { id: 'r3', name: 'Rival 3', distance: 0, finishedAt: null,
-        speedProfile: (p) => Math.max(0.4, 0.95 + (Math.random()-0.5)*0.25 + (Math.random()<0.05?-0.3:0)) },
+        speedProfile: (p) => Math.max(0.4 * factor, (0.95 + (Math.random()-0.5)*0.25 + (Math.random()<0.05?-0.3:0)) * factor) },
     ];
   }
 
@@ -1908,11 +2083,20 @@
         strokes: state.strokes,
         efficiency: efficiency,
         mode: mode,
+        swimStyle: state.swimStyle || 'libre',
         isNewRecord: isNewRecord,
         timestamp: Date.now(),
       });
-      // Pedir al padre el leaderboard global
-      sendToParent('REQUEST_LEADERBOARD', {});
+      // Pedir al padre el leaderboard del estilo actual
+      sendToParent('REQUEST_LEADERBOARD', { swimStyle: state.swimStyle || 'libre' });
+      // Actualizar título del leaderboard con el estilo
+      var tituloLB = document.getElementById('leaderboardTitle');
+      if (tituloLB) {
+        var emojisEstilo = { libre: '🏊‍♂️', dorso: '🛌', pecho: '🐸', mariposa: '🦋' };
+        var nombresEstilo = { libre: 'Libre', dorso: 'Dorso', pecho: 'Pecho', mariposa: 'Mariposa' };
+        var st = state.swimStyle || 'libre';
+        tituloLB.innerHTML = '🏆 Top 10 · ' + (emojisEstilo[st] || '') + ' ' + (nombresEstilo[st] || 'Libre');
+      }
       $('leaderboardSection').style.display = 'block';
     } else {
       $('leaderboardSection').style.display = 'none';
@@ -1951,8 +2135,19 @@
     if (mode !== 'keyboard') return;
     if (!state.running) return;
     const k = e.key.toLowerCase();
-    if (k === 'a') stroke('L');
-    else if (k === 'l') stroke('R');
+    var estilo = state.swimStyle || 'libre';
+
+    if (estilo === 'mariposa' || estilo === 'pecho') {
+      // Brazos simultáneos: ESPACIO
+      if (k === ' ' || e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        stroke('B');
+      }
+    } else {
+      // Libre / dorso: A y L alternados
+      if (k === 'a') stroke('L');
+      else if (k === 'l') stroke('R');
+    }
   });
 
   // ============ TOUCH ============
@@ -1960,7 +2155,13 @@
     const trigger = (e) => {
       e.preventDefault();
       if (mode !== 'touch') return;
-      stroke(arm);
+      var estilo = state.swimStyle || 'libre';
+      // Estilos simultáneos: cualquier zona dispara 'B'
+      if (estilo === 'mariposa' || estilo === 'pecho') {
+        stroke('B');
+      } else {
+        stroke(arm);
+      }
       zone.classList.add('active');
       setTimeout(() => zone.classList.remove('active'), 120);
     };
@@ -2059,10 +2260,56 @@
     drawLine(ctx, rightShoulder, rightWrist, canvas, rightUp ? '#ffd60a' : 'rgba(255,255,255,0.5)');
 
     if (state.running) {
-      if (leftUp && poseState.leftArmReadyToFire) { stroke('L'); poseState.leftArmReadyToFire = false; }
-      if (!leftUp && !poseState.leftArmReadyToFire && leftWrist.y > leftShoulder.y + 0.02) poseState.leftArmReadyToFire = true;
-      if (rightUp && poseState.rightArmReadyToFire) { stroke('R'); poseState.rightArmReadyToFire = false; }
-      if (!rightUp && !poseState.rightArmReadyToFire && rightWrist.y > rightShoulder.y + 0.02) poseState.rightArmReadyToFire = true;
+      var estilo = state.swimStyle || 'libre';
+
+      if (estilo === 'mariposa') {
+        // MARIPOSA: ambos brazos ARRIBA al mismo tiempo
+        var ambosArriba = leftUp && rightUp;
+        var ambosAbajo = !leftUp && !rightUp &&
+          leftWrist.y > leftShoulder.y + 0.02 &&
+          rightWrist.y > rightShoulder.y + 0.02;
+        if (ambosArriba && poseState.butterflyReadyToFire) {
+          stroke('B');
+          poseState.butterflyReadyToFire = false;
+        }
+        if (ambosAbajo && !poseState.butterflyReadyToFire) {
+          poseState.butterflyReadyToFire = true;
+        }
+      } else if (estilo === 'pecho') {
+        // PECHO: manos juntas adelante (cerca una de otra), por debajo de hombros
+        var manosCerca = Math.abs(leftWrist.x - rightWrist.x) < 0.15;
+        var manosAdelante = leftWrist.y > leftShoulder.y && rightWrist.y > rightShoulder.y;
+        var manosJuntasAdelante = manosCerca && manosAdelante &&
+          (leftWrist.visibility || 1) > 0.4 && (rightWrist.visibility || 1) > 0.4;
+        // Después de juntar, las manos deben separarse (empuje hacia afuera)
+        var manosSeparadas = Math.abs(leftWrist.x - rightWrist.x) > 0.3;
+
+        if (manosJuntasAdelante && poseState.butterflyReadyToFire) {
+          stroke('B');
+          poseState.butterflyReadyToFire = false;
+        }
+        if (manosSeparadas && !poseState.butterflyReadyToFire) {
+          poseState.butterflyReadyToFire = true;
+        }
+      } else if (estilo === 'dorso') {
+        // DORSO: alternar brazos, pero detectar ABAJO de hombros (atrás del cuerpo)
+        // Como el usuario está parado, simularemos "brazos atrás" como brazos a los costados/bajados
+        var leftAtras = leftWrist.y > leftShoulder.y + 0.15 && (leftWrist.visibility || 1) > 0.4;
+        var rightAtras = rightWrist.y > rightShoulder.y + 0.15 && (rightWrist.visibility || 1) > 0.4;
+        var leftListo = leftWrist.y < leftShoulder.y - 0.05; // arriba para "resetear"
+        var rightListo = rightWrist.y < rightShoulder.y - 0.05;
+
+        if (leftAtras && poseState.leftArmReadyToFire) { stroke('L'); poseState.leftArmReadyToFire = false; }
+        if (leftListo && !poseState.leftArmReadyToFire) poseState.leftArmReadyToFire = true;
+        if (rightAtras && poseState.rightArmReadyToFire) { stroke('R'); poseState.rightArmReadyToFire = false; }
+        if (rightListo && !poseState.rightArmReadyToFire) poseState.rightArmReadyToFire = true;
+      } else {
+        // LIBRE: brazos alternados arriba
+        if (leftUp && poseState.leftArmReadyToFire) { stroke('L'); poseState.leftArmReadyToFire = false; }
+        if (!leftUp && !poseState.leftArmReadyToFire && leftWrist.y > leftShoulder.y + 0.02) poseState.leftArmReadyToFire = true;
+        if (rightUp && poseState.rightArmReadyToFire) { stroke('R'); poseState.rightArmReadyToFire = false; }
+        if (!rightUp && !poseState.rightArmReadyToFire && rightWrist.y > rightShoulder.y + 0.02) poseState.rightArmReadyToFire = true;
+      }
     }
   }
 
