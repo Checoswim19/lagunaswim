@@ -10411,7 +10411,8 @@ window.addEventListener('message', function(event) {
     reto50GuardarResultado(msg.data);
   }
   else if (msg.type === 'REQUEST_LEADERBOARD') {
-    reto50CargarLeaderboard().then(function(top) {
+    var estiloPedido = (msg.data && msg.data.swimStyle) || 'libre';
+    reto50CargarLeaderboard(false, estiloPedido).then(function(top) {
       reto50EnviarLBaIframe(top);
     });
   }
@@ -10452,44 +10453,57 @@ async function reto50GuardarResultado(data) {
 
   try {
     await db.ref('races_leaderboard').push(entry);
-    // Invalidar cache para próxima consulta
+    // Invalidar cache para próxima consulta (todos los estilos)
     RETO50.lbCache = null;
     RETO50.lbCacheTime = 0;
-    // Recargar leaderboard y enviarlo al iframe
-    var top = await reto50CargarLeaderboard(true);
+    RETO50.lbCacheByStyle = {};
+    RETO50.lbCacheTimeByStyle = {};
+    // Recargar leaderboard del estilo que acaba de nadar y enviarlo al iframe
+    var estiloDelJuego = entry.swimStyle || 'libre';
+    var top = await reto50CargarLeaderboard(true, estiloDelJuego);
     reto50EnviarLBaIframe(top);
   } catch (e) {
     console.warn('Error guardando resultado Reto 50m:', e);
   }
 }
 
-// ===== FIREBASE: CARGAR LEADERBOARD =====
-async function reto50CargarLeaderboard(forzar) {
+// ===== FIREBASE: CARGAR LEADERBOARD POR ESTILO =====
+async function reto50CargarLeaderboard(forzar, estilo) {
+  estilo = estilo || RETO50.estiloActual || 'libre';
   var ahora = Date.now();
-  if (!forzar && RETO50.lbCache && (ahora - RETO50.lbCacheTime) < RETO50.lbCacheMs) {
-    return RETO50.lbCache;
+  // Cache separado por estilo
+  if (!RETO50.lbCacheByStyle) RETO50.lbCacheByStyle = {};
+  if (!RETO50.lbCacheTimeByStyle) RETO50.lbCacheTimeByStyle = {};
+  if (!forzar && RETO50.lbCacheByStyle[estilo] && (ahora - (RETO50.lbCacheTimeByStyle[estilo] || 0)) < RETO50.lbCacheMs) {
+    return RETO50.lbCacheByStyle[estilo];
   }
 
   try {
+    // Pedimos los 200 mejores tiempos (sin filtrar todavía) y filtramos en cliente
+    // Las entradas viejas no tienen swimStyle, se asumen "libre" por defecto
     var snap = await db.ref('races_leaderboard')
       .orderByChild('time')
-      .limitToFirst(50)
+      .limitToFirst(200)
       .once('value');
 
     var rows = [];
     snap.forEach(function(child) {
       var v = child.val();
       if (v && v.time && v.nickname) {
-        rows.push({
-          key: child.key,
-          nickname: v.nickname,
-          time: v.time,
-          timestamp: v.timestamp || 0,
-        });
+        var entryStyle = v.swimStyle || 'libre'; // default libre para entradas viejas
+        if (entryStyle === estilo) {
+          rows.push({
+            key: child.key,
+            nickname: v.nickname,
+            time: v.time,
+            timestamp: v.timestamp || 0,
+            swimStyle: entryStyle,
+          });
+        }
       }
     });
 
-    // Deduplicar por nickname (quedarse con el mejor tiempo de cada uno)
+    // Deduplicar por nickname (quedarse con el mejor tiempo de cada uno en este estilo)
     var bestByNick = {};
     rows.forEach(function(r) {
       var n = r.nickname.toUpperCase();
@@ -10500,6 +10514,9 @@ async function reto50CargarLeaderboard(forzar) {
     var unique = Object.values(bestByNick).sort(function(a, b) { return a.time - b.time; });
     var top10 = unique.slice(0, 10);
 
+    RETO50.lbCacheByStyle[estilo] = top10;
+    RETO50.lbCacheTimeByStyle[estilo] = ahora;
+    // Mantener compatibilidad
     RETO50.lbCache = top10;
     RETO50.lbCacheTime = ahora;
     return top10;
@@ -10521,28 +10538,58 @@ async function reto50RenderLeaderboard() {
   // V2: usar ID nuevo en tab Competir; fallback al viejo
   var list = document.getElementById('reto50-lb-list-v2') || document.getElementById('reto50-lb-list');
   if (!list) return;
-  list.innerHTML = '<div class="reto50-lb-empty">Cargando ranking...</div>';
 
-  var top = await reto50CargarLeaderboard();
-  if (!top || top.length === 0) {
-    list.innerHTML = '<div class="reto50-lb-empty">Sé el primero en el ranking 🏊‍♂️</div>';
-    return;
-  }
+  // Asegurar estilo actual
+  if (!RETO50.estiloActual) RETO50.estiloActual = 'libre';
 
-  var esCoach = !!(state && state.isCoach);
-  list.innerHTML = '';
-  top.forEach(function(entry, idx) {
-    var row = document.createElement('div');
-    row.className = 'reto50-lb-row' + (idx === 0 ? ' gold' : '');
-    var medal = ['🥇','🥈','🥉'][idx] || (idx + 1) + '°';
-    var deleteBtn = esCoach ? '<button class="reto50-lb-delete" onclick="event.stopPropagation();reto50BorrarEntry(\'' + entry.key + '\',\'' + entry.nickname.replace(/'/g, '') + '\')">🗑️</button>' : '';
-    row.innerHTML =
-      '<div class="reto50-lb-rank">' + medal + '</div>' +
-      '<div class="reto50-lb-name">' + entry.nickname + '</div>' +
-      '<div class="reto50-lb-time">' + reto50FormatTime(entry.time) + '</div>' +
-      deleteBtn;
-    list.appendChild(row);
+  // Construir tabs de estilo
+  var ESTILOS = [
+    { id: 'libre', emoji: '🏊‍♂️', label: 'Libre' },
+    { id: 'dorso', emoji: '🛌', label: 'Dorso' },
+    { id: 'pecho', emoji: '🐸', label: 'Pecho' },
+    { id: 'mariposa', emoji: '🦋', label: 'Mariposa' },
+  ];
+  var tabsHtml = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:10px;padding:0 2px">';
+  ESTILOS.forEach(function(e) {
+    var activo = RETO50.estiloActual === e.id;
+    var bg = activo ? 'linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,107,53,0.15))' : 'rgba(255,255,255,0.04)';
+    var border = activo ? 'var(--gold)' : 'rgba(255,255,255,0.1)';
+    var color = activo ? 'var(--gold)' : 'rgba(255,255,255,0.7)';
+    tabsHtml += '<button onclick="reto50CambiarEstilo(\'' + e.id + '\')" style="background:' + bg + ';border:1.5px solid ' + border + ';color:' + color + ';padding:6px 4px;border-radius:6px;font-size:0.62rem;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;line-height:1.2">' +
+      '<div style="font-size:1.1rem;margin-bottom:2px">' + e.emoji + '</div>' +
+      '<div>' + e.label + '</div>' +
+    '</button>';
   });
+  tabsHtml += '</div>';
+
+  list.innerHTML = tabsHtml + '<div class="reto50-lb-empty">Cargando ranking...</div>';
+
+  var top = await reto50CargarLeaderboard(false, RETO50.estiloActual);
+  // Re-render con tabs + contenido
+  var bodyHtml = '';
+  if (!top || top.length === 0) {
+    var nombreEstilo = (ESTILOS.find(function(e) { return e.id === RETO50.estiloActual; }) || {}).label || 'este estilo';
+    bodyHtml = '<div class="reto50-lb-empty">Sé el primero en ' + nombreEstilo + ' 🏊‍♂️</div>';
+  } else {
+    var esCoach = !!(state && state.isCoach);
+    top.forEach(function(entry, idx) {
+      var medal = ['🥇','🥈','🥉'][idx] || (idx + 1) + '°';
+      var deleteBtn = esCoach ? '<button class="reto50-lb-delete" onclick="event.stopPropagation();reto50BorrarEntry(\'' + entry.key + '\',\'' + entry.nickname.replace(/'/g, '') + '\')">🗑️</button>' : '';
+      bodyHtml += '<div class="reto50-lb-row' + (idx === 0 ? ' gold' : '') + '">' +
+        '<div class="reto50-lb-rank">' + medal + '</div>' +
+        '<div class="reto50-lb-name">' + entry.nickname + '</div>' +
+        '<div class="reto50-lb-time">' + reto50FormatTime(entry.time) + '</div>' +
+        deleteBtn +
+      '</div>';
+    });
+  }
+  list.innerHTML = tabsHtml + bodyHtml;
+}
+
+// Cambiar estilo activo en el ranking
+function reto50CambiarEstilo(estilo) {
+  RETO50.estiloActual = estilo;
+  reto50RenderLeaderboard();
 }
 
 // Borrar entry (solo coach)
@@ -10551,7 +10598,10 @@ async function reto50BorrarEntry(key, nickname) {
   if (!confirm('¿Borrar entrada de "' + nickname + '" del ranking?')) return;
   try {
     await db.ref('races_leaderboard/' + key).remove();
+    // Limpiar todos los caches por estilo
     RETO50.lbCache = null;
+    RETO50.lbCacheByStyle = {};
+    RETO50.lbCacheTimeByStyle = {};
     reto50RenderLeaderboard();
   } catch (e) {
     alert('Error al borrar: ' + e.message);
@@ -10708,6 +10758,8 @@ try {
     var body = document.getElementById('reto50-lb-body-v2') || document.getElementById('reto50-lb-body');
     if (body && body.style.display === 'block') {
       RETO50.lbCache = null;
+      RETO50.lbCacheByStyle = {};
+      RETO50.lbCacheTimeByStyle = {};
       reto50RenderLeaderboard();
     }
   });
@@ -10715,6 +10767,8 @@ try {
     var body = document.getElementById('reto50-lb-body-v2') || document.getElementById('reto50-lb-body');
     if (body && body.style.display === 'block') {
       RETO50.lbCache = null;
+      RETO50.lbCacheByStyle = {};
+      RETO50.lbCacheTimeByStyle = {};
       reto50RenderLeaderboard();
     }
   });
