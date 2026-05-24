@@ -3787,6 +3787,9 @@ body.v3-fluid .v2-coach-poster:active {
     <div style="font-size:0.7rem;color:var(--accent-soft);margin-bottom:0.5rem">
       Selecciona prueba para ver el ranking
     </div>
+    <div id="ranking-counter" style="font-size:0.75rem;margin-bottom:0.7rem;padding:0.5rem 0.7rem;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:6px;color:rgba(255,255,255,0.85)">
+      Cargando...
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem">
       <select id="rank-dist" onchange="filterRanking()">
         <option value="">Distancia</option>
@@ -5042,7 +5045,8 @@ db.ref('.info/connected').on('value', function(s) {
 // ===== AUTH =====
 auth.onAuthStateChanged(function(u) {
   state.user = u;
-  state.isCoach = !!u;
+  // Marcar como coach SOLO si el email coincide con el del coach configurado
+  state.isCoach = !!(u && u.email && u.email.toLowerCase() === (CONFIG.coach || '').toLowerCase());
   if (u) {
     document.getElementById('auth-user-email').textContent = u.displayName || u.email;
     document.getElementById('auth-form-view').style.display = 'none';
@@ -5055,6 +5059,10 @@ auth.onAuthStateChanged(function(u) {
     document.querySelectorAll('.coach-btn').forEach(function(b) { b.style.display = 'inline-block'; });
     document.querySelectorAll('.coach-logout-btn').forEach(function(b) { b.style.display = 'none'; });
   }
+  // CRITICAL FIX: Refrescar la pantalla de Tools cuando cambia el login
+  // (antes solo se llamaba al cargar la página, dejando la pared de login visible)
+  try { if (typeof refreshWorkoutTab === 'function') refreshWorkoutTab(); } catch (e) { console.warn(e); }
+  try { if (typeof actualizarBannerMuro === 'function') actualizarBannerMuro(); } catch (e) {}
 });
 
 function loginGoogle() {
@@ -5073,6 +5081,11 @@ function loginGoogle() {
     return;
   }
 
+  // Verificar que el dominio actual sea autorizado
+  // (esto NO bloquea, solo registra en consola para diagnóstico)
+  console.log('[Login Debug] Dominio:', window.location.hostname);
+  console.log('[Login Debug] Auth domain:', firebaseConfig && firebaseConfig.authDomain);
+
   // Detectar si es móvil
   var esMobil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -5082,23 +5095,50 @@ function loginGoogle() {
     if (btn) btn.innerHTML = '<span class="spinner"></span>Conectando con Google...';
     // En móvil usar redirect (no popup) - mucho más confiable
     auth.signInWithRedirect(gProv).catch(function(e) {
-      showAuthErr('No se pudo iniciar sesion: ' + (e.message || 'intenta otro navegador'));
+      console.error('[Login Error]', e.code, e.message);
+      var msg = traducirErrorAuth(e);
+      showAuthErr(msg);
     });
   } else {
     // En escritorio mantener popup (más rápido)
     auth.signInWithPopup(gProv)
       .then(function() { closeAuthModal(); })
       .catch(function(e) {
+        console.error('[Login Error]', e.code, e.message);
         // Si el popup falla (bloqueado, etc.), intentar redirect como fallback
         if (e.code === 'auth/popup-blocked') {
           auth.signInWithRedirect(gProv).catch(function(e2) {
-            showAuthErr('Error: ' + e2.message);
+            showAuthErr(traducirErrorAuth(e2));
           });
         } else if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
-          showAuthErr(e.message);
+          showAuthErr(traducirErrorAuth(e));
         }
       });
   }
+}
+
+// Traducir códigos de error de Firebase a mensajes claros para el usuario
+function traducirErrorAuth(e) {
+  if (!e) return 'Error desconocido';
+  var codigo = e.code || '';
+  var dominio = window.location.hostname;
+  if (codigo === 'auth/unauthorized-domain') {
+    return '⚠️ El dominio "' + dominio + '" no está autorizado en Firebase. ' +
+      'Ve a console.firebase.google.com → laguna-swim-chrono → Authentication → Settings → Authorized domains → "Add domain" y agrega: ' + dominio;
+  }
+  if (codigo === 'auth/popup-blocked') {
+    return 'Tu navegador bloqueó el popup. Permite popups en este sitio o usa otro navegador.';
+  }
+  if (codigo === 'auth/network-request-failed') {
+    return 'Sin conexión a internet. Revisa tu conexión e intenta de nuevo.';
+  }
+  if (codigo === 'auth/web-storage-unsupported') {
+    return 'Tu navegador bloquea el almacenamiento. Sal del modo incógnito y habilita las cookies.';
+  }
+  if (codigo === 'auth/operation-not-supported-in-this-environment') {
+    return 'Este navegador no permite el login. Intenta con Chrome o Safari.';
+  }
+  return 'Error: ' + codigo + ' - ' + (e.message || 'intenta de nuevo');
 }
 
 // Manejar el resultado del redirect cuando regresa de Google
@@ -5111,6 +5151,7 @@ function loginGoogle() {
 
   auth.getRedirectResult().then(function(result) {
     if (result && result.user) {
+      console.log('[Login OK] Bienvenido', result.user.email);
       closeAuthModal();
     }
   }).catch(function(e) {
@@ -5121,7 +5162,12 @@ function loginGoogle() {
       'auth/web-storage-unsupported'
     ];
     if (e && e.code && codigosIgnorables.indexOf(e.code) === -1) {
-      console.warn('Redirect error:', e.message);
+      console.error('[Redirect Error]', e.code, e.message);
+      // Si el modal de auth está abierto, mostrar el error allí
+      var modal = document.getElementById('auth-modal');
+      if (modal && modal.style.display !== 'none' && typeof traducirErrorAuth === 'function') {
+        try { showAuthErr(traducirErrorAuth(e)); } catch (e2) {}
+      }
     }
   });
 })();
@@ -6630,9 +6676,62 @@ function loadRanking() {
     var d = snap.val() || {};
     Object.values(d).forEach(function(r) { rk.data.push(r); });
     rk.data.sort(function(a, b) { return a.timeMs - b.timeMs; });
+    // Actualizar contador visible
+    var counter = document.getElementById('ranking-counter');
+    if (counter) {
+      if (rk.data.length === 0) {
+        counter.innerHTML = '<span style="color:rgba(255,255,255,0.5)">Sin resultados guardados aún</span>';
+      } else {
+        var coach = state.user && state.user.email === CONFIG.coach;
+        counter.innerHTML = '<strong style="color:var(--gold)">' + rk.data.length + ' tiempos guardados</strong> en el ranking' +
+          (coach ? ' <button onclick="verTodosLosResultados()" style="background:rgba(56,189,248,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-weight:700;margin-left:8px;cursor:pointer">VER TODOS</button>' : '');
+      }
+    }
     filterRanking();
   });
 }
+
+// NUEVO: Ver todos los resultados (solo coach) - bypassa los filtros
+function verTodosLosResultados() {
+  if (!state.user || state.user.email !== CONFIG.coach) return;
+  var list = document.getElementById('ranking-list');
+  if (!list) return;
+  if (rk.data.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">No hay resultados guardados</div>';
+    return;
+  }
+  // Agrupar por distancia+estilo
+  var grupos = {};
+  rk.data.forEach(function(r) {
+    var k = (r.dist || '?') + 'm ' + (r.style || '?');
+    if (!grupos[k]) grupos[k] = [];
+    grupos[k].push(r);
+  });
+  var html = '<div style="margin-bottom:1rem;padding:0.8rem;background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:8px;font-size:0.8rem">' +
+    '<strong style="color:var(--gold)">📋 VISTA COMPLETA DE ADMINISTRADOR</strong><br>' +
+    '<span style="font-size:0.72rem;color:rgba(255,255,255,0.7)">Mostrando los ' + rk.data.length + ' resultados agrupados por evento.</span>' +
+    '</div>';
+  Object.keys(grupos).sort().forEach(function(k) {
+    var arr = grupos[k].sort(function(a, b) { return a.timeMs - b.timeMs; });
+    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.8rem;margin-bottom:0.7rem">' +
+      '<div style="font-weight:800;color:var(--accent);font-size:0.95rem;margin-bottom:0.5rem">' + k + ' <span style="color:rgba(255,255,255,0.5);font-size:0.7rem;font-weight:500">(' + arr.length + ')</span></div>';
+    arr.forEach(function(r) {
+      var coach = state.user && state.user.email === CONFIG.coach;
+      var delBtn = coach ? '<button onclick="deleteRanking(\'' + r.id + '\')" style="background:rgba(255,107,53,0.15);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 7px;font-size:0.65rem;cursor:pointer;margin-left:6px">🗑️</button>' : '';
+      html += '<div style="padding:0.4rem 0;border-top:1px solid rgba(255,255,255,0.05);font-size:0.78rem;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">' +
+        '<div style="flex:1;min-width:0">' +
+          '<strong style="color:#fff">' + escapeHtml(r.swimmer || '?') + '</strong>' +
+          ' <span style="color:var(--gold);font-weight:700">' + (r.time || '') + '</span>' +
+          '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px">' + (r.cat || '?') + ' · ' + (r.gender || '?') + ' · ' + (r.comp || '?') + ' (' + (r.year || '?') + ')</div>' +
+        '</div>' +
+        delBtn +
+      '</div>';
+    });
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+window.verTodosLosResultados = verTodosLosResultados;
 
 // Aplicar filtros y renderizar
 function filterRanking() {
@@ -6651,13 +6750,21 @@ function filterRanking() {
 
   if (!dist || !style) {
     if (opt) opt.style.display = 'none';
+    var totalDisponibles = rk.data.length;
+    var coach = state.user && state.user.email === CONFIG.coach;
     list.innerHTML =
-      '<div style="text-align:center;padding:2rem">' +
-        '<div style="font-size:2rem;margin-bottom:0.5rem">&#127944;</div>' +
-        '<div style="font-size:0.88rem;font-weight:700;color:var(--accent);margin-bottom:0.3rem">' +
+      '<div style="text-align:center;padding:2rem 1rem">' +
+        '<div style="font-size:2.5rem;margin-bottom:0.7rem">&#127944;</div>' +
+        '<div style="font-size:1rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem">' +
           'Selecciona distancia y estilo' +
         '</div>' +
-        '<div style="font-size:0.7rem;color:var(--accent-soft)">Para ver el ranking oficial Laguna Swim</div>' +
+        '<div style="font-size:0.78rem;color:rgba(255,255,255,0.7);margin-bottom:0.8rem">↑ Usa los menús de arriba para filtrar el ranking</div>' +
+        (totalDisponibles > 0
+          ? '<div style="padding:0.7rem;background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;font-size:0.78rem;color:#22c55e;font-weight:700">✅ Hay ' + totalDisponibles + ' tiempos guardados</div>'
+          : '<div style="padding:0.7rem;background:rgba(255,107,53,0.1);border:1px solid #ff6b35;border-radius:8px;font-size:0.78rem;color:#ff6b35">⚠️ No hay tiempos en el ranking aún</div>') +
+        (coach && totalDisponibles > 0
+          ? '<button onclick="verTodosLosResultados()" style="margin-top:0.7rem;background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:800;font-size:0.78rem;cursor:pointer">VER TODOS LOS RESULTADOS</button>'
+          : '') +
       '</div>';
     return;
   }
@@ -6669,6 +6776,27 @@ function filterRanking() {
       && (!cat || r.cat === cat)
       && (!gender || r.gender === gender);
   });
+
+  // Si después de filtrar no hay nada pero sí había datos, avisar
+  if (rk.filtered.length === 0 && rk.data.length > 0) {
+    var coachRes = state.user && state.user.email === CONFIG.coach;
+    list.innerHTML =
+      '<div style="text-align:center;padding:2rem 1rem">' +
+        '<div style="font-size:2rem;margin-bottom:0.7rem">🔍</div>' +
+        '<div style="font-size:0.95rem;font-weight:800;color:var(--accent);margin-bottom:0.4rem">' +
+          'Sin resultados con estos filtros' +
+        '</div>' +
+        '<div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:0.8rem">' +
+          dist + 'm ' + style + ' · ' + (cat || 'Cualquier categoria') + ' · ' + (gender || 'Cualquier genero') +
+        '</div>' +
+        '<div style="padding:0.7rem;background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:8px;font-size:0.75rem;color:var(--gold);margin-bottom:0.7rem">💡 Cambia los filtros o resetea categoría/género</div>' +
+        (coachRes
+          ? '<button onclick="verTodosLosResultados()" style="background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:800;font-size:0.78rem;cursor:pointer">VER TODOS LOS RESULTADOS</button>'
+          : '') +
+      '</div>';
+    return;
+  }
+
   renderRanking(rk.filtered, parseInt(dist), style);
 }
 
