@@ -3790,6 +3790,11 @@ body.v3-fluid .v2-coach-poster:active {
     <div id="ranking-counter" style="font-size:0.75rem;margin-bottom:0.7rem;padding:0.5rem 0.7rem;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:6px;color:rgba(255,255,255,0.85)">
       Cargando...
     </div>
+
+    <!-- NUEVO: Buscador rápido por nombre/competencia -->
+    <div style="margin-bottom:0.7rem">
+      <input id="ranking-buscador" type="text" placeholder="🔍 Buscar por nadador o competencia (ej: 'Panamericano')" oninput="buscarRanking()" style="width:100%;padding:0.6rem 0.8rem;background:rgba(0,0,0,0.3);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit">
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem">
       <select id="rank-dist" onchange="filterRanking()">
         <option value="">Distancia</option>
@@ -6733,6 +6738,73 @@ function verTodosLosResultados() {
 }
 window.verTodosLosResultados = verTodosLosResultados;
 
+// NUEVO: Búsqueda rápida en el ranking (por nadador o competencia)
+function buscarRanking() {
+  var inp = document.getElementById('ranking-buscador');
+  if (!inp) return;
+  var q = (inp.value || '').toLowerCase().trim();
+  var list = document.getElementById('ranking-list');
+  if (!list) return;
+
+  // Si no hay búsqueda, regresar al modo normal (filtros)
+  if (!q) {
+    filterRanking();
+    return;
+  }
+
+  // Buscar en TODOS los datos (sin importar filtros de distancia/estilo)
+  if (!rk.data || rk.data.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">No hay resultados guardados</div>';
+    return;
+  }
+
+  var matches = rk.data.filter(function(r) {
+    var nombre = (r.swimmer || '').toLowerCase();
+    var comp = (r.comp || '').toLowerCase();
+    return nombre.indexOf(q) >= 0 || comp.indexOf(q) >= 0;
+  });
+
+  if (matches.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">🔍 Sin coincidencias para "<strong>' + escapeHtml(q) + '</strong>"<br><br><small>Prueba otra palabra o limpia la búsqueda</small></div>';
+    return;
+  }
+
+  // Agrupar por distancia+estilo+competencia para mejor lectura
+  var grupos = {};
+  matches.forEach(function(r) {
+    var k = (r.dist || '?') + 'm ' + (r.style || '?') + ' · ' + (r.comp || '?');
+    if (!grupos[k]) grupos[k] = [];
+    grupos[k].push(r);
+  });
+
+  var coach = state.user && state.user.email === CONFIG.coach;
+  var html = '<div style="margin-bottom:0.8rem;padding:0.6rem 0.8rem;background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;font-size:0.78rem;color:#22c55e">' +
+    '🔍 <strong>' + matches.length + '</strong> resultado' + (matches.length === 1 ? '' : 's') + ' para "<strong>' + escapeHtml(q) + '</strong>"' +
+    '</div>';
+
+  Object.keys(grupos).sort().forEach(function(k) {
+    var arr = grupos[k].sort(function(a, b) { return a.timeMs - b.timeMs; });
+    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.8rem;margin-bottom:0.7rem">' +
+      '<div style="font-weight:800;color:var(--accent);font-size:0.85rem;margin-bottom:0.5rem">' + escapeHtml(k) + ' <span style="color:rgba(255,255,255,0.5);font-size:0.7rem;font-weight:500">(' + arr.length + ')</span></div>';
+    arr.forEach(function(r, idx) {
+      var medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : (idx + 1) + '°'));
+      var delBtn = coach ? '<button onclick="deleteRanking(\'' + r.id + '\')" style="background:rgba(255,107,53,0.15);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 7px;font-size:0.65rem;cursor:pointer;margin-left:6px">🗑️</button>' : '';
+      html += '<div style="padding:0.4rem 0;border-top:1px solid rgba(255,255,255,0.05);font-size:0.78rem;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">' +
+        '<div style="flex:1;min-width:0">' +
+          '<span style="color:var(--gold);font-weight:800;margin-right:6px">' + medal + '</span>' +
+          '<strong style="color:#fff">' + escapeHtml(r.swimmer || '?') + '</strong>' +
+          ' <span style="color:var(--gold);font-weight:700">' + escapeHtml(r.time || '') + '</span>' +
+          '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px">' + escapeHtml(r.cat || '?') + ' · ' + escapeHtml(r.gender || '?') + ' · ' + (r.year || '?') + '</div>' +
+        '</div>' +
+        delBtn +
+      '</div>';
+    });
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+window.buscarRanking = buscarRanking;
+
 // Aplicar filtros y renderizar
 function filterRanking() {
   var dist = document.getElementById('rank-dist').value;
@@ -6923,12 +6995,34 @@ function addRankTime() {
     year: yr,
     addedAt: Date.now()
   }).then(function() {
-    alert('Tiempo agregado al ranking!');
-    ['r-swimmer', 'r-time', 'r-comp', 'r-year'].forEach(function(f) {
+    // Mostrar confirmación con detalles
+    alert('✅ Tiempo agregado: ' + sw + ' - ' + di + 'm ' + st + ' - ' + ti + '\n\nCompetencia: ' + co);
+
+    // Limpiar solo nadador y tiempo, MANTENER competencia/año/categoría
+    // para facilitar agregar varios tiempos del mismo evento
+    ['r-swimmer', 'r-time'].forEach(function(f) {
       var e = document.getElementById(f);
       if (e) e.value = '';
     });
+
+    // Auto-aplicar filtros para ver inmediatamente el tiempo recién agregado
+    var rkDist = document.getElementById('rank-dist');
+    var rkStyle = document.getElementById('rank-style');
+    var rkCat = document.getElementById('rank-cat');
+    var rkGender = document.getElementById('rank-gender');
+    if (rkDist) rkDist.value = di;
+    if (rkStyle) rkStyle.value = st;
+    if (rkCat) rkCat.value = ct;
+    if (rkGender) rkGender.value = gn;
+
+    // Recargar ranking con los filtros pre-aplicados
     loadRanking();
+
+    // Hacer scroll suave al ranking para que vea el resultado
+    setTimeout(function() {
+      var lst = document.getElementById('ranking-list');
+      if (lst) lst.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 600);
   }).catch(function(e) {
     alert('Error: ' + e.message);
   });
