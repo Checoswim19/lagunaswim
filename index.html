@@ -1342,1314 +1342,6 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   display: flex; flex-direction: column;
   padding: 1rem;
 }
-/* ============================================================
-   NUEVO: RETO 50M - CSS del juego, splash y leaderboard
-   ============================================================ */
-.reto50-splash-overlay {
-  position: fixed; inset: 0;
-  background: linear-gradient(180deg, rgba(5,15,28,0.97) 0%, rgba(7,30,56,0.97) 100%);
-  z-index: 300;
-  display: flex; align-items: center; justify-content: center;
-  padding: 1rem;
-  animation: reto50FadeIn 0.4s ease-out;
-}
-@keyframes reto50FadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-.reto50-splash-card {
-  background: linear-gradient(180deg, #0a2956 0%, #1e5a9e 100%);
-  border: 2px solid var(--accent);
-  border-radius: 20px;
-  padding: 1.8rem 1.5rem;
-  width: 100%; max-width: 420px;
-  text-align: center;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 4px rgba(56,189,248,0.15);
-  position: relative;
-}
-.reto50-splash-brand {
-  font-size: 0.65rem; letter-spacing: 4px;
-  color: var(--accent); text-transform: uppercase;
-  font-weight: 700; margin-bottom: 0.4rem;
-}
-.reto50-splash-emoji {
-  font-size: 3.5rem; margin: 0.3rem 0 0.5rem;
-}
-.reto50-splash-title {
-  font-size: 1.7rem; font-weight: 900;
-  letter-spacing: -0.5px; line-height: 1;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(180deg, #fff 0%, var(--accent) 100%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.reto50-splash-desc {
-  font-size: 0.85rem; color: var(--accent-soft);
-  line-height: 1.5; margin-bottom: 1.3rem;
-}
-.reto50-splash-features {
-  display: flex; gap: 0.8rem; justify-content: center;
-  margin-bottom: 1.3rem; flex-wrap: wrap;
-}
-.reto50-splash-feature {
-  background: rgba(56,189,248,0.1);
-  border: 1px solid rgba(56,189,248,0.3);
-  border-radius: 8px;
-  padding: 0.5rem 0.7rem;
-  font-size: 0.7rem; font-weight: 600;
-  color: #fff;
-}
-.reto50-splash-feature em { color: var(--gold); font-style: normal; font-weight: 800; }
-.reto50-splash-btn {
-  display: block; width: 100%;
-  padding: 0.9rem;
-  background: var(--gold);
-  color: #071e38;
-  border: none; border-radius: 12px;
-  font-size: 0.95rem; font-weight: 800;
-  letter-spacing: 2px; text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 0 4px 0 var(--gold-dim), 0 6px 16px rgba(255,215,0,0.3);
-  transition: all 0.15s;
-  margin-bottom: 0.6rem;
-}
-.reto50-splash-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 var(--gold-dim);
-}
-.reto50-splash-skip {
-  display: block; width: 100%;
-  padding: 0.6rem;
-  background: transparent;
-  color: var(--accent-soft);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 10px;
-  font-size: 0.75rem; font-weight: 600;
-  cursor: pointer;
-  letter-spacing: 1.5px; text-transform: uppercase;
-}
-.reto50-splash-motto {
-  margin-top: 1rem;
-  font-size: 0.65rem; letter-spacing: 3px;
-  color: var(--gold); opacity: 0.7;
-  text-transform: uppercase; font-style: italic;
-}
-
-/* Botón "Reto 50m" en pantalla Cronómetro */
-.reto50-card {
-  background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(255,215,0,0.1) 100%);
-  border: 1.5px solid var(--accent);
-  border-radius: 16px;
-  padding: 1rem 1.1rem;
-  margin-top: 0.8rem;
-  display: flex; align-items: center; gap: 0.9rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-  overflow: hidden;
-}
-.reto50-card:active { transform: scale(0.98); }
-.reto50-card::before {
-  content: 'NUEVO';
-  position: absolute;
-  top: 6px; right: 8px;
-  background: var(--gold);
-  color: #071e38;
-  font-size: 0.55rem;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-.reto50-card-icon {
-  font-size: 2rem;
-  width: 50px; text-align: center;
-  flex-shrink: 0;
-}
-.reto50-card-body { flex: 1; min-width: 0; }
-.reto50-card-title {
-  font-weight: 800; font-size: 0.95rem;
-  color: var(--gold);
-  margin-bottom: 2px;
-}
-.reto50-card-sub {
-  font-size: 0.7rem; color: var(--accent-soft);
-  line-height: 1.3;
-}
-.reto50-card-arrow {
-  color: var(--accent); font-size: 1.4rem;
-}
-
-/* Modal contenedor del juego en iframe */
-.reto50-game-modal {
-  position: fixed; inset: 0;
-  background: #001d3d;
-  z-index: 400;
-  display: flex; flex-direction: column;
-}
-.reto50-game-modal.modal-hidden { display: none !important; }
-.reto50-game-iframe {
-  flex: 1; width: 100%; height: 100%;
-  border: none;
-  background: #001d3d;
-}
-
-/* Sección Leaderboard en Cronómetro */
-.reto50-lb-acc-head {
-  background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.08) 100%);
-  border: 1px solid rgba(255,215,0,0.3);
-  border-radius: 12px;
-  padding: 0.8rem 1rem;
-  margin-top: 0.8rem;
-  display: flex; align-items: center;
-  cursor: pointer;
-}
-.reto50-lb-body {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 0 0 12px 12px;
-  margin-top: -2px;
-  padding: 0.8rem;
-}
-.reto50-lb-row {
-  display: flex; align-items: center; gap: 0.7rem;
-  padding: 0.55rem 0.5rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  font-size: 0.82rem;
-}
-.reto50-lb-row:last-child { border-bottom: none; }
-.reto50-lb-row.gold { background: rgba(255,215,0,0.08); border-radius: 6px; margin: 2px 0; }
-.reto50-lb-rank {
-  width: 28px; text-align: center;
-  font-weight: 800; color: var(--accent-soft);
-  font-size: 0.75rem;
-}
-.reto50-lb-row.gold .reto50-lb-rank { color: var(--gold); font-size: 0.95rem; }
-.reto50-lb-name {
-  flex: 1; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  font-size: 0.78rem;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.reto50-lb-time {
-  font-family: 'Courier New', monospace;
-  color: var(--accent); font-weight: 800;
-  font-size: 0.85rem;
-}
-.reto50-lb-delete {
-  background: rgba(239,68,68,0.15);
-  border: 1px solid rgba(239,68,68,0.4);
-  color: #fca5a5;
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 0.7rem;
-  cursor: pointer;
-  font-weight: 700;
-}
-.reto50-lb-empty {
-  text-align: center; padding: 1rem;
-  color: var(--accent-soft);
-  font-size: 0.78rem;
-}
-/* ============================================================
-   FIN NUEVO RETO 50M CSS
-   ============================================================ */
-
-/* ============================================================
-   NUEVO V2: REDISEÑO PROPUESTA B - EQUIPO PROFESIONAL
-   Gradiente azul marino → azul cielo, estilo poster deportivo
-   ============================================================ */
-
-/* Variables del nuevo sistema visual */
-:root {
-  --depth-darkest: #020e1f;
-  --depth-deep: #051a3a;
-  --depth-mid: #0a3a6e;
-  --depth-shallow: #1a6bb5;
-  --depth-surface: #3ba0e3;
-  --depth-sky: #7ec8e8;
-  --gold-bright: #ffe44d;
-  --gold-deep: #8a6e00;
-}
-
-/* Aplicar gradiente de profundidad al body */
-body.v2-redesign {
-  background: linear-gradient(180deg,
-    var(--depth-darkest) 0%,
-    var(--depth-deep) 20%,
-    var(--depth-mid) 50%,
-    var(--depth-shallow) 100%) !important;
-  background-attachment: fixed !important;
-}
-
-/* Header sticky compacto con borde gold */
-.v2-app-header {
-  position: sticky;
-  top: 0;
-  background: linear-gradient(180deg, rgba(2,14,31,0.95) 0%, rgba(5,26,58,0.92) 100%);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: 0.7rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  border-bottom: 2px solid var(--gold);
-  z-index: 100;
-}
-.v2-app-header-logo {
-  width: 46px; height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.v2-app-header-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(255,215,0,0.3));
-}
-.v2-app-header-text { flex: 1; min-width: 0; }
-.v2-app-header-main {
-  font-size: 1.05rem;
-  font-weight: 900;
-  letter-spacing: 1.5px;
-  line-height: 1;
-  text-transform: uppercase;
-  color: #fff;
-}
-.v2-app-header-main em {
-  color: var(--gold);
-  font-style: normal;
-}
-.v2-app-header-sub {
-  font-size: 0.55rem;
-  color: var(--gold-bright);
-  letter-spacing: 4px;
-  font-weight: 800;
-  margin-top: 3px;
-}
-.v2-app-header-status {
-  font-size: 0.6rem;
-  padding: 4px 9px;
-  background: rgba(6,214,160,0.15);
-  border: 1px solid rgba(6,214,160,0.4);
-  border-radius: 4px;
-  color: #06d6a0;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-/* Hero Poster Deportivo */
-.v2-hero-poster {
-  position: relative;
-  padding: 1.8rem 1rem 1.4rem;
-  text-align: center;
-  background:
-    radial-gradient(ellipse at top, rgba(56,189,248,0.15) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(2,14,31,0.4) 0%, transparent 100%);
-  border-bottom: 1px solid rgba(255,215,0,0.2);
-  overflow: hidden;
-}
-.v2-hero-poster::before {
-  content: '';
-  position: absolute;
-  top: 50%; left: -50px; right: -50px;
-  height: 2px;
-  background: repeating-linear-gradient(90deg,
-    rgba(255,215,0,0.15) 0px,
-    rgba(255,215,0,0.15) 20px,
-    transparent 20px,
-    transparent 40px);
-}
-.v2-hero-poster::after {
-  content: '';
-  position: absolute;
-  top: 75%; left: -50px; right: -50px;
-  height: 1px;
-  background: repeating-linear-gradient(90deg,
-    rgba(126,200,232,0.2) 0px,
-    rgba(126,200,232,0.2) 15px,
-    transparent 15px,
-    transparent 30px);
-}
-.v2-hero-logo-big {
-  width: 140px; height: 140px;
-  margin: 0 auto 1rem;
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.v2-hero-logo-big img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
-}
-.v2-hero-brand-big {
-  font-size: 2.3rem;
-  font-weight: 900;
-  letter-spacing: -1.5px;
-  line-height: 0.9;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 2;
-  background: linear-gradient(180deg, #ffffff 0%, #7ec8e8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.v2-hero-brand-big em {
-  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-style: normal;
-}
-.v2-hero-int {
-  font-size: 0.7rem;
-  letter-spacing: 8px;
-  color: var(--gold);
-  font-weight: 800;
-  margin-top: 5px;
-  text-transform: uppercase;
-}
-.v2-hero-bar {
-  width: 60px;
-  height: 3px;
-  background: var(--gold);
-  margin: 0.7rem auto;
-}
-.v2-hero-tagline-big {
-  font-size: 0.92rem;
-  color: #fff;
-  font-weight: 600;
-  font-style: italic;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
-}
-.v2-hero-tagline-big::before, .v2-hero-tagline-big::after {
-  content: '"';
-  color: var(--gold);
-  font-size: 1.2rem;
-  font-weight: 900;
-}
-.v2-hero-tagline-sub {
-  font-size: 0.62rem;
-  letter-spacing: 3px;
-  color: var(--gold-bright);
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-/* Banda de stats prominentes */
-.v2-stats-banner {
-  background: linear-gradient(180deg, rgba(2,14,31,0.6) 0%, transparent 100%);
-  border-top: 1px solid rgba(255,215,0,0.3);
-  border-bottom: 1px solid rgba(255,215,0,0.3);
-  padding: 0.9rem 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-.v2-stat-item { position: relative; }
-.v2-stat-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 20%; bottom: 20%;
-  right: 0;
-  width: 1px;
-  background: rgba(255,215,0,0.25);
-}
-.v2-stat-num-big {
-  font-size: 2rem;
-  font-weight: 900;
-  color: var(--gold);
-  line-height: 1;
-  letter-spacing: -1px;
-  text-shadow: 0 2px 10px rgba(255,215,0,0.3);
-}
-.v2-stat-lbl-big {
-  font-size: 0.55rem;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 2px;
-  margin-top: 4px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-/* Section heads con barra gold */
-.v2-section {
-  padding: 0 1rem;
-  margin-top: 1.4rem;
-}
-.v2-section-head {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.7rem;
-  gap: 0.5rem;
-}
-.v2-section-head-bar {
-  width: 4px;
-  height: 22px;
-  background: var(--gold);
-  flex-shrink: 0;
-}
-.v2-section-head-text {
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: #fff;
-}
-.v2-section-head-text em {
-  color: var(--gold);
-  font-style: normal;
-}
-.v2-section-head-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(255,215,0,0.3), transparent);
-}
-
-/* Hero card Reto 50m estilo poster */
-.v2-game-poster {
-  background: linear-gradient(135deg,
-    rgba(2,14,31,0.7) 0%,
-    rgba(255,107,53,0.25) 50%,
-    rgba(239,71,111,0.2) 100%);
-  border: 2px solid var(--gold);
-  border-radius: 4px;
-  padding: 1.2rem 1.1rem;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 0.6rem;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-  cursor: pointer;
-}
-.v2-game-poster::before,
-.v2-game-poster::after {
-  content: '';
-  position: absolute;
-  width: 24px; height: 24px;
-  border: 3px solid var(--gold);
-}
-.v2-game-poster::before {
-  top: -3px; left: -3px;
-  border-right: none; border-bottom: none;
-}
-.v2-game-poster::after {
-  bottom: -3px; right: -3px;
-  border-left: none; border-top: none;
-}
-.v2-game-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #ff6b35;
-  color: #fff;
-  font-size: 0.55rem;
-  letter-spacing: 2.5px;
-  padding: 4px 10px;
-  border-radius: 2px;
-  font-weight: 900;
-  margin-bottom: 0.7rem;
-  text-transform: uppercase;
-}
-.v2-game-badge::before {
-  content: '●';
-  animation: v2blink 1.2s infinite;
-}
-@keyframes v2blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-.v2-game-title {
-  font-size: 2rem;
-  font-weight: 900;
-  letter-spacing: -1.5px;
-  line-height: 0.95;
-  margin-bottom: 0.3rem;
-  text-transform: uppercase;
-  color: #fff;
-}
-.v2-game-title em {
-  color: var(--gold);
-  font-style: normal;
-}
-.v2-game-subtitle {
-  font-size: 0.8rem;
-  color: rgba(126,200,232,0.85);
-  margin-bottom: 0.9rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
-.v2-game-features {
-  display: flex;
-  gap: 0.4rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-.v2-game-feature {
-  font-size: 0.58rem;
-  padding: 4px 9px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 2px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #fff;
-}
-.v2-game-feature.hot {
-  background: rgba(255,107,53,0.2);
-  border-color: #ff6b35;
-  color: #ffa085;
-}
-.v2-game-btn {
-  display: flex;
-  width: 100%;
-  padding: 0.95rem;
-  background: var(--gold);
-  color: #051a3a;
-  border: none;
-  border-radius: 2px;
-  font-size: 0.92rem;
-  font-weight: 900;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 0 5px 0 var(--gold-deep), 0 8px 20px rgba(255,215,0,0.35);
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-family: inherit;
-}
-
-/* Grid de acciones (Entrena/Compite/Contacto/Tienda) */
-.v2-nav-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6rem;
-}
-.v2-action-card {
-  background: linear-gradient(135deg,
-    rgba(2,14,31,0.5) 0%,
-    rgba(56,189,248,0.08) 100%);
-  border: 1px solid rgba(56,189,248,0.25);
-  border-left: 4px solid var(--gold);
-  border-radius: 2px;
-  padding: 1rem 0.9rem;
-  cursor: pointer;
-  position: relative;
-  min-height: 110px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.15s;
-  color: #fff;
-}
-.v2-action-card:active {
-  transform: translateY(2px);
-  border-left-color: var(--accent);
-}
-.v2-action-card.featured {
-  border-left-color: #ff6b35;
-  background: linear-gradient(135deg,
-    rgba(255,107,53,0.15) 0%,
-    rgba(56,189,248,0.1) 100%);
-}
-.v2-action-icon {
-  font-size: 1.8rem;
-  margin-bottom: 0.3rem;
-}
-.v2-action-title {
-  font-size: 0.88rem;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  line-height: 1;
-}
-.v2-action-sub {
-  font-size: 0.6rem;
-  color: rgba(255,255,255,0.65);
-  margin-top: 4px;
-  line-height: 1.3;
-  font-weight: 600;
-}
-.v2-action-arrow {
-  align-self: flex-end;
-  color: var(--gold);
-  font-size: 1.2rem;
-  font-weight: 900;
-}
-
-/* Evento poster con tape rojo */
-.v2-event-poster {
-  background: linear-gradient(135deg,
-    rgba(2,14,31,0.85) 0%,
-    rgba(10,58,110,0.7) 100%);
-  border: 1px solid rgba(255,215,0,0.3);
-  border-radius: 4px;
-  overflow: hidden;
-  cursor: pointer;
-}
-.v2-event-tape {
-  background: #ff6b35;
-  color: #fff;
-  padding: 5px 10px;
-  font-size: 0.55rem;
-  letter-spacing: 3px;
-  font-weight: 900;
-  text-transform: uppercase;
-  text-align: center;
-}
-.v2-event-body {
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-}
-.v2-event-flag { font-size: 2.5rem; flex-shrink: 0; }
-.v2-event-info { flex: 1; min-width: 0; color: #fff; }
-.v2-event-name {
-  font-size: 1.05rem;
-  font-weight: 900;
-  letter-spacing: -0.3px;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-.v2-event-date {
-  font-size: 0.7rem;
-  color: var(--gold);
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin-top: 4px;
-}
-.v2-event-loc {
-  font-size: 0.6rem;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 1px;
-  margin-top: 2px;
-  text-transform: uppercase;
-}
-.v2-event-arrow {
-  color: var(--gold);
-  font-size: 1.4rem;
-  font-weight: 900;
-}
-
-/* Coach mini poster */
-.v2-coach-poster {
-  background: linear-gradient(90deg,
-    rgba(2,14,31,0.8) 0%,
-    rgba(10,58,110,0.5) 100%);
-  border: 1px solid rgba(255,215,0,0.2);
-  border-left: 4px solid var(--gold);
-  border-radius: 2px;
-  padding: 0.9rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  cursor: pointer;
-}
-.v2-coach-pic {
-  width: 56px; height: 56px;
-  border-radius: 4px;
-  background: linear-gradient(135deg, #1a4d6b, #051a3a);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 900;
-  color: var(--gold);
-  border: 1px solid var(--gold);
-  letter-spacing: 1px;
-}
-.v2-coach-info { flex: 1; min-width: 0; color: #fff; }
-.v2-coach-name {
-  font-size: 0.95rem;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  line-height: 1;
-}
-.v2-coach-title {
-  font-size: 0.65rem;
-  color: var(--gold-bright);
-  margin-top: 4px;
-  letter-spacing: 1.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.v2-coach-exp {
-  font-size: 0.55rem;
-  color: rgba(255,255,255,0.6);
-  margin-top: 2px;
-  letter-spacing: 1px;
-}
-.v2-coach-arrow {
-  color: var(--gold);
-  font-size: 1.4rem;
-  font-weight: 900;
-}
-
-/* Bottom nav v2 con barra gold */
-body.v2-redesign .bnav {
-  background: linear-gradient(180deg, rgba(2,14,31,0.98) 0%, #000 100%) !important;
-  border-top: 2px solid var(--gold) !important;
-}
-body.v2-redesign .bnav-item {
-  font-size: 0.55rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 1px !important;
-  text-transform: uppercase !important;
-}
-body.v2-redesign .bnav-item.active {
-  color: var(--gold) !important;
-  position: relative;
-}
-body.v2-redesign .bnav-item.active::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 20%; right: 20%;
-  height: 3px;
-  background: var(--gold);
-  box-shadow: 0 0 8px var(--gold);
-}
-body.v2-redesign .bnav-item .ico,
-body.v2-redesign .bnav-item .bnav-icon {
-  font-size: 1.3rem !important;
-}
-
-/* Sponsors bar mantiene fondo blanco - los logos lo requieren */
-body.v2-redesign .spons-bar {
-  background: #ffffff !important;
-  border-top: 2px solid var(--gold) !important;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.3) !important;
-}
-
-/* Card secciones internas más limpio */
-body.v2-redesign .card {
-  background: linear-gradient(135deg, rgba(2,14,31,0.5) 0%, rgba(56,189,248,0.05) 100%);
-  border: 1px solid rgba(56,189,248,0.2);
-  border-radius: 4px;
-}
-
-/* ============================================================
-   FIN V2 REDISEÑO
-   ============================================================ */
-
-/* ============================================================
-   NUEVO V3: INICIO ESTILO GOOGLE + FLUIDEZ
-   ============================================================ */
-
-/* ===== HERO ESTILO GOOGLE ===== */
-.v3-hero-google {
-  min-height: calc(100vh - var(--bnav-h) - var(--spons-h) - 70px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1rem 1.5rem 2rem;
-  position: relative;
-  animation: v3FadeIn 0.6s ease-out;
-}
-@keyframes v3FadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.v3-hero-logo-wrap {
-  width: 180px;
-  height: 180px;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: v3LogoEntry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-@keyframes v3LogoEntry {
-  from { opacity: 0; transform: scale(0.7); }
-  to { opacity: 1; transform: scale(1); }
-}
-.v3-hero-logo-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 30px rgba(255,215,0,0.25));
-}
-.v3-hero-brand {
-  font-size: 2.4rem;
-  font-weight: 900;
-  letter-spacing: -1px;
-  line-height: 1;
-  text-transform: uppercase;
-  background: linear-gradient(180deg, #ffffff 0%, #7ec8e8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 4px;
-  animation: v3FadeUp 0.6s 0.15s ease-out backwards;
-}
-.v3-hero-brand em {
-  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-style: normal;
-}
-.v3-hero-int {
-  font-size: 0.7rem;
-  letter-spacing: 8px;
-  color: var(--gold);
-  font-weight: 800;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  animation: v3FadeUp 0.6s 0.25s ease-out backwards;
-}
-.v3-hero-tagline {
-  font-size: 0.85rem;
-  font-style: italic;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 0.5px;
-  margin-bottom: 2rem;
-  animation: v3FadeUp 0.6s 0.35s ease-out backwards;
-}
-.v3-hero-tagline::before,
-.v3-hero-tagline::after {
-  content: '"';
-  color: var(--gold);
-  opacity: 0.6;
-}
-@keyframes v3FadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* CTA principal único y prominente */
-.v3-hero-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.95rem 2rem;
-  background: linear-gradient(135deg, var(--gold) 0%, #ffea4d 100%);
-  color: #051a3a;
-  border: none;
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 900;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  cursor: pointer;
-  border-radius: 50px;
-  box-shadow: 0 6px 24px rgba(255,215,0,0.4), 0 2px 0 #b89500;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: v3FadeUp 0.6s 0.45s ease-out backwards, v3Pulse 2.5s 1.5s infinite;
-  position: relative;
-  overflow: hidden;
-}
-.v3-hero-cta::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transition: left 0.6s;
-}
-.v3-hero-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 32px rgba(255,215,0,0.5), 0 4px 0 #b89500;
-}
-.v3-hero-cta:hover::before { left: 100%; }
-.v3-hero-cta:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 12px rgba(255,215,0,0.3);
-}
-@keyframes v3Pulse {
-  0%, 100% { box-shadow: 0 6px 24px rgba(255,215,0,0.4), 0 2px 0 #b89500; }
-  50% { box-shadow: 0 6px 32px rgba(255,215,0,0.6), 0 2px 0 #b89500; }
-}
-.v3-hero-cta .icon { font-size: 1.1rem; }
-.v3-hero-cta-badge {
-  display: inline-block;
-  background: #ff6b35;
-  color: #fff;
-  font-size: 0.5rem;
-  padding: 2px 6px;
-  border-radius: 100px;
-  margin-left: 4px;
-  letter-spacing: 1.5px;
-  vertical-align: middle;
-}
-
-/* Indicador scroll abajo */
-.v3-hero-scroll-hint {
-  position: absolute;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.6rem;
-  letter-spacing: 3px;
-  color: rgba(255,255,255,0.4);
-  text-transform: uppercase;
-  font-weight: 700;
-  animation: v3ScrollHint 2s ease-in-out infinite;
-  cursor: pointer;
-}
-@keyframes v3ScrollHint {
-  0%, 100% { opacity: 0.4; transform: translate(-50%, 0); }
-  50% { opacity: 0.9; transform: translate(-50%, 6px); }
-}
-.v3-hero-scroll-hint .chev {
-  font-size: 1.2rem;
-  color: var(--gold);
-}
-
-/* ===== TRANSICIONES FLUIDAS GENERALES ===== */
-html { scroll-behavior: smooth; }
-
-body.v3-fluid * {
-  /* Transición global sutil para botones, cards, etc */
-  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
-}
-
-/* Tabs fade-in al activarse */
-body.v3-fluid .tab.active {
-  animation: v3TabIn 0.35s ease-out;
-}
-@keyframes v3TabIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Cards aparecen suavemente al scroll */
-body.v3-fluid .v2-section,
-body.v3-fluid .v3-section {
-  animation: v3FadeUp 0.5s ease-out;
-}
-
-/* Bottom nav items con feedback más vivo */
-body.v3-fluid .bnav-item {
-  transition: color 0.2s ease, background 0.2s ease;
-}
-body.v3-fluid .bnav-item:active {
-  background: rgba(255,215,0,0.08);
-}
-
-/* Botones generales con feedback táctil */
-body.v3-fluid button,
-body.v3-fluid .v2-action-card,
-body.v3-fluid .v2-game-poster,
-body.v3-fluid .v2-event-poster,
-body.v3-fluid .v2-coach-poster {
-  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-body.v3-fluid .v2-action-card:active,
-body.v3-fluid .v2-event-poster:active,
-body.v3-fluid .v2-coach-poster:active {
-  transform: scale(0.98);
-}
-
-/* ===== SECCIONES "ABAJO DEL FOLD" en home ===== */
-.v3-below-fold {
-  padding: 2rem 0 1rem;
-  border-top: 1px solid rgba(255,215,0,0.15);
-  margin-top: 1rem;
-  animation: v3FadeUp 0.6s ease-out;
-}
-.v3-below-divider {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-.v3-below-divider-text {
-  display: inline-block;
-  font-size: 0.6rem;
-  letter-spacing: 4px;
-  color: var(--gold);
-  font-weight: 800;
-  text-transform: uppercase;
-  padding: 0 1rem;
-  background: var(--depth-deep);
-  position: relative;
-  top: -8px;
-}
-
-/* ============================================================
-   FIN V3
-   ============================================================ */
-
-/* ============================================================
-   NUEVO V4: SUBIR ENTRENAMIENTO PUBLICO (sin login)
-   ============================================================ */
-.v4-upload-cta {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  background: linear-gradient(135deg, rgba(6,214,160,0.18) 0%, rgba(56,189,248,0.15) 100%);
-  border: 2px solid #06d6a0;
-  border-radius: 14px;
-  padding: 1rem 1.1rem;
-  cursor: pointer;
-  margin: 1rem 0;
-  color: #fff;
-  transition: all 0.2s;
-}
-.v4-upload-cta:active { transform: scale(0.98); }
-.v4-upload-icon {
-  font-size: 2rem;
-  flex-shrink: 0;
-  background: rgba(6,214,160,0.2);
-  width: 50px; height: 50px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.v4-upload-text { flex: 1; min-width: 0; }
-.v4-upload-title {
-  font-size: 0.95rem;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: #06d6a0;
-}
-.v4-upload-sub {
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.7);
-  margin-top: 3px;
-  font-weight: 500;
-}
-.v4-upload-arrow {
-  color: #06d6a0;
-  font-size: 1.4rem;
-  font-weight: 900;
-}
-
-/* Modal de upload */
-.v4-modal-bg {
-  position: fixed;
-  inset: 0;
-  background: rgba(2,14,31,0.95);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 9999;
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
-  overflow-y: auto;
-  padding: 2rem 1rem;
-  animation: v4FadeIn 0.25s ease-out;
-}
-.v4-modal-bg.show { display: flex; }
-@keyframes v4FadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-.v4-modal {
-  background: linear-gradient(180deg, #051a3a 0%, #0a3a6e 100%);
-  border: 2px solid var(--gold);
-  border-radius: 16px;
-  padding: 1.5rem;
-  max-width: 480px;
-  width: 100%;
-  color: #fff;
-  position: relative;
-  animation: v4SlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-@keyframes v4SlideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.v4-modal-close {
-  position: absolute;
-  top: 12px; right: 12px;
-  width: 36px; height: 36px;
-  background: rgba(255,255,255,0.1);
-  border: none;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 1.4rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.v4-modal-close:hover { background: rgba(255,107,53,0.3); }
-
-.v4-modal-title {
-  font-size: 1.3rem;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  text-transform: uppercase;
-  margin-bottom: 0.3rem;
-  text-align: center;
-}
-.v4-modal-title em {
-  color: var(--gold);
-  font-style: normal;
-}
-.v4-modal-subtitle {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.65);
-  text-align: center;
-  margin-bottom: 1.4rem;
-  line-height: 1.4;
-}
-
-.v4-field {
-  margin-bottom: 1rem;
-}
-.v4-field label {
-  display: block;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 0.4rem;
-}
-.v4-field label .req { color: #ff6b35; }
-.v4-field input,
-.v4-field textarea,
-.v4-field select {
-  width: 100%;
-  padding: 0.75rem 0.9rem;
-  background: rgba(0,0,0,0.4);
-  border: 1.5px solid rgba(56,189,248,0.3);
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.95rem;
-  font-family: inherit;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.v4-field input:focus,
-.v4-field textarea:focus,
-.v4-field select:focus {
-  border-color: var(--gold);
-}
-.v4-field textarea {
-  resize: vertical;
-  min-height: 90px;
-  font-family: inherit;
-}
-.v4-field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.7rem;
-}
-.v4-field-hint {
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.4);
-  margin-top: 4px;
-  font-style: italic;
-}
-
-.v4-submit-btn {
-  width: 100%;
-  padding: 1rem;
-  background: linear-gradient(135deg, #06d6a0 0%, #38bdf8 100%);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 900;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  font-family: inherit;
-  margin-top: 0.6rem;
-  box-shadow: 0 4px 14px rgba(6,214,160,0.4);
-  transition: all 0.2s;
-}
-.v4-submit-btn:active { transform: scale(0.98); }
-.v4-submit-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.v4-success-msg {
-  background: rgba(6,214,160,0.15);
-  border: 1.5px solid #06d6a0;
-  border-radius: 10px;
-  padding: 1rem;
-  text-align: center;
-  color: #06d6a0;
-  font-weight: 700;
-  font-size: 0.9rem;
-  margin-top: 1rem;
-  display: none;
-}
-.v4-error-msg {
-  background: rgba(255,107,53,0.15);
-  border: 1.5px solid #ff6b35;
-  border-radius: 10px;
-  padding: 0.8rem;
-  text-align: center;
-  color: #ff6b35;
-  font-weight: 700;
-  font-size: 0.85rem;
-  margin-top: 0.8rem;
-  display: none;
-}
-
-/* Lista de entrenamientos enviados */
-.v4-entries-list {
-  margin-top: 1.5rem;
-  max-height: 50vh;
-  overflow-y: auto;
-}
-.v4-entry-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(56,189,248,0.2);
-  border-radius: 8px;
-  padding: 0.8rem 1rem;
-  margin-bottom: 0.6rem;
-}
-.v4-entry-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.4rem;
-}
-.v4-entry-name {
-  font-weight: 800;
-  color: var(--gold);
-  font-size: 0.9rem;
-}
-.v4-entry-meters {
-  background: rgba(56,189,248,0.2);
-  color: #38bdf8;
-  padding: 2px 8px;
-  border-radius: 50px;
-  font-size: 0.7rem;
-  font-weight: 800;
-}
-.v4-entry-date {
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 0.5px;
-}
-.v4-entry-desc {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.75);
-  margin-top: 0.4rem;
-  line-height: 1.4;
-}
-/* ============================================================
-   FIN V4
-   ============================================================ */
-
 .video-modal-iframe {
   width: 100%;
   aspect-ratio: 16/9;
@@ -3038,74 +1730,26 @@ body.v3-fluid .v2-coach-poster:active {
 }
 </style>
 </head>
-<body class="v2-redesign v3-fluid">
-<!-- ============ NUEVO V2: HEADER REDISEÑADO ============ -->
-<div class="v2-app-header">
-  <div class="v2-app-header-logo">
-    <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" alt="Laguna Swim International">
-  </div>
-  <div class="v2-app-header-text">
-    <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
-    <div class="v2-app-header-sub">INTERNATIONAL</div>
-  </div>
-</div>
-<!-- ============ FIN V2 HEADER ============ -->
+<body>
 
 <!-- ============ BARRA FIJA DE PATROCINADORES ============ -->
 <div class="spons-bar" id="spons-bar">
   <div class="spons-bar-inner" id="spons-bar-inner"></div>
 </div>
 
-<!-- ============================================================
-     NUEVO: RETO 50M - Splash de bienvenida y modal del juego
-     ============================================================ -->
-<div class="reto50-splash-overlay modal-hidden" id="reto50-splash">
-  <div class="reto50-splash-card">
-    <div class="reto50-splash-brand">Laguna Swim International</div>
-    <div class="reto50-splash-emoji">🏊‍♂️🏆</div>
-    <div class="reto50-splash-title">RETO 50M LIBRE</div>
-    <div class="reto50-splash-desc">
-      Compite contra 3 rivales virtuales en una alberca olímpica.
-      Mueve los brazos como en crol — la cámara detecta tus brazadas reales.
-    </div>
-    <div class="reto50-splash-features">
-      <div class="reto50-splash-feature">📹 <em>Cámara</em> en vivo</div>
-      <div class="reto50-splash-feature">🏆 <em>Top 10</em> global</div>
-    </div>
-    <button class="reto50-splash-btn" onclick="reto50AbrirJuego(true)">
-      🚀 Jugar ahora
-    </button>
-    <button class="reto50-splash-skip" onclick="reto50CerrarSplash()">
-      Saltar intro
-    </button>
-    <div class="reto50-splash-motto">Fuertes y Valientes · Josué 1:9</div>
-  </div>
-</div>
-
-<!-- Modal contenedor del juego (iframe) -->
-<div class="reto50-game-modal modal-hidden" id="reto50-game-modal">
-  <iframe id="reto50-iframe" class="reto50-game-iframe" src="about:blank" title="Reto 50m Libre" allow="camera; autoplay"></iframe>
-</div>
-<!-- ============================================================
-     FIN NUEVO RETO 50M
-     ============================================================ -->
-
-<!-- ============ BOTTOM NAV ============ -->
+<!-- ============ BOTTOM NAV (v22: 4 pestañas, Muro protagonista) ============ -->
 <nav class="bnav">
   <button class="bnav-item active" onclick="showTab('timer')" id="nav-timer">
-    <span class="bnav-icon">&#127968;</span><span class="bnav-label">Inicio</span>
-  </button>
-  <button class="bnav-item" onclick="showTab('ranking')" id="nav-ranking">
-    <span class="bnav-icon">&#127942;</span><span class="bnav-label">Competir</span>
-  </button>
-  <button class="bnav-item" onclick="showTab('store')" id="nav-store">
-    <span class="bnav-icon">&#128722;</span><span class="bnav-label">Tienda</span>
+    <span class="bnav-icon">&#127937;</span><span class="bnav-label">Cronometro</span>
   </button>
   <button class="bnav-item" onclick="showTab('workout')" id="nav-workout">
-    <span class="bnav-icon">&#9881;&#65039;</span><span class="bnav-label">Tools</span>
+    <span class="bnav-icon">&#127946;</span><span class="bnav-label">Muro</span>
+  </button>
+  <button class="bnav-item" onclick="showTab('ranking')" id="nav-ranking">
+    <span class="bnav-icon">&#127942;</span><span class="bnav-label">Ranking</span>
   </button>
   <button class="bnav-item" onclick="showTab('profile')" id="nav-profile">
-    <span class="bnav-icon">&#128100;</span><span class="bnav-label">Coach</span>
+    <span class="bnav-icon">&#128100;</span><span class="bnav-label">Sergio</span>
   </button>
 </nav>
 
@@ -3114,202 +1758,32 @@ body.v3-fluid .v2-coach-poster:active {
 
   <!-- Home / inicio -->
   <div id="s-home" class="screen active">
-
-    <!-- ============ NUEVO V3: INICIO ESTILO GOOGLE ============ -->
-    <div class="v3-hero-google">
-      <span id="fb-status" class="hdr-status" style="position:absolute;top:10px;right:10px;font-size:0.55rem;opacity:0.5">...</span>
-
-      <div class="v3-hero-logo-wrap">
-        <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" alt="Laguna Swim International">
+    <div class="hdr">
+      <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" class="logo-img" alt="">
+      <div>
+        <div class="logo-main">LAGUNA <em>SWIM</em></div>
+        <div class="logo-sub">INTERNATIONAL</div>
       </div>
-
-      <div class="v3-hero-brand">LAGUNA <em>SWIM</em></div>
-      <div class="v3-hero-int">INTERNATIONAL</div>
-      <div class="v3-hero-tagline">Fuertes y Valientes · Josué 1:9</div>
-
-      <button class="v3-hero-cta" onclick="reto50AbrirJuego(false)">
-        <span class="icon">▶</span>
-        <span>Jugar Reto 50m</span>
-        <span class="v3-hero-cta-badge">NUEVO</span>
-      </button>
-
-      <!-- NUEVO V4: Botón subir entrenamiento sin login -->
-      <div class="v4-upload-cta" style="margin-top: 1.2rem; max-width: 360px; width: 100%" onclick="abrirModalEntrenamiento()">
-        <div class="v4-upload-icon">📝</div>
-        <div class="v4-upload-text">
-          <div class="v4-upload-title">Subir Mi Entrenamiento</div>
-          <div class="v4-upload-sub">Sube tus metros semanales · Sin registro</div>
+      <span id="fb-status" class="hdr-status">...</span>
+    </div>
+    <div style="text-align:center;padding:1rem 0 1.5rem">
+      <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" style="width:130px;height:130px;object-fit:contain;margin-bottom:0.6rem" alt="">
+      <div style="font-size:1.6rem;font-weight:800">LAGUNA <span style="color:var(--accent)">SWIM</span></div>
+      <div style="font-size:0.7rem;color:var(--accent-soft);letter-spacing:2px;margin-top:2px">INTERNATIONAL</div>
+      <div style="font-size:0.78rem;color:#e5c84a;margin-top:0.4rem;font-style:italic">"Fuertes y Valientes" - Josue 1:9</div>
+    </div>
+    <div class="card">
+      <div class="role-card" onclick="goTimer('s-role')">
+        <div style="font-size:2rem;width:45px;text-align:center">&#127919;</div>
+        <div>
+          <div style="font-weight:700">Iniciar sesion</div>
+          <div style="font-size:0.73rem;color:var(--accent-soft)">Entrenador o cronometrista</div>
         </div>
-        <div class="v4-upload-arrow">→</div>
-      </div>
-
-      <!-- NUEVO V4.2: Tabla pública de entrenamientos de la semana (visible para todos) -->
-      <div id="v4-home-tabla" style="margin-top: 1rem; max-width: 420px; width: 100%; background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.08) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 1rem; text-align: left;">
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">
-          <div style="font-size:1.4rem">🏆</div>
-          <div style="flex:1">
-            <div style="font-size:0.78rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)">Entrenamientos de la Semana</div>
-            <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);margin-top:1px">Ranking del equipo en vivo</div>
-          </div>
-        </div>
-
-        <!-- Totales -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;margin-bottom:0.8rem">
-          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
-            <div id="home-stat-sesiones" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Sesiones</div>
-          </div>
-          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
-            <div id="home-stat-personas" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Personas</div>
-          </div>
-          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
-            <div id="home-stat-metros" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Metros</div>
-          </div>
-        </div>
-
-        <!-- Top 5 ranking -->
-        <div style="font-size:0.6rem;color:var(--accent-soft);letter-spacing:1.5px;font-weight:800;margin-bottom:0.4rem;text-transform:uppercase">🥇 Top 5 por metros</div>
-        <div id="home-top5" style="font-size:0.82rem">
-          <div style="text-align:center;padding:0.8rem;color:rgba(255,255,255,0.4);font-size:0.7rem">Cargando...</div>
-        </div>
-
-        <!-- Botón ver todos -->
-        <button onclick="verEntrenamientosPublicos()" style="width:100%;margin-top:0.7rem;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);color:var(--accent);padding:0.6rem;border-radius:8px;font-weight:700;font-size:0.75rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase">
-          Ver todos los entrenamientos →
-        </button>
-      </div>
-
-      <div class="v3-hero-scroll-hint" onclick="document.querySelector('.v3-below-fold').scrollIntoView({behavior:'smooth'})">
-        <span>Ver más</span>
-        <span class="chev">⌄</span>
+        <div style="margin-left:auto;color:var(--accent-soft);font-size:1.2rem">&#8250;</div>
       </div>
     </div>
 
-    <!-- ============ ABAJO DEL FOLD ============ -->
-    <div class="v3-below-fold">
-      <div class="v3-below-divider">
-        <span class="v3-below-divider-text">— EQUIPO —</span>
-      </div>
-
-      <!-- BANDA DE STATS PROMINENTES -->
-      <div class="v2-stats-banner">
-      <div class="v2-stat-item">
-        <div class="v2-stat-num-big">30+</div>
-        <div class="v2-stat-lbl-big">Años Exp.</div>
-      </div>
-      <div class="v2-stat-item">
-        <div class="v2-stat-num-big">60+</div>
-        <div class="v2-stat-lbl-big">Medallas Panam</div>
-      </div>
-      <div class="v2-stat-item">
-        <div class="v2-stat-num-big">4</div>
-        <div class="v2-stat-lbl-big">Mundiales</div>
-      </div>
-    </div>
-
-    <!-- SECCION: UNETE AL EQUIPO -->
-    <div class="v2-section">
-      <div class="v2-section-head">
-        <div class="v2-section-head-bar"></div>
-        <div class="v2-section-head-text">Únete <em>al Equipo</em></div>
-        <div class="v2-section-head-line"></div>
-      </div>
-
-      <div class="v2-nav-grid">
-        <div class="v2-action-card featured" onclick="showTab('tab-profile')">
-          <div>
-            <div class="v2-action-icon">💪</div>
-            <div class="v2-action-title">ENTRENA</div>
-            <div class="v2-action-sub">Masters · Juvenil · Infantil</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-        <div class="v2-action-card" onclick="showTab('tab-ranking')">
-          <div>
-            <div class="v2-action-icon">🏆</div>
-            <div class="v2-action-title">COMPITE</div>
-            <div class="v2-action-sub">Rankings y eventos internacionales</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-        <div class="v2-action-card" onclick="window.open('https://wa.me/5218714419555?text=Hola%20Coach%20Sergio,%20me%20interesa%20informaci%C3%B3n%20de%20Laguna%20Swim','_blank')">
-          <div>
-            <div class="v2-action-icon">💬</div>
-            <div class="v2-action-title">CONTACTO</div>
-            <div class="v2-action-sub">Inscríbete por WhatsApp</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-        <div class="v2-action-card" onclick="showTab('tab-store')">
-          <div>
-            <div class="v2-action-icon">🛒</div>
-            <div class="v2-action-title">TIENDA</div>
-            <div class="v2-action-sub">Libros · Viajes Oceanman</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECCION: PROXIMO EVENTO -->
-    <div class="v2-section">
-      <div class="v2-section-head">
-        <div class="v2-section-head-bar"></div>
-        <div class="v2-section-head-text">Próximo <em>Evento</em></div>
-        <div class="v2-section-head-line"></div>
-      </div>
-
-      <div class="v2-event-poster" onclick="showTab('tab-ranking')">
-        <div class="v2-event-tape">⚠️ INSCRIPCIONES AGOTADAS</div>
-        <div class="v2-event-body">
-          <div class="v2-event-flag">🇲🇽</div>
-          <div class="v2-event-info">
-            <div class="v2-event-name">Oceanman Cozumel 2026</div>
-            <div class="v2-event-date">1-2 AGOSTO · 2026</div>
-            <div class="v2-event-loc">Cozumel, Quintana Roo</div>
-          </div>
-          <div class="v2-event-arrow">→</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECCION: COACH -->
-    <div class="v2-section">
-      <div class="v2-section-head">
-        <div class="v2-section-head-bar"></div>
-        <div class="v2-section-head-text">Tu <em>Coach</em></div>
-        <div class="v2-section-head-line"></div>
-      </div>
-
-      <div class="v2-coach-poster" onclick="showTab('tab-profile')">
-        <div class="v2-coach-pic">SV</div>
-        <div class="v2-coach-info">
-          <div class="v2-coach-name">Sergio Villarreal</div>
-          <div class="v2-coach-title">ASCA Level 4 Certified</div>
-          <div class="v2-coach-exp">30+ años · Lic. Acondicionamiento Físico</div>
-        </div>
-        <div class="v2-coach-arrow">→</div>
-      </div>
-    </div>
-
-    <div style="height: 1rem"></div>
-    <!-- ============ FIN ABAJO DEL FOLD ============ -->
-    </div>
-    <!-- ============ FIN V3 HOME ============ -->
-
-  </div>
-
-  <!-- Pantalla oculta: contiene la calculadora y otros elementos legacy del antiguo s-home, accesibles desde Tools -->
-  <div id="s-home-legacy" class="screen" style="display:none">
-    <!-- Contenedores ocultos para el JS existente del leaderboard -->
-    <div id="reto50-lb-body" style="display:none"><div id="reto50-lb-list"></div></div>
-    <div id="reto50-duelos-body" style="display:none"><div id="reto50-duelos-list"></div></div>
-    <span id="reto50-lb-arrow" style="display:none"></span>
-    <span id="reto50-duelos-arrow" style="display:none"></span>
-
-    <!-- Acordeón Calculadora (movida visualmente a Tools, pero el JS sigue refiriéndose a estos IDs) -->
+    <!-- Acordeón Calculadora -->
     <div onclick="toggleCalc()" class="acc-head">
       <div style="display:flex;align-items:center;gap:0.6rem">
         <span style="font-size:1.3rem">&#128337;</span>
@@ -3328,26 +1802,42 @@ body.v3-fluid .v2-coach-poster:active {
         <div>
           <label>Distancia base</label>
           <select id="calc-dist-base" onchange="calcProyectar()" style="font-size:0.85rem;padding:0.5rem;margin-bottom:0">
-            <option value="25">25 m</option>
-            <option value="50" selected>50 m</option>
-            <option value="100">100 m</option>
-            <option value="200">200 m</option>
-            <option value="400">400 m</option>
+            <option value="25">25m</option>
+            <option value="50" selected>50m</option>
+            <option value="100">100m</option>
+            <option value="200">200m</option>
+            <option value="400">400m</option>
           </select>
         </div>
         <div>
-          <label>Tiempo</label>
-          <input type="text" id="calc-tiempo-base" placeholder="00:32.50" oninput="calcProyectar()" style="font-size:0.85rem;padding:0.5rem;margin-bottom:0">
+          <label>Tiempo (mm:ss.cc)</label>
+          <input id="calc-tiempo-base" placeholder="0:28.50" oninput="calcProyectar()"
+            style="font-size:1.1rem;font-weight:800;text-align:center;color:var(--gold);padding:0.4rem;margin-bottom:0">
         </div>
       </div>
-      <div>
+      <label>Factor de fatiga</label>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;margin-bottom:0.7rem">
+        <button class="calc-btn" id="cf-lineal" onclick="selCalcFactor(this,'lineal')">
+          Lineal<br><span style="font-size:0.55rem;opacity:0.7">Sprint puro</span>
+        </button>
+        <button class="calc-btn on" id="cf-natacion" onclick="selCalcFactor(this,'natacion')">
+          Natacion<br><span style="font-size:0.55rem;opacity:0.7">Estandar</span>
+        </button>
+        <button class="calc-btn" id="cf-resistencia" onclick="selCalcFactor(this,'resistencia')">
+          Resistencia<br><span style="font-size:0.55rem;opacity:0.7">Fondo</span>
+        </button>
+      </div>
+      <div id="calc-resultado" style="display:none">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--accent);margin-bottom:0.4rem">
+          Proyeccion de tiempos:
+        </div>
         <div id="calc-tabla" style="background:rgba(255,255,255,0.03);border-radius:10px;overflow:hidden"></div>
         <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-top:0.5rem;text-align:center">
           Estimacion - el rendimiento real depende de tecnica y condicion
         </div>
       </div>
     </div>
-  </div>
+
     <!-- Carrusel grande removido - ahora hay barra fija abajo -->
   </div>
 
@@ -3564,128 +2054,9 @@ body.v3-fluid .v2-coach-poster:active {
 </div>
 
 <!-- ============ STORE TAB ============ -->
-<div id="tab-store" class="tab">
-  <div class="hdr">
-    <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" class="logo-img" alt="">
-    <div>
-      <div class="logo-main">LAGUNA <em>SWIM</em></div>
-      <div class="logo-sub">Tienda digital</div>
-    </div>
-  </div>
-  <div style="font-size:0.78rem;color:var(--accent-soft);margin-bottom:0.8rem">
-    Libros de Sergio Villarreal - descarga inmediata
-  </div>
-  <div class="book-card">
-    <div class="book-cover">&#128216;</div>
-    <div class="book-info">
-      <div class="book-lang">&#127474;&#127485; Espanol</div>
-      <div class="book-title">Padres Campeones</div>
-      <div class="book-desc">Educa a tus hijos deportistas con amor, sabiduria y diversion.</div>
-      <div class="book-price">$99 MXN</div>
-      <div class="book-btns">
-        <button class="btn btn-sky btn-sm" onclick="buyBook(1)">Comprar PDF</button>
-        <button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com.mx/dp/B0CNYHD2MX')">Fisico</button>
-      </div>
-    </div>
-  </div>
-  <div class="book-card">
-    <div class="book-cover">&#128217;</div>
-    <div class="book-info">
-      <div class="book-lang">&#127482;&#127480; English</div>
-      <div class="book-title">Champion Parents</div>
-      <div class="book-desc">Raise your athletic children with love, wisdom and fun.</div>
-      <div class="book-price">$99 MXN</div>
-      <div class="book-btns">
-        <button class="btn btn-sky btn-sm" onclick="buyBook(2)">Buy PDF</button>
-        <button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com.mx/dp/B0CQJC77JS')">Physical</button>
-      </div>
-    </div>
-  </div>
-  <div class="book-card">
-    <div class="book-cover">&#127944;</div>
-    <div class="book-info">
-      <div class="book-lang">&#127474;&#127485; Espanol</div>
-      <div class="book-title">Natacion Masters</div>
-      <div class="book-desc">Guia completa para el exito internacional en el agua.</div>
-      <div class="book-price">$199 MXN</div>
-      <div class="book-btns">
-        <button class="btn btn-sky btn-sm" onclick="buyBook(3)">Comprar PDF</button>
-        <button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com/dp/B0G3PQ53KT')">Fisico</button>
-      </div>
-    </div>
-  </div>
-  <div class="book-card" style="border-color:rgba(56,189,248,0.35)">
-    <div class="book-cover" style="background:#0c3460;position:relative">
-      &#127941;
-      <div style="position:absolute;top:-6px;right:-6px;background:var(--accent-strong);font-size:0.52rem;font-weight:800;padding:2px 6px;border-radius:20px">PRO</div>
-    </div>
-    <div class="book-info">
-      <div class="book-lang">&#127474;&#127485; Espanol</div>
-      <div class="book-title">Laguna Swim Pro - Manual Certificacion</div>
-      <div class="book-desc">30+ anos de experiencia. El quinto estilo y certificacion internacional.</div>
-      <div class="book-price" style="color:var(--accent)">$399 MXN</div>
-      <div class="book-btns">
-        <button class="btn btn-sky btn-sm" onclick="buyBook(4)">Comprar PDF</button>
-        <button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com/dp/B0FS2D8XZM')">Fisico</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sección Artículos del equipo -->
-  <div class="section-title">&#128085; Articulos del equipo</div>
-  <div style="font-size:0.74rem;color:var(--accent-soft);margin-bottom:0.6rem">
-    Pedidos directos por WhatsApp con Sergio
-  </div>
-
-  <div class="item-card">
-    <div class="item-icon">&#127919;</div>
-    <div class="item-info">
-      <div class="item-title">Gorra de silicon</div>
-      <div class="item-desc">Logo Laguna Swim - varios colores</div>
-      <div class="item-price">$300 MXN</div>
-    </div>
-    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Gorra de silicon Laguna Swim ($300 MXN)')">Pedir</button>
-  </div>
-
-  <div class="item-card">
-    <div class="item-icon">&#128085;</div>
-    <div class="item-info">
-      <div class="item-title">Playera oficial</div>
-      <div class="item-desc">Algodon premium - tallas CH a XXL</div>
-      <div class="item-price">$350 MXN</div>
-    </div>
-    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Playera oficial Laguna Swim ($350 MXN)')">Pedir</button>
-  </div>
-
-  <div class="item-card">
-    <div class="item-icon">&#127946;</div>
-    <div class="item-info">
-      <div class="item-title">Traje de bano competencia</div>
-      <div class="item-desc">Anticloro - hombre o mujer - tallas a la medida</div>
-      <div class="item-price">$900 MXN</div>
-    </div>
-    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Traje de bano de competencia anticloro ($900 MXN)')">Pedir</button>
-  </div>
-
-  <div class="item-card">
-    <div class="item-icon">&#128375;</div>
-    <div class="item-info">
-      <div class="item-title">Goggles competencia</div>
-      <div class="item-desc">Anti-fog - lente claro o ahumado</div>
-      <div class="item-price">$400 MXN</div>
-    </div>
-    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Goggles de competencia ($400 MXN)')">Pedir</button>
-  </div>
-
-  <button class="btn btn-wa" style="margin-top:0.5rem" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio%2C%20quiero%20preguntar%20por%20articulos%20del%20equipo%20Laguna%20Swim')">
-    Preguntar por otros articulos
-  </button>
-
-  <div class="footer-bar">
-    2026 Laguna Swim International - Sergio Elias Villarreal Limas<br>
-    <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
-    <button class="coach-logout-btn" id="lo-store" onclick="coachLogout()">Cerrar sesion</button>
-  </div>
+<!-- ============ STORE TAB (vacío - contenido movido a Sergio en v22) ============ -->
+<div id="tab-store" class="tab" style="display:none">
+  <!-- Productos ahora viven en pestaña Sergio bajo "Productos Oficiales" -->
 </div>
 
 <!-- ============ RANKING TAB ============ -->
@@ -3694,51 +2065,9 @@ body.v3-fluid .v2-coach-poster:active {
     <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" class="logo-img" alt="">
     <div>
       <div class="logo-main">LAGUNA <em>SWIM</em></div>
-      <div class="logo-sub">COMPETIR</div>
+      <div class="logo-sub">Ranking oficial</div>
     </div>
   </div>
-
-  <!-- ============ NUEVO V2: TOP 10 RETO 50M y DUELOS ============ -->
-  <div class="v2-section" style="margin-top: 1rem">
-    <div class="v2-section-head">
-      <div class="v2-section-head-bar"></div>
-      <div class="v2-section-head-text">Top 10 <em>Reto 50m</em></div>
-      <div class="v2-section-head-line"></div>
-    </div>
-
-    <div onclick="reto50ToggleLB()" class="reto50-lb-acc-head">
-      <div style="display:flex;align-items:center;gap:0.6rem;flex:1">
-        <span style="font-size:1.3rem">&#127942;</span>
-        <div>
-          <div style="font-size:0.88rem;font-weight:800;color:var(--gold)">Ranking Reto 50m</div>
-          <div style="font-size:0.65rem;color:var(--accent-soft)">Carrera contra rivales virtuales</div>
-        </div>
-      </div>
-      <span id="reto50-lb-arrow-v2" style="color:var(--gold);font-size:1.2rem">&#8964;</span>
-    </div>
-    <div id="reto50-lb-body-v2" class="reto50-lb-body" style="display:none">
-      <div id="reto50-lb-list-v2">
-        <div class="reto50-lb-empty">Cargando ranking...</div>
-      </div>
-    </div>
-
-    <div onclick="reto50ToggleDuelosLB()" class="reto50-lb-acc-head" style="background:linear-gradient(135deg, rgba(239,71,111,0.12) 0%, rgba(255,107,53,0.08) 100%);border-color:rgba(239,71,111,0.4)">
-      <div style="display:flex;align-items:center;gap:0.6rem;flex:1">
-        <span style="font-size:1.3rem">&#9876;&#65039;</span>
-        <div>
-          <div style="font-size:0.88rem;font-weight:800;color:#ff6b8e">Top 10 Duelos 1v1</div>
-          <div style="font-size:0.65rem;color:var(--accent-soft)">Cara a cara con cámara</div>
-        </div>
-      </div>
-      <span id="reto50-duelos-arrow-v2" style="color:#ff6b8e;font-size:1.2rem">&#8964;</span>
-    </div>
-    <div id="reto50-duelos-body-v2" class="reto50-lb-body" style="display:none">
-      <div id="reto50-duelos-list-v2">
-        <div class="reto50-lb-empty">Cargando ranking de duelos...</div>
-      </div>
-    </div>
-  </div>
-  <!-- ============ FIN V2 TOP 10 ============ -->
 
   <!-- Hall of Fame: Miguel De Lara (solo visible cuando filtran Pecho) -->
   <div class="hof-card" id="hof-miguel" style="display:none">
@@ -3786,14 +2115,6 @@ body.v3-fluid .v2-coach-poster:active {
   <div style="margin-bottom:0.8rem">
     <div style="font-size:0.7rem;color:var(--accent-soft);margin-bottom:0.5rem">
       Selecciona prueba para ver el ranking
-    </div>
-    <div id="ranking-counter" style="font-size:0.75rem;margin-bottom:0.7rem;padding:0.5rem 0.7rem;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:6px;color:rgba(255,255,255,0.85)">
-      Cargando...
-    </div>
-
-    <!-- NUEVO: Buscador rápido por nombre/competencia -->
-    <div style="margin-bottom:0.7rem">
-      <input id="ranking-buscador" type="text" placeholder="🔍 Buscar por nadador o competencia (ej: 'Panamericano')" oninput="buscarRanking()" style="width:100%;padding:0.6rem 0.8rem;background:rgba(0,0,0,0.3);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem">
       <select id="rank-dist" onchange="filterRanking()">
@@ -3973,8 +2294,8 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
   <div class="hdr">
     <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" class="logo-img" alt="">
     <div>
-      <div class="logo-main">LAGUNA <em>SWIM</em></div>
-      <div class="logo-sub">Herramientas de entrenamiento</div>
+      <div class="logo-main">MURO <em>LAGUNA</em></div>
+      <div class="logo-sub">Comunidad del equipo</div>
     </div>
   </div>
 
@@ -3983,45 +2304,24 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
     <div class="card" style="text-align:center;padding:1.5rem">
       <div style="font-size:3rem;margin-bottom:0.6rem">&#127946;</div>
       <div style="font-size:1.1rem;font-weight:800;color:var(--accent);margin-bottom:0.3rem">
-        Herramientas Laguna Swim
+        Muro de Laguna Swim
       </div>
       <div style="font-size:0.78rem;color:var(--accent-soft);margin-bottom:1rem;line-height:1.5">
-        Metodologia de elite - 30+ anos de experiencia<br>
-        Inicia sesion para acceder
+        Comunidad del equipo - 30+ anos de experiencia<br>
+        Inicia sesion para publicar y acceder a las herramientas
       </div>
       <button class="btn btn-sky" onclick="showCoachLogin()" style="max-width:280px;margin:0 auto">
         Iniciar sesion
       </button>
+      <button class="btn btn-gray" onclick="entrarMuroLecturaLibre()" style="max-width:280px;margin:0.4rem auto 0;background:rgba(255,255,255,0.05)">
+        Solo quiero ver el muro
+      </button>
     </div>
   </div>
 
-  <!-- Pared 2: Subscription wall (autenticado pero sin suscripción) -->
-  <div id="wk-subs-wall" style="display:none;text-align:center;padding:2rem 1rem">
-    <div style="font-size:2.5rem;margin-bottom:0.6rem">&#127946;</div>
-    <div style="font-size:1rem;font-weight:800;color:var(--gold);margin-bottom:0.3rem">
-      Plan Semanal Laguna Swim
-    </div>
-    <div style="font-size:0.78rem;color:var(--accent-soft);margin-bottom:1rem">
-      6 entrenamientos personalizados - 7 dias de acceso
-    </div>
-    <div style="background:rgba(255,215,0,0.08);border:2px solid rgba(255,215,0,0.3);border-radius:16px;padding:1.2rem;margin-bottom:1rem">
-      <div style="font-size:2.2rem;font-weight:800;color:var(--gold)">$100 MXN</div>
-      <div style="font-size:0.72rem;color:#a08020">6 entrenamientos - valido 7 dias</div>
-    </div>
-    <button class="btn btn-gold" onclick="iniciarPagoSubs()" style="font-size:1rem">
-      Suscribirme - $100 MXN
-    </button>
-    <button class="btn btn-gray" onclick="coachLogout()" style="font-size:0.85rem">
-      Cambiar cuenta
-    </button>
-    <div style="font-size:0.62rem;color:rgba(255,255,255,0.3);margin-top:0.6rem">
-      Modo demo - el pago real con MercadoPago se activara proximamente
-    </div>
-  </div>
-
-  <!-- Acceso (con suscripción o coach) -->
+  <!-- Acceso (con sesión iniciada o lectura libre) -->
   <div id="wk-acceso" style="display:none">
-    <div class="subs-banner">
+    <div class="subs-banner" id="wk-subs-banner-top" style="display:none">
       <div style="font-size:0.75rem;color:var(--success)" id="wk-badge">-</div>
       <button onclick="showCoachLogin()" style="background:none;border:none;color:var(--accent-soft);font-size:0.68rem;cursor:pointer">
         Mi cuenta
@@ -4035,8 +2335,37 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <div class="frase-semana-num" id="frase-semana-num">Semana - / -</div>
     </div>
 
-    <!-- Selector de modo -->
-    <div id="wk-selector">
+    <!-- TABS PRINCIPALES del MURO (Sesiones | Fotos | Videos | Entrena) -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.3rem;margin-bottom:0.8rem">
+      <button class="wk-btn on" id="muro-main-sesiones" onclick="switchMuroMain('sesiones')" style="font-size:0.72rem">&#128221; Sesiones</button>
+      <button class="wk-btn" id="muro-main-fotos" onclick="switchMuroMain('fotos')" style="font-size:0.72rem">&#128247; Fotos</button>
+      <button class="wk-btn" id="muro-main-videos" onclick="switchMuroMain('videos')" style="font-size:0.72rem">&#127916; Videos</button>
+      <button class="wk-btn" id="muro-main-entrena" onclick="switchMuroMain('entrena')" style="font-size:0.72rem">&#128170; Entrena</button>
+    </div>
+
+    <!-- VISTA: SESIONES -->
+    <div id="muro-main-tab-sesiones">
+      <!-- Contenido se mueve aquí desde wk-muro -->
+    </div>
+
+    <!-- VISTA: FOTOS -->
+    <div id="muro-main-tab-fotos" style="display:none">
+      <!-- Contenido se mueve aquí desde wk-muro -->
+    </div>
+
+    <!-- VISTA: VIDEOS -->
+    <div id="muro-main-tab-videos" style="display:none">
+      <!-- Contenido se mueve aquí desde wk-muro -->
+    </div>
+
+    <!-- VISTA: ENTRENA (las 5 herramientas) -->
+    <div id="muro-main-tab-entrena" style="display:none">
+      <div style="font-size:0.75rem;color:var(--accent-soft);margin-bottom:0.7rem;text-align:center">
+        Herramientas del entrenador:
+      </div>
+
+    <!-- Selector de modo (placeholder, se reemplaza por el selector ya existente) -->
+    <div id="wk-selector" style="display:none">
       <div style="font-size:0.75rem;color:var(--accent-soft);margin-bottom:0.7rem;text-align:center">
         Selecciona una herramienta:
       </div>
@@ -4255,60 +2584,47 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <!-- Banner de estado de suscripción -->
       <div id="muro-subs-banner-container"></div>
 
-      <!-- Tabs internas: Sesiones | Fotos | Videos -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;margin-bottom:0.8rem">
-        <button class="wk-btn on" id="muro-tab-sesiones" onclick="switchMuroTab('sesiones')">Sesiones</button>
-        <button class="wk-btn" id="muro-tab-fotos" onclick="switchMuroTab('fotos')">Fotos</button>
-        <button class="wk-btn" id="muro-tab-videos" onclick="switchMuroTab('videos')">Videos</button>
+      <!-- Tabs internas: Sesiones | Fotos | Videos | Entrena -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.3rem;margin-bottom:0.8rem">
+        <button class="wk-btn on" id="muro-tab-sesiones" onclick="switchMuroTab('sesiones')" style="font-size:0.72rem;padding:0.45rem 0.2rem">Sesiones</button>
+        <button class="wk-btn" id="muro-tab-fotos" onclick="switchMuroTab('fotos')" style="font-size:0.72rem;padding:0.45rem 0.2rem">Fotos</button>
+        <button class="wk-btn" id="muro-tab-videos" onclick="switchMuroTab('videos')" style="font-size:0.72rem;padding:0.45rem 0.2rem">Videos</button>
+        <button class="wk-btn" id="muro-tab-entrena" onclick="switchMuroTab('entrena')" style="font-size:0.72rem;padding:0.45rem 0.2rem;background:linear-gradient(135deg,rgba(255,215,0,0.12),rgba(56,189,248,0.05))">Entrena &#9881;</button>
       </div>
 
-      <!-- TAB SESIONES (REDISEÑADA: ahora muestra entrenamientos públicos del equipo) -->
+      <!-- TAB SESIONES -->
       <div id="muro-sesiones">
-        <!-- Card grande con totales en vivo -->
-        <div style="background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.1) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 1rem; margin-bottom: 1rem;">
-          <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem">
-            <div style="font-size:1.6rem">📊</div>
-            <div style="flex:1">
-              <div style="font-size:0.85rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)">Entrenamientos del Equipo</div>
-              <div style="font-size:0.68rem;color:rgba(255,255,255,0.6);margin-top:2px">Totales en vivo</div>
-            </div>
+        <div class="muro-week-bar">
+          <button class="muro-arrow" onclick="cambiarSemana(-1)">&#8249;</button>
+          <div style="text-align:center">
+            <div style="font-size:0.82rem;font-weight:800" id="muro-semana-label">Esta semana</div>
+            <div style="font-size:0.65rem;color:var(--accent-soft)" id="muro-semana-rango">-</div>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem">
-            <div style="text-align:center;padding:0.6rem;background:rgba(0,0,0,0.25);border-radius:8px">
-              <div id="muro-stat-sesiones" style="font-size:1.5rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-              <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Sesiones</div>
+          <button class="muro-arrow" id="muro-arrow-next" onclick="cambiarSemana(1)">&#8250;</button>
+        </div>
+
+        <div id="muro-resumen" style="display:none">
+          <div class="muro-stats">
+            <div class="muro-stat">
+              <div class="muro-stat-num" id="res-sesiones">0</div>
+              <div class="muro-stat-lbl">Sesiones</div>
             </div>
-            <div style="text-align:center;padding:0.6rem;background:rgba(0,0,0,0.25);border-radius:8px">
-              <div id="muro-stat-personas" style="font-size:1.5rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-              <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Personas</div>
+            <div class="muro-stat">
+              <div class="muro-stat-num" id="res-metros">0</div>
+              <div class="muro-stat-lbl">Metros</div>
             </div>
-            <div style="text-align:center;padding:0.6rem;background:rgba(0,0,0,0.25);border-radius:8px">
-              <div id="muro-stat-metros" style="font-size:1.5rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-              <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Metros</div>
+            <div class="muro-stat">
+              <div class="muro-stat-num" id="res-calorias">0</div>
+              <div class="muro-stat-lbl">Calorias</div>
             </div>
           </div>
         </div>
 
-        <!-- Botones acción (solo Coach) -->
-        <div id="muro-pub-acciones" style="display:none;gap:0.4rem;margin-bottom:1rem">
-          <button onclick="exportarEntrenamientosCSV()" style="flex:1;background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem;letter-spacing:1px;cursor:pointer">📥 EXPORTAR CSV</button>
-          <button onclick="toggleMuroVistaPub()" id="muro-toggle-vista" style="flex:1;background:rgba(56,189,248,0.2);color:var(--accent);border:1px solid var(--accent);padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem;letter-spacing:1px;cursor:pointer">👥 POR PERSONA</button>
+        <div id="muro-lista">
+          <div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>
         </div>
 
-        <!-- Botón GRANDE para subir entrenamiento -->
-        <div onclick="abrirModalEntrenamiento()" style="background:linear-gradient(135deg, rgba(6,214,160,0.18) 0%, rgba(56,189,248,0.15) 100%);border:2px solid #06d6a0;border-radius:12px;padding:0.9rem 1rem;cursor:pointer;margin-bottom:1rem;display:flex;align-items:center;gap:0.7rem">
-          <div style="font-size:1.6rem;background:rgba(6,214,160,0.2);width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center">📝</div>
-          <div style="flex:1">
-            <div style="font-size:0.85rem;font-weight:900;letter-spacing:0.5px;color:#06d6a0;text-transform:uppercase">Subir mi entrenamiento</div>
-            <div style="font-size:0.68rem;color:rgba(255,255,255,0.7);margin-top:2px">Sin registro · 1 minuto</div>
-          </div>
-          <div style="color:#06d6a0;font-size:1.3rem">→</div>
-        </div>
-
-        <!-- Lista de entrenamientos públicos -->
-        <div id="muro-pub-lista">
-          <div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando entrenamientos...</div>
-        </div>
+        <button class="fab-btn" id="fab-sesion" onclick="abrirRegistroSesion()" title="Registrar sesion">&#43;</button>
       </div>
 
       <!-- TAB FOTOS -->
@@ -4338,6 +2654,53 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
           <div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando videos...</div>
         </div>
         <button class="fab-btn" id="fab-video" onclick="abrirAgregarVideo()" title="Agregar video">&#43;</button>
+      </div>
+
+      <!-- TAB ENTRENA: las 5 herramientas (Sesión IA, Plan, Drills, Evaluación, Premios) -->
+      <div id="muro-entrena" style="display:none">
+        <div style="font-size:0.72rem;color:var(--accent-soft);margin-bottom:0.6rem;text-align:center">
+          Herramientas de entrenamiento Laguna Swim
+        </div>
+        <div class="wk-mode-card wk-mode-sky" onclick="elegirModo('diario')" style="display:flex;align-items:center;gap:1rem;text-align:left">
+          <div style="font-size:1.8rem">&#128170;</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:0.88rem;font-weight:800;color:var(--accent)">Sesion del dia IA</div>
+            <div style="font-size:0.66rem;color:var(--accent-soft)">Entrenamiento generado por IA <span style="color:var(--gold);font-weight:800">- $100/sem</span></div>
+          </div>
+          <div style="color:var(--accent);font-size:1.2rem">&#8250;</div>
+        </div>
+        <div class="wk-mode-card wk-mode-purple" onclick="elegirModo('semanal')" style="display:flex;align-items:center;gap:1rem;text-align:left;margin-top:0.5rem">
+          <div style="font-size:1.8rem">&#128197;</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:0.88rem;font-weight:800;color:var(--purple)">Plan semanal IA</div>
+            <div style="font-size:0.66rem;color:var(--accent-soft)">6 entrenamientos al instante <span style="color:var(--gold);font-weight:800">- $100/sem</span></div>
+          </div>
+          <div style="color:var(--purple);font-size:1.2rem">&#8250;</div>
+        </div>
+        <div class="wk-mode-card wk-mode-green" onclick="elegirModo('drills')" style="display:flex;align-items:center;gap:1rem;text-align:left;margin-top:0.5rem">
+          <div style="font-size:1.8rem">&#127919;</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:0.88rem;font-weight:800;color:var(--success)">Drills tecnicos IA</div>
+            <div style="font-size:0.66rem;color:var(--accent-soft)">Ejercicios por estilo y nivel <span style="color:var(--gold);font-weight:800">- $100/sem</span></div>
+          </div>
+          <div style="color:var(--success);font-size:1.2rem">&#8250;</div>
+        </div>
+        <div class="wk-mode-card wk-mode-orange" onclick="elegirModo('eval')" style="display:flex;align-items:center;gap:1rem;text-align:left;margin-top:0.5rem">
+          <div style="font-size:1.8rem">&#127942;</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:0.88rem;font-weight:800;color:#ea580c">Evaluacion de niveles</div>
+            <div style="font-size:0.66rem;color:var(--accent-soft)">5 niveles + diploma <span style="color:var(--success);font-weight:800">- GRATIS</span></div>
+          </div>
+          <div style="color:#ea580c;font-size:1.2rem">&#8250;</div>
+        </div>
+        <div class="wk-mode-card wk-mode-trophy" onclick="elegirModo('premios')" style="display:flex;align-items:center;gap:1rem;text-align:left;margin-top:0.5rem">
+          <div style="font-size:1.8rem">&#129351;</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:0.88rem;font-weight:800;color:var(--gold)">Premios Laguna Swim</div>
+            <div style="font-size:0.66rem;color:var(--accent-soft)">Postales por logros <span style="color:var(--success);font-weight:800">- GRATIS</span></div>
+          </div>
+          <div style="color:var(--gold);font-size:1.2rem">&#8250;</div>
+        </div>
       </div>
     </div>
 
@@ -4420,6 +2783,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         </div>
       </div>
     </div>
+    </div> <!-- /muro-main-tab-entrena -->
   </div>
 </div>
 
@@ -4871,6 +3235,119 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
     <div style="text-align:center;padding:1rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>
   </div>
 
+  <!-- Productos Oficiales (antes Tienda, movido aquí en v22) -->
+  <div class="intl-section-head" style="margin-top:1rem">
+    <span>&#128717; Productos Oficiales</span>
+  </div>
+  <div style="font-size:0.72rem;color:var(--accent-soft);margin:0 0 0.7rem;text-align:center">
+    Libros de Sergio Villarreal + articulos del equipo
+  </div>
+<div class="book-card">
+    <div class="book-cover">&#128216;</div>
+    <div class="book-info">
+      <div class="book-lang">&#127474;&#127485; Espanol</div>
+      <div class="book-title">Padres Campeones</div>
+      <div class="book-desc">Educa a tus hijos deportistas con amor, sabiduria y diversion.</div>
+      <div class="book-price">$99 MXN</div>
+      <div class="book-btns">
+        <button class="btn btn-sky btn-sm" onclick="buyBook(1)">Comprar PDF</button>
+        <button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com.mx/dp/B0CNYHD2MX')">Fisico</button>
+      </div>
+    </div>
+  </div>
+  <div class="book-card">
+    <div class="book-cover">&#128217;</div>
+    <div class="book-info">
+      <div class="book-lang">&#127482;&#127480; English</div>
+      <div class="book-title">Champion Parents</div>
+      <div class="book-desc">Raise your athletic children with love, wisdom and fun.</div>
+      <div class="book-price">$99 MXN</div>
+      <div class="book-btns">
+        <button class="btn btn-sky btn-sm" onclick="buyBook(2)">Buy PDF</button>
+        <button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com.mx/dp/B0CQJC77JS')">Physical</button>
+      </div>
+    </div>
+  </div>
+  <div class="book-card">
+    <div class="book-cover">&#127944;</div>
+    <div class="book-info">
+      <div class="book-lang">&#127474;&#127485; Espanol</div>
+      <div class="book-title">Natacion Masters</div>
+      <div class="book-desc">Guia completa para el exito internacional en el agua.</div>
+      <div class="book-price">$199 MXN</div>
+      <div class="book-btns">
+        <button class="btn btn-sky btn-sm" onclick="buyBook(3)">Comprar PDF</button>
+        <button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com/dp/B0G3PQ53KT')">Fisico</button>
+      </div>
+    </div>
+  </div>
+  <div class="book-card" style="border-color:rgba(56,189,248,0.35)">
+    <div class="book-cover" style="background:#0c3460;position:relative">
+      &#127941;
+      <div style="position:absolute;top:-6px;right:-6px;background:var(--accent-strong);font-size:0.52rem;font-weight:800;padding:2px 6px;border-radius:20px">PRO</div>
+    </div>
+    <div class="book-info">
+      <div class="book-lang">&#127474;&#127485; Espanol</div>
+      <div class="book-title">Laguna Swim Pro - Manual Certificacion</div>
+      <div class="book-desc">30+ anos de experiencia. El quinto estilo y certificacion internacional.</div>
+      <div class="book-price" style="color:var(--accent)">$399 MXN</div>
+      <div class="book-btns">
+        <button class="btn btn-sky btn-sm" onclick="buyBook(4)">Comprar PDF</button>
+        <button class="btn btn-orange btn-sm" onclick="openUrl('https://www.amazon.com/dp/B0FS2D8XZM')">Fisico</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección Artículos del equipo -->
+  <div class="section-title">&#128085; Articulos del equipo</div>
+  <div style="font-size:0.74rem;color:var(--accent-soft);margin-bottom:0.6rem">
+    Pedidos directos por WhatsApp con Sergio
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#127919;</div>
+    <div class="item-info">
+      <div class="item-title">Gorra de silicon</div>
+      <div class="item-desc">Logo Laguna Swim - varios colores</div>
+      <div class="item-price">$300 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Gorra de silicon Laguna Swim ($300 MXN)')">Pedir</button>
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#128085;</div>
+    <div class="item-info">
+      <div class="item-title">Playera oficial</div>
+      <div class="item-desc">Algodon premium - tallas CH a XXL</div>
+      <div class="item-price">$350 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Playera oficial Laguna Swim ($350 MXN)')">Pedir</button>
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#127946;</div>
+    <div class="item-info">
+      <div class="item-title">Traje de bano competencia</div>
+      <div class="item-desc">Anticloro - hombre o mujer - tallas a la medida</div>
+      <div class="item-price">$900 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Traje de bano de competencia anticloro ($900 MXN)')">Pedir</button>
+  </div>
+
+  <div class="item-card">
+    <div class="item-icon">&#128375;</div>
+    <div class="item-info">
+      <div class="item-title">Goggles competencia</div>
+      <div class="item-desc">Anti-fog - lente claro o ahumado</div>
+      <div class="item-price">$400 MXN</div>
+    </div>
+    <button class="btn btn-wa btn-sm" onclick="pedirArticulo('Goggles de competencia ($400 MXN)')">Pedir</button>
+  </div>
+
+  <button class="btn btn-wa" style="margin-top:0.5rem" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio%2C%20quiero%20preguntar%20por%20articulos%20del%20equipo%20Laguna%20Swim')">
+    Preguntar por otros articulos
+  </button>
+
   <!-- Panel admin: solo visible para Sergio -->
   <div id="admin-subs-section" style="display:none">
     <div class="intl-section-head">
@@ -5015,16 +3492,27 @@ function openUrl(u) { window.open(u, '_blank'); }
 
 // ===== TABS =====
 function showTab(t) {
-  // Acepta 'timer' o 'tab-timer' indistintamente
-  var key = (t || '').replace(/^tab-/, '');
-  ['timer', 'store', 'ranking', 'workout', 'profile'].forEach(function(x) {
-    var tabEl = document.getElementById('tab-' + x);
-    var navEl = document.getElementById('nav-' + x);
-    if (tabEl) tabEl.classList.toggle('active', x === key);
-    if (navEl) navEl.classList.toggle('active', x === key);
+  ['timer', 'ranking', 'workout', 'profile'].forEach(function(x) {
+    var tab = document.getElementById('tab-' + x);
+    var nav = document.getElementById('nav-' + x);
+    if (tab) tab.classList.toggle('active', x === t);
+    if (nav) nav.classList.toggle('active', x === t);
   });
-  // Scroll suave al top al cambiar de tab
-  try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+  // El tab-store ahora solo se muestra vacío (sus contenidos se movieron a profile)
+  var storeTab = document.getElementById('tab-store');
+  if (storeTab) storeTab.classList.remove('active');
+
+  // Al entrar a Muro, ir directo a Sesiones (no al selector viejo)
+  if (t === 'workout') {
+    setTimeout(function() {
+      // Si no tiene la sesión iniciada en muro, abrirlo
+      var wkSelector = document.getElementById('wk-selector');
+      var wkMuro = document.getElementById('wk-muro');
+      if (wkMuro && wkMuro.style.display !== 'block') {
+        elegirModo('muro');
+      }
+    }, 50);
+  }
 }
 
 var TIMER_SCREENS = ['s-home', 's-role', 's-setup', 's-lobby', 's-startup', 's-race', 's-results', 's-join', 's-tk'];
@@ -5050,8 +3538,7 @@ db.ref('.info/connected').on('value', function(s) {
 // ===== AUTH =====
 auth.onAuthStateChanged(function(u) {
   state.user = u;
-  // Marcar como coach SOLO si el email coincide con el del coach configurado
-  state.isCoach = !!(u && u.email && u.email.toLowerCase() === (CONFIG.coach || '').toLowerCase());
+  state.isCoach = !!u;
   if (u) {
     document.getElementById('auth-user-email').textContent = u.displayName || u.email;
     document.getElementById('auth-form-view').style.display = 'none';
@@ -5064,10 +3551,6 @@ auth.onAuthStateChanged(function(u) {
     document.querySelectorAll('.coach-btn').forEach(function(b) { b.style.display = 'inline-block'; });
     document.querySelectorAll('.coach-logout-btn').forEach(function(b) { b.style.display = 'none'; });
   }
-  // CRITICAL FIX: Refrescar la pantalla de Tools cuando cambia el login
-  // (antes solo se llamaba al cargar la página, dejando la pared de login visible)
-  try { if (typeof refreshWorkoutTab === 'function') refreshWorkoutTab(); } catch (e) { console.warn(e); }
-  try { if (typeof actualizarBannerMuro === 'function') actualizarBannerMuro(); } catch (e) {}
 });
 
 function loginGoogle() {
@@ -5086,11 +3569,6 @@ function loginGoogle() {
     return;
   }
 
-  // Verificar que el dominio actual sea autorizado
-  // (esto NO bloquea, solo registra en consola para diagnóstico)
-  console.log('[Login Debug] Dominio:', window.location.hostname);
-  console.log('[Login Debug] Auth domain:', firebaseConfig && firebaseConfig.authDomain);
-
   // Detectar si es móvil
   var esMobil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -5100,50 +3578,23 @@ function loginGoogle() {
     if (btn) btn.innerHTML = '<span class="spinner"></span>Conectando con Google...';
     // En móvil usar redirect (no popup) - mucho más confiable
     auth.signInWithRedirect(gProv).catch(function(e) {
-      console.error('[Login Error]', e.code, e.message);
-      var msg = traducirErrorAuth(e);
-      showAuthErr(msg);
+      showAuthErr('No se pudo iniciar sesion: ' + (e.message || 'intenta otro navegador'));
     });
   } else {
     // En escritorio mantener popup (más rápido)
     auth.signInWithPopup(gProv)
       .then(function() { closeAuthModal(); })
       .catch(function(e) {
-        console.error('[Login Error]', e.code, e.message);
         // Si el popup falla (bloqueado, etc.), intentar redirect como fallback
         if (e.code === 'auth/popup-blocked') {
           auth.signInWithRedirect(gProv).catch(function(e2) {
-            showAuthErr(traducirErrorAuth(e2));
+            showAuthErr('Error: ' + e2.message);
           });
         } else if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
-          showAuthErr(traducirErrorAuth(e));
+          showAuthErr(e.message);
         }
       });
   }
-}
-
-// Traducir códigos de error de Firebase a mensajes claros para el usuario
-function traducirErrorAuth(e) {
-  if (!e) return 'Error desconocido';
-  var codigo = e.code || '';
-  var dominio = window.location.hostname;
-  if (codigo === 'auth/unauthorized-domain') {
-    return '⚠️ El dominio "' + dominio + '" no está autorizado en Firebase. ' +
-      'Ve a console.firebase.google.com → laguna-swim-chrono → Authentication → Settings → Authorized domains → "Add domain" y agrega: ' + dominio;
-  }
-  if (codigo === 'auth/popup-blocked') {
-    return 'Tu navegador bloqueó el popup. Permite popups en este sitio o usa otro navegador.';
-  }
-  if (codigo === 'auth/network-request-failed') {
-    return 'Sin conexión a internet. Revisa tu conexión e intenta de nuevo.';
-  }
-  if (codigo === 'auth/web-storage-unsupported') {
-    return 'Tu navegador bloquea el almacenamiento. Sal del modo incógnito y habilita las cookies.';
-  }
-  if (codigo === 'auth/operation-not-supported-in-this-environment') {
-    return 'Este navegador no permite el login. Intenta con Chrome o Safari.';
-  }
-  return 'Error: ' + codigo + ' - ' + (e.message || 'intenta de nuevo');
 }
 
 // Manejar el resultado del redirect cuando regresa de Google
@@ -5156,7 +3607,6 @@ function traducirErrorAuth(e) {
 
   auth.getRedirectResult().then(function(result) {
     if (result && result.user) {
-      console.log('[Login OK] Bienvenido', result.user.email);
       closeAuthModal();
     }
   }).catch(function(e) {
@@ -5167,12 +3617,7 @@ function traducirErrorAuth(e) {
       'auth/web-storage-unsupported'
     ];
     if (e && e.code && codigosIgnorables.indexOf(e.code) === -1) {
-      console.error('[Redirect Error]', e.code, e.message);
-      // Si el modal de auth está abierto, mostrar el error allí
-      var modal = document.getElementById('auth-modal');
-      if (modal && modal.style.display !== 'none' && typeof traducirErrorAuth === 'function') {
-        try { showAuthErr(traducirErrorAuth(e)); } catch (e2) {}
-      }
+      console.warn('Redirect error:', e.message);
     }
   });
 })();
@@ -6023,13 +4468,17 @@ var BOOKS = [
 function buyBook(id) {
   state.curBook = BOOKS[id];
   if (!state.curBook) return;
-  // En vez del modal de pago, abrir WhatsApp directamente
-  var msg = 'Hola Sergio! Me interesa comprar el libro:\n\n*' + state.curBook.title + '* - $' + state.curBook.price + ' MXN (PDF)\n\nPor favor mandame el metodo de pago. Despues te envio el comprobante y me envias el PDF.';
-  openUrl('https://wa.me/528713164850?text=' + encodeURIComponent(msg));
+  document.getElementById('pay-title').textContent = state.curBook.title;
+  document.getElementById('pay-amount').textContent = '$' + state.curBook.price + ' MXN';
+  document.getElementById('pay-email').value = '';
+  document.getElementById('pay-modal').classList.remove('modal-hidden');
 }
 function doPay() {
-  // Función legacy - ya no se usa
+  var em = document.getElementById('pay-email').value.trim();
+  if (!em || !em.includes('@')) { alert('Ingresa tu correo'); return; }
+  if (!state.curBook) return;
   closePayModal();
+  alert('Pago registrado! "' + state.curBook.title + '" sera enviado a ' + em + '.\n\n(Configura MercadoPago Access Token para cobro real.)');
 }
 function closePayModal() {
   document.getElementById('pay-modal').classList.add('modal-hidden');
@@ -6062,82 +4511,6 @@ function toggleCalc() {
   body.style.display = open ? 'block' : 'none';
   if (arrow) arrow.innerHTML = open ? '&#8963;' : '&#8964;';
 }
-
-// ============ NUEVO V2: Funciones de calculadora para tab Tools ============
-function toggleCalcV2() {
-  var body = document.getElementById('calc-body-v2');
-  var arrow = document.getElementById('calc-arrow-v2');
-  if (!body) return;
-  var open = body.style.display === 'none';
-  body.style.display = open ? 'block' : 'none';
-  if (arrow) arrow.innerHTML = open ? '&#8963;' : '&#8964;';
-}
-
-function selCalcFactorV2(btn, factor) {
-  calcFactor = factor;
-  ['lineal', 'natacion', 'resistencia'].forEach(function(f) {
-    var b = document.getElementById('cf-' + f + '-v2');
-    if (b) b.classList.remove('on');
-  });
-  btn.classList.add('on');
-  calcProyectarV2();
-}
-
-function calcProyectarV2() {
-  var distInput = document.getElementById('calc-dist-base-v2');
-  var tiempoInput = document.getElementById('calc-tiempo-base-v2');
-  if (!distInput || !tiempoInput) return;
-
-  var distBase = parseInt(distInput.value) || 50;
-  var tiempoStr = (tiempoInput.value || '').trim();
-  var resultDiv = document.getElementById('calc-resultado-v2');
-  var tablaDiv = document.getElementById('calc-tabla-v2');
-
-  if (!tiempoStr || !resultDiv || !tablaDiv) {
-    if (resultDiv) resultDiv.style.display = 'none';
-    return;
-  }
-  var ms = 0;
-  tiempoStr = tiempoStr.replace(',', '.');
-  var parts = tiempoStr.split(':');
-  if (parts.length === 2) {
-    ms = (parseInt(parts[0]) || 0) * 60000 + Math.round(parseFloat(parts[1]) * 1000);
-  } else {
-    ms = Math.round(parseFloat(tiempoStr) * 1000);
-  }
-  if (!ms || ms <= 0) {
-    resultDiv.style.display = 'none';
-    return;
-  }
-  var exp = { lineal: 1.0, natacion: 1.06, resistencia: 1.12 }[calcFactor] || 1.06;
-  var distancias = [25, 50, 100, 200, 400, 500, 800, 1000, 1500];
-  var html = '';
-  distancias.forEach(function(d) {
-    var msProyectado = Math.round(ms * Math.pow(d / distBase, exp));
-    var seg = msProyectado / 1000;
-    var min = Math.floor(seg / 60);
-    var segR = seg % 60;
-    var tiempoFmt = min > 0
-      ? (min + ':' + (segR < 10 ? '0' : '') + segR.toFixed(2))
-      : segR.toFixed(2);
-    var esBase = d === distBase;
-    var pace100 = Math.round(msProyectado / (d / 100));
-    var paceMin = Math.floor(pace100 / 60000);
-    var paceSeg = (pace100 % 60000) / 1000;
-    var paceFmt = paceMin + ':' + (paceSeg < 10 ? '0' : '') + paceSeg.toFixed(1) + '/100m';
-
-    html += '<div style="display:flex;align-items:center;padding:0.4rem 0.6rem;' +
-      (esBase ? 'background:rgba(255,215,0,0.15);font-weight:800;' : '') +
-      'border-bottom:1px solid rgba(255,255,255,0.06)">';
-    html += '<div style="width:50px;font-size:0.7rem;color:' + (esBase ? 'var(--gold)' : 'var(--accent-soft)') + '">' + d + 'm</div>';
-    html += '<div style="flex:1;font-family:Courier New,monospace;font-size:0.85rem;color:' + (esBase ? 'var(--gold)' : 'var(--text)') + '">' + tiempoFmt + '</div>';
-    html += '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5)">' + paceFmt + '</div>';
-    html += '</div>';
-  });
-  tablaDiv.innerHTML = html;
-  resultDiv.style.display = 'block';
-}
-// ============ FIN V2 ============
 
 function selCalcFactor(btn, factor) {
   calcFactor = factor;
@@ -6227,15 +4600,30 @@ function refreshWorkoutTab() {
     acceso.style.display = 'none';
     return;
   }
-  // SIN COBRO - Acceso libre para todos los usuarios logueados
-  loginWall.style.display = 'none';
-  subsWall.style.display = 'none';
-  acceso.style.display = 'block';
   if (state.user.email === CONFIG.coach) {
+    loginWall.style.display = 'none';
+    subsWall.style.display = 'none';
+    acceso.style.display = 'block';
     setSubsBadge('Entrenador Sergio - Acceso ilimitado', 'coach');
-  } else {
-    setSubsBadge('Herramientas Laguna Swim - Acceso libre', 'ok');
+    return;
   }
+  db.ref('suscripciones/' + state.user.uid).once('value').then(function(snap) {
+    var d = snap.val();
+    var now = Date.now();
+    if (d && d.activoHasta > now && d.restantes > 0) {
+      wk.subs = d;
+      loginWall.style.display = 'none';
+      subsWall.style.display = 'none';
+      acceso.style.display = 'block';
+      var dias = Math.ceil((d.activoHasta - now) / 86400000);
+      setSubsBadge(d.restantes + ' entrenamientos - ' + dias + ' dias', d.restantes > 2 ? 'ok' : 'low');
+    } else {
+      wk.subs = null;
+      loginWall.style.display = 'none';
+      subsWall.style.display = 'block';
+      acceso.style.display = 'none';
+    }
+  });
 }
 
 function setSubsBadge(txt, kind) {
@@ -6248,13 +4636,19 @@ function setSubsBadge(txt, kind) {
 }
 
 function tieneAccesoWorkout() {
-  // SIN COBRO - Acceso libre para todos los usuarios logueados
-  return !!state.user;
+  if (!state.user) return false;
+  if (state.user.email === CONFIG.coach) return true;
+  return wk.subs && wk.subs.activoHasta > Date.now() && wk.subs.restantes > 0;
 }
 
 async function descontarEntrenamiento() {
-  // SIN COBRO - Función no-op, queda por compatibilidad
-  return;
+  if (!state.user || state.user.email === CONFIG.coach) return;
+  if (!wk.subs) return;
+  wk.subs.restantes = Math.max(0, wk.subs.restantes - 1);
+  await db.ref('suscripciones/' + state.user.uid + '/restantes').set(wk.subs.restantes);
+  // Refrescar badge
+  var dias = Math.ceil((wk.subs.activoHasta - Date.now()) / 86400000);
+  setSubsBadge(wk.subs.restantes + ' entrenamientos - ' + dias + ' dias', wk.subs.restantes > 2 ? 'ok' : 'low');
 }
 
 function iniciarPagoSubs() {
@@ -6681,129 +5075,9 @@ function loadRanking() {
     var d = snap.val() || {};
     Object.values(d).forEach(function(r) { rk.data.push(r); });
     rk.data.sort(function(a, b) { return a.timeMs - b.timeMs; });
-    // Actualizar contador visible
-    var counter = document.getElementById('ranking-counter');
-    if (counter) {
-      if (rk.data.length === 0) {
-        counter.innerHTML = '<span style="color:rgba(255,255,255,0.5)">Sin resultados guardados aún</span>';
-      } else {
-        var coach = state.user && state.user.email === CONFIG.coach;
-        counter.innerHTML = '<strong style="color:var(--gold)">' + rk.data.length + ' tiempos guardados</strong> en el ranking' +
-          (coach ? ' <button onclick="verTodosLosResultados()" style="background:rgba(56,189,248,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-weight:700;margin-left:8px;cursor:pointer">VER TODOS</button>' : '');
-      }
-    }
     filterRanking();
   });
 }
-
-// NUEVO: Ver todos los resultados (solo coach) - bypassa los filtros
-function verTodosLosResultados() {
-  if (!state.user || state.user.email !== CONFIG.coach) return;
-  var list = document.getElementById('ranking-list');
-  if (!list) return;
-  if (rk.data.length === 0) {
-    list.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">No hay resultados guardados</div>';
-    return;
-  }
-  // Agrupar por distancia+estilo
-  var grupos = {};
-  rk.data.forEach(function(r) {
-    var k = (r.dist || '?') + 'm ' + (r.style || '?');
-    if (!grupos[k]) grupos[k] = [];
-    grupos[k].push(r);
-  });
-  var html = '<div style="margin-bottom:1rem;padding:0.8rem;background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:8px;font-size:0.8rem">' +
-    '<strong style="color:var(--gold)">📋 VISTA COMPLETA DE ADMINISTRADOR</strong><br>' +
-    '<span style="font-size:0.72rem;color:rgba(255,255,255,0.7)">Mostrando los ' + rk.data.length + ' resultados agrupados por evento.</span>' +
-    '</div>';
-  Object.keys(grupos).sort().forEach(function(k) {
-    var arr = grupos[k].sort(function(a, b) { return a.timeMs - b.timeMs; });
-    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.8rem;margin-bottom:0.7rem">' +
-      '<div style="font-weight:800;color:var(--accent);font-size:0.95rem;margin-bottom:0.5rem">' + k + ' <span style="color:rgba(255,255,255,0.5);font-size:0.7rem;font-weight:500">(' + arr.length + ')</span></div>';
-    arr.forEach(function(r) {
-      var coach = state.user && state.user.email === CONFIG.coach;
-      var delBtn = coach ? '<button onclick="deleteRanking(\'' + r.id + '\')" style="background:rgba(255,107,53,0.15);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 7px;font-size:0.65rem;cursor:pointer;margin-left:6px">🗑️</button>' : '';
-      html += '<div style="padding:0.4rem 0;border-top:1px solid rgba(255,255,255,0.05);font-size:0.78rem;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">' +
-        '<div style="flex:1;min-width:0">' +
-          '<strong style="color:#fff">' + escapeHtml(r.swimmer || '?') + '</strong>' +
-          ' <span style="color:var(--gold);font-weight:700">' + (r.time || '') + '</span>' +
-          '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px">' + (r.cat || '?') + ' · ' + (r.gender || '?') + ' · ' + (r.comp || '?') + ' (' + (r.year || '?') + ')</div>' +
-        '</div>' +
-        delBtn +
-      '</div>';
-    });
-    html += '</div>';
-  });
-  list.innerHTML = html;
-}
-window.verTodosLosResultados = verTodosLosResultados;
-
-// NUEVO: Búsqueda rápida en el ranking (por nadador o competencia)
-function buscarRanking() {
-  var inp = document.getElementById('ranking-buscador');
-  if (!inp) return;
-  var q = (inp.value || '').toLowerCase().trim();
-  var list = document.getElementById('ranking-list');
-  if (!list) return;
-
-  // Si no hay búsqueda, regresar al modo normal (filtros)
-  if (!q) {
-    filterRanking();
-    return;
-  }
-
-  // Buscar en TODOS los datos (sin importar filtros de distancia/estilo)
-  if (!rk.data || rk.data.length === 0) {
-    list.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">No hay resultados guardados</div>';
-    return;
-  }
-
-  var matches = rk.data.filter(function(r) {
-    var nombre = (r.swimmer || '').toLowerCase();
-    var comp = (r.comp || '').toLowerCase();
-    return nombre.indexOf(q) >= 0 || comp.indexOf(q) >= 0;
-  });
-
-  if (matches.length === 0) {
-    list.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">🔍 Sin coincidencias para "<strong>' + escapeHtml(q) + '</strong>"<br><br><small>Prueba otra palabra o limpia la búsqueda</small></div>';
-    return;
-  }
-
-  // Agrupar por distancia+estilo+competencia para mejor lectura
-  var grupos = {};
-  matches.forEach(function(r) {
-    var k = (r.dist || '?') + 'm ' + (r.style || '?') + ' · ' + (r.comp || '?');
-    if (!grupos[k]) grupos[k] = [];
-    grupos[k].push(r);
-  });
-
-  var coach = state.user && state.user.email === CONFIG.coach;
-  var html = '<div style="margin-bottom:0.8rem;padding:0.6rem 0.8rem;background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;font-size:0.78rem;color:#22c55e">' +
-    '🔍 <strong>' + matches.length + '</strong> resultado' + (matches.length === 1 ? '' : 's') + ' para "<strong>' + escapeHtml(q) + '</strong>"' +
-    '</div>';
-
-  Object.keys(grupos).sort().forEach(function(k) {
-    var arr = grupos[k].sort(function(a, b) { return a.timeMs - b.timeMs; });
-    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.8rem;margin-bottom:0.7rem">' +
-      '<div style="font-weight:800;color:var(--accent);font-size:0.85rem;margin-bottom:0.5rem">' + escapeHtml(k) + ' <span style="color:rgba(255,255,255,0.5);font-size:0.7rem;font-weight:500">(' + arr.length + ')</span></div>';
-    arr.forEach(function(r, idx) {
-      var medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : (idx + 1) + '°'));
-      var delBtn = coach ? '<button onclick="deleteRanking(\'' + r.id + '\')" style="background:rgba(255,107,53,0.15);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 7px;font-size:0.65rem;cursor:pointer;margin-left:6px">🗑️</button>' : '';
-      html += '<div style="padding:0.4rem 0;border-top:1px solid rgba(255,255,255,0.05);font-size:0.78rem;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">' +
-        '<div style="flex:1;min-width:0">' +
-          '<span style="color:var(--gold);font-weight:800;margin-right:6px">' + medal + '</span>' +
-          '<strong style="color:#fff">' + escapeHtml(r.swimmer || '?') + '</strong>' +
-          ' <span style="color:var(--gold);font-weight:700">' + escapeHtml(r.time || '') + '</span>' +
-          '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px">' + escapeHtml(r.cat || '?') + ' · ' + escapeHtml(r.gender || '?') + ' · ' + (r.year || '?') + '</div>' +
-        '</div>' +
-        delBtn +
-      '</div>';
-    });
-    html += '</div>';
-  });
-  list.innerHTML = html;
-}
-window.buscarRanking = buscarRanking;
 
 // Aplicar filtros y renderizar
 function filterRanking() {
@@ -6822,21 +5096,13 @@ function filterRanking() {
 
   if (!dist || !style) {
     if (opt) opt.style.display = 'none';
-    var totalDisponibles = rk.data.length;
-    var coach = state.user && state.user.email === CONFIG.coach;
     list.innerHTML =
-      '<div style="text-align:center;padding:2rem 1rem">' +
-        '<div style="font-size:2.5rem;margin-bottom:0.7rem">&#127944;</div>' +
-        '<div style="font-size:1rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem">' +
+      '<div style="text-align:center;padding:2rem">' +
+        '<div style="font-size:2rem;margin-bottom:0.5rem">&#127944;</div>' +
+        '<div style="font-size:0.88rem;font-weight:700;color:var(--accent);margin-bottom:0.3rem">' +
           'Selecciona distancia y estilo' +
         '</div>' +
-        '<div style="font-size:0.78rem;color:rgba(255,255,255,0.7);margin-bottom:0.8rem">↑ Usa los menús de arriba para filtrar el ranking</div>' +
-        (totalDisponibles > 0
-          ? '<div style="padding:0.7rem;background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;font-size:0.78rem;color:#22c55e;font-weight:700">✅ Hay ' + totalDisponibles + ' tiempos guardados</div>'
-          : '<div style="padding:0.7rem;background:rgba(255,107,53,0.1);border:1px solid #ff6b35;border-radius:8px;font-size:0.78rem;color:#ff6b35">⚠️ No hay tiempos en el ranking aún</div>') +
-        (coach && totalDisponibles > 0
-          ? '<button onclick="verTodosLosResultados()" style="margin-top:0.7rem;background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:800;font-size:0.78rem;cursor:pointer">VER TODOS LOS RESULTADOS</button>'
-          : '') +
+        '<div style="font-size:0.7rem;color:var(--accent-soft)">Para ver el ranking oficial Laguna Swim</div>' +
       '</div>';
     return;
   }
@@ -6848,27 +5114,6 @@ function filterRanking() {
       && (!cat || r.cat === cat)
       && (!gender || r.gender === gender);
   });
-
-  // Si después de filtrar no hay nada pero sí había datos, avisar
-  if (rk.filtered.length === 0 && rk.data.length > 0) {
-    var coachRes = state.user && state.user.email === CONFIG.coach;
-    list.innerHTML =
-      '<div style="text-align:center;padding:2rem 1rem">' +
-        '<div style="font-size:2rem;margin-bottom:0.7rem">🔍</div>' +
-        '<div style="font-size:0.95rem;font-weight:800;color:var(--accent);margin-bottom:0.4rem">' +
-          'Sin resultados con estos filtros' +
-        '</div>' +
-        '<div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:0.8rem">' +
-          dist + 'm ' + style + ' · ' + (cat || 'Cualquier categoria') + ' · ' + (gender || 'Cualquier genero') +
-        '</div>' +
-        '<div style="padding:0.7rem;background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:8px;font-size:0.75rem;color:var(--gold);margin-bottom:0.7rem">💡 Cambia los filtros o resetea categoría/género</div>' +
-        (coachRes
-          ? '<button onclick="verTodosLosResultados()" style="background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:800;font-size:0.78rem;cursor:pointer">VER TODOS LOS RESULTADOS</button>'
-          : '') +
-      '</div>';
-    return;
-  }
-
   renderRanking(rk.filtered, parseInt(dist), style);
 }
 
@@ -6995,34 +5240,12 @@ function addRankTime() {
     year: yr,
     addedAt: Date.now()
   }).then(function() {
-    // Mostrar confirmación con detalles
-    alert('✅ Tiempo agregado: ' + sw + ' - ' + di + 'm ' + st + ' - ' + ti + '\n\nCompetencia: ' + co);
-
-    // Limpiar solo nadador y tiempo, MANTENER competencia/año/categoría
-    // para facilitar agregar varios tiempos del mismo evento
-    ['r-swimmer', 'r-time'].forEach(function(f) {
+    alert('Tiempo agregado al ranking!');
+    ['r-swimmer', 'r-time', 'r-comp', 'r-year'].forEach(function(f) {
       var e = document.getElementById(f);
       if (e) e.value = '';
     });
-
-    // Auto-aplicar filtros para ver inmediatamente el tiempo recién agregado
-    var rkDist = document.getElementById('rank-dist');
-    var rkStyle = document.getElementById('rank-style');
-    var rkCat = document.getElementById('rank-cat');
-    var rkGender = document.getElementById('rank-gender');
-    if (rkDist) rkDist.value = di;
-    if (rkStyle) rkStyle.value = st;
-    if (rkCat) rkCat.value = ct;
-    if (rkGender) rkGender.value = gn;
-
-    // Recargar ranking con los filtros pre-aplicados
     loadRanking();
-
-    // Hacer scroll suave al ranking para que vea el resultado
-    setTimeout(function() {
-      var lst = document.getElementById('ranking-list');
-      if (lst) lst.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 600);
   }).catch(function(e) {
     alert('Error: ' + e.message);
   });
@@ -7424,9 +5647,13 @@ function switchMuroTab(tab) {
   document.getElementById('muro-tab-sesiones').classList.toggle('on', tab === 'sesiones');
   document.getElementById('muro-tab-fotos').classList.toggle('on', tab === 'fotos');
   document.getElementById('muro-tab-videos').classList.toggle('on', tab === 'videos');
+  var btnEntrena = document.getElementById('muro-tab-entrena');
+  if (btnEntrena) btnEntrena.classList.toggle('on', tab === 'entrena');
   document.getElementById('muro-sesiones').style.display = tab === 'sesiones' ? 'block' : 'none';
   document.getElementById('muro-fotos').style.display = tab === 'fotos' ? 'block' : 'none';
   document.getElementById('muro-videos').style.display = tab === 'videos' ? 'block' : 'none';
+  var muroEntrena = document.getElementById('muro-entrena');
+  if (muroEntrena) muroEntrena.style.display = tab === 'entrena' ? 'block' : 'none';
   // FABs
   document.getElementById('fab-sesion').style.display = tab === 'sesiones' ? 'flex' : 'none';
   document.getElementById('fab-foto').style.display = tab === 'fotos' ? 'flex' : 'none';
@@ -7464,231 +5691,44 @@ function cambiarSemana(dir) {
   cargarSesiones();
 }
 
-// ===== SESIONES (REDISEÑADA: ahora carga entrenamientos públicos) =====
-var muroPubState = {
-  entries: [],
-  vistaPersona: false
-};
+// ===== SESIONES =====
+function cargarSesiones() {
+  var lunes = getLunes(muro.weekOffset);
+  var domingo = new Date(lunes);
+  domingo.setDate(lunes.getDate() + 6);
 
-async function cargarSesiones() {
-  // Esta función ahora carga los entrenamientos públicos (el sistema viejo de sesiones queda obsoleto)
-  await cargarEntrenamientosPublicosEnMuro();
-}
+  // Labels
+  document.getElementById('muro-semana-label').textContent =
+    muro.weekOffset === 0 ? 'Esta semana' :
+    muro.weekOffset === -1 ? 'Semana pasada' :
+    'Sem ' + fmtFechaCorta(lunes);
+  document.getElementById('muro-semana-rango').textContent =
+    fmtFechaCorta(lunes) + ' - ' + fmtFechaCorta(domingo);
+  document.getElementById('muro-arrow-next').disabled = (muro.weekOffset >= 0);
 
-async function cargarEntrenamientosPublicosEnMuro() {
-  var lista = document.getElementById('muro-pub-lista');
-  if (!lista) return;
+  var lista = document.getElementById('muro-lista');
+  lista.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--accent-soft);font-size:0.78rem">Cargando...</div>';
 
-  try {
-    var snap = await db.ref('entrenamientos_publicos').orderByChild('timestamp').limitToLast(200).once('value');
-    var entries = [];
-    snap.forEach(function(child) {
-      var v = child.val();
-      v.key = child.key;
-      entries.push(v);
-    });
-    entries.reverse(); // Más recientes primero
-    muroPubState.entries = entries;
-
-    // Actualizar totales
-    var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var personasUnicas = new Set(entries.map(function(e) { return (e.nombre || '').toLowerCase().trim(); })).size;
-
-    var elS = document.getElementById('muro-stat-sesiones');
-    var elP = document.getElementById('muro-stat-personas');
-    var elM = document.getElementById('muro-stat-metros');
-    if (elS) elS.textContent = entries.length;
-    if (elP) elP.textContent = personasUnicas;
-    if (elM) elM.textContent = totalMetros >= 1000 ? (totalMetros / 1000).toFixed(1) + 'k' : totalMetros.toLocaleString();
-
-    // Mostrar/ocultar botones Coach
-    var accs = document.getElementById('muro-pub-acciones');
-    if (accs) accs.style.display = (state && state.isCoach) ? 'flex' : 'none';
-
-    if (entries.length === 0) {
-      lista.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5);font-size:0.82rem"><div style="font-size:2rem;margin-bottom:0.5rem">🏊‍♂️</div>Aún no hay entrenamientos.<br>¡Sé el primero en subir!</div>';
-      return;
-    }
-
-    renderMuroEntrenamientos();
-  } catch (e) {
-    console.error('Error cargando entrenamientos públicos:', e);
-    lista.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff6b35">Error al cargar: ' + (e.message || '') + '</div>';
-  }
-}
-
-function renderMuroEntrenamientos() {
-  var lista = document.getElementById('muro-pub-lista');
-  if (!lista) return;
-  var entries = muroPubState.entries;
-  var esCoach = !!(state && state.isCoach);
-
-  if (muroPubState.vistaPersona) {
-    // Agrupar por persona
-    var porPersona = {};
-    entries.forEach(function(e) {
-      var nombre = (e.nombre || '').trim();
-      if (!porPersona[nombre]) {
-        porPersona[nombre] = { nombre: nombre, sesiones: 0, metros: 0, grupo: e.grupo, entries: [] };
-      }
-      porPersona[nombre].sesiones++;
-      porPersona[nombre].metros += (e.metros || 0);
-      porPersona[nombre].entries.push(e);
-    });
-    var personasArr = Object.values(porPersona).sort(function(a, b) { return b.metros - a.metros; });
-
-    var html = '';
-    personasArr.forEach(function(p, idx) {
-      var medal = idx < 3 ? ['🥇','🥈','🥉'][idx] : (idx + 1) + '°';
-      html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:10px;padding:0.9rem;margin-bottom:0.7rem">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">' +
-          '<div style="display:flex;align-items:center;gap:0.5rem">' +
-            '<div style="font-size:1.3rem">' + medal + '</div>' +
-            '<div>' +
-              '<div style="font-weight:900;color:var(--gold);font-size:1rem">' + escapeHtml(p.nombre) + '</div>' +
-              '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">' + (p.grupo || 'Sin grupo') + '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div style="text-align:right">' +
-            '<div style="font-size:1.2rem;font-weight:900;color:var(--accent)">' + p.metros.toLocaleString() + ' m</div>' +
-            '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5);letter-spacing:1px">' + p.sesiones + ' SESIONES</div>' +
-          '</div>' +
-        '</div>' +
-        '<details style="margin-top:0.4rem"><summary style="cursor:pointer;font-size:0.7rem;color:var(--accent-soft);letter-spacing:0.5px">Ver entrenamientos individuales</summary>' +
-        '<div style="margin-top:0.5rem;padding-left:0.5rem;border-left:2px solid rgba(56,189,248,0.3)">';
-      p.entries.forEach(function(e) {
-        html += '<div style="padding:0.4rem 0;font-size:0.75rem;color:rgba(255,255,255,0.75)">' +
-          '<strong style="color:#fff">' + (e.fecha || '') + '</strong> · ' +
-          '<span style="color:var(--gold)">' + (e.metros || 0).toLocaleString() + ' m</span>' +
-          '<div style="font-size:0.7rem;color:rgba(255,255,255,0.55);margin-top:2px">' + escapeHtml(e.descripcion || '') + '</div>' +
-          '</div>';
+  // Pedir las 7 fechas
+  var sesiones = [];
+  var done = 0;
+  for (var i = 0; i < 7; i++) {
+    var dia = new Date(lunes);
+    dia.setDate(lunes.getDate() + i);
+    var key = fmtFechaYMD(dia);
+    (function(k) {
+      db.ref('sesiones/' + k).once('value').then(function(snap) {
+        if (snap.exists()) {
+          snap.forEach(function(child) {
+            sesiones.push(Object.assign({ fecha: k, uid: child.key }, child.val()));
+          });
+        }
+        done++;
+        if (done === 7) renderSesiones(sesiones);
       });
-      html += '</div></details></div>';
-    });
-    lista.innerHTML = html;
-  } else {
-    // Vista cronológica
-    var html = '';
-    entries.forEach(function(e) {
-      var fecha = e.fecha || '';
-      var hora = e.timestamp ? new Date(e.timestamp).toLocaleString('es-MX', {hour: '2-digit', minute:'2-digit'}) : '';
-      var deleteBtn = esCoach
-        ? '<button onclick="borrarEntrenamientoMuro(\'' + e.key + '\')" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">🗑️</button>'
-        : '';
-      // Badge de vinculación
-      var vincBadge = '';
-      if (e.nadadorId) {
-        vincBadge = '<span style="background:rgba(34,197,94,0.18);color:#22c55e;padding:2px 8px;border-radius:50px;font-size:0.62rem;font-weight:700;margin-left:6px" title="Vinculado a nadador del equipo">🔗 Vinculado</span>';
-      } else if (esCoach) {
-        vincBadge = '<button onclick="abrirVincularManual(\'' + e.key + '\',\'' + (e.nombre || '').replace(/[\'"\\\\]/g, '') + '\')" style="background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.4);color:#a855f7;border-radius:4px;padding:2px 8px;font-size:0.65rem;cursor:pointer;font-weight:700;margin-left:6px">+ Vincular</button>';
-      }
-      html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.8rem 1rem;margin-bottom:0.6rem">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;flex-wrap:wrap;gap:4px">' +
-          '<div style="font-weight:800;color:var(--gold);font-size:0.9rem">' + escapeHtml(e.nombre) + vincBadge + '</div>' +
-          '<div><span style="background:rgba(56,189,248,0.2);color:#38bdf8;padding:2px 8px;border-radius:50px;font-size:0.7rem;font-weight:800">' + (e.metros || 0).toLocaleString() + ' m</span>' + deleteBtn + '</div>' +
-        '</div>' +
-        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.4);letter-spacing:0.5px">' + fecha + ' · ' + (e.grupo || 'Sin grupo') + ' · ' + hora + '</div>' +
-        '<div style="font-size:0.78rem;color:rgba(255,255,255,0.75);margin-top:0.4rem;line-height:1.4">' + escapeHtml(e.descripcion || '') + '</div>' +
-        '</div>';
-    });
-    lista.innerHTML = html;
+    })(key);
   }
 }
-
-// Vincular manualmente un entrenamiento huérfano a un nadador
-async function abrirVincularManual(entryKey, nombreActual) {
-  if (!state || !state.isCoach) return;
-  try {
-    var snap = await db.ref('nadadores').once('value');
-    if (!snap.exists()) {
-      alert('No hay nadadores registrados. Primero registra nadadores en "Evaluación de niveles".');
-      return;
-    }
-    var opciones = [];
-    snap.forEach(function(child) {
-      var nd = child.val();
-      opciones.push({ id: child.key, nombre: nd.nombre });
-    });
-    opciones.sort(function(a, b) { return (a.nombre || '').localeCompare(b.nombre || ''); });
-
-    // Crear modal sencillo con select
-    var modalHtml = '<div id="modal-vincular-temp" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem">' +
-      '<div style="background:#0d2a4a;border:2px solid var(--gold);border-radius:16px;padding:1.5rem;max-width:400px;width:100%">' +
-        '<div style="font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:0.5rem">Vincular entrenamiento</div>' +
-        '<div style="font-size:0.78rem;color:var(--accent-soft);margin-bottom:1rem">Subido por: <strong>' + escapeHtml(nombreActual) + '</strong></div>' +
-        '<label style="display:block;font-size:0.7rem;color:var(--gold);font-weight:800;text-transform:uppercase;margin-bottom:0.4rem">Vincular a nadador</label>' +
-        '<select id="vinc-select" style="width:100%;padding:0.7rem;background:rgba(0,0,0,0.4);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;font-size:0.9rem;margin-bottom:1rem">' +
-          '<option value="">-- Selecciona --</option>';
-    opciones.forEach(function(o) {
-      modalHtml += '<option value="' + o.id + '">' + escapeHtml(o.nombre) + '</option>';
-    });
-    modalHtml += '</select>' +
-        '<button onclick="confirmarVincular(\'' + entryKey + '\')" style="width:100%;padding:0.8rem;background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;border-radius:8px;font-weight:800;cursor:pointer;margin-bottom:0.5rem">Vincular</button>' +
-        '<button onclick="document.getElementById(\'modal-vincular-temp\').remove()" style="width:100%;padding:0.6rem;background:rgba(255,255,255,0.1);color:white;border:none;border-radius:8px;cursor:pointer">Cancelar</button>' +
-      '</div></div>';
-    var div = document.createElement('div');
-    div.innerHTML = modalHtml;
-    document.body.appendChild(div.firstChild);
-  } catch (e) {
-    alert('Error: ' + e.message);
-  }
-}
-
-async function confirmarVincular(entryKey) {
-  var nadadorId = document.getElementById('vinc-select').value;
-  if (!nadadorId) { alert('Selecciona un nadador'); return; }
-  try {
-    // Obtener nombre del nadador
-    var snapN = await db.ref('nadadores/' + nadadorId).once('value');
-    var nadador = snapN.val();
-    if (!nadador) { alert('Nadador no encontrado'); return; }
-    // Actualizar el entrenamiento
-    await db.ref('entrenamientos_publicos/' + entryKey + '/nadadorId').set(nadadorId);
-    // Generar logros para ese nadador
-    await generarLogrosAutomaticos(nadadorId, nadador.nombre);
-    // Cerrar modal y refrescar
-    var m = document.getElementById('modal-vincular-temp');
-    if (m) m.remove();
-    cargarEntrenamientosPublicosEnMuro();
-  } catch (e) {
-    alert('Error: ' + e.message);
-  }
-}
-
-function toggleMuroVistaPub() {
-  muroPubState.vistaPersona = !muroPubState.vistaPersona;
-  var btn = document.getElementById('muro-toggle-vista');
-  if (btn) btn.innerHTML = muroPubState.vistaPersona ? '📅 CRONOLÓGICO' : '👥 POR PERSONA';
-  renderMuroEntrenamientos();
-}
-
-async function borrarEntrenamientoMuro(key) {
-  if (!confirm('¿Borrar este entrenamiento?')) return;
-  try {
-    await db.ref('entrenamientos_publicos/' + key).remove();
-    cargarEntrenamientosPublicosEnMuro(); // Refrescar
-  } catch (e) {
-    alert('Error: ' + e.message);
-  }
-}
-
-// Suscripción en vivo para refrescar muro cuando alguien sube
-try {
-  db.ref('entrenamientos_publicos').on('child_added', function() {
-    var muroVisible = document.getElementById('wk-muro');
-    var sesVisible = document.getElementById('muro-sesiones');
-    if (muroVisible && muroVisible.style.display !== 'none' && sesVisible && sesVisible.style.display !== 'none') {
-      cargarEntrenamientosPublicosEnMuro();
-    }
-  });
-  db.ref('entrenamientos_publicos').on('child_removed', function() {
-    var muroVisible = document.getElementById('wk-muro');
-    var sesVisible = document.getElementById('muro-sesiones');
-    if (muroVisible && muroVisible.style.display !== 'none' && sesVisible && sesVisible.style.display !== 'none') {
-      cargarEntrenamientosPublicosEnMuro();
-    }
-  });
-} catch (e) {}
 
 function renderSesiones(sesiones) {
   muro.sesiones = sesiones;
@@ -8050,12 +6090,12 @@ var PATROCINADORES = [
   {
     logo: 'https://res.cloudinary.com/dg84htrzg/image/upload/v1778099160/rincon_tk62uj.jpg',
     nombre: 'Rincon de la Noa',
-    link: 'https://www.facebook.com/Rincondelanoatrc/'
+    link: ''
   },
   {
     logo: 'https://res.cloudinary.com/dg84htrzg/image/upload/v1778099160/margo_uvgdwf.jpg',
     nombre: 'Margo Sublimacion y Bordados',
-    link: 'https://www.facebook.com/margo.syb/'
+    link: ''
   }
 ];
 
@@ -9158,46 +7198,36 @@ function renderProgresoNadador(nadadorId, nadador) {
     ? '<img class="premios-foto-grande" src="' + fotoUrl + '" alt="">'
     : '<div class="premios-foto-grande">' + (nadador.nombre || '?').charAt(0).toUpperCase() + '</div>';
 
-  // Obtener entrenamientos públicos vinculados a este nadador
-  db.ref('entrenamientos_publicos').orderByChild('nadadorId').equalTo(nadadorId).once('value').then(function(snap) {
-    var entries = [];
-    if (snap.exists()) {
-      snap.forEach(function(child) {
-        entries.push(child.val());
-      });
-    }
+  // Obtener sesiones de la semana actual
+  var lunes = getLunes(0);
+  var diasEntrenados = {};
+  var promesas = [];
+  for (var i = 0; i < 7; i++) {
+    var dia = new Date(lunes);
+    dia.setDate(lunes.getDate() + i);
+    var key = fmtFechaYMD(dia);
+    promesas.push(
+      (function(k, idx) {
+        return db.ref('sesiones/' + k).once('value').then(function(s) {
+          if (!s.exists()) return;
+          // Buscar si existe sesión de este nadador
+          s.forEach(function(child) {
+            var sesion = child.val();
+            // Match por nadadorId si existe, o por correo si no
+            if (sesion.nadadorId === nadadorId || sesion.email === state.user.email) {
+              diasEntrenados[idx] = true;
+            }
+          });
+        });
+      })(key, i)
+    );
+  }
 
-    // Stats acumuladas
-    var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var totalSesiones = entries.length;
-
-    // Esta semana (últimos 7 días)
-    var hace7dias = Date.now() - (7 * 86400000);
-    var entriesSemana = entries.filter(function(e) { return (e.timestamp || 0) >= hace7dias; });
-    var metrosSemana = entriesSemana.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var sesionesSemana = entriesSemana.length;
-
-    // Este mes (últimos 30 días)
-    var hace30dias = Date.now() - (30 * 86400000);
-    var entriesMes = entries.filter(function(e) { return (e.timestamp || 0) >= hace30dias; });
-    var metrosMes = entriesMes.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-
-    // Días entrenados esta semana (mapeo por día de la semana)
-    var diasEntrenados = {};
-    var lunes = getLunes(0);
-    entriesSemana.forEach(function(e) {
-      if (!e.timestamp) return;
-      var d = new Date(e.timestamp);
-      d.setHours(0,0,0,0);
-      var diffDias = Math.floor((d - lunes) / 86400000);
-      if (diffDias >= 0 && diffDias < 7) {
-        diasEntrenados[diffDias] = true;
-      }
-    });
-
-    var pct = Math.round((sesionesSemana / meta) * 100);
+  Promise.all(promesas).then(function() {
+    var totalEntrenamientos = Object.keys(diasEntrenados).length;
+    var pct = Math.round((totalEntrenamientos / meta) * 100);
     if (pct > 100) pct = 100;
-    var cumplio = sesionesSemana >= meta;
+    var cumplio = totalEntrenamientos >= meta;
 
     var diasNombres = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
     var diasGridHtml = '';
@@ -9213,47 +7243,25 @@ function renderProgresoNadador(nadadorId, nadador) {
       ? '<button class="btn-foto-upload" onclick="abrirFotoPerfil()">&#128247; Subir foto del nadador</button>'
       : '';
 
-    // Formatear metros (con k si >= 1000)
-    var fmtMet = function(m) {
-      return m >= 1000 ? (m / 1000).toFixed(1) + ' km' : m.toLocaleString() + ' m';
-    };
-
     cont.innerHTML =
       '<div class="premios-progreso-card">' +
-        '<div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.7rem">' +
+        '<div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.5rem">' +
           fotoHtml +
           '<div style="flex:1;min-width:0">' +
             '<div style="font-size:1rem;font-weight:800">' + escapeHtml(nadador.nombre) + '</div>' +
-            '<div style="font-size:0.72rem;color:var(--accent-soft)">' + nadador.edad + ' años - ' + (EVAL_NIVELES[nadador.nivel] ? EVAL_NIVELES[nadador.nivel].nombre : nadador.nivel) + '</div>' +
+            '<div style="font-size:0.72rem;color:var(--accent-soft)">' + nadador.edad + ' anos - ' + (EVAL_NIVELES[nadador.nivel] ? EVAL_NIVELES[nadador.nivel].nombre : nadador.nivel) + '</div>' +
             '<div style="font-size:0.7rem;color:var(--gold);margin-top:3px;font-weight:700">' +
               'Meta semanal: ' + meta + ' entrenamientos' +
             '</div>' +
           '</div>' +
           (cumplio
             ? '<div class="eval-listo-badge">CUMPLIDO</div>'
-            : '<div style="font-size:1.4rem;font-weight:800;color:var(--accent)">' + sesionesSemana + '/' + meta + '</div>')+
+            : '<div style="font-size:1.4rem;font-weight:800;color:var(--accent)">' + totalEntrenamientos + '/' + meta + '</div>')+
         '</div>' +
-
-        // Stats de metros
-        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.7rem">' +
-          '<div style="text-align:center;padding:0.6rem;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:8px">' +
-            '<div style="font-size:1.1rem;font-weight:900;color:var(--accent);line-height:1">' + fmtMet(metrosSemana) + '</div>' +
-            '<div style="font-size:0.55rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Esta semana</div>' +
-          '</div>' +
-          '<div style="text-align:center;padding:0.6rem;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);border-radius:8px">' +
-            '<div style="font-size:1.1rem;font-weight:900;color:var(--gold);line-height:1">' + fmtMet(metrosMes) + '</div>' +
-            '<div style="font-size:0.55rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Este mes</div>' +
-          '</div>' +
-          '<div style="text-align:center;padding:0.6rem;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);border-radius:8px">' +
-            '<div style="font-size:1.1rem;font-weight:900;color:var(--purple);line-height:1">' + fmtMet(totalMetros) + '</div>' +
-            '<div style="font-size:0.55rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Total</div>' +
-          '</div>' +
-        '</div>' +
-
         '<div class="semana-dias-grid">' + diasGridHtml + '</div>' +
         (cumplio
-          ? '<div style="text-align:center;font-size:0.8rem;color:var(--success);font-weight:700;margin-top:0.4rem">&#127881; ¡Meta semanal cumplida!</div>'
-          : '<div style="text-align:center;font-size:0.72rem;color:var(--accent-soft);margin-top:0.4rem">Faltan ' + (meta - sesionesSemana) + ' entrenamiento' + (meta - sesionesSemana === 1 ? '' : 's') + ' esta semana</div>') +
+          ? '<div style="text-align:center;font-size:0.8rem;color:var(--success);font-weight:700;margin-top:0.4rem">&#127881; Meta semanal cumplida!</div>'
+          : '<div style="text-align:center;font-size:0.72rem;color:var(--accent-soft)">Faltan ' + (meta - totalEntrenamientos) + ' entrenamiento' + (meta - totalEntrenamientos === 1 ? '' : 's') + ' esta semana</div>') +
         fotoUploadBtn +
       '</div>';
   });
@@ -9293,38 +7301,17 @@ function renderLogroRow(logro) {
     asistencia: '&#127942;',
     mejora_tiempo: '&#9889;',
     actitud: '&#11088;',
-    competencia: '&#127754;',
-    hito_kilometros: '&#128170;',
-    meta_semanal: '&#127919;',
-    mes_top: '&#128293;'
+    competencia: '&#127754;'
   };
   var titulos = {
     asistencia: 'Meta Semanal Cumplida',
     mejora_tiempo: 'Mejora de Tiempo',
     actitud: 'Mejor Actitud de la Semana',
-    competencia: 'Represento al Equipo',
-    hito_kilometros: 'Hito de Kilómetros',
-    meta_semanal: 'Meta Semanal Cumplida',
-    mes_top: 'Mes Top'
+    competencia: 'Represento al Equipo'
   };
   var fecha = logro.timestamp ? new Date(logro.timestamp).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-
-  // Si el logro tiene título e icono propios (nuevos tipos), usarlos
-  if (logro.titulo) {
-    var iconoUsado = logro.icono || iconos[logro.tipo] || '&#127942;';
-    return '<div class="logro-row">' +
-      '<div class="logro-icon">' + iconoUsado + '</div>' +
-      '<div class="logro-info">' +
-        '<div class="logro-titulo">' + escapeHtml(logro.titulo) + '</div>' +
-        (logro.detalle && typeof logro.detalle === 'string' ? '<div class="logro-detalle">' + escapeHtml(logro.detalle) + '</div>' : '') +
-        '<div class="logro-fecha">' + fecha + '</div>' +
-      '</div>' +
-    '</div>';
-  }
-
-  // Compatibilidad con logros antiguos (detalle como objeto)
   var detalle = '';
-  if (logro.tipo === 'asistencia' && logro.detalle && typeof logro.detalle === 'object') {
+  if (logro.tipo === 'asistencia' && logro.detalle) {
     detalle = logro.detalle.cumplio + '/' + logro.detalle.meta + ' entrenamientos en semana ' + (logro.semana || '');
   } else if (logro.tipo === 'mejora_tiempo' && logro.detalle) {
     detalle = logro.detalle.distancia + 'm ' + logro.detalle.estilo + ': ' + logro.detalle.antes + ' → ' + logro.detalle.ahora;
@@ -10234,15 +8221,39 @@ var MURO_TRIAL_DIAS = 30;
 
 // Verificar estado de suscripción del usuario actual al muro
 async function verificarSubsMuro() {
-  // SIN COBRO - Acceso libre para todos
   if (!state.user) return { estado: 'no-auth', puedePublicar: false };
+  // Sergio siempre tiene acceso
   if (state.user.email === CONFIG.coach) {
     return { estado: 'coach', puedePublicar: true };
   }
-  return { estado: 'libre', puedePublicar: true };
+
+  var snap = await db.ref('suscripciones_muro/' + state.user.uid).once('value');
+  var data = snap.val();
+  var ahora = Date.now();
+
+  if (!data || !data.primeraSesion) {
+    // Aún no ha registrado ninguna sesión = puede registrar la primera
+    return { estado: 'primera-vez', puedePublicar: true };
+  }
+
+  // Si tiene suscripción pagada y no expirada
+  if (data.pagada && data.expira && data.expira > ahora) {
+    var diasRestantes = Math.ceil((data.expira - ahora) / 86400000);
+    return { estado: 'pagada', puedePublicar: true, diasRestantes: diasRestantes, expira: data.expira };
+  }
+
+  // Verificar trial
+  var finTrial = data.primeraSesion + MURO_TRIAL_DIAS * 86400000;
+  if (ahora < finTrial) {
+    var diasTrial = Math.ceil((finTrial - ahora) / 86400000);
+    return { estado: 'trial', puedePublicar: true, diasRestantes: diasTrial };
+  }
+
+  // Trial expirado y sin pago
+  return { estado: 'expirada', puedePublicar: false };
 }
 
-// Mostrar banner según estado (SIN COBRO - solo informativo)
+// Mostrar banner según estado
 async function actualizarBannerMuro() {
   var cont = document.getElementById('muro-subs-banner-container');
   if (!cont) return;
@@ -10252,17 +8263,40 @@ async function actualizarBannerMuro() {
     cont.innerHTML =
       '<div class="muro-subs-banner activa">' +
         '<div class="muro-subs-icon">&#128274;</div>' +
-        '<div class="muro-subs-text">Inicia sesion para publicar sesiones y fotos. La lectura es libre.</div>' +
+        '<div class="muro-subs-text">Inicia sesion para publicar tus entrenamientos. La lectura es libre para todos.</div>' +
       '</div>';
   } else if (s.estado === 'coach') {
     cont.innerHTML =
       '<div class="muro-subs-banner activa">' +
         '<div class="muro-subs-icon">&#128081;</div>' +
-        '<div class="muro-subs-text"><strong>Modo entrenador</strong> - Acceso ilimitado</div>' +
+        '<div class="muro-subs-text"><strong>Modo entrenador</strong> - Acceso ilimitado al muro</div>' +
       '</div>';
-  } else {
-    // Cualquier usuario logueado - acceso libre
-    cont.innerHTML = '';
+  } else if (s.estado === 'primera-vez') {
+    cont.innerHTML =
+      '<div class="muro-subs-banner gratis">' +
+        '<div class="muro-subs-icon">&#127881;</div>' +
+        '<div class="muro-subs-text"><strong>Bienvenido!</strong> Registra tu primera sesion y obtienes 30 dias gratis.</div>' +
+      '</div>';
+  } else if (s.estado === 'trial') {
+    cont.innerHTML =
+      '<div class="muro-subs-banner gratis">' +
+        '<div class="muro-subs-icon">&#9203;</div>' +
+        '<div class="muro-subs-text"><strong>Mes de prueba</strong> - Te quedan ' + s.diasRestantes + ' dia' + (s.diasRestantes === 1 ? '' : 's') + '</div>' +
+        '<button class="muro-subs-btn" onclick="iniciarPagoMuro()">Suscribirse</button>' +
+      '</div>';
+  } else if (s.estado === 'pagada') {
+    cont.innerHTML =
+      '<div class="muro-subs-banner activa">' +
+        '<div class="muro-subs-icon">&#9989;</div>' +
+        '<div class="muro-subs-text"><strong>Suscripcion activa</strong> - ' + s.diasRestantes + ' dias restantes</div>' +
+      '</div>';
+  } else if (s.estado === 'expirada') {
+    cont.innerHTML =
+      '<div class="muro-subs-banner expirada">' +
+        '<div class="muro-subs-icon">&#9888;</div>' +
+        '<div class="muro-subs-text"><strong>Tu prueba termino</strong> - Suscribete para seguir publicando</div>' +
+        '<button class="muro-subs-btn" onclick="iniciarPagoMuro()">$' + MURO_PRECIO + '/ano</button>' +
+      '</div>';
   }
 }
 
@@ -10511,9 +8545,10 @@ function cargarAdminSubs() {
   window.showTab = function(t) {
     prevST3(t);
     if (t === 'profile') {
-      // Panel de suscripciones DESACTIVADO (sin cobro)
       var sec = document.getElementById('admin-subs-section');
-      if (sec) sec.style.display = 'none';
+      var esCoach = state.user && state.user.email === CONFIG.coach;
+      if (sec) sec.style.display = esCoach ? 'block' : 'none';
+      if (esCoach) cargarAdminSubs();
     }
   };
 })();
@@ -10548,1066 +8583,161 @@ auth.onAuthStateChanged(async function(u) {
   }
 });
 
-/* ============================================================
-   NUEVO: RETO 50M - Lógica de splash, juego y leaderboard
-   ============================================================ */
+// ============================================================
+// ============== NUEVA NAVEGACION DEL MURO ===================
+// ============================================================
+//
+// El tab workout ahora es "Muro" con 4 sub-pestañas:
+// Sesiones | Fotos | Videos | Entrena
+// Las 3 primeras vienen del muro existente, la 4ta abre el selector de herramientas
 
-var RETO50 = {
-  splashKey: 'reto50_splash_last',
-  splashIntervalDays: 30,         // 1 vez al mes
-  iframeSrc: 'reto-50m.html',     // archivo del juego en el mismo dominio
-  lbCache: null,
-  lbCacheTime: 0,
-  lbCacheMs: 30000,               // cache 30 segundos
-};
+var muroMainTab = 'sesiones';
+var muroLecturaLibre = false; // modo "ver sin sesion"
 
-// ===== SPLASH =====
-function reto50DebeMostrarSplash() {
-  try {
-    var last = localStorage.getItem(RETO50.splashKey);
-    if (!last) return true;
-    var diff = Date.now() - parseInt(last, 10);
-    var dias = diff / (1000 * 60 * 60 * 24);
-    return dias >= RETO50.splashIntervalDays;
-  } catch (e) { return false; }
+function entrarMuroLecturaLibre() {
+  muroLecturaLibre = true;
+  document.getElementById('wk-login-wall').style.display = 'none';
+  document.getElementById('wk-acceso').style.display = 'block';
+  switchMuroMain('sesiones');
 }
 
-function reto50MarcarSplashVisto() {
-  try { localStorage.setItem(RETO50.splashKey, String(Date.now())); } catch (e) {}
-}
+function switchMuroMain(tab) {
+  muroMainTab = tab;
 
-function reto50CerrarSplash() {
-  document.getElementById('reto50-splash').classList.add('modal-hidden');
-  reto50MarcarSplashVisto();
-}
-
-function reto50MostrarSplashSiCorresponde() {
-  if (!reto50DebeMostrarSplash()) return;
-  setTimeout(function() {
-    document.getElementById('reto50-splash').classList.remove('modal-hidden');
-  }, 1500);
-}
-
-// ===== ABRIR / CERRAR JUEGO =====
-function reto50AbrirJuego(desdeSplash) {
-  if (desdeSplash) {
-    reto50MarcarSplashVisto();
-    document.getElementById('reto50-splash').classList.add('modal-hidden');
-  }
-  var modal = document.getElementById('reto50-game-modal');
-  var iframe = document.getElementById('reto50-iframe');
-  // Cargar el iframe sólo cuando se abre (para no penalizar la carga del index)
-  if (iframe.src === 'about:blank' || !iframe.src.endsWith(RETO50.iframeSrc)) {
-    iframe.src = RETO50.iframeSrc + '?t=' + Date.now();
-  }
-  modal.classList.remove('modal-hidden');
-  document.body.style.overflow = 'hidden';
-}
-
-function reto50CerrarJuego() {
-  var modal = document.getElementById('reto50-game-modal');
-  var iframe = document.getElementById('reto50-iframe');
-  modal.classList.add('modal-hidden');
-  // Detener el juego liberando el iframe
-  iframe.src = 'about:blank';
-  document.body.style.overflow = '';
-  // Refrescar el leaderboard por si hubo un cambio
-  reto50CargarLeaderboard(true);
-}
-
-// ===== POSTMESSAGE BRIDGE CON EL IFRAME =====
-window.addEventListener('message', function(event) {
-  var msg = event.data;
-  if (!msg || msg.source !== 'laguna-swim-game') return;
-
-  if (msg.type === 'GAME_READY') {
-    // El juego ya cargó. Enviar Top 10 inicial si tenemos cache.
-    if (RETO50.lbCache) {
-      reto50EnviarLBaIframe(RETO50.lbCache);
-    }
-  }
-  else if (msg.type === 'CLOSE_GAME') {
-    reto50CerrarJuego();
-  }
-  else if (msg.type === 'RACE_FINISHED') {
-    reto50GuardarResultado(msg.data);
-  }
-  else if (msg.type === 'REQUEST_LEADERBOARD') {
-    var estiloPedido = (msg.data && msg.data.swimStyle) || 'libre';
-    reto50CargarLeaderboard(false, estiloPedido).then(function(top) {
-      reto50EnviarLBaIframe(top);
-    });
-  }
-});
-
-function reto50EnviarLBaIframe(top10) {
-  try {
-    var iframe = document.getElementById('reto50-iframe');
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage({
-        target: 'laguna-swim-game',
-        type: 'LEADERBOARD_DATA',
-        data: top10
-      }, '*');
-    }
-  } catch (e) {}
-}
-
-// ===== FIREBASE: GUARDAR RESULTADO =====
-async function reto50GuardarResultado(data) {
-  // Validaciones cliente (Firebase también valida en reglas)
-  if (!data || typeof data !== 'object') return;
-  if (!data.nickname || typeof data.nickname !== 'string') return;
-  if (!data.time || data.time < 30 || data.time > 300) return; // anti-trampa
-  var nick = String(data.nickname).toUpperCase().replace(/[^A-Z0-9_-]/g, '').substring(0, 14);
-  if (nick.length < 3) return;
-
-  var entry = {
-    nickname: nick,
-    time: Math.round(data.time * 100) / 100,
-    position: parseInt(data.position) || 4,
-    strokes: parseInt(data.strokes) || 0,
-    efficiency: parseInt(data.efficiency) || 0,
-    mode: String(data.mode || 'unknown').substring(0, 20),
-    timestamp: firebase.database.ServerValue.TIMESTAMP,
-    userId: (state && state.user) ? state.user.uid : 'anonymous',
-  };
-
-  try {
-    await db.ref('races_leaderboard').push(entry);
-    // Invalidar cache para próxima consulta (todos los estilos)
-    RETO50.lbCache = null;
-    RETO50.lbCacheTime = 0;
-    RETO50.lbCacheByStyle = {};
-    RETO50.lbCacheTimeByStyle = {};
-    // Recargar leaderboard del estilo que acaba de nadar y enviarlo al iframe
-    var estiloDelJuego = entry.swimStyle || 'libre';
-    var top = await reto50CargarLeaderboard(true, estiloDelJuego);
-    reto50EnviarLBaIframe(top);
-  } catch (e) {
-    console.warn('Error guardando resultado Reto 50m:', e);
-  }
-}
-
-// ===== FIREBASE: CARGAR LEADERBOARD POR ESTILO =====
-async function reto50CargarLeaderboard(forzar, estilo) {
-  estilo = estilo || RETO50.estiloActual || 'libre';
-  var ahora = Date.now();
-  // Cache separado por estilo
-  if (!RETO50.lbCacheByStyle) RETO50.lbCacheByStyle = {};
-  if (!RETO50.lbCacheTimeByStyle) RETO50.lbCacheTimeByStyle = {};
-  if (!forzar && RETO50.lbCacheByStyle[estilo] && (ahora - (RETO50.lbCacheTimeByStyle[estilo] || 0)) < RETO50.lbCacheMs) {
-    return RETO50.lbCacheByStyle[estilo];
-  }
-
-  try {
-    // Pedimos los 200 mejores tiempos (sin filtrar todavía) y filtramos en cliente
-    // Las entradas viejas no tienen swimStyle, se asumen "libre" por defecto
-    var snap = await db.ref('races_leaderboard')
-      .orderByChild('time')
-      .limitToFirst(200)
-      .once('value');
-
-    var rows = [];
-    snap.forEach(function(child) {
-      var v = child.val();
-      if (v && v.time && v.nickname) {
-        var entryStyle = v.swimStyle || 'libre'; // default libre para entradas viejas
-        if (entryStyle === estilo) {
-          rows.push({
-            key: child.key,
-            nickname: v.nickname,
-            time: v.time,
-            timestamp: v.timestamp || 0,
-            swimStyle: entryStyle,
-          });
-        }
-      }
-    });
-
-    // Deduplicar por nickname (quedarse con el mejor tiempo de cada uno en este estilo)
-    var bestByNick = {};
-    rows.forEach(function(r) {
-      var n = r.nickname.toUpperCase();
-      if (!bestByNick[n] || r.time < bestByNick[n].time) {
-        bestByNick[n] = r;
-      }
-    });
-    var unique = Object.values(bestByNick).sort(function(a, b) { return a.time - b.time; });
-    var top10 = unique.slice(0, 10);
-
-    RETO50.lbCacheByStyle[estilo] = top10;
-    RETO50.lbCacheTimeByStyle[estilo] = ahora;
-    // Mantener compatibilidad
-    RETO50.lbCache = top10;
-    RETO50.lbCacheTime = ahora;
-    return top10;
-  } catch (e) {
-    console.warn('Error cargando leaderboard:', e);
-    return [];
-  }
-}
-
-// ===== RENDER LEADERBOARD EN PANTALLA HOME =====
-function reto50FormatTime(sec) {
-  var m = Math.floor(sec / 60);
-  var s = Math.floor(sec % 60);
-  var d = Math.floor((sec * 10) % 10);
-  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0') + '.' + d;
-}
-
-async function reto50RenderLeaderboard() {
-  // V2: usar ID nuevo en tab Competir; fallback al viejo
-  var list = document.getElementById('reto50-lb-list-v2') || document.getElementById('reto50-lb-list');
-  if (!list) return;
-
-  // Asegurar estilo actual
-  if (!RETO50.estiloActual) RETO50.estiloActual = 'libre';
-
-  // Construir tabs de estilo
-  var ESTILOS = [
-    { id: 'libre', emoji: '🏊‍♂️', label: 'Libre' },
-    { id: 'dorso', emoji: '🛌', label: 'Dorso' },
-    { id: 'pecho', emoji: '🐸', label: 'Pecho' },
-    { id: 'mariposa', emoji: '🦋', label: 'Mariposa' },
-  ];
-  var tabsHtml = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:10px;padding:0 2px">';
-  ESTILOS.forEach(function(e) {
-    var activo = RETO50.estiloActual === e.id;
-    var bg = activo ? 'linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,107,53,0.15))' : 'rgba(255,255,255,0.04)';
-    var border = activo ? 'var(--gold)' : 'rgba(255,255,255,0.1)';
-    var color = activo ? 'var(--gold)' : 'rgba(255,255,255,0.7)';
-    tabsHtml += '<button onclick="reto50CambiarEstilo(\'' + e.id + '\')" style="background:' + bg + ';border:1.5px solid ' + border + ';color:' + color + ';padding:6px 4px;border-radius:6px;font-size:0.62rem;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;line-height:1.2">' +
-      '<div style="font-size:1.1rem;margin-bottom:2px">' + e.emoji + '</div>' +
-      '<div>' + e.label + '</div>' +
-    '</button>';
+  // Marcar botón activo
+  ['sesiones', 'fotos', 'videos', 'entrena'].forEach(function(t) {
+    var b = document.getElementById('muro-main-' + t);
+    if (b) b.classList.toggle('on', t === tab);
   });
-  tabsHtml += '</div>';
 
-  list.innerHTML = tabsHtml + '<div class="reto50-lb-empty">Cargando ranking...</div>';
-
-  var top = await reto50CargarLeaderboard(false, RETO50.estiloActual);
-  // Re-render con tabs + contenido
-  var bodyHtml = '';
-  if (!top || top.length === 0) {
-    var nombreEstilo = (ESTILOS.find(function(e) { return e.id === RETO50.estiloActual; }) || {}).label || 'este estilo';
-    bodyHtml = '<div class="reto50-lb-empty">Sé el primero en ' + nombreEstilo + ' 🏊‍♂️</div>';
-  } else {
-    var esCoach = !!(state && state.isCoach);
-    top.forEach(function(entry, idx) {
-      var medal = ['🥇','🥈','🥉'][idx] || (idx + 1) + '°';
-      var deleteBtn = esCoach ? '<button class="reto50-lb-delete" onclick="event.stopPropagation();reto50BorrarEntry(\'' + entry.key + '\',\'' + entry.nickname.replace(/'/g, '') + '\')">🗑️</button>' : '';
-      bodyHtml += '<div class="reto50-lb-row' + (idx === 0 ? ' gold' : '') + '">' +
-        '<div class="reto50-lb-rank">' + medal + '</div>' +
-        '<div class="reto50-lb-name">' + entry.nickname + '</div>' +
-        '<div class="reto50-lb-time">' + reto50FormatTime(entry.time) + '</div>' +
-        deleteBtn +
-      '</div>';
-    });
-  }
-  list.innerHTML = tabsHtml + bodyHtml;
-}
-
-// Cambiar estilo activo en el ranking
-function reto50CambiarEstilo(estilo) {
-  RETO50.estiloActual = estilo;
-  reto50RenderLeaderboard();
-}
-
-// Borrar entry (solo coach)
-async function reto50BorrarEntry(key, nickname) {
-  if (!state || !state.isCoach) return;
-  if (!confirm('¿Borrar entrada de "' + nickname + '" del ranking?')) return;
-  try {
-    await db.ref('races_leaderboard/' + key).remove();
-    // Limpiar todos los caches por estilo
-    RETO50.lbCache = null;
-    RETO50.lbCacheByStyle = {};
-    RETO50.lbCacheTimeByStyle = {};
-    reto50RenderLeaderboard();
-  } catch (e) {
-    alert('Error al borrar: ' + e.message);
-  }
-}
-
-// Toggle acordeón leaderboard
-function reto50ToggleLB() {
-  var body = document.getElementById('reto50-lb-body-v2') || document.getElementById('reto50-lb-body');
-  var arrow = document.getElementById('reto50-lb-arrow-v2') || document.getElementById('reto50-lb-arrow');
-  if (!body) return;
-  if (body.style.display === 'none') {
-    body.style.display = 'block';
-    if (arrow) arrow.innerHTML = '&#8963;'; // up
-    reto50RenderLeaderboard();
-  } else {
-    body.style.display = 'none';
-    if (arrow) arrow.innerHTML = '&#8964;'; // down
-  }
-}
-
-// ===== RANKING DE DUELOS 1v1 =====
-var RETO50_DUELOS = {
-  cache: null,
-  cacheTime: 0,
-  cacheMs: 30000,
-};
-
-async function reto50CargarDuelosRanking(forzar) {
-  var ahora = Date.now();
-  if (!forzar && RETO50_DUELOS.cache && (ahora - RETO50_DUELOS.cacheTime) < RETO50_DUELOS.cacheMs) {
-    return RETO50_DUELOS.cache;
-  }
-  try {
-    var snap = await db.ref('duels_rankings')
-      .orderByChild('wins')
-      .limitToLast(20)
-      .once('value');
-    var rows = [];
-    snap.forEach(function(child) {
-      var v = child.val();
-      if (v && v.nickname) {
-        rows.push({
-          nickname: v.nickname,
-          wins: v.wins || 0,
-          losses: v.losses || 0,
-          totalDuels: v.totalDuels || 0,
-          lastDuelAt: v.lastDuelAt || 0,
-        });
-      }
-    });
-    // Ordenar por wins desc, luego winRate, luego totalDuels desc
-    rows.sort(function(a, b) {
-      if (b.wins !== a.wins) return b.wins - a.wins;
-      var rateA = a.totalDuels > 0 ? a.wins / a.totalDuels : 0;
-      var rateB = b.totalDuels > 0 ? b.wins / b.totalDuels : 0;
-      if (rateB !== rateA) return rateB - rateA;
-      return b.totalDuels - a.totalDuels;
-    });
-    var top10 = rows.slice(0, 10);
-    RETO50_DUELOS.cache = top10;
-    RETO50_DUELOS.cacheTime = ahora;
-    return top10;
-  } catch (e) {
-    console.warn('Error cargando duelos ranking:', e);
-    return [];
-  }
-}
-
-async function reto50RenderDuelosLB() {
-  var list = document.getElementById('reto50-duelos-list-v2') || document.getElementById('reto50-duelos-list');
-  if (!list) return;
-  list.innerHTML = '<div class="reto50-lb-empty">Cargando ranking de duelos...</div>';
-  var top = await reto50CargarDuelosRanking();
-  if (!top || top.length === 0) {
-    list.innerHTML = '<div class="reto50-lb-empty">Aún no hay duelos jugados. ¡Sé el primero!</div>';
-    return;
-  }
-  var esCoach = !!(state && state.isCoach);
-  list.innerHTML = '';
-  top.forEach(function(entry, idx) {
-    var row = document.createElement('div');
-    row.className = 'reto50-lb-row' + (idx === 0 ? ' gold' : '');
-    var medal = ['🥇','🥈','🥉'][idx] || (idx + 1) + '°';
-    var winRate = entry.totalDuels > 0 ? Math.round((entry.wins / entry.totalDuels) * 100) : 0;
-    var statsText = entry.wins + 'W · ' + entry.losses + 'L · ' + winRate + '%';
-    var deleteBtn = esCoach ? '<button class="reto50-lb-delete" onclick="event.stopPropagation();reto50BorrarDueloRanking(\'' + entry.nickname.replace(/'/g, '') + '\')">🗑️</button>' : '';
-    row.innerHTML =
-      '<div class="reto50-lb-rank">' + medal + '</div>' +
-      '<div class="reto50-lb-name">' + entry.nickname + '</div>' +
-      '<div class="reto50-lb-time" style="font-size:0.7rem;color:var(--accent-soft)">' + statsText + '</div>' +
-      deleteBtn;
-    list.appendChild(row);
+  // Ocultar todas las vistas
+  ['sesiones', 'fotos', 'videos', 'entrena'].forEach(function(t) {
+    var v = document.getElementById('muro-main-tab-' + t);
+    if (v) v.style.display = 'none';
   });
-}
+  var v = document.getElementById('muro-main-tab-' + tab);
+  if (v) v.style.display = 'block';
 
-async function reto50BorrarDueloRanking(nickname) {
-  if (!state || !state.isCoach) return;
-  if (!confirm('¿Borrar a "' + nickname + '" del ranking de duelos?')) return;
-  try {
-    await db.ref('duels_rankings/' + nickname).remove();
-    RETO50_DUELOS.cache = null;
-    reto50RenderDuelosLB();
-  } catch (e) {
-    alert('Error al borrar: ' + e.message);
-  }
-}
-
-function reto50ToggleDuelosLB() {
-  var body = document.getElementById('reto50-duelos-body-v2') || document.getElementById('reto50-duelos-body');
-  var arrow = document.getElementById('reto50-duelos-arrow-v2') || document.getElementById('reto50-duelos-arrow');
-  if (!body) return;
-  if (body.style.display === 'none') {
-    body.style.display = 'block';
-    if (arrow) arrow.innerHTML = '&#8963;';
-    reto50RenderDuelosLB();
-  } else {
-    body.style.display = 'none';
-    if (arrow) arrow.innerHTML = '&#8964;';
-  }
-}
-
-// Suscripción real-time al ranking de duelos
-try {
-  db.ref('duels_rankings').on('child_changed', function() {
-    var body = document.getElementById('reto50-duelos-body-v2') || document.getElementById('reto50-duelos-body');
-    if (body && body.style.display === 'block') {
-      RETO50_DUELOS.cache = null;
-      reto50RenderDuelosLB();
-    }
-  });
-  db.ref('duels_rankings').on('child_added', function() {
-    var body = document.getElementById('reto50-duelos-body-v2') || document.getElementById('reto50-duelos-body');
-    if (body && body.style.display === 'block') {
-      RETO50_DUELOS.cache = null;
-      reto50RenderDuelosLB();
-    }
-  });
-} catch (e) {}
-
-// Cerrar juego con tecla ESC
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    var modal = document.getElementById('reto50-game-modal');
-    if (modal && !modal.classList.contains('modal-hidden')) {
-      reto50CerrarJuego();
-    }
-  }
-});
-
-// Suscripción real-time al leaderboard (refresca cuando alguien más nada)
-try {
-  db.ref('races_leaderboard').on('child_added', function() {
-    var body = document.getElementById('reto50-lb-body-v2') || document.getElementById('reto50-lb-body');
-    if (body && body.style.display === 'block') {
-      RETO50.lbCache = null;
-      RETO50.lbCacheByStyle = {};
-      RETO50.lbCacheTimeByStyle = {};
-      reto50RenderLeaderboard();
-    }
-  });
-  db.ref('races_leaderboard').on('child_removed', function() {
-    var body = document.getElementById('reto50-lb-body-v2') || document.getElementById('reto50-lb-body');
-    if (body && body.style.display === 'block') {
-      RETO50.lbCache = null;
-      RETO50.lbCacheByStyle = {};
-      RETO50.lbCacheTimeByStyle = {};
-      reto50RenderLeaderboard();
-    }
-  });
-} catch (e) {}
-
-// Mostrar splash de bienvenida si toca
-window.addEventListener('load', function() {
-  reto50MostrarSplashSiCorresponde();
-  // Precargar leaderboard en background
-  reto50CargarLeaderboard();
-});
-
-/* ============================================================
-   FIN NUEVO RETO 50M JS
-   ============================================================ */
-
-/* ============================================================
-   NUEVO V4: SUBIR ENTRENAMIENTO PUBLICO (sin login Google)
-   ============================================================ */
-function abrirModalEntrenamiento() {
-  document.getElementById('v4-modal-entrenamiento').classList.add('show');
-  document.body.style.overflow = 'hidden';
-  // Cargar nombre guardado si existe
-  var nombreGuardado = localStorage.getItem('laguna_nombre_entrenamiento');
-  if (nombreGuardado) {
-    document.getElementById('v4-nombre').value = nombreGuardado;
-  }
-  // Fecha actual por defecto
-  var hoy = new Date().toISOString().split('T')[0];
-  document.getElementById('v4-fecha').value = hoy;
-  // Ocultar mensajes previos
-  document.getElementById('v4-success').style.display = 'none';
-  document.getElementById('v4-error').style.display = 'none';
-}
-
-function cerrarModalEntrenamiento() {
-  document.getElementById('v4-modal-entrenamiento').classList.remove('show');
-  document.body.style.overflow = '';
-}
-
-async function enviarEntrenamientoPublico() {
-  var nombre = (document.getElementById('v4-nombre').value || '').trim();
-  var fecha = document.getElementById('v4-fecha').value;
-  var metros = parseInt(document.getElementById('v4-metros').value) || 0;
-  var grupo = document.getElementById('v4-grupo').value;
-  var descripcion = (document.getElementById('v4-descripcion').value || '').trim();
-
-  var errorEl = document.getElementById('v4-error');
-  var successEl = document.getElementById('v4-success');
-  errorEl.style.display = 'none';
-  successEl.style.display = 'none';
-
-  // Validaciones
-  if (!nombre || nombre.length < 3) {
-    errorEl.textContent = 'Escribe tu nombre completo';
-    errorEl.style.display = 'block';
-    return;
-  }
-  if (!fecha) {
-    errorEl.textContent = 'Selecciona la fecha';
-    errorEl.style.display = 'block';
-    return;
-  }
-  if (!metros || metros < 50 || metros > 50000) {
-    errorEl.textContent = 'Pon los metros nadados (entre 50 y 50000)';
-    errorEl.style.display = 'block';
-    return;
-  }
-  if (!descripcion || descripcion.length < 5) {
-    errorEl.textContent = 'Describe qué hiciste en el entrenamiento';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  // Guardar nombre para próxima vez
-  localStorage.setItem('laguna_nombre_entrenamiento', nombre);
-
-  // Deshabilitar botón mientras envía
-  var btn = document.getElementById('v4-submit');
-  btn.disabled = true;
-  btn.textContent = 'Enviando...';
-
-  try {
-    // 1) Buscar si hay un nadador registrado con nombre similar (auto-vinculación)
-    var nadadorIdVinculado = null;
-    var nadadorNombreOficial = null;
-    try {
-      var snapN = await db.ref('nadadores').once('value');
-      if (snapN.exists()) {
-        var nombreNorm = normalizarNombre(nombre);
-        snapN.forEach(function(child) {
-          var nd = child.val();
-          if (nd && nd.nombre) {
-            var ndNorm = normalizarNombre(nd.nombre);
-            // Match exacto o "contains" en ambos sentidos
-            if (ndNorm === nombreNorm ||
-                ndNorm.indexOf(nombreNorm) >= 0 ||
-                nombreNorm.indexOf(ndNorm) >= 0) {
-              nadadorIdVinculado = child.key;
-              nadadorNombreOficial = nd.nombre;
-            }
-          }
-        });
-      }
-    } catch (e) {
-      console.warn('No se pudo buscar nadador para vincular:', e);
-    }
-
-    // 2) Enviar a Firebase (colección pública)
-    var data = {
-      nombre: nombre,
-      fecha: fecha,
-      metros: metros,
-      grupo: grupo,
-      descripcion: descripcion,
-      timestamp: firebase.database.ServerValue.TIMESTAMP,
-      anonymous: true,
-    };
-    if (nadadorIdVinculado) {
-      data.nadadorId = nadadorIdVinculado;
-    }
-    await db.ref('entrenamientos_publicos').push(data);
-
-    // 3) Si quedó vinculado, generar logros automáticos
-    if (nadadorIdVinculado) {
-      generarLogrosAutomaticos(nadadorIdVinculado, nadadorNombreOficial || nombre).catch(function(e) {
-        console.warn('Error generando logros:', e);
-      });
-    }
-
-    btn.textContent = 'Enviar mi entrenamiento';
-    btn.disabled = false;
-    var vinculadoMsg = nadadorIdVinculado ? ' Tu progreso se sumó a tus logros 🏆' : '';
-    successEl.textContent = '✅ ¡Listo, ' + nombre + '! Tu entrenamiento fue guardado.' + vinculadoMsg;
-    successEl.style.display = 'block';
-
-    // Limpiar campos (excepto nombre)
-    document.getElementById('v4-metros').value = '';
-    document.getElementById('v4-descripcion').value = '';
-
-    // Cerrar modal después de 2 segundos
-    setTimeout(function() {
-      cerrarModalEntrenamiento();
-    }, 2500);
-
-  } catch (e) {
-    console.error('Error guardando entrenamiento:', e);
-    errorEl.textContent = 'Error al guardar: ' + (e.message || 'intenta de nuevo');
-    errorEl.style.display = 'block';
-    btn.textContent = 'Enviar mi entrenamiento';
-    btn.disabled = false;
-  }
-}
-
-// Normalizar nombres para comparación (sin acentos, minúsculas, sin espacios extras)
-function normalizarNombre(s) {
-  if (!s) return '';
-  return s
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar acentos
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-// Generar logros automáticos cuando un nadador vinculado sube entrenamiento
-async function generarLogrosAutomaticos(nadadorId, nombreOficial) {
-  try {
-    // 1) Obtener todos los entrenamientos públicos de este nadador
-    var snap = await db.ref('entrenamientos_publicos').orderByChild('nadadorId').equalTo(nadadorId).once('value');
-    var entries = [];
-    snap.forEach(function(child) {
-      entries.push(child.val());
-    });
-    if (entries.length === 0) return;
-
-    // 2) Calcular estadísticas
-    var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var totalSesiones = entries.length;
-
-    // Metros de la semana actual (últimos 7 días)
-    var hace7dias = Date.now() - (7 * 86400000);
-    var entriesSemana = entries.filter(function(e) { return (e.timestamp || 0) >= hace7dias; });
-    var metrosSemana = entriesSemana.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var sesionesSemana = entriesSemana.length;
-
-    // Metros del mes actual (últimos 30 días)
-    var hace30dias = Date.now() - (30 * 86400000);
-    var entriesMes = entries.filter(function(e) { return (e.timestamp || 0) >= hace30dias; });
-    var metrosMes = entriesMes.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-
-    // 3) Actualizar perfil del nadador con estadísticas
-    await db.ref('nadadores/' + nadadorId + '/stats').update({
-      totalMetros: totalMetros,
-      totalSesiones: totalSesiones,
-      metrosSemana: metrosSemana,
-      sesionesSemana: sesionesSemana,
-      metrosMes: metrosMes,
-      ultimoEntrenamiento: Date.now()
-    });
-
-    // 4) Generar logros por hitos (sin duplicar)
-    var hitos = [];
-
-    // Hitos de metros acumulados
-    var hitosKm = [5000, 10000, 25000, 50000, 100000, 200000, 500000, 1000000];
-    hitosKm.forEach(function(hito) {
-      if (totalMetros >= hito) {
-        hitos.push({
-          tipo: 'hito_kilometros',
-          codigo: 'km_' + hito,
-          titulo: '¡' + (hito / 1000) + ' km acumulados!',
-          detalle: nombreOficial + ' alcanzó ' + (hito / 1000) + ' km totales nadados',
-          metrosObjetivo: hito,
-          icono: hito >= 100000 ? '🏆' : (hito >= 25000 ? '🥇' : '💪')
-        });
-      }
-    });
-
-    // Hito semanal: meta cumplida
-    var meta = 3; // default
-    try {
-      var snapMeta = await db.ref('nadadores/' + nadadorId + '/metaSemanal').once('value');
-      if (snapMeta.exists()) meta = parseInt(snapMeta.val()) || 3;
-    } catch (e) {}
-
-    if (sesionesSemana >= meta) {
-      var semanaKey = obtenerSemanaActual();
-      hitos.push({
-        tipo: 'meta_semanal',
-        codigo: 'meta_' + semanaKey,
-        titulo: 'Meta semanal cumplida',
-        detalle: nombreOficial + ' nadó ' + sesionesSemana + ' veces esta semana (' + metrosSemana.toLocaleString() + ' m)',
-        icono: '🎯'
-      });
-    }
-
-    // Hito mensual top: 50 km en un mes
-    if (metrosMes >= 50000) {
-      var mesKey = new Date().toISOString().substring(0, 7); // YYYY-MM
-      hitos.push({
-        tipo: 'mes_top',
-        codigo: 'mestop_' + mesKey,
-        titulo: 'Mes Top - 50+ km',
-        detalle: nombreOficial + ' lleva ' + (metrosMes / 1000).toFixed(1) + ' km este mes',
-        icono: '🔥'
-      });
-    }
-
-    // 5) Guardar logros nuevos (sin duplicar)
-    for (var i = 0; i < hitos.length; i++) {
-      var h = hitos[i];
-      // Verificar si ya existe
-      var logroId = nadadorId + '_' + h.codigo;
-      var existSnap = await db.ref('logros/' + logroId).once('value');
-      if (!existSnap.exists()) {
-        await db.ref('logros/' + logroId).set({
-          nadadorId: nadadorId,
-          nadadorNombre: nombreOficial,
-          tipo: h.tipo,
-          codigo: h.codigo,
-          titulo: h.titulo,
-          detalle: h.detalle,
-          icono: h.icono || '🏊‍♂️',
-          timestamp: Date.now()
-        });
-      }
-    }
-
-    return hitos.length;
-  } catch (e) {
-    console.error('Error generando logros:', e);
-  }
-}
-
-function obtenerSemanaActual() {
-  var d = new Date();
-  d.setHours(0,0,0,0);
-  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
-  var week1 = new Date(d.getFullYear(), 0, 4);
-  var n = 1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
-  return d.getFullYear() + '-W' + String(n).padStart(2, '0');
-}
-
-// Función para que el Coach vea los entrenamientos enviados
-async function verEntrenamientosPublicos() {
-  document.getElementById('v4-modal-ver').classList.add('show');
-  document.body.style.overflow = 'hidden';
-
-  var lista = document.getElementById('v4-entries-list');
-  lista.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">Cargando...</div>';
-
-  try {
-    var snap = await db.ref('entrenamientos_publicos').orderByChild('timestamp').limitToLast(200).once('value');
-    var entries = [];
-    snap.forEach(function(child) {
-      var v = child.val();
-      v.key = child.key;
-      entries.push(v);
-    });
-    entries.reverse(); // Más recientes primero
-
-    if (entries.length === 0) {
-      lista.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">Aún no hay entrenamientos</div>';
+  // Cuando entras a Sesiones/Fotos/Videos: mover el contenido del muro (wk-muro)
+  // a la sub-pestaña correspondiente
+  if (tab === 'sesiones' || tab === 'fotos' || tab === 'videos') {
+    moverMuroAVista(tab);
+  } else if (tab === 'entrena') {
+    // Si no hay sesion, no puede entrar a las herramientas
+    if (muroLecturaLibre || !state.user) {
+      alert('Necesitas iniciar sesion para acceder a las herramientas del entrenador.');
+      showCoachLogin();
+      switchMuroMain('sesiones');
       return;
     }
+    mostrarSelectorEntrena();
+  }
+}
 
-    // Calcular totales
-    var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var personasUnicas = new Set(entries.map(function(e) { return (e.nombre || '').toLowerCase().trim(); })).size;
+function moverMuroAVista(tab) {
+  // El div wk-muro tiene adentro: muro-sesiones, muro-fotos, muro-videos
+  // Lo movemos al sub-tab correcto y activamos su pestaña interna
+  var wkMuro = document.getElementById('wk-muro');
+  var destino = document.getElementById('muro-main-tab-' + tab);
+  if (!wkMuro || !destino) return;
 
-    // Agrupar por persona para el resumen
-    var porPersona = {};
-    entries.forEach(function(e) {
-      var nombre = (e.nombre || '').trim();
-      if (!porPersona[nombre]) {
-        porPersona[nombre] = { nombre: nombre, sesiones: 0, metros: 0, grupo: e.grupo, entries: [] };
-      }
-      porPersona[nombre].sesiones++;
-      porPersona[nombre].metros += (e.metros || 0);
-      porPersona[nombre].entries.push(e);
-    });
-    var personasArr = Object.values(porPersona).sort(function(a, b) { return b.metros - a.metros; });
+  // Mostrar el wk-muro y moverlo al destino si no está ya
+  if (wkMuro.parentElement !== destino) {
+    destino.appendChild(wkMuro);
+  }
+  wkMuro.style.display = 'block';
 
-    var html = '<div style="background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:8px;padding:0.8rem;margin-bottom:1rem;text-align:center">' +
-      '<div style="font-size:0.65rem;color:var(--gold);letter-spacing:2px;font-weight:800;margin-bottom:6px">TOTALES DE LA SEMANA</div>' +
-      '<div style="display:flex;justify-content:space-around;font-size:0.85rem">' +
-      '<div><strong style="color:var(--gold);font-size:1.5rem">' + entries.length + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Sesiones</span></div>' +
-      '<div><strong style="color:var(--gold);font-size:1.5rem">' + personasUnicas + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Personas</span></div>' +
-      '<div><strong style="color:var(--gold);font-size:1.5rem">' + totalMetros.toLocaleString() + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Metros</span></div>' +
-      '</div></div>';
+  // Ocultar el botón "Regresar" interno del muro (ya tenemos sub-pestañas arriba)
+  var btnVolver = wkMuro.querySelector('button[onclick="volverSelector()"]');
+  if (btnVolver) btnVolver.style.display = 'none';
 
-    // Botones acción (Coach)
-    if (state && state.isCoach) {
-      html += '<div style="display: flex; gap: 0.4rem; margin-bottom: 1rem;">' +
-        '<button onclick="exportarEntrenamientosCSV()" style="flex:1; background: linear-gradient(135deg, #06d6a0, #38bdf8); color: white; border: none; padding: 0.6rem; border-radius: 8px; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; cursor: pointer;">📥 EXPORTAR CSV</button>' +
-        '<button onclick="toggleVistaEntrenamientos()" id="v4-toggle-vista" style="flex:1; background: rgba(56,189,248,0.2); color: var(--accent); border: 1px solid var(--accent); padding: 0.6rem; border-radius: 8px; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; cursor: pointer;">👥 POR PERSONA</button>' +
-        '</div>';
+  // Ocultar también las tabs internas del muro (Sesiones/Fotos/Videos), porque
+  // ahora las controlamos desde fuera
+  var tabsInternas = wkMuro.querySelector('div[style*="grid-template-columns:1fr 1fr 1fr"]');
+  if (tabsInternas && tabsInternas.querySelector('#muro-tab-sesiones')) {
+    tabsInternas.style.display = 'none';
+  }
+
+  // Activar la pestaña interna correspondiente
+  if (typeof switchMuroTab === 'function') {
+    switchMuroTab(tab);
+  }
+}
+
+function mostrarSelectorEntrena() {
+  var destino = document.getElementById('muro-main-tab-entrena');
+  var selector = document.getElementById('wk-selector');
+  if (selector) {
+    selector.style.display = 'block';
+    if (selector.parentElement !== destino) {
+      destino.appendChild(selector);
     }
-
-    // Vista por defecto: lista cronológica
-    html += '<div id="v4-vista-cronologica">';
-    entries.forEach(function(e) {
-      var fecha = e.fecha || '';
-      var hora = e.timestamp ? new Date(e.timestamp).toLocaleString('es-MX', {hour: '2-digit', minute:'2-digit'}) : '';
-      var deleteBtn = (state && state.isCoach)
-        ? '<button onclick="borrarEntrenamientoPublico(\'' + e.key + '\')" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">🗑️</button>'
-        : '';
-      html += '<div class="v4-entry-card">' +
-        '<div class="v4-entry-head">' +
-          '<div class="v4-entry-name">' + escapeHtml(e.nombre) + '</div>' +
-          '<div><span class="v4-entry-meters">' + (e.metros || 0).toLocaleString() + ' m</span>' + deleteBtn + '</div>' +
-        '</div>' +
-        '<div class="v4-entry-date">' + fecha + ' · ' + (e.grupo || 'Sin grupo') + ' · ' + hora + '</div>' +
-        '<div class="v4-entry-desc">' + escapeHtml(e.descripcion || '') + '</div>' +
-        '</div>';
-    });
-    html += '</div>';
-
-    // Vista alternativa: por persona (oculta inicialmente)
-    html += '<div id="v4-vista-persona" style="display:none">';
-    personasArr.forEach(function(p, idx) {
-      var medal = idx < 3 ? ['🥇','🥈','🥉'][idx] : (idx + 1) + '°';
-      html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:10px;padding:0.9rem;margin-bottom:0.7rem">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">' +
-          '<div style="display:flex;align-items:center;gap:0.5rem">' +
-            '<div style="font-size:1.3rem">' + medal + '</div>' +
-            '<div>' +
-              '<div style="font-weight:900;color:var(--gold);font-size:1rem">' + escapeHtml(p.nombre) + '</div>' +
-              '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">' + (p.grupo || 'Sin grupo') + '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div style="text-align:right">' +
-            '<div style="font-size:1.2rem;font-weight:900;color:var(--accent)">' + p.metros.toLocaleString() + ' m</div>' +
-            '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5);letter-spacing:1px">' + p.sesiones + ' SESIONES</div>' +
-          '</div>' +
-        '</div>' +
-        '<details style="margin-top:0.4rem"><summary style="cursor:pointer;font-size:0.7rem;color:var(--accent-soft);letter-spacing:0.5px">Ver entrenamientos individuales</summary>' +
-        '<div style="margin-top:0.5rem;padding-left:0.5rem;border-left:2px solid rgba(56,189,248,0.3)">';
-      p.entries.forEach(function(e) {
-        html += '<div style="padding:0.4rem 0;font-size:0.75rem;color:rgba(255,255,255,0.75)">' +
-          '<strong style="color:#fff">' + (e.fecha || '') + '</strong> · ' +
-          '<span style="color:var(--gold)">' + (e.metros || 0).toLocaleString() + ' m</span>' +
-          '<div style="font-size:0.7rem;color:rgba(255,255,255,0.55);margin-top:2px">' + escapeHtml(e.descripcion || '') + '</div>' +
-          '</div>';
-      });
-      html += '</div></details></div>';
-    });
-    html += '</div>';
-
-    lista.innerHTML = html;
-  } catch (e) {
-    console.error('Error cargando entrenamientos:', e);
-    lista.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff6b35">Error al cargar: ' + (e.message || '') + '</div>';
   }
+  // Ocultar otros módulos (diario, semanal, drills, eval, premios, muro)
+  ['wk-diario', 'wk-semanal', 'wk-drills', 'wk-eval', 'wk-premios', 'wk-muro'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
 }
 
-// Toggle vista cronológica vs por persona
-function toggleVistaEntrenamientos() {
-  var cronoEl = document.getElementById('v4-vista-cronologica');
-  var personaEl = document.getElementById('v4-vista-persona');
-  var btn = document.getElementById('v4-toggle-vista');
-  if (cronoEl.style.display === 'none') {
-    cronoEl.style.display = 'block';
-    personaEl.style.display = 'none';
-    btn.innerHTML = '👥 POR PERSONA';
-  } else {
-    cronoEl.style.display = 'none';
-    personaEl.style.display = 'block';
-    btn.innerHTML = '📅 CRONOLÓGICO';
+// Override de elegirModo para asegurar que las herramientas se vean
+// dentro de la sub-pestaña Entrena
+var _origElegirModo = window.elegirModo;
+window.elegirModo = function(modo) {
+  // Asegurar que estamos en la sub-pestaña Entrena
+  if (muroMainTab !== 'entrena') {
+    switchMuroMain('entrena');
   }
-}
-
-// Exportar a CSV para Excel/diplomas
-async function exportarEntrenamientosCSV() {
-  try {
-    var snap = await db.ref('entrenamientos_publicos').orderByChild('timestamp').once('value');
-    var rows = [['Nombre','Fecha','Metros','Grupo','Descripcion','HoraEnvio']];
-    snap.forEach(function(child) {
-      var v = child.val();
-      var hora = v.timestamp ? new Date(v.timestamp).toLocaleString('es-MX') : '';
-      rows.push([
-        (v.nombre || '').replace(/"/g, '""'),
-        v.fecha || '',
-        v.metros || 0,
-        v.grupo || '',
-        (v.descripcion || '').replace(/"/g, '""').replace(/\n/g, ' '),
-        hora
-      ]);
-    });
-    var csv = rows.map(function(r) {
-      return r.map(function(cell) {
-        var s = String(cell);
-        if (s.indexOf(',') > -1 || s.indexOf('"') > -1 || s.indexOf('\n') > -1) {
-          return '"' + s + '"';
-        }
-        return s;
-      }).join(',');
-    }).join('\n');
-    var BOM = '\uFEFF'; // Para que Excel detecte UTF-8
-    var blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    var fecha = new Date().toISOString().split('T')[0];
-    a.download = 'entrenamientos-laguna-' + fecha + '.csv';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function() {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }, 100);
-  } catch (e) {
-    alert('Error exportando: ' + e.message);
+  // Mover el módulo destino dentro de muro-main-tab-entrena si no está
+  var destino = document.getElementById('muro-main-tab-entrena');
+  var elModo = document.getElementById('wk-' + modo);
+  if (elModo && destino && elModo.parentElement !== destino) {
+    destino.appendChild(elModo);
   }
-}
+  _origElegirModo(modo);
+};
 
-// Cargar totales + Top 5 en la tabla pública del home (visible para TODOS)
-async function cargarTotalesEntrenamientos() {
-  try {
-    var snap = await db.ref('entrenamientos_publicos').once('value');
-    var sesiones = 0;
-    var metros = 0;
-    var personas = {};
-    snap.forEach(function(child) {
-      var v = child.val();
-      sesiones++;
-      metros += (v.metros || 0);
-      var nombre = (v.nombre || '').trim();
-      if (nombre) {
-        var key = nombre.toLowerCase();
-        if (!personas[key]) {
-          personas[key] = { nombre: nombre, metros: 0, sesiones: 0, grupo: v.grupo };
-        }
-        personas[key].metros += (v.metros || 0);
-        personas[key].sesiones++;
-      }
-    });
+// Override de volverSelector para que respete la sub-pestaña Entrena
+var _origVolverSelector = window.volverSelector;
+window.volverSelector = function() {
+  _origVolverSelector();
+  // Después de volver al selector, asegurar que esté visible dentro de Entrena
+  setTimeout(function() {
+    mostrarSelectorEntrena();
+  }, 50);
+};
 
-    // Actualizar totales
-    var elS = document.getElementById('home-stat-sesiones');
-    var elP = document.getElementById('home-stat-personas');
-    var elM = document.getElementById('home-stat-metros');
-    if (elS) elS.textContent = sesiones;
-    if (elP) elP.textContent = Object.keys(personas).length;
-    if (elM) elM.textContent = metros >= 1000 ? (metros / 1000).toFixed(1) + 'k' : metros.toLocaleString();
-
-    // Top 5 por metros
-    var top5 = Object.values(personas).sort(function(a, b) { return b.metros - a.metros; }).slice(0, 5);
-    var top5El = document.getElementById('home-top5');
-    if (top5El) {
-      if (top5.length === 0) {
-        top5El.innerHTML = '<div style="text-align:center;padding:0.8rem;color:rgba(255,255,255,0.4);font-size:0.72rem;font-style:italic">¡Sé el primero en subir tu entrenamiento!</div>';
-      } else {
-        var html = '';
-        top5.forEach(function(p, idx) {
-          var medal = ['🥇','🥈','🥉','🏅','🏅'][idx];
-          var bgColor = idx === 0 ? 'rgba(255,215,0,0.12)' : (idx === 1 ? 'rgba(192,192,192,0.08)' : (idx === 2 ? 'rgba(205,127,50,0.08)' : 'rgba(255,255,255,0.03)'));
-          html += '<div style="display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0.6rem;background:' + bgColor + ';border-radius:7px;margin-bottom:3px">' +
-            '<div style="font-size:1rem;width:24px;text-align:center">' + medal + '</div>' +
-            '<div style="flex:1;min-width:0;overflow:hidden">' +
-              '<div style="font-weight:700;color:#fff;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(p.nombre) + '</div>' +
-              '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5)">' + p.sesiones + ' sesion' + (p.sesiones === 1 ? '' : 'es') + '</div>' +
-            '</div>' +
-            '<div style="font-weight:900;color:var(--gold);font-size:0.95rem;text-align:right;white-space:nowrap">' + (p.metros >= 1000 ? (p.metros / 1000).toFixed(1) + ' km' : p.metros.toLocaleString() + ' m') + '</div>' +
-          '</div>';
-        });
-        top5El.innerHTML = html;
-      }
+// Override de showTab para cuando entran a Muro: activar sub-pestaña Sesiones por defecto
+var _origShowTabMuro = window.showTab;
+window.showTab = function(t) {
+  _origShowTabMuro(t);
+  if (t === 'workout') {
+    // Determinar qué mostrar
+    if (state.user) {
+      // Si está logueado, mostrar acceso directo
+      document.getElementById('wk-login-wall').style.display = 'none';
+      document.getElementById('wk-subs-wall').style.display = 'none';
+      document.getElementById('wk-acceso').style.display = 'block';
+      muroLecturaLibre = false;
+      // Activar sesiones por defecto
+      setTimeout(function() {
+        switchMuroMain(muroMainTab || 'sesiones');
+      }, 100);
+    } else if (muroLecturaLibre) {
+      document.getElementById('wk-login-wall').style.display = 'none';
+      document.getElementById('wk-acceso').style.display = 'block';
+      setTimeout(function() {
+        switchMuroMain('sesiones');
+      }, 100);
+    } else {
+      // Mostrar login wall
+      document.getElementById('wk-login-wall').style.display = 'block';
+      document.getElementById('wk-acceso').style.display = 'none';
+      var subsWall = document.getElementById('wk-subs-wall');
+      if (subsWall) subsWall.style.display = 'none';
     }
-  } catch (e) {
-    console.warn('No se pudieron cargar totales:', e);
-    var top5El = document.getElementById('home-top5');
-    if (top5El) top5El.innerHTML = '<div style="text-align:center;padding:0.8rem;color:#ff6b35;font-size:0.7rem">Error al cargar</div>';
   }
-}
-setTimeout(function() {
-  cargarTotalesEntrenamientos();
-  try {
-    db.ref('entrenamientos_publicos').on('child_added', function() {
-      cargarTotalesEntrenamientos();
-    });
-    db.ref('entrenamientos_publicos').on('child_removed', function() {
-      cargarTotalesEntrenamientos();
-    });
-    db.ref('entrenamientos_publicos').on('child_changed', function() {
-      cargarTotalesEntrenamientos();
-    });
-  } catch (e) {}
-}, 1500);
-
-async function borrarEntrenamientoPublico(key) {
-  if (!confirm('¿Borrar este entrenamiento?')) return;
-  try {
-    await db.ref('entrenamientos_publicos/' + key).remove();
-    verEntrenamientosPublicos(); // Refrescar lista
-  } catch (e) {
-    alert('Error: ' + e.message);
-  }
-}
-
-function cerrarModalVer() {
-  document.getElementById('v4-modal-ver').classList.remove('show');
-  document.body.style.overflow = '';
-}
-
-// Helper escape HTML
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-/* ============================================================
-   FIN V4
-   ============================================================ */
+};
 </script>
-
-<!-- ============ MODAL: SUBIR ENTRENAMIENTO (sin login) ============ -->
-<div id="v4-modal-entrenamiento" class="v4-modal-bg">
-  <div class="v4-modal">
-    <button class="v4-modal-close" onclick="cerrarModalEntrenamiento()">✕</button>
-    <div class="v4-modal-title">SUBE TU <em>ENTRENAMIENTO</em></div>
-    <div class="v4-modal-subtitle">Comparte tus metros y lo que hiciste esta semana. <strong>No necesitas registrarte</strong>.</div>
-
-    <div class="v4-field">
-      <label>Tu nombre <span class="req">*</span></label>
-      <input type="text" id="v4-nombre" placeholder="Ej. María González" maxlength="60">
-    </div>
-
-    <div class="v4-field-row">
-      <div class="v4-field">
-        <label>Fecha <span class="req">*</span></label>
-        <input type="date" id="v4-fecha">
-      </div>
-      <div class="v4-field">
-        <label>Metros <span class="req">*</span></label>
-        <input type="number" id="v4-metros" placeholder="2500" min="50" max="50000" step="50">
-      </div>
-    </div>
-
-    <div class="v4-field">
-      <label>Grupo</label>
-      <select id="v4-grupo">
-        <option value="Masters">Masters</option>
-        <option value="Juvenil">Juvenil</option>
-        <option value="Infantil">Infantil</option>
-        <option value="Pre-Equipo">Pre-Equipo</option>
-        <option value="Equipo">Equipo</option>
-        <option value="Otro">Otro</option>
-      </select>
-    </div>
-
-    <div class="v4-field">
-      <label>¿Qué hiciste? <span class="req">*</span></label>
-      <textarea id="v4-descripcion" placeholder="Ej: Calentamiento 400m, 8x100 estilo libre 1:40, técnica 4x50 patada, vuelta a la calma 200m" maxlength="500"></textarea>
-      <div class="v4-field-hint">Describe tu entrenamiento: distancias, ejercicios, intensidades</div>
-    </div>
-
-    <button class="v4-submit-btn" id="v4-submit" onclick="enviarEntrenamientoPublico()">Enviar mi entrenamiento</button>
-
-    <div class="v4-success-msg" id="v4-success"></div>
-    <div class="v4-error-msg" id="v4-error"></div>
-  </div>
-</div>
-
-<!-- ============ MODAL: VER ENTRENAMIENTOS (solo Coach) ============ -->
-<div id="v4-modal-ver" class="v4-modal-bg">
-  <div class="v4-modal" style="max-width: 560px">
-    <button class="v4-modal-close" onclick="cerrarModalVer()">✕</button>
-    <div class="v4-modal-title">Entrenamientos <em>Subidos</em></div>
-    <div class="v4-modal-subtitle">Últimos 100 entrenamientos del equipo</div>
-    <div id="v4-entries-list" class="v4-entries-list"></div>
-  </div>
-</div>
-<!-- ============ FIN MODALES V4 ============ -->
 </body>
 </html>
