@@ -2390,6 +2390,142 @@ body.v3-fluid .v2-coach-poster:active {
    ============================================================ */
 
 /* ============================================================
+   NUEVO V5: HERO ESTILO SPEEDO (editorial, foto grande)
+   ============================================================ */
+.v5-hero {
+  position: relative;
+  min-height: calc(100vh - var(--bnav-h) - var(--spons-h) - 70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  padding: 1.5rem 1.3rem 2rem;
+  overflow: hidden;
+  border-radius: 0 0 18px 18px;
+  animation: v3FadeIn 0.6s ease-out;
+}
+.v5-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 0%, rgba(56,189,248,0.28) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 60% at 80% 100%, rgba(10,58,110,0.6) 0%, transparent 60%),
+    linear-gradient(180deg, var(--depth-deep) 0%, var(--depth-mid) 55%, var(--depth-shallow) 100%);
+  z-index: 0;
+}
+.v5-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 54px,
+    rgba(255,255,255,0.04) 54px,
+    rgba(255,255,255,0.04) 56px);
+  z-index: 0;
+  pointer-events: none;
+}
+.v5-hero-status {
+  position: absolute;
+  top: 12px; right: 14px;
+  font-size: 0.55rem;
+  opacity: 0.5;
+  z-index: 3;
+}
+.v5-hero-logo {
+  position: absolute;
+  top: 1.4rem; left: 50%;
+  transform: translateX(-50%);
+  width: 92px; height: 92px;
+  z-index: 2;
+  animation: v3LogoEntry 0.8s cubic-bezier(0.34,1.56,0.64,1);
+}
+.v5-hero-logo img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 20px rgba(0,0,0,0.45));
+}
+.v5-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+}
+.v5-hero-kicker {
+  font-size: 0.62rem;
+  letter-spacing: 5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  margin-bottom: 0.6rem;
+  animation: v3FadeUp 0.6s 0.15s ease-out backwards;
+}
+.v5-hero-title {
+  font-size: 2.9rem;
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -1.5px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  animation: v3FadeUp 0.6s 0.25s ease-out backwards;
+}
+.v5-hero-title em {
+  display: block;
+  font-style: normal;
+  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.v5-hero-verse {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.5px;
+  margin-bottom: 1.6rem;
+  animation: v3FadeUp 0.6s 0.35s ease-out backwards;
+}
+.v5-hero-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 1.05rem;
+  background: var(--gold);
+  color: #051a3a;
+  border: none;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  box-shadow: 0 6px 24px rgba(255,215,0,0.35), 0 3px 0 #b89500;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  animation: v3FadeUp 0.6s 0.45s ease-out backwards;
+}
+.v5-hero-cta:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 12px rgba(255,215,0,0.3);
+}
+.v5-hero-cta-badge {
+  background: #ff6b35;
+  color: #fff;
+  font-size: 0.5rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 1.5px;
+}
+/* ============================================================
+   FIN V5
+   ============================================================ */
+
+/* ============================================================
    NUEVO V4: SUBIR ENTRENAMIENTO PUBLICO (sin login)
    ============================================================ */
 .v4-upload-cta {
@@ -3115,26 +3251,27 @@ body.v3-fluid .v2-coach-poster:active {
   <!-- Home / inicio -->
   <div id="s-home" class="screen active">
 
-    <!-- ============ NUEVO V3: INICIO ESTILO GOOGLE ============ -->
-    <div class="v3-hero-google">
-      <span id="fb-status" class="hdr-status" style="position:absolute;top:10px;right:10px;font-size:0.55rem;opacity:0.5">...</span>
+    <!-- ============ NUEVO V5: HERO ESTILO SPEEDO ============ -->
+    <div class="v5-hero">
+      <span id="fb-status" class="v5-hero-status hdr-status">...</span>
 
-      <div class="v3-hero-logo-wrap">
+      <div class="v5-hero-logo">
         <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" alt="Laguna Swim International">
       </div>
 
-      <div class="v3-hero-brand">LAGUNA <em>SWIM</em></div>
-      <div class="v3-hero-int">INTERNATIONAL</div>
-      <div class="v3-hero-tagline">Fuertes y Valientes · Josué 1:9</div>
+      <div class="v5-hero-content">
+        <div class="v5-hero-kicker">Laguna Swim International</div>
+        <div class="v5-hero-title">Fuertes <em>y Valientes</em></div>
+        <div class="v5-hero-verse">Josué 1:9</div>
 
-      <button class="v3-hero-cta" onclick="reto50AbrirJuego(false)">
-        <span class="icon">▶</span>
-        <span>Jugar Reto 50m</span>
-        <span class="v3-hero-cta-badge">NUEVO</span>
-      </button>
+        <button class="v5-hero-cta" onclick="reto50AbrirJuego(false)">
+          <span>▶ Jugar Reto 50m</span>
+          <span class="v5-hero-cta-badge">NUEVO</span>
+        </button>
+      </div>
 
       <!-- NUEVO V4: Botón subir entrenamiento sin login -->
-      <div class="v4-upload-cta" style="margin-top: 1.2rem; max-width: 360px; width: 100%" onclick="abrirModalEntrenamiento()">
+      <div class="v4-upload-cta" style="position:relative;z-index:2;margin-top:1rem" onclick="abrirModalEntrenamiento()">
         <div class="v4-upload-icon">📝</div>
         <div class="v4-upload-text">
           <div class="v4-upload-title">Subir Mi Entrenamiento</div>
@@ -3144,7 +3281,7 @@ body.v3-fluid .v2-coach-poster:active {
       </div>
 
       <!-- NUEVO V4.2: Tabla pública de entrenamientos de la semana (visible para todos) -->
-      <div id="v4-home-tabla" style="margin-top: 1rem; max-width: 420px; width: 100%; background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.08) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 1rem; text-align: left;">
+      <div id="v4-home-tabla" style="position:relative;z-index:2;margin-top:1rem;width:100%;background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.08) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 1rem; text-align: left;">
         <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">
           <div style="font-size:1.4rem">🏆</div>
           <div style="flex:1">
@@ -3181,11 +3318,13 @@ body.v3-fluid .v2-coach-poster:active {
         </button>
       </div>
 
-      <div class="v3-hero-scroll-hint" onclick="document.querySelector('.v3-below-fold').scrollIntoView({behavior:'smooth'})">
+      <div class="v3-hero-scroll-hint" style="position:relative;z-index:2;margin:1rem auto 0;bottom:auto;left:auto;transform:none" onclick="document.querySelector('.v3-below-fold').scrollIntoView({behavior:'smooth'})">
         <span>Ver más</span>
         <span class="chev">⌄</span>
       </div>
     </div>
+    <!-- ============ FIN V5 HERO ============ -->
+
 
     <!-- ============ ABAJO DEL FOLD ============ -->
     <div class="v3-below-fold">
@@ -3923,15 +4062,23 @@ body.v3-fluid .v2-coach-poster:active {
 
     <div class="card" style="border-color:rgba(250,204,21,0.3)">
       <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;color:var(--gold)">
-        Importar varios
+        📥 Importar varios tiempos
       </div>
       <div style="font-size:0.72rem;color:var(--accent-soft);margin-bottom:0.6rem">
-        Una linea por tiempo. Formato:<br>
+        Una linea por tiempo. Formato (acepta comas, pipes | o tabs):<br>
         <code style="background:rgba(0,0,0,0.3);padding:1px 4px;border-radius:3px;font-size:0.65rem">Nombre, M/F, Cat, Dist, Estilo, Tiempo, Comp, Ano</code>
       </div>
-      <textarea id="bulk-input" style="height:120px;resize:vertical;font-family:monospace;font-size:0.75rem" placeholder="Ana Garcia, F, 13-14, 100, Libre, 1:12.99, Torneo Regional, 2024
+
+      <!-- NUEVO: Botones de ayuda -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0.5rem">
+        <button onclick="verDatosInternacionales()" style="background:rgba(56,189,248,0.15);border:1px solid var(--accent);color:var(--accent);padding:5px 10px;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer">🌎 Ver Internacionales</button>
+        <button onclick="plantillaImport('panam')" style="background:rgba(255,215,0,0.15);border:1px solid var(--gold);color:var(--gold);padding:5px 10px;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer">🏆 Plantilla PanAm</button>
+        <button onclick="plantillaImport('local')" style="background:rgba(168,85,247,0.15);border:1px solid #a855f7;color:#a855f7;padding:5px 10px;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer">📋 Plantilla Local</button>
+      </div>
+
+      <textarea id="bulk-input" style="height:140px;resize:vertical;font-family:monospace;font-size:0.75rem" placeholder="Ana Garcia, F, 13-14, 100, Libre, 1:12.99, Torneo Regional, 2024
 Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
-      <button class="btn btn-sky" onclick="importBulk()" style="margin-top:0.4rem">Importar todos</button>
+      <button class="btn btn-sky" onclick="importBulk()" style="margin-top:0.4rem">📥 Importar todos al ranking</button>
       <div id="bulk-result" style="font-size:0.75rem;margin-top:0.4rem;display:none"></div>
     </div>
   </div>
@@ -7028,7 +7175,7 @@ function addRankTime() {
   });
 }
 
-// Importar varios tiempos
+// Importar varios tiempos (acepta comas, pipes | o tabs como separador)
 function importBulk() {
   if (!state.user || state.user.email !== CONFIG.coach) {
     alert('Solo el entrenador puede importar tiempos.');
@@ -7036,13 +7183,27 @@ function importBulk() {
   }
   var text = document.getElementById('bulk-input').value.trim();
   if (!text) { alert('Pega los tiempos primero'); return; }
-  var lines = text.split('\n').filter(function(l) { return l.trim(); });
+
+  // Eliminar líneas que parezcan comentarios o encabezados
+  var lines = text.split('\n').filter(function(l) {
+    var t = l.trim();
+    if (!t) return false;
+    if (t.startsWith('#') || t.startsWith('//')) return false;
+    return true;
+  });
+
   var ok = 0;
   var errs = [];
   var promises = lines.map(function(line, idx) {
-    var p = line.split(',').map(function(x) { return x.trim(); });
+    // Soportar comas, pipes, o tabs como separador
+    var sep = line.indexOf('|') >= 0 ? '|' : (line.indexOf('\t') >= 0 ? '\t' : ',');
+    var p = line.split(sep).map(function(x) { return x.trim(); });
     if (p.length < 8) {
-      errs.push('Linea ' + (idx + 1));
+      errs.push('Línea ' + (idx + 1) + ' (necesita 8 campos)');
+      return null;
+    }
+    if (!p[0] || !p[5]) {
+      errs.push('Línea ' + (idx + 1) + ' (nombre o tiempo vacío)');
       return null;
     }
     var id = 'r' + Date.now() + '_' + idx;
@@ -7065,13 +7226,124 @@ function importBulk() {
     var r = document.getElementById('bulk-result');
     r.style.display = 'block';
     r.style.color = errs.length ? '#eab308' : 'var(--success)';
-    r.textContent = ok + ' tiempos importados' + (errs.length ? ' - Errores en: ' + errs.join(', ') : '');
+    r.innerHTML = '<strong>✅ ' + ok + ' tiempos importados al ranking</strong>' +
+      (errs.length ? '<br><span style="color:#ff6b35">⚠️ Errores: ' + errs.join(', ') + '</span>' : '');
     if (ok > 0) {
       document.getElementById('bulk-input').value = '';
       loadRanking();
     }
   });
 }
+
+// NUEVO: Plantilla para PanAm o local
+function plantillaImport(tipo) {
+  var input = document.getElementById('bulk-input');
+  if (!input) return;
+  var anioActual = new Date().getFullYear();
+  if (tipo === 'panam') {
+    input.value =
+      '# PLANTILLA: PanAm Masters Buenos Aires 2026\n' +
+      '# Formato: Nombre | M/F | Categoría | Distancia | Estilo | Tiempo (mm:ss.cc) | Competencia | Año\n' +
+      '# Reemplaza estas líneas con tus datos reales y borra las que sobren:\n' +
+      'Sergio Villarreal | M | M55-59 | 50 | Mariposa | 00:34.21 | PanAm Masters Buenos Aires | ' + anioActual + '\n' +
+      'Sergio Villarreal | M | M55-59 | 50 | Pecho | 00:42.50 | PanAm Masters Buenos Aires | ' + anioActual + '\n' +
+      'Sergio Villarreal | M | M55-59 | 100 | Libre | 01:15.80 | PanAm Masters Buenos Aires | ' + anioActual + '\n';
+  } else if (tipo === 'local') {
+    input.value =
+      '# PLANTILLA: Torneo Local\n' +
+      '# Formato: Nombre | M/F | Categoría | Distancia | Estilo | Tiempo (mm:ss.cc) | Competencia | Año\n' +
+      'Juan Pérez | M | 13-14 | 50 | Libre | 00:30.50 | Torneo Estatal Coahuila | ' + anioActual + '\n' +
+      'María López | F | 11-12 | 100 | Pecho | 01:32.10 | Torneo Estatal Coahuila | ' + anioActual + '\n';
+  }
+  input.focus();
+}
+window.plantillaImport = plantillaImport;
+
+// NUEVO: Ver datos de eventos_internacionales y fotos_internacionales
+function verDatosInternacionales() {
+  if (!state.user || state.user.email !== CONFIG.coach) {
+    alert('Solo el entrenador puede ver esto.');
+    return;
+  }
+  var modal = document.createElement('div');
+  modal.id = 'modal-ver-intl';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto';
+  modal.innerHTML =
+    '<div style="background:#0d2a4a;border:2px solid var(--accent);border-radius:14px;padding:1.2rem;max-width:600px;width:100%;max-height:90vh;overflow-y:auto">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem;flex-wrap:wrap;gap:8px">' +
+        '<div style="font-size:1.05rem;font-weight:800;color:var(--accent)">🌎 Datos en Internacionales</div>' +
+        '<button onclick="document.getElementById(\'modal-ver-intl\').remove()" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:6px;padding:5px 10px;font-size:0.7rem;font-weight:700;cursor:pointer">Cerrar</button>' +
+      '</div>' +
+      '<div id="ver-intl-loading" style="text-align:center;padding:1rem;color:rgba(255,255,255,0.6)">Cargando...</div>' +
+      '<div id="ver-intl-content" style="display:none"></div>' +
+    '</div>';
+  document.body.appendChild(modal);
+
+  // Cargar datos en paralelo
+  Promise.all([
+    db.ref('eventos_internacionales').once('value'),
+    db.ref('fotos_internacionales').once('value')
+  ]).then(function(snaps) {
+    var eventos = {};
+    snaps[0].forEach(function(ch) { eventos[ch.key] = ch.val(); });
+    var fotos = [];
+    snaps[1].forEach(function(ch) { fotos.push(Object.assign({ key: ch.key }, ch.val())); });
+
+    var html = '';
+
+    // Sección eventos
+    var keysEv = Object.keys(eventos);
+    html += '<div style="font-size:0.85rem;font-weight:800;color:var(--gold);margin-bottom:0.5rem">📅 Eventos creados (' + keysEv.length + ')</div>';
+    if (keysEv.length === 0) {
+      html += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.5);font-style:italic;margin-bottom:1rem">Sin eventos creados</div>';
+    } else {
+      keysEv.forEach(function(k) {
+        var e = eventos[k];
+        html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.7rem;margin-bottom:0.5rem;font-size:0.78rem">' +
+          '<div><strong style="color:var(--gold)">' + (e.bandera || '🌍') + ' ' + escapeHtml(e.nombre || '?') + '</strong></div>' +
+          '<div style="font-size:0.7rem;color:rgba(255,255,255,0.6);margin-top:3px">📍 ' + escapeHtml(e.lugar || '?') + ' · 📅 ' + escapeHtml(e.fecha || '?') + '</div>' +
+        '</div>';
+      });
+    }
+
+    // Sección fotos con captions (que pueden tener tiempos)
+    html += '<div style="font-size:0.85rem;font-weight:800;color:var(--gold);margin-top:1rem;margin-bottom:0.5rem">📸 Fotos con descripciones (' + fotos.length + ')</div>';
+    html += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.55);margin-bottom:0.5rem">💡 Revisa si las descripciones tienen tiempos que migrar al ranking</div>';
+    if (fotos.length === 0) {
+      html += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.5);font-style:italic">Sin fotos subidas</div>';
+    } else {
+      fotos.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+      fotos.forEach(function(f) {
+        var caption = f.caption || '';
+        var hasCaption = caption.trim().length > 0;
+        html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.7rem;margin-bottom:0.5rem;display:flex;gap:8px">' +
+          (f.url ? '<img src="' + f.url + '" style="width:60px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0">' : '') +
+          '<div style="flex:1;min-width:0;font-size:0.75rem">' +
+            '<div style="color:var(--gold);font-weight:700;margin-bottom:3px">' + escapeHtml(f.eventoLabel || '?') + '</div>' +
+            (hasCaption
+              ? '<div style="color:#fff;background:rgba(255,215,0,0.08);padding:4px 6px;border-radius:4px;border-left:2px solid var(--gold);word-break:break-word">' + escapeHtml(caption) + '</div>'
+              : '<div style="color:rgba(255,255,255,0.4);font-style:italic">(sin descripción)</div>') +
+            '<div style="font-size:0.62rem;color:rgba(255,255,255,0.4);margin-top:3px">' + (f.timestamp ? new Date(f.timestamp).toLocaleDateString('es-MX') : '') + '</div>' +
+          '</div>' +
+        '</div>';
+      });
+    }
+
+    // Acción rápida
+    html += '<div style="margin-top:1rem;padding:0.8rem;background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;font-size:0.78rem">' +
+      '<strong style="color:#22c55e">💡 Próximo paso:</strong><br>' +
+      'Si ves tiempos en las descripciones, copia los datos y úsalos con el botón <strong>"🏆 Plantilla PanAm"</strong> para llenarlos al ranking.' +
+    '</div>';
+
+    document.getElementById('ver-intl-loading').style.display = 'none';
+    var c = document.getElementById('ver-intl-content');
+    c.style.display = 'block';
+    c.innerHTML = html;
+  }).catch(function(e) {
+    document.getElementById('ver-intl-loading').textContent = 'Error: ' + e.message;
+  });
+}
+window.verDatosInternacionales = verDatosInternacionales;
 
 // Borrar tiempo (solo coach)
 function delRankTime(id) {
