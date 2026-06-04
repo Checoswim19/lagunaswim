@@ -1998,6 +1998,7 @@
       strokes: 0, goodStrokes: 0,
       strokeIntervals: [], rivals: [],
       playerFinishedAt: null,
+      swimStyle: swimStyle || 'libre', // ← preservar estilo seleccionado
     };
     initRivals();
     document.querySelectorAll('.swimmer').forEach(s => {
