@@ -46,7 +46,7 @@ body {
   background-attachment: fixed;
   color: #fff;
   min-height: 100vh;
-  padding-bottom: calc(var(--bnav-h) + var(--spons-h));
+  padding-bottom: calc(var(--bnav-h) + var(--spons-h) + env(safe-area-inset-bottom) + 10px);
 }
 /* ====== TABS / NAV ====== */
 .bnav {
@@ -982,7 +982,7 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
 /* ====== BARRA FIJA DE PATROCINADORES ====== */
 .spons-bar {
   position: fixed;
-  bottom: var(--bnav-h);
+  bottom: calc(var(--bnav-h) + env(safe-area-inset-bottom));
   left: 0; right: 0;
   height: var(--spons-h);
   background: rgba(255,255,255,0.97);
@@ -3292,9 +3292,94 @@ body.v3-fluid .v2-coach-poster:active {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ============================================================
+   EL MAR QUE TE LLAMA — capa de ambiente oceánico (aditiva)
+   ============================================================ */
+#oc-ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
+#oc-ambient .oc-depth{position:absolute;inset:0;mix-blend-mode:screen;background:
+  radial-gradient(120% 70% at 50% -12%, rgba(130,205,255,0.20) 0%, transparent 55%),
+  radial-gradient(140% 95% at 50% 120%, rgba(3,12,28,0.55) 0%, transparent 60%);}
+#oc-ambient .oc-rays{position:absolute;left:-25%;right:-25%;top:-30%;height:160%;
+  transform-origin:50% 0;mix-blend-mode:screen;
+  background:repeating-linear-gradient(100deg,
+     transparent 0,transparent 70px,
+     rgba(170,225,255,0.05) 70px,rgba(170,225,255,0.075) 108px,
+     transparent 108px,transparent 184px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.35) 45%,transparent 82%);
+          mask-image:linear-gradient(180deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.35) 45%,transparent 82%);
+  animation:ocRays 15s ease-in-out infinite alternate;}
+#oc-ambient .oc-rays.oc-rays-2{opacity:.8;animation-duration:22s;animation-direction:alternate-reverse;
+  background:repeating-linear-gradient(82deg,
+     transparent 0,transparent 95px,
+     rgba(120,210,255,0.04) 95px,rgba(120,210,255,0.06) 132px,
+     transparent 132px,transparent 230px);}
+@keyframes ocRays{0%{transform:skewX(-7deg) translateX(-3%);}100%{transform:skewX(7deg) translateX(3%);}}
+#oc-ambient .oc-caustic{position:absolute;width:80vmax;height:80vmax;border-radius:50%;filter:blur(6px);
+  background:radial-gradient(circle at 50% 50%, rgba(56,189,248,0.10) 0%, rgba(56,189,248,0.04) 35%, transparent 70%);
+  animation:ocDrift 28s ease-in-out infinite;}
+#oc-ambient .oc-caustic.oc-c2{animation-duration:36s;animation-delay:-9s;
+  background:radial-gradient(circle at 50% 50%, rgba(20,95,165,0.14) 0%, transparent 65%);}
+@keyframes ocDrift{
+  0%{transform:translate(-15%,-10%) scale(1);}
+  50%{transform:translate(22%,16%) scale(1.15);}
+  100%{transform:translate(-15%,-10%) scale(1);}}
+#oc-ambient .oc-surface{position:absolute;top:0;left:0;right:0;height:140px;
+  background:linear-gradient(180deg, rgba(185,232,255,0.16) 0%, transparent 100%);
+  animation:ocSurface 6.5s ease-in-out infinite;}
+@keyframes ocSurface{0%,100%{opacity:.5;}50%{opacity:1;}}
+#oc-bubbles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
+#oc-bubbles .oc-b{position:absolute;bottom:-40px;border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 32% 28%, rgba(255,255,255,0.92), rgba(180,225,255,0.35) 45%, rgba(120,190,255,0.05) 75%);
+  box-shadow:0 0 6px rgba(180,225,255,0.25);
+  animation:ocRise linear infinite;}
+@keyframes ocRise{
+  0%{transform:translateY(0) translateX(0) scale(.55);opacity:0;}
+  10%{opacity:.7;}
+  50%{transform:translateY(-52vh) translateX(16px) scale(1);}
+  90%{opacity:.55;}
+  100%{transform:translateY(-105vh) translateX(-12px) scale(1.05);opacity:0;}}
+.v5-hero .oc-hero-rays{position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;
+  background:repeating-linear-gradient(96deg,
+     transparent 0,transparent 60px,
+     rgba(195,238,255,0.07) 60px,rgba(195,238,255,0.10) 94px,
+     transparent 94px,transparent 168px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.85) 0%,transparent 72%);
+          mask-image:linear-gradient(180deg,rgba(0,0,0,.85) 0%,transparent 72%);
+  animation:ocRays 17s ease-in-out infinite alternate;}
+@media (prefers-reduced-motion: reduce){
+  #oc-ambient *,#oc-bubbles *,.v5-hero .oc-hero-rays{animation:none!important;}}
+/* === FIN ambiente oceánico === */
+
 </style>
 </head>
 <body class="v2-redesign v3-fluid">
+<div id="oc-ambient" aria-hidden="true">
+  <div class="oc-depth"></div>
+  <div class="oc-caustic"></div>
+  <div class="oc-caustic oc-c2"></div>
+  <div class="oc-rays"></div>
+  <div class="oc-rays oc-rays-2"></div>
+  <div class="oc-surface"></div>
+</div>
+<div id="oc-bubbles" aria-hidden="true">
+  <span class="oc-b" style="left:32.4%;width:6.7px;height:6.7px;animation-duration:16.2s;animation-delay:-1.2s;"></span>
+  <span class="oc-b" style="left:52.4%;width:9.0px;height:9.0px;animation-duration:9.6s;animation-delay:-8.1s;"></span>
+  <span class="oc-b" style="left:5.5%;width:9.8px;height:9.8px;animation-duration:9.8s;animation-delay:-1.5s;"></span>
+  <span class="oc-b" style="left:41.9%;width:14.1px;height:14.1px;animation-duration:10.4s;animation-delay:-3.6s;"></span>
+  <span class="oc-b" style="left:61.0%;width:15.4px;height:15.4px;animation-duration:15.3s;animation-delay:-6.3s;"></span>
+  <span class="oc-b" style="left:93.8%;width:5.5px;height:5.5px;animation-duration:18.4s;animation-delay:-4.6s;"></span>
+  <span class="oc-b" style="left:15.6%;width:6.3px;height:6.3px;animation-duration:12.4s;animation-delay:-13.1s;"></span>
+  <span class="oc-b" style="left:19.0%;width:11.4px;height:11.4px;animation-duration:16.0s;animation-delay:-6.0s;"></span>
+  <span class="oc-b" style="left:53.5%;width:5.7px;height:5.7px;animation-duration:9.7s;animation-delay:-3.3s;"></span>
+  <span class="oc-b" style="left:66.0%;width:9.7px;height:9.7px;animation-duration:12.5s;animation-delay:-9.4s;"></span>
+  <span class="oc-b" style="left:44.6%;width:8.3px;height:8.3px;animation-duration:17.7s;animation-delay:-11.2s;"></span>
+  <span class="oc-b" style="left:24.9%;width:11.3px;height:11.3px;animation-duration:14.8s;animation-delay:-14.0s;"></span>
+  <span class="oc-b" style="left:70.6%;width:8.2px;height:8.2px;animation-duration:19.8s;animation-delay:-1.9s;"></span>
+  <span class="oc-b" style="left:41.3%;width:13.3px;height:13.3px;animation-duration:10.7s;animation-delay:-7.8s;"></span>
+  <span class="oc-b" style="left:5.7%;width:12.4px;height:12.4px;animation-duration:17.4s;animation-delay:-9.2s;"></span>
+  <span class="oc-b" style="left:84.3%;width:8.5px;height:8.5px;animation-duration:16.6s;animation-delay:-9.5s;"></span>
+</div>
 <!-- ============ NUEVO V2: HEADER REDISEÑADO ============ -->
 <div class="v2-app-header">
   <div class="v2-app-header-logo">
@@ -3378,6 +3463,7 @@ body.v3-fluid .v2-coach-poster:active {
 
     <!-- ============ NUEVO V5: HERO ESTILO SPEEDO ============ -->
     <div class="v5-hero">
+      <div class="oc-hero-rays" aria-hidden="true"></div>
       <span id="fb-status" class="v5-hero-status hdr-status">...</span>
 
       <div class="v5-hero-logo">
@@ -8515,7 +8601,7 @@ function buildSponsCarousel() {
 
   if (PATROCINADORES.length === 0) {
     document.getElementById('spons-bar').style.display = 'none';
-    document.body.style.paddingBottom = 'var(--bnav-h)';
+    document.body.style.paddingBottom = 'calc(var(--bnav-h) + env(safe-area-inset-bottom) + 10px)';
     return;
   }
 
