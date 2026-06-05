@@ -2182,7 +2182,7 @@
 
     try {
       cameraStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 640, height: 480, facingMode: 'user' },
+        video: { width: 480, height: 360, facingMode: 'user' },
         audio: false,
       });
     } catch (err) {
@@ -2219,9 +2219,15 @@
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
+    // FIX: limitar la deteccion de pose a ~16 fps para no saturar el celular (causaba congelamiento).
+    var _poseLastSend = 0;
     async function detect() {
       if (!cameraStream) return;
-      try { await pose.send({ image: video }); } catch (e) {}
+      var _now = performance.now();
+      if (_now - _poseLastSend >= 60) {
+        _poseLastSend = _now;
+        try { await pose.send({ image: video }); } catch (e) {}
+      }
       cameraLoop = requestAnimationFrame(detect);
     }
     detect();
@@ -2488,7 +2494,7 @@
 
     try {
       cameraStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 640, height: 480, facingMode: 'user' },
+        video: { width: 480, height: 360, facingMode: 'user' },
         audio: false,
       });
     } catch (err) {
@@ -2542,9 +2548,15 @@
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
+    // FIX: limitar la deteccion de pose a ~16 fps para no saturar el celular (causaba congelamiento).
+    var _poseLastSend = 0;
     async function detect() {
       if (!cameraStream) return;
-      try { await pose.send({ image: video }); } catch (e) {}
+      var _now = performance.now();
+      if (_now - _poseLastSend >= 60) {
+        _poseLastSend = _now;
+        try { await pose.send({ image: video }); } catch (e) {}
+      }
       cameraLoop = requestAnimationFrame(detect);
     }
     detect();
@@ -2970,8 +2982,10 @@
     $('swimmer-r1').querySelector('.nameplate').textContent = duelState.rivalNickname.substring(0, 12);
 
     // Reposicionar verticalmente: rival arriba, tú abajo
-    $('swimmer-r1').style.top = `calc(${(0.5 / 2) * 100}% - 11px)`;
-    $('swimmer-player').style.top = `calc(${(1.5 / 2) * 100}% - 11px)`;
+    // FIX: colocar a ambos nadadores en el centro de carriles reales (la alberca tiene RACE_LANES carriles).
+    // Antes se usaba /2 (25% y 75%), que caía sobre las líneas divisorias, no dentro de un carril.
+    $('swimmer-r1').style.top = `calc(${((1 + 0.5) / RACE_LANES) * 100}% - 11px)`;
+    $('swimmer-player').style.top = `calc(${((2 + 0.5) / RACE_LANES) * 100}% - 11px)`;
     $('swimmer-r1').style.left = '14px';
     $('swimmer-player').style.left = '14px';
 
