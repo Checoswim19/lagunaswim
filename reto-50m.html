@@ -1561,6 +1561,8 @@
   let poseBusy = false;
   let poseSeen = false;   // FIX: la camara realmente detecto a la persona
   let lastPoseAt = 0;
+  let duelTapFallback = false;  // FIX: nadar por toque si la camara no detecta
+  let duelTapArm = 'R';
   let swimStyle = 'libre'; // 'libre' o 'mariposa'
 
   let state = {
@@ -2138,7 +2140,7 @@
   // ============ KEYBOARD ============
   document.addEventListener('keydown', (e) => {
     if (e.repeat) return;
-    if (mode !== 'keyboard') return;
+    if (mode !== 'keyboard' && !(duelState.isDuelMode && duelTapFallback)) return;
     if (!state.running) return;
     const k = e.key.toLowerCase();
     var estilo = state.swimStyle || 'libre';
@@ -2160,7 +2162,7 @@
   function setupTouch(zone, arm) {
     const trigger = (e) => {
       e.preventDefault();
-      if (mode !== 'touch') return;
+      if (mode !== 'touch' && !(duelState.isDuelMode && duelTapFallback)) return;
       var estilo = state.swimStyle || 'libre';
       // Estilos simultáneos: cualquier zona dispara 'B'
       if (estilo === 'mariposa' || estilo === 'pecho') {
@@ -2176,6 +2178,15 @@
   }
   setupTouch($('zoneLeft'), 'L');
   setupTouch($('zoneRight'), 'R');
+
+  // FIX: respaldo por toque en el duelo. Si la camara no detecta, tocar la pantalla nada (alternado).
+  document.addEventListener('pointerdown', function (e) {
+    if (!duelState.isDuelMode || !duelTapFallback || !state.running) return;
+    if (e.target && e.target.closest && e.target.closest('button, a, input, .overlay, .share-btn')) return;
+    var estilo = state.swimStyle || 'libre';
+    if (estilo === 'mariposa' || estilo === 'pecho') { stroke('B'); }
+    else { duelTapArm = (duelTapArm === 'L') ? 'R' : 'L'; stroke(duelTapArm); }
+  });
 
   // ============ CAMERA + POSE ============
   async function setupCamera() {
@@ -3060,7 +3071,9 @@
     // Detector de desconexión (rival)
     duelState.rivalCheckInterval = setInterval(() => {
       const ahora = Date.now();
-      if (duelState.rivalLastUpdate && (ahora - duelState.rivalLastUpdate) > 8000) {
+      // No es desconexion si el rival ya termino (deja de mandar datos al acabar) o si yo ya termine.
+      if (duelState.rivalDistance < TOTAL_DISTANCE && state.playerFinishedAt === null &&
+          duelState.rivalLastUpdate && (ahora - duelState.rivalLastUpdate) > 8000) {
         mostrarDesconexion();
       }
       if (!navigator.onLine) {
@@ -3180,9 +3193,15 @@
     $('hudPos').textContent = pos === 1 ? '1°' : '2°';
     $('hudPos').style.color = pos === 1 ? '#06d6a0' : '#ff6b35';
 
-    // FIX: avisar si la camara dejo de ver al jugador (no avanza por falta de deteccion)
+    // FIX: si la camara no te detecta, avisar y activar respaldo por toque
+    var _nowP = performance.now();
+    var _stale = (mode === 'camera') && (_nowP - lastPoseAt) > 1500;
+    if (_stale && (_nowP - lastPoseAt) > 3000) duelTapFallback = true;
     var _pw = $('poseWarn');
-    if (_pw) { _pw.style.display = (mode === 'camera' && (performance.now() - lastPoseAt) > 1500) ? 'block' : 'none'; }
+    if (_pw) {
+      if (duelTapFallback) { _pw.textContent = '👆 La cámara no te detecta — TOCA la pantalla alternando para nadar'; _pw.style.display = 'block'; }
+      else { _pw.style.display = _stale ? 'block' : 'none'; }
+    }
 
     // Reportar mi progreso a Firebase (throttle 5x/seg)
     if (!loopDuelo._lastReport || (timestamp - loopDuelo._lastReport) > 200) {
@@ -3368,6 +3387,7 @@
     duelState.rivalDistance = 0;
     duelState.rivalLastUpdate = 0;
     var pw = document.getElementById('poseWarn'); if (pw) pw.style.display = 'none';
+    duelTapFallback = false; duelTapArm = 'R';
   }
 
   // ===== INICIALIZACIÓN: check URL para join automático =====
