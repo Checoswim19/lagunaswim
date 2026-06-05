@@ -2449,6 +2449,7 @@
     rivalDistance: 0,
     rivalVelocity: 0,
     raceStarted: false,
+    launched: false,
   };
 
   function initFirebase() {
@@ -2789,6 +2790,10 @@
       }
     });
     duelState.listeners.push({ ref: duelState.duelRef.child('cameraReady/rival'), event: 'value', handler: handlerCam });
+
+    // FIX: el creador también debe escuchar la señal de arranque para lanzar su propia carrera.
+    // Antes solo escuchaba el rival, por eso el creador nunca iniciaba y el rival veía "Conexión perdida".
+    escucharInicioCarrera();
   }
 
   function cancelarDuelo() {
@@ -2950,6 +2955,9 @@
 
   // ===== LANZAR LA CARRERA EN MODO DUELO =====
   function lanzarCarreraDuelo(startTimestamp) {
+    // FIX: evitar doble arranque (el listener de 'status' puede dispararse más de una vez).
+    if (duelState.launched) return;
+    duelState.launched = true;
     document.body.classList.add('duel-mode');
     duelState.isDuelMode = true;
     duelState.raceStarted = false;
@@ -3303,6 +3311,7 @@
     }
     duelState.isDuelMode = false;
     duelState.isCreator = false;
+    duelState.launched = false;
     duelState.duelId = null;
     duelState.rivalDistance = 0;
     duelState.rivalLastUpdate = 0;
