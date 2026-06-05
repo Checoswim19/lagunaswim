@@ -1556,6 +1556,8 @@
   let pose = null;
   let cameraStream = null;
   let cameraLoop = null;
+  let poseTimer = null;   // FIX: ciclo de deteccion a prueba de cuelgues
+  let poseBusy = false;
   let swimStyle = 'libre'; // 'libre' o 'mariposa'
 
   let state = {
@@ -2219,18 +2221,21 @@
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // FIX: limitar la deteccion de pose a ~16 fps para no saturar el celular (causaba congelamiento).
-    var _poseLastSend = 0;
-    async function detect() {
-      if (!cameraStream) return;
-      var _now = performance.now();
-      if (_now - _poseLastSend >= 60) {
-        _poseLastSend = _now;
-        try { await pose.send({ image: video }); } catch (e) {}
-      }
-      cameraLoop = requestAnimationFrame(detect);
-    }
-    detect();
+    // FIX: deteccion de pose robusta. Si pose.send se cuelga (problema conocido de MediaPipe en
+    // celular), este ciclo NO muere: una bandera "ocupado" evita solapamientos y un timeout de
+    // seguridad la libera para reintentar. ~16 cuadros/seg es de sobra para detectar brazadas.
+    if (poseTimer) { clearInterval(poseTimer); poseTimer = null; }
+    poseBusy = false;
+    poseTimer = setInterval(function () {
+      if (!cameraStream || poseBusy) return;
+      poseBusy = true;
+      var liberado = false;
+      var liberar = function () { if (!liberado) { liberado = true; poseBusy = false; } };
+      setTimeout(liberar, 700);
+      try {
+        Promise.resolve(pose.send({ image: video })).then(liberar, liberar);
+      } catch (e) { liberar(); }
+    }, 60);
 
     $('cameraPreview').classList.add('active');
     $('overlayLoading').classList.add('hidden');
@@ -2339,6 +2344,8 @@
   function stopCamera() {
     if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
     if (cameraLoop) { cancelAnimationFrame(cameraLoop); cameraLoop = null; }
+    if (poseTimer) { clearInterval(poseTimer); poseTimer = null; }
+    poseBusy = false;
     $('cameraPreview').classList.remove('active');
   }
 
@@ -2548,18 +2555,21 @@
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // FIX: limitar la deteccion de pose a ~16 fps para no saturar el celular (causaba congelamiento).
-    var _poseLastSend = 0;
-    async function detect() {
-      if (!cameraStream) return;
-      var _now = performance.now();
-      if (_now - _poseLastSend >= 60) {
-        _poseLastSend = _now;
-        try { await pose.send({ image: video }); } catch (e) {}
-      }
-      cameraLoop = requestAnimationFrame(detect);
-    }
-    detect();
+    // FIX: deteccion de pose robusta. Si pose.send se cuelga (problema conocido de MediaPipe en
+    // celular), este ciclo NO muere: una bandera "ocupado" evita solapamientos y un timeout de
+    // seguridad la libera para reintentar. ~16 cuadros/seg es de sobra para detectar brazadas.
+    if (poseTimer) { clearInterval(poseTimer); poseTimer = null; }
+    poseBusy = false;
+    poseTimer = setInterval(function () {
+      if (!cameraStream || poseBusy) return;
+      poseBusy = true;
+      var liberado = false;
+      var liberar = function () { if (!liberado) { liberado = true; poseBusy = false; } };
+      setTimeout(liberar, 700);
+      try {
+        Promise.resolve(pose.send({ image: video })).then(liberar, liberar);
+      } catch (e) { liberar(); }
+    }, 60);
 
     mode = 'camera';
     $('cameraPreview').classList.add('active');
@@ -3098,6 +3108,8 @@
   // Loop modificado para duelo (sin NPCs, con rival real)
   function loopDuelo(timestamp) {
     if (!state.running || !duelState.isDuelMode) return;
+    // FIX: blindar el bucle. Si un cuadro falla, lo ignoramos y seguimos, en vez de congelar la carrera.
+    try {
     const dt = lastFrame ? Math.min((timestamp - lastFrame) / 1000, 0.05) : 0.016;
     lastFrame = timestamp;
 
@@ -3163,7 +3175,8 @@
       }
     }
 
-    requestAnimationFrame(loopDuelo);
+    } catch (e) { console.warn('[DUELO] error en cuadro (ignorado):', e); }
+    if (state.running && duelState.isDuelMode) requestAnimationFrame(loopDuelo);
   }
 
   async function reportarProgresoFirebase() {
