@@ -1175,6 +1175,7 @@
     </div>
   </div>
 
+  <div id="poseWarn" style="display:none;position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(239,71,111,0.95);color:#fff;padding:8px 14px;border-radius:10px;font-size:13px;font-weight:700;text-align:center;max-width:90%;line-height:1.3;box-shadow:0 4px 14px rgba(0,0,0,0.4)">📷 No te veo — ponte frente a la cámara, con buena luz, que se vean tus hombros y brazos</div>
   <div class="camera-preview" id="cameraPreview">
     <div class="camera-label">Cámara</div>
     <video id="cameraVideo" autoplay playsinline muted></video>
@@ -1317,7 +1318,7 @@
       <div class="lobby-player ready" id="lobbyCreator">
         <div class="lobby-player-emoji">🏊‍♂️</div>
         <div class="lobby-player-name" id="lobbyCreatorName">TÚ</div>
-        <div class="lobby-player-status">Listo</div>
+        <div class="lobby-player-status" id="selfStatusCreator">Listo</div>
       </div>
       <div class="lobby-vs">VS</div>
       <div class="lobby-player waiting" id="lobbyRival">
@@ -1407,7 +1408,7 @@
       <div class="lobby-player ready">
         <div class="lobby-player-emoji">🏊‍♂️</div>
         <div class="lobby-player-name" id="lobbyMyName">TÚ</div>
-        <div class="lobby-player-status">Listo</div>
+        <div class="lobby-player-status" id="selfStatusRival">Listo</div>
       </div>
     </div>
 
@@ -1558,6 +1559,8 @@
   let cameraLoop = null;
   let poseTimer = null;   // FIX: ciclo de deteccion a prueba de cuelgues
   let poseBusy = false;
+  let poseSeen = false;   // FIX: la camara realmente detecto a la persona
+  let lastPoseAt = 0;
   let swimStyle = 'libre'; // 'libre' o 'mariposa'
 
   let state = {
@@ -2251,6 +2254,7 @@
     if (!results.poseLandmarks) return;
 
     const lm = results.poseLandmarks;
+    poseSeen = true; lastPoseAt = performance.now();
     const leftShoulder = lm[11];
     const leftWrist = lm[15];
     const rightShoulder = lm[12];
@@ -2709,6 +2713,27 @@
     }
   }
 
+  // FIX: marcar "listo" solo cuando la camara DE VERDAD detecta al jugador (ve sus brazos),
+  // no solo por tener permiso. Asi nadie entra a la carrera sin que la camara lo vea.
+  function marcarListoCuandoDetecte(role, statusElId) {
+    var statusEl = document.getElementById(statusElId);
+    if (statusEl) statusEl.textContent = 'Buscándote…';
+    poseSeen = false;
+    var t0 = performance.now();
+    var iv = setInterval(function () {
+      if (!duelState.duelRef) { clearInterval(iv); return; }
+      if (poseSeen) {
+        clearInterval(iv);
+        if (statusEl) statusEl.textContent = '✅ Te veo';
+        duelState.duelRef.child('cameraReady/' + role).set(true).catch(function(){});
+      } else if (performance.now() - t0 > 12000) {
+        clearInterval(iv);
+        if (statusEl) statusEl.textContent = '⚠️ No te detecto bien';
+        duelState.duelRef.child('cameraReady/' + role).set(true).catch(function(){});
+      }
+    }, 300);
+  }
+
   function mostrarLobbyCreador(code, nick) {
     $('overlayStart').classList.add('hidden');
     $('overlayLoading').classList.add('hidden');
@@ -2717,9 +2742,7 @@
     $('lobbyCreatorName').textContent = nick;
 
     // Marcar que YO ya tengo cámara lista (Firebase)
-    duelState.duelRef.child('cameraReady/creator').set(true)
-      .then(() => console.log('[DUELO] cameraReady/creator escrito OK'))
-      .catch((e) => console.error('[DUELO] Error escribiendo cameraReady/creator:', e));
+    marcarListoCuandoDetecte('creator', 'selfStatusCreator');
 
     // Generar QR
     const duelUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'reto-50m.html?duelo=' + code;
@@ -2956,9 +2979,7 @@
     $('btnSalirRival').onclick = cancelarDuelo;
 
     // Marcar que YO (rival) tengo cámara lista
-    duelState.duelRef.child('cameraReady/rival').set(true)
-      .then(() => console.log('[DUELO] cameraReady/rival escrito OK'))
-      .catch((e) => console.error('[DUELO] Error escribiendo cameraReady/rival:', e));
+    marcarListoCuandoDetecte('rival', 'selfStatusRival');
   }
 
   function escucharInicioCarrera() {
@@ -3159,6 +3180,10 @@
     $('hudPos').textContent = pos === 1 ? '1°' : '2°';
     $('hudPos').style.color = pos === 1 ? '#06d6a0' : '#ff6b35';
 
+    // FIX: avisar si la camara dejo de ver al jugador (no avanza por falta de deteccion)
+    var _pw = $('poseWarn');
+    if (_pw) { _pw.style.display = (mode === 'camera' && (performance.now() - lastPoseAt) > 1500) ? 'block' : 'none'; }
+
     // Reportar mi progreso a Firebase (throttle 5x/seg)
     if (!loopDuelo._lastReport || (timestamp - loopDuelo._lastReport) > 200) {
       reportarProgresoFirebase();
@@ -3342,6 +3367,7 @@
     duelState.duelId = null;
     duelState.rivalDistance = 0;
     duelState.rivalLastUpdate = 0;
+    var pw = document.getElementById('poseWarn'); if (pw) pw.style.display = 'none';
   }
 
   // ===== INICIALIZACIÓN: check URL para join automático =====
