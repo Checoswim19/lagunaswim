@@ -5502,7 +5502,7 @@ function loginGoogle() {
   // Verificar que el dominio actual sea autorizado
   // (esto NO bloquea, solo registra en consola para diagnóstico)
   console.log('[Login Debug] Dominio:', window.location.hostname);
-  console.log('[Login Debug] Auth domain:', firebaseConfig && firebaseConfig.authDomain);
+  console.log('[Login Debug] Auth domain:', CONFIG.fbCfg && CONFIG.fbCfg.authDomain);
 
   // Detectar si es móvil
   var esMobil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
