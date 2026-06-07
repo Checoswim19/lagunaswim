@@ -1471,6 +1471,7 @@
 
     <button class="start-btn" id="btnRestart">Otra vez</button>
     <button class="start-btn secondary" id="btnChangeMode">Cambiar modo</button>
+    <button class="start-btn secondary" id="btnSalirMenu">Salir al menú</button>
     <div class="motto">Coach Sergio · ASCA Level 4</div>
   </div>
 
@@ -2434,6 +2435,19 @@
   $('closeBtn').addEventListener('click', () => {
     stopCamera();
     sendToParent('CLOSE_GAME', {});
+  });
+  $('btnSalirMenu').addEventListener('click', () => {
+    stopCamera();
+    document.body.classList.remove('touch-mode');
+    document.body.classList.remove('duel-mode');
+    if (isEmbedded) {
+      // Dentro del modal del sitio: cerrar el juego y regresar al menú principal
+      sendToParent('CLOSE_GAME', {});
+    } else {
+      // Abierto fuera del modal: regresar a la pantalla de inicio del propio juego
+      $('overlayFinish').classList.add('hidden');
+      $('overlayStart').classList.remove('hidden');
+    }
   });
 
   if ('ontouchstart' in window && navigator.maxTouchPoints > 0) {
