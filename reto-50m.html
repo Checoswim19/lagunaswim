@@ -198,25 +198,28 @@
     50% { transform: translate(10px, 5px); }
   }
 
+  /* Línea negra del fondo: TERMINA a ~2 m de cada pared (no toca el muro),
+     con la "T" perpendicular en cada extremo, como en alberca reglamentaria. */
   .lane-floor-line {
     position: absolute;
-    left: 14px; right: 14px;
+    left: 6%; right: 6%;
     height: 4px;
     background: var(--t-mark);
     z-index: 4;
-    opacity: 0.88;
+    opacity: 0.9;
     border-radius: 1px;
   }
   .lane-floor-line::before, .lane-floor-line::after {
     content: '';
     position: absolute;
-    top: -6px;
-    width: 16px; height: 16px;
+    top: 50%;
+    width: 4px; height: 26px;
     background: var(--t-mark);
     border-radius: 1px;
+    transform: translateY(-50%);
   }
-  .lane-floor-line::before { left: 0; }
-  .lane-floor-line::after { right: 0; }
+  .lane-floor-line::before { left: -2px; }
+  .lane-floor-line::after { right: -2px; }
 
   .lane-divider {
     position: absolute;
@@ -237,7 +240,7 @@
     transform: translateY(-50%);
   }
   .buoy {
-    width: 9px; height: 9px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     box-shadow: 0 1px 2px rgba(0,0,0,0.5), inset -1.5px -1.5px 2px rgba(0,0,0,0.3), inset 1.5px 1.5px 2px rgba(255,255,255,0.5);
     position: relative;
@@ -288,6 +291,82 @@
     z-index: 7;
     border-right: 2px solid var(--pool-tile-border);
   }
+
+  /* Banco de salida en cada carril (sobre el muro de salida) */
+  .start-block {
+    position: absolute;
+    left: -3px;
+    width: 24px;
+    z-index: 8;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .start-block .bk {
+    width: 22px; height: 24px;
+    border-radius: 3px 3px 2px 2px;
+    background: linear-gradient(180deg,#ffd60a 0%,#e7a900 52%,#2c2c2c 52%,#171717 100%);
+    border: 1.5px solid #141414;
+    box-shadow: 0 2px 5px rgba(0,0,0,.55), inset 0 1px 2px rgba(255,255,255,.35);
+    color: #15233a; font-size: 9px; font-weight: 800; text-align: center; line-height: 12px;
+  }
+
+  /* Gradas con público alrededor de la alberca */
+  .stands {
+    position: absolute; left: 0; right: 0; height: 7%; z-index: 1; overflow: hidden;
+    display: flex; flex-wrap: wrap; align-content: center; justify-content: center;
+    gap: 3px 7px; padding: 0 4%;
+  }
+  .stands.top { top: 0; background: linear-gradient(180deg,#b9b7ad,#cfcdc3); border-bottom: 2px solid #8f8d87; }
+  .stands.bottom { bottom: 0; background: linear-gradient(0deg,#b9b7ad,#cfcdc3); border-top: 2px solid #8f8d87; }
+  .fan { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 1px 1px rgba(0,0,0,.3); }
+  .crowd-banner {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    background: linear-gradient(90deg,#1ba3c8,#0f9bc4); color: #fff; font-weight: 800;
+    font-size: 10px; letter-spacing: 1px; padding: 2px 12px; border-radius: 20px; z-index: 3;
+    box-shadow: 0 2px 6px rgba(0,0,0,.4); white-space: nowrap; border: 1.5px solid #fff;
+  }
+
+  /* Banderas de dorso (espalda): a 5 m de cada pared, deletrean LAGUNA SWIM */
+  .bk-flags {
+    position: absolute; top: 14px; bottom: 14px; width: 18px; z-index: 6;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-evenly;
+  }
+  .bk-flags.left { left: 11.5%; }
+  .bk-flags.right { right: 11.5%; }
+  .bk-flags::before {
+    content: ''; position: absolute; top: 4px; bottom: 4px; left: 50%; width: 2px;
+    transform: translateX(-50%); background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 4px rgba(0,0,0,0.45); z-index: 1;
+  }
+  .bk-flag {
+    width: 18px; height: 18px; display: flex; align-items: flex-start; justify-content: center;
+    font-size: 9px; font-weight: 800; position: relative; z-index: 2;
+    padding-top: 1px; line-height: 10px;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+  }
+  .bk-flag.space { background: transparent !important; filter: none; }
+  @media (max-width: 600px) { .bk-flag { width: 14px; height: 15px; font-size: 8px; } }
+
+  /* Grito del Coach desde las gradas, durante la carrera */
+  .coach-shout {
+    position: absolute; top: 8.5%; left: 50%; transform: translate(-50%,-10px) scale(.92);
+    z-index: 9; display: flex; align-items: center; gap: 8px; pointer-events: none;
+    background: #fff; color: #0a2238; border: 2px solid var(--accent);
+    border-radius: 16px; padding: 7px 14px 7px 11px; max-width: 78%;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45); font-weight: 700; font-size: 0.9rem; line-height: 1.25;
+    opacity: 0; transition: opacity .25s ease, transform .25s ease;
+  }
+  .coach-shout.show { opacity: 1; transform: translate(-50%,0) scale(1); }
+  .coach-shout::after {
+    content: ''; position: absolute; top: -10px; left: 30px; width: 0; height: 0;
+    border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 10px solid var(--accent);
+  }
+  .coach-shout::before {
+    content: ''; position: absolute; top: -7px; left: 32px; width: 0; height: 0;
+    border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 8px solid #fff; z-index: 1;
+  }
+  .coach-shout .cs-emoji { font-size: 1.4rem; flex-shrink: 0; }
+  @media (max-width: 600px) { .coach-shout { font-size: 0.78rem; max-width: 88%; } }
 
   .swimmer-pool {
     position: absolute;
@@ -1159,6 +1238,14 @@
     <div class="deck-drain bl"></div>
     <div class="deck-drain br"></div>
 
+    <div class="stands top" id="standsTop"></div>
+    <div class="stands bottom" id="standsBottom"></div>
+
+    <div class="coach-shout" id="coachShout">
+      <span class="cs-emoji">🗣️</span>
+      <span class="cs-text"></span>
+    </div>
+
     <div class="pool" id="pool">
       <div class="water-shimmer"></div>
       <div class="water-caustics"></div>
@@ -1625,6 +1712,62 @@
     },
   };
 
+  // ============ FRASES DE COACH POR ESTILO ============
+  const COACH_TIPS = {
+    libre: [
+      'Estira bien el brazo, como si quisieras atrapar un pez adelante.',
+      'Termina la brazada hasta el muslo, no la cortes antes.',
+      'Gira el cuerpo con cada brazada, no nades plano.',
+      'Respira en el hueco del brazo, no levantes la cabeza.',
+      'Patada constante, pero relajada, como si movieras aletas.',
+      'El codo alto durante la recuperación, como si sacaras una espada.',
+      'No cruces el brazo por la línea media, derecho hacia atrás.',
+      'Exhala fuerte bajo el agua, así inhalas mejor al girar.',
+      'Mantén la mirada al fondo, no al frente.',
+      'Al final, acelera la patada y cierra con todo, ¡ya viene la pared!'
+    ],
+    dorso: [
+      'Orejas bajo el agua, mentón arriba, mirada al cielo.',
+      'Brazo recto al salir, entra meñique primero.',
+      'Gira los hombros para ganar distancia, no nades tieso.',
+      'Patada firme, pero sin salpicar en tu propia cara.',
+      'El codo se dobla al empujar, no bloquees el brazo.',
+      'Saca el brazo como si sacaras una espada del agua.',
+      'Cuenta tus brazadas para llegar bien a la pared de espaldas.',
+      'No dejes caer la cadera, el cuerpo debe estar recto.',
+      'Respiración rítmica: un brazo, una burbuja; el otro, otra.',
+      'Últimos metros, cierra los ojos y dale con el doble de patada, ¡vamos!'
+    ],
+    pecho: [
+      'Saca los talones hacia los glúteos, no los tires hacia atrás.',
+      'Las manos juntas como en oración, empuja y dispara adelante.',
+      'Respira sacando la cabeza justo cuando jalas agua.',
+      'No subas los hombros al respirar, solo el mentón.',
+      'Patada de rana: pies hacia afuera, juntas y aceleras.',
+      'Desliza después de cada brazada, quédate un momento en flecha.',
+      'Las manos no pasan la línea de los hombros al abrir.',
+      'El ritmo es: jala, respira, patea, desliza. Repite.',
+      'Mantén la cabeza baja entre brazadas, como un torpedo.',
+      '¡Cierra con todo! Acelera la patada y no te detengas hasta tocar la pared.'
+    ],
+    mariposa: [
+      'Dos patadas por brazada: una fuerte al entrar, otra al salir.',
+      'La cabeza entra justo antes que los brazos, no después.',
+      'Las manos entran al ancho de los hombros, no juntas.',
+      'Ondula desde el pecho, no solo con las piernas.',
+      'Saca la nariz para respirar justo cuando jalas fuerte.',
+      'Brazo suave al recuperar, como si rozaras el agua.',
+      'No ahogues la brazada; tira fuerte hasta los muslos.',
+      'Mantén la cadera arriba en cada patada de delfín.',
+      'El ritmo es de un delfín: ondulación continua, sin pausas.',
+      'Últimos 25, saca el corazón y dale dos patadas explosivas por brazada, ¡a la pared!'
+    ]
+  };
+  function coachTip(estilo) {
+    const arr = COACH_TIPS[estilo] || COACH_TIPS.libre;
+    return arr[(Math.random() * arr.length) | 0];
+  }
+
   function selectStyle(estilo) {
     if (!STYLE_CONFIG[estilo]) estilo = 'libre';
     swimStyle = estilo;
@@ -1678,24 +1821,103 @@
       line.style.top = `calc(${((i + 0.5) / RACE_LANES) * 100}% - 2px)`;
       pool.appendChild(line);
     }
+    // Banco de salida en cada carril (muro de salida, izquierda)
+    for (let i = 0; i < RACE_LANES; i++) {
+      const blk = document.createElement('div');
+      blk.className = 'start-block';
+      blk.style.top = `calc(${((i + 0.5) / RACE_LANES) * 100}% - 12px)`;
+      const bk = document.createElement('div');
+      bk.className = 'bk';
+      bk.textContent = (i + 1);
+      blk.appendChild(bk);
+      pool.appendChild(blk);
+    }
     const dividerCount = RACE_LANES + 1;
     for (let i = 0; i < dividerCount; i++) {
       const div = document.createElement('div');
       div.className = 'lane-divider';
       div.style.top = `calc(${(i / (dividerCount - 1)) * 100}% - 5px)`;
-      for (let j = 0; j < 28; j++) {
+      for (let j = 0; j < 46; j++) {
         const buoy = document.createElement('div');
         buoy.className = 'buoy';
-        const m = j % 5;
-        if (m === 0) buoy.classList.add('red');
-        else if (m === 3) buoy.classList.add('blue');
-        else buoy.classList.add('white');
+        buoy.classList.add(j % 7 === 0 ? 'blue' : 'white');
         div.appendChild(buoy);
       }
       pool.appendChild(div);
     }
   }
   buildPool();
+
+  // ============ PÚBLICO EN GRADAS ============
+  function buildStands() {
+    const palette = ['#ef476f','#06d6a0','#ffd166','#118ab2','#f78c6b','#9b5de5','#00bbf9','#fee440','#e8e8e8','#ff7b6b','#43aa8b','#ffc6ff'];
+    ['standsTop','standsBottom'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      for (let i = 0; i < 80; i++) {
+        const f = document.createElement('div');
+        f.className = 'fan';
+        const col = palette[(Math.random() * palette.length) | 0];
+        f.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,.65), ${col} 70%)`;
+        el.appendChild(f);
+      }
+    });
+    const top = document.getElementById('standsTop');
+    if (top) {
+      const banner = document.createElement('div');
+      banner.className = 'crowd-banner';
+      banner.textContent = '🎉 ¡VAMOS LAGUNA! 🎉';
+      top.appendChild(banner);
+    }
+  }
+  buildStands();
+
+  // ============ BANDERAS DE DORSO (a 5 m, deletrean LAGUNA SWIM) ============
+  function buildBackstrokeFlags() {
+    const text = 'LAGUNA SWIM';
+    const colA = '#0f9bc4', colB = '#ffd60a';
+    ['left', 'right'].forEach(side => {
+      const wrap = document.createElement('div');
+      wrap.className = 'bk-flags ' + side;
+      [...text].forEach((ch, idx) => {
+        const f = document.createElement('div');
+        f.className = 'bk-flag';
+        if (ch === ' ') {
+          f.classList.add('space');
+        } else {
+          f.textContent = ch;
+          const even = (idx % 2 === 0);
+          f.style.background = even ? colA : colB;
+          f.style.color = even ? '#fff' : '#15233a';
+        }
+        wrap.appendChild(f);
+      });
+      pool.appendChild(wrap);
+    });
+  }
+  buildBackstrokeFlags();
+
+  // ============ GRITOS DEL COACH DURANTE LA CARRERA ============
+  // Aparecen desde las gradas mientras nadas, según el estilo elegido.
+  let _coachShoutEl = null, _lastShoutAt = 0, _coachHideT = null;
+  function showCoachShout() {
+    if (!_coachShoutEl) _coachShoutEl = document.getElementById('coachShout');
+    if (!_coachShoutEl) return;
+    const est = (state && state.swimStyle) || swimStyle || 'libre';
+    const txt = _coachShoutEl.querySelector('.cs-text');
+    if (txt) txt.textContent = coachTip(est);
+    _coachShoutEl.classList.add('show');
+    clearTimeout(_coachHideT);
+    _coachHideT = setTimeout(function(){ _coachShoutEl.classList.remove('show'); }, 3400);
+  }
+  setInterval(function(){
+    if (state && state.running && !state.finished) {
+      const now = performance.now();
+      if (now - _lastShoutAt > 5200) { _lastShoutAt = now; showCoachShout(); }
+    } else if (_coachShoutEl) {
+      _coachShoutEl.classList.remove('show');
+    }
+  }, 600);
 
   function makeSwimmerSVG(capColor, isLaguna) {
     // Si isLaguna=true, usar estilo Laguna Swim (gorra dorada con detalle, goggles azules)
@@ -2197,13 +2419,23 @@
     status.classList.remove('error');
     status.textContent = 'Pidiendo permiso de cámara…';
 
+    // La cámara solo funciona en contexto seguro (https o localhost), no al abrir el archivo local (file://)
+    if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      status.textContent = '📷 La cámara solo funciona en el sitio en línea (lagunaswim.net, https). Abierto como archivo local no se permite. Usa modo Teclado o Táctil.';
+      status.classList.add('error');
+      return false;
+    }
+
     try {
       cameraStream = await navigator.mediaDevices.getUserMedia({
         video: { width: 480, height: 360, facingMode: 'user' },
         audio: false,
       });
     } catch (err) {
-      status.textContent = 'No se pudo acceder a la cámara. Usa modo Teclado o Táctil.';
+      const denied = err && (err.name === 'NotAllowedError' || err.name === 'SecurityError');
+      status.textContent = denied
+        ? 'Permiso de cámara denegado. Actívalo en el candado del navegador, o usa modo Teclado/Táctil.'
+        : 'No se pudo acceder a la cámara. Usa modo Teclado o Táctil.';
       status.classList.add('error');
       return false;
     }
