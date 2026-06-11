@@ -4966,5 +4966,308 @@ requestAnimationFrame(loop);
 })();
 </script>
 
+<!-- ═══════════════════════════════════════════════════════════
+     PARCHE DE PLAYA PARADISÍACA v1 · Laguna Swim OW
+     Palmeras, sombrillas, toallas, arena con textura,
+     olas rompiendo con espuma y arco inflable Oceanman.
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+(function paradiseBeach() {
+
+  // Hash determinístico (para que la decoración no "baile" entre frames)
+  function hash(n) { return ((n * 2654435761) >>> 0) / 4294967296; }
+
+  // ── PALMERA (vista cenital: tronco corto + corona de hojas radiales) ──
+  function drawPalm(x, y, s, seed) {
+    ctx.save();
+    ctx.translate(x, y);
+    const sway = Math.sin(State.animTime * 0.0012 + seed * 6) * 0.06;
+    ctx.rotate(seed * Math.PI * 2 + sway);
+    ctx.scale(s, s);
+
+    // Sombra de la corona sobre la arena
+    ctx.fillStyle = 'rgba(90, 70, 30, 0.25)';
+    ctx.beginPath();
+    ctx.ellipse(6, 8, 22, 12, 0.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Tronco (visto desde arriba: pequeño círculo café con anillos)
+    ctx.fillStyle = '#8d6e63';
+    ctx.strokeStyle = '#5d4037';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(0, 0, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Hojas radiales (7 frondas)
+    for (let i = 0; i < 7; i++) {
+      const a = (i / 7) * Math.PI * 2 + seed;
+      const len = 20 + hash(seed * 100 + i) * 8;
+      const bend = Math.sin(State.animTime * 0.0015 + i + seed * 9) * 2;
+      ctx.save();
+      ctx.rotate(a);
+      // Fronda: hoja alargada con gradiente verde
+      const g = ctx.createLinearGradient(0, 0, len, 0);
+      g.addColorStop(0, '#2e7d32');
+      g.addColorStop(0.6, '#43a047');
+      g.addColorStop(1, '#66bb6a');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(3, 0);
+      ctx.quadraticCurveTo(len * 0.5, -5 - bend, len, -1);
+      ctx.quadraticCurveTo(len * 0.55, 4 + bend, 3, 0);
+      ctx.closePath();
+      ctx.fill();
+      // Nervadura central
+      ctx.strokeStyle = 'rgba(27, 94, 32, 0.6)';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(3, 0);
+      ctx.quadraticCurveTo(len * 0.5, -bend * 0.5, len, -1);
+      ctx.stroke();
+      ctx.restore();
+    }
+    // Cocos
+    ctx.fillStyle = '#6d4c41';
+    for (let i = 0; i < 3; i++) {
+      const a = i * 2.1 + seed * 4;
+      ctx.beginPath();
+      ctx.arc(Math.cos(a) * 4.5, Math.sin(a) * 4.5, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // ── SOMBRILLA de playa (círculo de gajos de colores) ──
+  function drawUmbrella(x, y, seed) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(seed * Math.PI * 2);
+    // Sombra
+    ctx.fillStyle = 'rgba(90, 70, 30, 0.3)';
+    ctx.beginPath();
+    ctx.ellipse(4, 5, 14, 9, 0.3, 0, Math.PI * 2);
+    ctx.fill();
+    // Gajos alternados
+    const palettes = [['#e53935','#ffffff'], ['#1e88e5','#ffffff'], ['#fdd835','#ff7043'], ['#43a047','#ffffff']];
+    const pal = palettes[Math.floor(seed * 4) % 4];
+    for (let i = 0; i < 8; i++) {
+      ctx.fillStyle = pal[i % 2];
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, 13, i * Math.PI / 4, (i + 1) * Math.PI / 4);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.arc(0, 0, 13, 0, Math.PI * 2);
+    ctx.stroke();
+    // Punta central
+    ctx.fillStyle = '#5d4037';
+    ctx.beginPath();
+    ctx.arc(0, 0, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // ── TOALLA de playa con rayas ──
+  function drawTowel(x, y, seed) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(seed * Math.PI * 2);
+    const colors = [['#ff7043','#ffe0b2'], ['#26c6da','#e0f7fa'], ['#ab47bc','#f3e5f5'], ['#fdd835','#fffde7']];
+    const c = colors[Math.floor(seed * 7) % 4];
+    ctx.fillStyle = c[0];
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    ctx.roundRect(-10, -5.5, 20, 11, 1.5);
+    ctx.fill();
+    ctx.stroke();
+    // Rayas
+    ctx.fillStyle = c[1];
+    for (let i = -7; i <= 7; i += 5) ctx.fillRect(i - 1, -5.5, 2, 11);
+    ctx.restore();
+  }
+
+  // ── ARCO INFLABLE de salida/meta (estilo Oceanman) ──
+  function drawInflatableArch(bx, cy) {
+    ctx.save();
+    const x = bx + 14;
+    const w = 84;
+    const bob = Math.sin(State.animTime * 0.002) * 1;
+    // Columnas inflables
+    const colGrad = ctx.createLinearGradient(0, cy - 50, 0, cy + 50);
+    colGrad.addColorStop(0, '#1e88e5');
+    colGrad.addColorStop(1, '#0a3d62');
+    ctx.fillStyle = colGrad;
+    ctx.strokeStyle = '#062a44';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(x, cy - 52 + bob, 9, 36, 4); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(x, cy + 16 - bob, 9, 36, 4); ctx.fill(); ctx.stroke();
+    // Travesaño superior (banner)
+    ctx.fillStyle = '#fdd835';
+    ctx.strokeStyle = '#7d6600';
+    ctx.beginPath();
+    ctx.roundRect(x - 2, cy - 16, 13, 32, 3);
+    ctx.fill(); ctx.stroke();
+    // Texto vertical LAGUNA
+    ctx.fillStyle = '#0a3d62';
+    ctx.font = '900 5px Arial Black, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.save();
+    ctx.translate(x + 4.5, cy);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('LAGUNA SWIM', 0, 0);
+    ctx.restore();
+    ctx.restore();
+  }
+
+  // ── DECORACIÓN COMPLETA DE LA PLAYA ──
+  function decorateBeach(b, beachSeed) {
+    // 1) Gradiente de arena más rico (dorado → claro hacia el agua)
+    const g = ctx.createLinearGradient(b.x, 0, b.x + b.w, 0);
+    g.addColorStop(0, '#e8c97e');
+    g.addColorStop(0.55, '#f2dfa8');
+    g.addColorStop(1, '#f9efcf');
+    ctx.fillStyle = g;
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+
+    // 2) Textura de arena: puntitos y conchitas determinísticos
+    for (let i = 0; i < Math.floor(b.h / 9); i++) {
+      const hx = hash(beachSeed + i * 3) * (b.w - 10) + b.x + 5;
+      const hy = hash(beachSeed + i * 7 + 1) * b.h + b.y;
+      const r = hash(beachSeed + i * 11 + 2);
+      if (r < 0.85) {
+        ctx.fillStyle = 'rgba(160, 130, 80, 0.30)';
+        ctx.beginPath();
+        ctx.arc(hx, hy, 0.8 + r, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Conchita / estrella de mar ocasional
+        if (r < 0.93) {
+          ctx.fillStyle = '#fff3e0';
+          ctx.strokeStyle = 'rgba(160,120,70,0.5)';
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.arc(hx, hy, 2.2, Math.PI * 0.9, Math.PI * 2.1);
+          ctx.closePath();
+          ctx.fill(); ctx.stroke();
+        } else {
+          // Estrella de mar naranja
+          ctx.fillStyle = '#ff8a65';
+          ctx.save();
+          ctx.translate(hx, hy);
+          ctx.rotate(r * 20);
+          ctx.beginPath();
+          for (let k = 0; k < 5; k++) {
+            const a = -Math.PI / 2 + k * Math.PI * 2 / 5;
+            const a2 = a + Math.PI / 5;
+            if (k === 0) ctx.moveTo(Math.cos(a) * 3, Math.sin(a) * 3);
+            else ctx.lineTo(Math.cos(a) * 3, Math.sin(a) * 3);
+            ctx.lineTo(Math.cos(a2) * 1.3, Math.sin(a2) * 1.3);
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+    }
+
+    // 3) Vegetación al fondo de la playa (lado opuesto al agua) + palmeras
+    const innerX = b.x + 12;  // borde interior (lejos del agua, asumiendo agua al este)
+    // Matas de pasto playero
+    for (let i = 0; i < Math.floor(b.h / 60); i++) {
+      const gy = b.y + 25 + i * 60 + hash(beachSeed + i * 13) * 24;
+      ctx.strokeStyle = 'rgba(124, 179, 66, 0.8)';
+      ctx.lineWidth = 1.4;
+      ctx.lineCap = 'round';
+      for (let k = -2; k <= 2; k++) {
+        const sw = Math.sin(State.animTime * 0.002 + i + k) * 1.5;
+        ctx.beginPath();
+        ctx.moveTo(innerX + k * 1.6, gy + 5);
+        ctx.quadraticCurveTo(innerX + k * 2 + sw * 0.5, gy - 2, innerX + k * 3 + sw, gy - 8);
+        ctx.stroke();
+      }
+    }
+    // Palmeras (cada ~150px de alto de playa)
+    for (let i = 0; i < Math.max(2, Math.floor(b.h / 150)); i++) {
+      const py = b.y + 60 + i * 150 + hash(beachSeed + i * 17) * 50;
+      if (py > b.y + b.h - 40) break;
+      const px = b.x + 18 + hash(beachSeed + i * 23) * 20;
+      drawPalm(px, py, 0.9 + hash(beachSeed + i * 29) * 0.5, hash(beachSeed + i * 31));
+    }
+
+    // 4) Sombrillas y toallas (zona media de la playa)
+    for (let i = 0; i < Math.max(2, Math.floor(b.h / 220)); i++) {
+      const uy = b.y + 100 + i * 220 + hash(beachSeed + i * 37) * 70;
+      if (uy > b.y + b.h - 30) break;
+      const ux = b.x + b.w * 0.45 + hash(beachSeed + i * 41) * 18 - 9;
+      drawUmbrella(ux, uy, hash(beachSeed + i * 43));
+      drawTowel(ux + 16, uy + 12, hash(beachSeed + i * 47));
+    }
+  }
+
+  // ── REEMPLAZO de drawBeaches (conserva START/FINISH/orilla originales) ──
+  const _origShoreline = window.drawShorelineEdge;
+  const _origStart = window.drawStartLine;
+  const _origFinish = window.drawFinishLine;
+
+  window.drawBeaches = function drawBeaches() {
+    const w = State.world;
+    if (!w) return;
+    ctx.save();
+    if (w.beachStart) {
+      const b = w.beachStart;
+      decorateBeach(b, State.currentLevelIdx * 1000 + 7);
+      // Olas rompiendo: 2 líneas de espuma avanzando hacia la orilla
+      drawBreakingWaves(b);
+      _origShoreline(b, 'east');
+      _origStart(b);
+      // Arco inflable en la línea de salida
+      drawInflatableArch(b.x + b.w - 26, b.y + b.h / 2);
+    }
+    if (w.beachFinish && w.beachFinish !== w.beachStart) {
+      const b = w.beachFinish;
+      decorateBeach(b, State.currentLevelIdx * 1000 + 99);
+      drawBreakingWaves(b);
+      _origShoreline(b, b.x === 0 ? 'east' : 'west');
+      _origFinish(b);
+      drawInflatableArch(b.x + b.w - 26, b.y + b.h / 2);
+    }
+    ctx.restore();
+  };
+
+  // ── OLAS ROMPIENDO: bandas de espuma que avanzan y se desvanecen ──
+  function drawBreakingWaves(b) {
+    const edgeX = b.x + b.w;  // borde del agua (al este)
+    const t = State.animTime * 0.0006;
+    for (let k = 0; k < 2; k++) {
+      // Cada ola tiene su ciclo: avanza desde el agua hacia la arena y desaparece
+      const cycle = (t + k * 0.5) % 1;        // 0→1
+      const reach = cycle * 26;                // distancia que avanza sobre la arena
+      const alpha = Math.sin(cycle * Math.PI) * 0.55;  // aparece y se desvanece
+      if (alpha < 0.03) continue;
+      ctx.strokeStyle = `rgba(255,255,255,${alpha.toFixed(3)})`;
+      ctx.lineWidth = 2.2 - k * 0.8;
+      ctx.beginPath();
+      for (let y = b.y; y <= b.y + b.h; y += 7) {
+        const wob = Math.sin(y * 0.045 + t * 9 + k * 2) * 3.5;
+        const px = edgeX - reach + wob;
+        if (y === b.y) ctx.moveTo(px, y);
+        else ctx.lineTo(px, y);
+      }
+      ctx.stroke();
+    }
+  }
+
+})();
+</script>
+
 </body>
 </html>
