@@ -3512,6 +3512,17 @@ body.v3-fluid .v2-coach-poster:active {
           </div>
           <div class="sim-card-cta">▶</div>
         </button>
+
+        <button class="sim-card" onclick="goTimer('s-role')">
+          <div class="sim-card-icon" style="background:linear-gradient(135deg,#ffd60a,#e0a800)">⏱️</div>
+          <div class="sim-card-body">
+            <div class="sim-card-title">CRONÓMETRO
+              <span class="sim-card-tag" style="background:#0a3a60;color:#ffd60a">LIVE</span>
+            </div>
+            <div class="sim-card-desc">Cronómetro multi-carril para competencias: salida simultánea, un dispositivo por carril y monitor central.</div>
+          </div>
+          <div class="sim-card-cta">▶</div>
+        </button>
       </div>
 
       <!-- NUEVO V4: Botón subir entrenamiento sin login -->
@@ -5384,11 +5395,40 @@ var CONFIG = {
   logo: "https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png"
 };
 
-// ===== FIREBASE =====
-firebase.initializeApp(CONFIG.fbCfg);
-var db = firebase.database();
-var auth = firebase.auth();
-var gProv = new firebase.auth.GoogleAuthProvider();
+// ===== FIREBASE (init a prueba de fallos: si no hay conexión, no tumba la página) =====
+var db, auth, gProv;
+try {
+  firebase.initializeApp(CONFIG.fbCfg);
+  db = firebase.database();
+  auth = firebase.auth();
+  gProv = new firebase.auth.GoogleAuthProvider();
+} catch (e) {
+  console.warn('Firebase no disponible (¿sin conexión o abierto como archivo local?). La navegación funciona; la sincronización en vivo del cronómetro requiere internet.', e);
+  var _noop = function () {};
+  var _refStub = {
+    on: _noop, off: _noop,
+    once: function () { return Promise.resolve({ val: function () { return null; } }); },
+    set: function () { return Promise.resolve(); },
+    update: function () { return Promise.resolve(); },
+    remove: function () { return Promise.resolve(); },
+    push: function () { return _refStub; },
+    child: function () { return _refStub; },
+    orderByChild: function () { return _refStub; },
+    equalTo: function () { return _refStub; },
+    limitToLast: function () { return _refStub; },
+    onDisconnect: function () { return { remove: _noop, set: _noop, cancel: _noop }; },
+    key: null
+  };
+  db = { ref: function () { return _refStub; } };
+  auth = {
+    onAuthStateChanged: function (cb) { try { cb(null); } catch (e2) {} },
+    signInWithPopup: function () { return Promise.reject(new Error('offline')); },
+    signInAnonymously: function () { return Promise.reject(new Error('offline')); },
+    signOut: function () { return Promise.resolve(); },
+    currentUser: null
+  };
+  gProv = {};
+}
 
 // ===== ESTADO GLOBAL =====
 var state = {
