@@ -558,6 +558,82 @@
     100% { transform: translateY(105vh) rotate(720deg); opacity: 0.6; }
   }
 
+  /* ===== Medallas / Logros ===== */
+  .medals-section {
+    width: 100%;
+    max-width: 480px;
+    margin: 8px 0 14px;
+  }
+  .medals-head {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: 800;
+    margin-bottom: 7px;
+  }
+  .medals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 8px;
+  }
+  .medal {
+    background: rgba(0,150,199,0.08);
+    border: 1px solid rgba(72,202,228,0.2);
+    border-radius: 10px;
+    padding: 8px 4px 6px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .medal.locked { opacity: 0.32; filter: grayscale(1); }
+  .medal.unlocked { border-color: var(--accent); background: rgba(255,214,10,0.08); }
+  .medal.justnow {
+    animation: medalPop 0.7s ease-out;
+    box-shadow: 0 0 18px rgba(255,214,10,0.6);
+  }
+  @keyframes medalPop {
+    0% { transform: scale(0.4) rotate(-15deg); }
+    50% { transform: scale(1.25) rotate(8deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+  .medal-emoji { font-size: 22px; line-height: 1; }
+  .medal-name {
+    font-size: 7.5px;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: 4px;
+    line-height: 1.2;
+  }
+  .medal.unlocked .medal-name { color: var(--text-bright); }
+
+  .achv-toast {
+    position: fixed;
+    top: 74px;
+    left: 50%;
+    transform: translate(-50%, -16px);
+    z-index: 1100;
+    background: linear-gradient(135deg, #ffd60a, #ff9e00);
+    color: #15233a;
+    padding: 10px 18px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    max-width: 90%;
+    border: 2px solid #fff;
+  }
+  .achv-toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .achv-toast .at-emoji { font-size: 22px; }
+  .achv-toast .at-sub { font-size: 9px; font-weight: 700; opacity: 0.8; letter-spacing: 1px; text-transform: uppercase; }
+
   /* Overlays */
   .overlay {
     position: absolute;
@@ -1754,6 +1830,10 @@
       <div class="tr-metrics" id="trMetrics"></div>
       <div id="trAdvice"></div>
     </div>
+    <div class="medals-section" id="medalsSection" style="display:none">
+      <div class="medals-head">🏅 Tus medallas <span id="medalsCount"></span></div>
+      <div class="medals-grid" id="medalsGrid"></div>
+    </div>
     <div class="finish-podium" id="finishPodium"></div>
 
     <div class="leaderboard-section" id="leaderboardSection" style="display:none">
@@ -1887,6 +1967,93 @@
       document.body.appendChild(c);
       setTimeout(() => c.remove(), 5500);
     }
+  }
+
+  // ============ VIBRACIÓN (game feel) ============
+  function vibrar(patron) {
+    try { if (navigator.vibrate) navigator.vibrate(patron); } catch (e) {}
+  }
+
+  // ============ MEDALLAS / LOGROS ============
+  // Persistentes por dispositivo. Se desbloquean al cumplir condiciones en una carrera.
+  const ACHIEVEMENTS = [
+    { id: 'first_finish', emoji: '🏁', name: 'Primer 50', test: r => r.finished },
+    { id: 'first_win',    emoji: '🥇', name: 'Primera victoria', test: r => r.won },
+    { id: 'sub60',        emoji: '⏱️', name: 'Bajo 1:00', test: r => r.finished && r.time < 60 },
+    { id: 'sub45',        emoji: '⚡', name: 'Bajo 0:45', test: r => r.finished && r.time < 45 },
+    { id: 'streak10',     emoji: '🔥', name: 'Racha 10', test: r => r.bestStreak >= 10 },
+    { id: 'tech_pro',     emoji: '🎯', name: 'Técnica pro', test: r => r.rom >= 85 && (r.asym === null || r.asym < 12) },
+    { id: 'eff90',        emoji: '💎', name: 'Eficiencia 90', test: r => r.efficiency >= 90 },
+    { id: 'allstyles',    emoji: '🌟', name: '4 estilos', test: r => r.allStylesDone },
+    { id: 'duel_win',     emoji: '⚔️', name: 'Gana un duelo', test: r => r.duelWon },
+  ];
+  function getUnlocked() {
+    try { return JSON.parse(localStorage.getItem('lagunaswim_medals') || '[]'); } catch (e) { return []; }
+  }
+  function saveUnlocked(arr) {
+    try { localStorage.setItem('lagunaswim_medals', JSON.stringify(arr)); } catch (e) {}
+  }
+  function getStylesDone() {
+    try { return JSON.parse(localStorage.getItem('lagunaswim_styles_done') || '[]'); } catch (e) { return []; }
+  }
+  function markStyleDone(est) {
+    const d = getStylesDone();
+    if (!d.includes(est)) { d.push(est); try { localStorage.setItem('lagunaswim_styles_done', JSON.stringify(d)); } catch (e) {} }
+    return d;
+  }
+  // Evalúa logros con el resultado de la carrera y devuelve los recién desbloqueados
+  function evaluarLogros(resultado) {
+    const ya = getUnlocked();
+    const nuevos = [];
+    ACHIEVEMENTS.forEach(a => {
+      if (!ya.includes(a.id)) {
+        let ok = false;
+        try { ok = !!a.test(resultado); } catch (e) {}
+        if (ok) { ya.push(a.id); nuevos.push(a); }
+      }
+    });
+    if (nuevos.length) saveUnlocked(ya);
+    return nuevos;
+  }
+  function renderMedals(recienIds) {
+    const grid = $('medalsGrid'); if (!grid) return;
+    const ya = getUnlocked();
+    grid.innerHTML = '';
+    ACHIEVEMENTS.forEach(a => {
+      const unlocked = ya.includes(a.id);
+      const d = document.createElement('div');
+      d.className = 'medal ' + (unlocked ? 'unlocked' : 'locked') + ((recienIds && recienIds.includes(a.id)) ? ' justnow' : '');
+      d.innerHTML = `<div class="medal-emoji">${unlocked ? a.emoji : '🔒'}</div><div class="medal-name">${a.name}</div>`;
+      grid.appendChild(d);
+    });
+    const c = $('medalsCount');
+    if (c) c.textContent = `${ya.length}/${ACHIEVEMENTS.length}`;
+    $('medalsSection').style.display = 'block';
+  }
+  let _achvQueue = [], _achvBusy = false;
+  function mostrarLogroToast(a) {
+    _achvQueue.push(a);
+    if (!_achvBusy) procesarAchvQueue();
+  }
+  function procesarAchvQueue() {
+    if (!_achvQueue.length) { _achvBusy = false; return; }
+    _achvBusy = true;
+    const a = _achvQueue.shift();
+    let el = document.getElementById('achvToast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'achvToast';
+      el.className = 'achv-toast';
+      document.body.appendChild(el);
+    }
+    el.innerHTML = `<span class="at-emoji">${a.emoji}</span><span>¡Medalla desbloqueada!<br><span class="at-sub">${a.name}</span></span>`;
+    el.classList.add('show');
+    vibrar([40, 60, 120]);
+    beepSound(1320, 0.12, 0); beepSound(1760, 0.18, 0.13, 0.3);
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(procesarAchvQueue, 350);
+    }, 2300);
   }
 
   // ============ NICKNAME ============
@@ -2540,6 +2707,7 @@
       if (state.streak > state.bestStreak) state.bestStreak = state.streak;
       if (state.streak >= 3 && state.streak % 3 === 0) {
         showStreakPop(state.streak);
+        vibrar(35);
         quality += Math.min(0.25, state.streak * 0.015); // pequeño empujón por racha
       }
     } else if (quality < 0.8) {
@@ -2822,8 +2990,29 @@
     if (playerPos === 1 && state.distance >= TOTAL_DISTANCE) {
       lanzarConfeti();
       fanfareWin();
+      vibrar([60, 50, 60, 50, 180]);
       showCoachShout('¡ESO ES, CAMPEÓN! ¡FUERTES Y VALIENTES! 🏆');
+    } else if (state.distance >= TOTAL_DISTANCE) {
+      vibrar(120);
     }
+
+    // ===== Medallas / logros =====
+    const stylesDone = state.distance >= TOTAL_DISTANCE ? markStyleDone(state.swimStyle || 'libre') : getStylesDone();
+    const tSum = techSummary();
+    const resultadoLogros = {
+      finished: state.distance >= TOTAL_DISTANCE && state.playerFinishedAt !== null,
+      won: playerPos === 1 && state.distance >= TOTAL_DISTANCE,
+      time: state.playerFinishedAt || 999,
+      bestStreak: state.bestStreak || 0,
+      efficiency: effPct,
+      rom: tSum.mide ? tSum.rom : 0,
+      asym: tSum.asym,
+      allStylesDone: ['libre','dorso','pecho','mariposa'].every(s => stylesDone.includes(s)),
+      duelWon: false,
+    };
+    const nuevos = evaluarLogros(resultadoLogros);
+    renderMedals(nuevos.map(a => a.id));
+    nuevos.forEach(a => mostrarLogroToast(a));
 
     let isNewRecord = false;
     if (state.distance >= TOTAL_DISTANCE && state.playerFinishedAt !== null) {
@@ -3291,6 +3480,8 @@
 
   loadSavedNickname();
   updatePersonalBestUI('libre');
+  // Mostrar medallas ya conseguidas (incentivo a coleccionarlas)
+  try { if (getUnlocked().length > 0) renderMedals([]); } catch (e) {}
 
   // ============================================================
   // FOTO DEL DUELO (EFÍMERA)
@@ -4346,6 +4537,24 @@
 
     // Informe técnico también en duelos
     renderTechReport();
+
+    // Medallas: incluye victoria de duelo
+    const stylesDoneD = markStyleDone(state.swimStyle || 'libre');
+    const tSumD = techSummary();
+    const nuevosD = evaluarLogros({
+      finished: true,
+      won: false,
+      time: myTime || 999,
+      bestStreak: state.bestStreak || 0,
+      efficiency: effPctDuel,
+      rom: tSumD.mide ? tSumD.rom : 0,
+      asym: tSumD.asym,
+      allStylesDone: ['libre','dorso','pecho','mariposa'].every(s => stylesDoneD.includes(s)),
+      duelWon: yoGane,
+    });
+    renderMedals(nuevosD.map(a => a.id));
+    nuevosD.forEach(a => mostrarLogroToast(a));
+    vibrar(yoGane ? [60, 50, 60, 50, 180] : 120);
 
     // Foto del duelo: activar botón cuando ambas fotos estén en memoria
     duelState.lastTimes = { myTime: myTime, rivalTime: rivalTime };
