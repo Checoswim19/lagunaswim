@@ -4334,6 +4334,8 @@ body.v3-fluid .v2-coach-poster:active {
       <textarea id="bulk-input" style="height:140px;resize:vertical;font-family:monospace;font-size:0.75rem" placeholder="Ana Garcia, F, 13-14, 100, Libre, 1:12.99, Torneo Regional, 2024
 Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <button class="btn btn-sky" onclick="importBulk()" style="margin-top:0.4rem">📥 Importar todos al ranking</button>
+      <button class="btn" id="btn-reparar-ranking" onclick="repararRanking()" style="margin-top:0.4rem;background:rgba(255,107,53,0.15);border:1px solid #ff6b35;color:#ff6b35">🔧 Reparar ranking</button>
+      <div style="font-size:0.66rem;color:rgba(255,255,255,0.55);margin-top:0.3rem;line-height:1.4">Úsalo una vez para arreglar el orden y las categorías de los tiempos ya guardados (los viejos y los nuevos).</div>
       <div id="bulk-result" style="font-size:0.75rem;margin-top:0.4rem;display:none"></div>
     </div>
   </div>
@@ -7116,15 +7118,74 @@ var CATS_LABELS = {
   'M65-69': 'Master 65-69', 'M70+': 'Master 70+'
 };
 
-// Convertir "mm:ss.cc" o "ss.cc" a milisegundos
+// Convertir "mm:ss.cc", "ss.cc" o incluso "mm:ss:cc" (dos puntos por error) a milisegundos
 function timeStrToMs(t) {
-  if (!t) return 0;
+  if (t === 0 || t === '0') return 0;
+  if (!t) return 9999999; // sin tiempo válido → al fondo, nunca arriba
   t = String(t).trim().replace(',', '.');
+  if (!t) return 9999999;
+  var ms = 0;
   var p = t.split(':');
   if (p.length === 2) {
-    return (parseInt(p[0]) || 0) * 60000 + Math.round(parseFloat(p[1]) * 1000);
+    // mm:ss.cc  (formato correcto)
+    ms = (parseInt(p[0], 10) || 0) * 60000 + (parseFloat(p[1]) || 0) * 1000;
+  } else if (p.length === 3) {
+    // mm:ss:cc  (alguien usó dos puntos en vez de punto decimal: "1:27:22")
+    var mm = parseInt(p[0], 10) || 0;
+    var ss = parseInt(p[1], 10) || 0;
+    var cc = (p[2] || '0').replace(/[^0-9]/g, '');
+    if (cc.length === 1) cc = cc + '0'; // "2" → 20 centésimas
+    cc = parseInt(cc.substring(0, 2), 10) || 0;
+    ms = mm * 60000 + ss * 1000 + cc * 10;
+  } else {
+    // solo segundos: "57.58"
+    ms = (parseFloat(t) || 0) * 1000;
   }
-  return Math.round(parseFloat(t) * 1000);
+  ms = Math.round(ms);
+  if (!isFinite(ms) || ms <= 0) return 9999999; // inválido → al fondo
+  return ms;
+}
+
+// Normalizar ESTILO (acepta inglés/español/acentos) a la clave del menú
+function normRankStyle(s) {
+  s = (s || '').toString().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (!s) return '';
+  if (/(libre|free|crol|crawl|patada)/.test(s)) return 'Libre';
+  if (/(dorso|espalda|back)/.test(s)) return 'Dorso';
+  if (/(pecho|braza|breast)/.test(s)) return 'Pecho';
+  if (/(mariposa|fly|butterfly)/.test(s)) return 'Mariposa';
+  if (/(combinado|combined|medley)/.test(s)) return 'Combinado';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// Normalizar CATEGORÍA a la clave del menú ("11-12 anos" → "11-12", "6 y menores" → "6-")
+function normRankCat(c) {
+  c = (c || '').toString().trim();
+  if (!c) return '';
+  if (CATS_LABELS[c]) return c; // ya es clave válida
+  var low = c.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  low = low.replace(/\b(anos|year|years|yr|yrs|de edad|old)\b/g, '').replace(/\s+/g, ' ').trim();
+  var compact = low.replace(/\s/g, '');
+  if (/(6ymenores|6ymenos|6menores|under6|6andunder)/.test(compact) || compact === '6' || compact === '6-') return '6-';
+  var rangos = ['7-8', '9-10', '11-12', '13-14', '15-18'];
+  for (var i = 0; i < rangos.length; i++) { if (compact.indexOf(rangos[i]) >= 0) return rangos[i]; }
+  if (compact.indexOf('18-24') >= 0) return 'PM18-24';
+  var msr = [['25-29','M25-29'],['30-34','M30-34'],['35-39','M35-39'],['40-44','M40-44'],['45-49','M45-49'],['50-54','M50-54'],['55-59','M55-59'],['60-64','M60-64'],['65-69','M65-69']];
+  for (var j = 0; j < msr.length; j++) { if (compact.indexOf(msr[j][0]) >= 0) return msr[j][1]; }
+  if (/70/.test(compact)) return 'M70+';
+  return c; // no reconocida → dejar tal cual
+}
+
+// Normalizar GÉNERO (M/F/Masculino/Male/Hombre/Mujer/etc.)
+function normRankGender(g) {
+  g = (g || '').toString().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (!g) return '';
+  if (/(female|femenino|femenil|mujer|fem)/.test(g) || g === 'f') return 'F';
+  if (/(male|masculino|varonil|hombre|masc)/.test(g) || g === 'm') return 'M';
+  var c0 = g.charAt(0);
+  if (c0 === 'f') return 'F';
+  if (c0 === 'm') return 'M';
+  return c0.toUpperCase();
 }
 
 // Cargar todos los tiempos del ranking desde Firebase
@@ -7438,10 +7499,10 @@ function addRankTime() {
   db.ref('ranking/' + id).set({
     id: id,
     swimmer: sw,
-    gender: gn,
-    cat: ct,
+    gender: normRankGender(gn),
+    cat: normRankCat(ct),
     dist: di,
-    style: st,
+    style: normRankStyle(st),
     time: ti,
     timeMs: timeStrToMs(ti),
     comp: co,
@@ -7517,10 +7578,10 @@ function importBulk() {
     return db.ref('ranking/' + id).set({
       id: id,
       swimmer: p[0],
-      gender: p[1].toUpperCase(),
-      cat: p[2],
-      dist: parseInt(p[3]),
-      style: p[4],
+      gender: normRankGender(p[1]),
+      cat: normRankCat(p[2]),
+      dist: parseInt(p[3], 10),
+      style: normRankStyle(p[4]),
       time: p[5],
       timeMs: timeStrToMs(p[5]),
       comp: p[6],
@@ -7540,6 +7601,48 @@ function importBulk() {
     }
   });
 }
+
+// Reparar el ranking YA guardado: recalcula los tiempos (arregla el orden) y
+// normaliza categoria/estilo/genero (hace visibles los que no aparecian). Una sola pasada.
+function repararRanking() {
+  if (!state.user || state.user.email !== CONFIG.coach) { alert('Solo el entrenador puede reparar el ranking.'); return; }
+  if (!confirm('Esto recalcula los tiempos y normaliza categoria, estilo y genero de TODOS los registros guardados.\n\nArregla el orden y hace visibles los que no aparecian. Continuar?')) return;
+  var btn = document.getElementById('btn-reparar-ranking');
+  if (btn) { btn.disabled = true; btn.textContent = '🔧 Reparando...'; }
+  db.ref('ranking').once('value').then(function(snap) {
+    var d = snap.val() || {};
+    var updates = {};
+    var n = 0, fixed = 0;
+    Object.keys(d).forEach(function(k) {
+      var r = d[k] || {};
+      var newMs = timeStrToMs(r.time);
+      var newCat = normRankCat(r.cat);
+      var newStyle = normRankStyle(r.style);
+      var newGender = normRankGender(r.gender);
+      var newDist = parseInt(r.dist, 10);
+      if (!isFinite(newDist)) newDist = r.dist;
+      n++;
+      if (newMs !== r.timeMs || newCat !== r.cat || newStyle !== r.style || newGender !== r.gender || newDist !== r.dist) fixed++;
+      updates[k + '/timeMs'] = newMs;
+      updates[k + '/cat'] = newCat;
+      updates[k + '/style'] = newStyle;
+      updates[k + '/gender'] = newGender;
+      updates[k + '/dist'] = newDist;
+    });
+    db.ref('ranking').update(updates).then(function() {
+      if (btn) { btn.disabled = false; btn.textContent = '🔧 Reparar ranking'; }
+      alert('✅ Ranking reparado:\n\n' + n + ' registros revisados\n' + fixed + ' corregidos\n\nYa quedo el orden por tiempo y las categorias normalizadas.');
+      loadRanking();
+    }).catch(function(e) {
+      if (btn) { btn.disabled = false; btn.textContent = '🔧 Reparar ranking'; }
+      alert('Error al reparar: ' + e.message);
+    });
+  }).catch(function(e) {
+    if (btn) { btn.disabled = false; btn.textContent = '🔧 Reparar ranking'; }
+    alert('Error al leer el ranking: ' + e.message);
+  });
+}
+window.repararRanking = repararRanking;
 
 // NUEVO: Plantilla para PanAm o local
 function plantillaImport(tipo) {
