@@ -451,6 +451,27 @@
     100% { transform: translateY(-32px) scale(1); opacity: 0; }
   }
 
+  /* Flecha de corrección de deriva (asimetría) — grande, legible a distancia */
+  .drift-arrow {
+    position: absolute;
+    z-index: 30;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(56px, 16vw, 130px);
+    font-weight: 900;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    text-shadow: 0 0 18px rgba(255,214,10,0.9), 0 4px 12px rgba(0,0,0,0.6);
+    color: #ffd60a;
+  }
+  .drift-arrow.show { opacity: 0.95; animation: driftPulse 0.6s ease-in-out infinite alternate; }
+  @keyframes driftPulse {
+    from { transform: translate(-50%, -50%) scale(1); }
+    to   { transform: translate(-50%, -50%) scale(1.18); }
+  }
+
   /* Silueta del recorrido de la brazada (arco proporcional a la amplitud real) */
   .stroke-arc {
     position: absolute;
@@ -1506,6 +1527,7 @@
     </div>
 
     <div class="pool" id="pool">
+      <div class="drift-arrow" id="driftArrow">→</div>
       <div class="water-shimmer"></div>
       <div class="water-caustics"></div>
       <div class="starting-blocks"></div>
@@ -1795,9 +1817,19 @@
   <!-- CAMERA READY -->
   <div class="overlay hidden" id="overlayCameraReady">
     <div class="brand">Cámara lista</div>
-    <h2 class="title" style="font-size: clamp(22px, 5vw, 42px)">Posiciónate</h2>
-    <p class="subtitle">Párate frente a la cámara. Levanta cada brazo arriba del hombro alternando izquierdo y derecho como en crol.</p>
-    <button class="start-btn" id="btnStartRace">Empezar carrera</button>
+    <h2 class="title" id="frameTitle" style="font-size: clamp(22px, 5vw, 42px)">Acomódate</h2>
+    <!-- Indicador grande de encuadre/distancia, legible desde lejos -->
+    <div id="frameStatus" style="font-size: clamp(40px, 11vw, 86px); font-weight:900; margin:6px 0; line-height:1.1; text-shadow:0 0 16px rgba(72,202,228,0.7)">📏</div>
+    <p class="subtitle" id="frameHint">Párate a 2–2.5 m para que se vea TODO tu cuerpo en la cámara.</p>
+    <!-- Barra de progreso de calibración (oculta hasta la fase de calibrar) -->
+    <div id="calibBox" style="display:none; margin:14px auto; max-width:340px">
+      <p class="subtitle" id="calibHint" style="margin-bottom:8px">Haz <b>4 brazadas</b> de prueba para medir tu amplitud.</p>
+      <div style="background:rgba(255,255,255,0.12); border-radius:999px; height:18px; overflow:hidden">
+        <div id="calibBar" style="height:100%; width:0%; background:linear-gradient(90deg,#48cae4,#ffd60a); transition:width 0.25s ease"></div>
+      </div>
+      <div id="calibCount" style="font-size:28px; font-weight:900; margin-top:8px; color:#ffd60a">0 / 4</div>
+    </div>
+    <button class="start-btn" id="btnStartRace" style="display:none">Empezar carrera</button>
     <button class="start-btn secondary" id="btnBackToMode">Cambiar modo</button>
   </div>
 
@@ -2125,6 +2157,7 @@
   let duelTapFallback = false;  // FIX: nadar por toque si la camara no detecta
   let duelTapArm = 'R';
   let swimStyle = 'libre'; // 'libre' o 'mariposa'
+  let gameKidsMode = false; // modo niños: zona muerta de asimetría más perdonona
 
   let state = {
     running: false,
@@ -2150,6 +2183,7 @@
     rightArmReadyToFire: true,
     butterflyReadyToFire: true, // Para mariposa: ambos brazos
   };
+
 
   // ============ NUEVO: Selector de 4 estilos ============
   var STYLE_CONFIG = {
@@ -2558,6 +2592,42 @@
   const ROM_IDEAL = 0.30;       // amplitud vertical muñeca-sobre-hombro considerada brazada completa
   function romPct(amp) { return Math.max(0, Math.min(100, Math.round((amp / ROM_IDEAL) * 100))); }
   function avg(a) { return a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0; }
+  // ============ CALIBRACIÓN PERSONAL DE ROM ============
+  // Cada nadador tiene amplitud distinta. Medimos su ROM real en 3-4 brazadas
+  // de prueba y normalizamos el avance a SU rango. Esto empareja dos celulares
+  // distintos: el avance deja de depender de un valor absoluto.
+  let romCal = {
+    active: false,        // estamos en fase de calibración
+    samples: [],          // amplitudes de prueba
+    personal: ROM_IDEAL,  // ROM personal medido (default = ideal)
+    done: false,
+  };
+  function resetCalibracion() {
+    romCal.active = false; romCal.samples = []; romCal.personal = ROM_IDEAL; romCal.done = false;
+  }
+  // Avance proporcional: brazada larga empuja más; corta empuja menos.
+  // Cap anti-trampa para que un manotazo gigante no rompa el balance.
+  const ROM_GAIN_MIN = 0.55;  // piso: aún una brazada corta avanza algo
+  const ROM_GAIN_MAX = 1.30;  // techo: no se premia más allá de esto
+  function romGain(amp) {
+    if (typeof amp !== 'number' || !isFinite(amp)) return 1;
+    const ref = romCal.personal || ROM_IDEAL;
+    const g = amp / ref;
+    return Math.max(ROM_GAIN_MIN, Math.min(ROM_GAIN_MAX, g));
+  }
+
+  // ============ DERIVA POR ASIMETRÍA (solo visual) ============
+  // Si un brazo da más amplitud que el otro, el nadador se ve avanzando chueco
+  // y aparece una flecha de corrección. NO penaliza tiempo (decisión del coach).
+  let drift = { lateral: 0, lastSide: null };
+  const DRIFT_DEADZONE = 0.15;   // <15% de diferencia = nado derecho (zona muerta)
+  const DRIFT_DEADZONE_KIDS = 0.28; // modo niños: mucho más perdonón
+  const DRIFT_MAX_PX = 46;       // desviación visual máxima
+  const DRIFT_RECOVER = 0.92;    // qué tan rápido vuelve al carril por frame
+  function resetDrift() { drift.lateral = 0; drift.lastSide = null; hideDriftArrow(); }
+  function kidsMode() { return !!(state && state.kids); }
+  function driftDeadzone() { return kidsMode() ? DRIFT_DEADZONE_KIDS : DRIFT_DEADZONE; }
+
   function techSummary() {
     const nL = techData.ampL.length, nR = techData.ampR.length, nB = techData.ampB.length;
     const conDatos = (nL + nR + nB) >= 6;
@@ -2609,6 +2679,21 @@
     panel.classList.add('show');
     clearTimeout(_techPanelT);
     _techPanelT = setTimeout(() => panel.classList.remove('show'), 4200);
+  }
+
+  // Flecha de corrección de deriva. side = lado hacia el que debe corregir.
+  let _driftArrowT = null;
+  function showDriftArrow(side) {
+    const a = $('driftArrow');
+    if (!a) return;
+    a.textContent = side === 'L' ? '←' : '→';
+    a.classList.add('show');
+    clearTimeout(_driftArrowT);
+    _driftArrowT = setTimeout(() => a.classList.remove('show'), 1100);
+  }
+  function hideDriftArrow() {
+    const a = $('driftArrow');
+    if (a) a.classList.remove('show');
   }
 
   // Silueta del recorrido de la brazada: arco proporcional a la amplitud real
@@ -2714,9 +2799,30 @@
       state.streak = 0;
     }
 
-    if (quality > 0) state.velocity += PROPULSION * quality;
+    if (quality > 0) state.velocity += PROPULSION * quality * romGain(amp);
     else state.velocity = Math.max(0, state.velocity + (PROPULSION * quality));
     state.velocity = Math.min(state.velocity, MAX_VELOCITY);
+
+    // Deriva por asimetría (solo en estilos alternados, solo visual).
+    // Comparamos el promedio reciente de cada brazo; el brazo corto desvía
+    // hacia su lado. Zona muerta para no castigar diferencias normales.
+    if ((estilo === 'libre' || estilo === 'dorso') && techData.ampL.length >= 2 && techData.ampR.length >= 2) {
+      const mL = avg(techData.ampL.slice(-5));
+      const mR = avg(techData.ampR.slice(-5));
+      const mx = Math.max(mL, mR), mn = Math.min(mL, mR);
+      const asr = mx > 0 ? (mx - mn) / mx : 0;
+      const dz = driftDeadzone();
+      if (asr > dz) {
+        // intensidad 0..1 por encima de la zona muerta
+        const inten = Math.min(1, (asr - dz) / (0.6 - dz));
+        // el brazo corto jala hacia su lado: corto izquierdo → deriva a la izquierda (negativo)
+        const dir = mL < mR ? -1 : 1;
+        drift.lateral += dir * inten * (DRIFT_MAX_PX * 0.5);
+        drift.lateral = Math.max(-DRIFT_MAX_PX, Math.min(DRIFT_MAX_PX, drift.lateral));
+        drift.lastSide = mL < mR ? 'L' : 'R';
+        showDriftArrow(mL < mR ? 'R' : 'L'); // flecha apunta hacia donde debe corregir
+      }
+    }
 
     // Animar brazos según estilo, con la amplitud REAL de tu brazada
     const kAmp = (typeof amp === 'number' && isFinite(amp))
@@ -2842,7 +2948,10 @@
     const startX = 14;
     const endX = poolWidth - 64;
     const pct = state.distance / TOTAL_DISTANCE;
+    drift.lateral *= DRIFT_RECOVER;
+    if (Math.abs(drift.lateral) < 0.5) { drift.lateral = 0; hideDriftArrow(); }
     playerEl.style.left = `${startX + (endX - startX) * pct}px`;
+    playerEl.style.transform = `translateY(${drift.lateral.toFixed(1)}px) rotate(${(drift.lateral * 0.25).toFixed(1)}deg)`;
     if (state.velocity > 0.3) playerEl.classList.add('swimming');
     else playerEl.classList.remove('swimming');
 
@@ -2918,9 +3027,12 @@
       swimStyle: swimStyle || 'libre', // ← preservar estilo seleccionado
       streak: 0,
       bestStreak: 0,
+      kids: !!gameKidsMode,
     };
     initRivals();
     resetTechData();
+    resetDrift();
+    framePhase = 'idle';
     $('btnFotoDuelo').style.display = 'none';
     document.querySelectorAll('.swimmer').forEach(s => {
       s.style.left = '14px';
@@ -3270,7 +3382,130 @@
     $('cameraPreview').classList.add('active');
     $('overlayLoading').classList.add('hidden');
     $('overlayCameraReady').classList.remove('hidden');
+    iniciarFlujoInicio();
     return true;
+  }
+
+  // ============ ENCUADRE + CALIBRACIÓN DE INICIO ============
+  // framePhase: 'idle' | 'encuadre' | 'calibra' | 'listo'
+  let framePhase = 'idle';
+  let frameOkFrames = 0;            // cuántos frames seguidos quedó bien encuadrado
+  const FRAME_OK_NEEDED = 18;       // ~1s estable antes de pasar a calibrar
+  let calArmReady = { L: true, R: true };
+
+  function ampLraw(s, w) { return s.y - w.y; }
+  function ampRraw(s, w) { return s.y - w.y; }
+
+  // Confianza media de los landmarks clave (hombros, codos, muñecas, cadera)
+  function visibilidadClave(lm) {
+    const idx = [11,12,13,14,15,16,23,24];
+    let suma = 0, n = 0;
+    idx.forEach(i => { if (lm[i]) { suma += (lm[i].visibility != null ? lm[i].visibility : 1); n++; } });
+    return n ? suma / n : 0;
+  }
+
+  // ¿El cuerpo completo (hombros a cadera) cabe en cuadro con buena confianza?
+  function evaluarEncuadre(lm) {
+    const vis = visibilidadClave(lm);
+    const sh = lm[11], hip = lm[23], hip2 = lm[24], sh2 = lm[12];
+    if (!sh || !hip || !sh2 || !hip2) return { estado: 'buscando', vis };
+    // ancho de hombros como proxy de distancia: muy grande = muy cerca, muy chico = lejos
+    const anchoHombros = Math.abs(sh.x - sh2.x);
+    // ¿está el torso dentro del cuadro vertical?
+    const dentroV = sh.y > 0.04 && hip.y < 0.96 && hip2.y < 0.96;
+    if (vis < 0.55) return { estado: 'lejos', vis };       // baja confianza → acércate
+    if (anchoHombros > 0.42) return { estado: 'cerca', vis }; // hombros enormes → aléjate
+    if (anchoHombros < 0.12) return { estado: 'lejos', vis }; // hombros chiquitos → acércate
+    if (!dentroV) return { estado: 'cerca', vis };           // se sale del cuadro → aléjate
+    return { estado: 'ok', vis };
+  }
+
+  function procesarEncuadre(lm, lS, lW, rS, rW, leftUp, rightUp, ampL, ampR) {
+    if (framePhase === 'encuadre') {
+      const ev = evaluarEncuadre(lm);
+      const st = $('frameStatus'), hint = $('frameHint'), title = $('frameTitle');
+      if (ev.estado === 'ok') {
+        frameOkFrames++;
+        st.textContent = '✅';
+        title.textContent = '¡Perfecto!';
+        hint.textContent = 'Mantén esa distancia. Preparando calibración…';
+        if (frameOkFrames >= FRAME_OK_NEEDED) iniciarCalibracion();
+      } else {
+        frameOkFrames = 0;
+        if (ev.estado === 'cerca') { st.textContent = '🔙'; title.textContent = 'Aléjate un poco'; hint.textContent = 'Da unos pasos atrás para que se vea todo tu cuerpo.'; }
+        else { st.textContent = '🔜'; title.textContent = 'Acércate'; hint.textContent = 'Da unos pasos al frente y asegúrate de tener buena luz.'; }
+      }
+      return;
+    }
+
+    if (framePhase === 'calibra') {
+      // Cuenta brazadas de prueba (alternadas, arriba del hombro) y mide amplitud.
+      // Reusa la misma detección de "arriba" del modo libre.
+      if (leftUp && calArmReady.L) { registrarCalibracion(ampL); calArmReady.L = false; }
+      if (!leftUp && lW.y > lS.y + 0.02) calArmReady.L = true;
+      if (rightUp && calArmReady.R) { registrarCalibracion(ampR); calArmReady.R = false; }
+      if (!rightUp && rW.y > rS.y + 0.02) calArmReady.R = true;
+    }
+  }
+
+  function iniciarFlujoInicio() {
+    // Llamado al entrar a "cámara lista": arranca por encuadre.
+    framePhase = 'encuadre';
+    frameOkFrames = 0;
+    resetCalibracion();
+    calArmReady = { L: true, R: true };
+    $('calibBox').style.display = 'none';
+    $('btnStartRace').style.display = 'none';
+    $('frameStatus').style.display = '';
+    $('frameStatus').textContent = '📏';
+    $('frameTitle').textContent = 'Acomódate';
+    $('frameHint').textContent = 'Párate a 2–2.5 m para que se vea TODO tu cuerpo en la cámara.';
+  }
+
+  function iniciarCalibracion() {
+    framePhase = 'calibra';
+    romCal.active = true; romCal.samples = [];
+    calArmReady = { L: true, R: true };
+    try { beepSound(900, 0.12, 0); } catch (e) {}
+    $('frameStatus').style.display = 'none';
+    $('frameTitle').textContent = 'Calibremos tu brazada';
+    $('frameHint').textContent = 'Levanta cada brazo arriba del hombro, alternando, como en crol.';
+    $('calibBox').style.display = '';
+    actualizarCalibUI();
+  }
+
+  const CALIB_NEEDED = 4;
+  function registrarCalibracion(amp) {
+    if (!romCal.active) return;
+    if (typeof amp === 'number' && isFinite(amp) && amp > 0.04) {
+      romCal.samples.push(amp);
+      try { beepSound(1100, 0.08, 0, 0.15); } catch (e) {}
+      vibrar(25);
+      actualizarCalibUI();
+      if (romCal.samples.length >= CALIB_NEEDED) finalizarCalibracion();
+    }
+  }
+
+  function actualizarCalibUI() {
+    const n = Math.min(romCal.samples.length, CALIB_NEEDED);
+    $('calibCount').textContent = n + ' / ' + CALIB_NEEDED;
+    $('calibBar').style.width = Math.round((n / CALIB_NEEDED) * 100) + '%';
+  }
+
+  function finalizarCalibracion() {
+    romCal.active = false;
+    framePhase = 'listo';
+    // ROM personal = mediana de las muestras (robusta a un outlier).
+    const s = romCal.samples.slice().sort((a, b) => a - b);
+    const mid = s.length ? s[Math.floor(s.length / 2)] : ROM_IDEAL;
+    // Acotar a un rango sano para no romper el balance del juego.
+    romCal.personal = Math.max(0.16, Math.min(0.40, mid));
+    romCal.done = true;
+    try { beepSound(1320, 0.3, 0, 0.3); } catch (e) {}
+    $('frameTitle').textContent = '¡Listo para competir!';
+    $('frameHint').textContent = 'Tu amplitud quedó calibrada. Nada largo y parejo para ir más rápido.';
+    $('calibBox').style.display = 'none';
+    $('btnStartRace').style.display = '';
   }
 
   function onPoseResults(results) {
@@ -3301,6 +3536,11 @@
     drawLandmark(ctx, rightWrist, canvas, rightUp ? '#ffd60a' : '#ffffff');
     drawLine(ctx, leftShoulder, leftWrist, canvas, leftUp ? '#ffd60a' : 'rgba(255,255,255,0.5)');
     drawLine(ctx, rightShoulder, rightWrist, canvas, rightUp ? '#ffd60a' : 'rgba(255,255,255,0.5)');
+
+    // ===== ENCUADRE + CALIBRACIÓN (antes de la carrera) =====
+    if (framePhase === 'encuadre' || framePhase === 'calibra') {
+      procesarEncuadre(lm, leftShoulder, leftWrist, rightShoulder, rightWrist, leftUp, rightUp, ampLraw(leftShoulder, leftWrist), ampRraw(rightShoulder, rightWrist));
+    }
 
     if (state.running) {
       var estilo = state.swimStyle || 'libre';
@@ -3439,6 +3679,7 @@
     startRace();
   });
   $('btnBackToMode').addEventListener('click', () => {
+    framePhase = 'idle';
     stopCamera();
     $('overlayCameraReady').classList.add('hidden');
     $('overlayStart').classList.remove('hidden');
@@ -3509,17 +3750,42 @@
     }
   }
 
+  // Cuenta regresiva visual grande antes de tomar la foto del duelo,
+  // para que ambos posen a propósito en vez de salir a media brazada.
+  function avisoFotoDuelo(callback) {
+    const overlay = $('countdown');
+    const num = $('countdownNum');
+    if (!overlay || !num) { callback(); return; }
+    overlay.classList.remove('hidden');
+    let n = 3;
+    const pintar = (txt, freq) => {
+      num.textContent = txt;
+      num.style.animation = 'none'; void num.offsetWidth;
+      num.style.animation = 'countPulse 0.85s ease-out';
+      try { beepSound(freq, 0.13, 0); } catch (e) {}
+    };
+    pintar('📸 3', 700);
+    const iv = setInterval(() => {
+      n--;
+      if (n > 0) pintar('📸 ' + n, 700);
+      else if (n === 0) pintar('📸 ¡FOTO!', 1200);
+      else { clearInterval(iv); overlay.classList.add('hidden'); callback(); }
+    }, 700);
+  }
+
   async function enviarFotoDuelo() {
     if (!duelState.duelRef) return;
-    const foto = capturarFotoDuelo();
-    if (!foto) return;
-    duelPhotos.mine = foto;
-    const myKey = duelState.isCreator ? 'creator' : 'rival';
-    try {
-      await duelState.duelRef.child('photos').child(myKey).set(foto);
-    } catch (e) {
-      console.warn('enviar foto failed', e);
-    }
+    avisoFotoDuelo(async () => {
+      const foto = capturarFotoDuelo();
+      if (!foto) return;
+      duelPhotos.mine = foto;
+      const myKey = duelState.isCreator ? 'creator' : 'rival';
+      try {
+        await duelState.duelRef.child('photos').child(myKey).set(foto);
+      } catch (e) {
+        console.warn('enviar foto failed', e);
+      }
+    });
   }
 
   function escucharFotosDuelo() {
@@ -4412,7 +4678,10 @@
     const startX = 14;
     const endX = poolWidth - 64;
     const pct = state.distance / TOTAL_DISTANCE;
+    drift.lateral *= DRIFT_RECOVER;
+    if (Math.abs(drift.lateral) < 0.5) { drift.lateral = 0; hideDriftArrow(); }
     playerEl.style.left = `${startX + (endX - startX) * pct}px`;
+    playerEl.style.transform = `translateY(${drift.lateral.toFixed(1)}px) rotate(${(drift.lateral * 0.25).toFixed(1)}deg)`;
     if (state.velocity > 0.3) playerEl.classList.add('swimming');
     else playerEl.classList.remove('swimming');
 
