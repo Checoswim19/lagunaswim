@@ -46,7 +46,7 @@ body {
   background-attachment: fixed;
   color: #fff;
   min-height: 100vh;
-  padding-bottom: calc(var(--bnav-h) + var(--spons-h) + env(safe-area-inset-bottom) + 10px);
+  padding-bottom: 0;
 }
 /* ====== TABS / NAV ====== */
 .bnav {
@@ -65,7 +65,7 @@ body {
 .bnav-item.active { opacity: 1; color: var(--accent); }
 .bnav-icon { font-size: 1.25rem; }
 .bnav-label { font-size: 0.6rem; font-weight: 700; }
-.tab { display: none; min-height: calc(100vh - var(--bnav-h)); flex-direction: column; padding: 0 1rem 1rem; }
+.tab { display: none; min-height: calc(100vh - var(--bnav-h)); flex-direction: column; padding: 0 1rem calc(var(--bnav-h) + var(--spons-h) + env(safe-area-inset-bottom) + 28px); }
 .tab.active { display: flex; }
 /* ====== HEADER ====== */
 .hdr {
@@ -5488,6 +5488,9 @@ function goTimer(id) {
     var el = document.getElementById(s);
     if (el) el.classList.toggle('active', s === id);
   });
+  // Al cambiar de pantalla del cronometro, regresar el scroll arriba
+  // (evita quedar a media pagina con un hueco grande)
+  try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) { window.scrollTo(0, 0); }
 }
 
 // ===== FIREBASE STATUS =====
