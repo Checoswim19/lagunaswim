@@ -86,6 +86,13 @@ body {
 /* ====== INTERNAL SCREENS (within tabs) ====== */
 .screen { display: none; }
 .screen.active { display: block; }
+/* Las pantallas del cronometro (s-role, s-setup, s-lobby, s-startup, s-race...)
+   viven a nivel de body, FUERA de los .tab, asi que necesitan su propio
+   espacio abajo para librar el menu inferior + la barra de patrocinadores */
+body > .screen { padding-bottom: calc(var(--bnav-h) + var(--spons-h) + env(safe-area-inset-bottom) + 28px); }
+/* Al activar una pantalla del crono, ocultar el tab-timer del inicio
+   (si no, queda como una caja vacia alta y deja un hueco enorme arriba) */
+body.chrono-active #tab-timer { display: none !important; }
 /* ====== CARDS / FORMS ====== */
 .card {
   background: var(--bg-card);
@@ -3398,6 +3405,7 @@ body.v3-fluid .v2-coach-poster:active {
     <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
     <div class="v2-app-header-sub">INTERNATIONAL</div>
   </div>
+  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v7 · 18jun</div>
 </div>
 <!-- ============ FIN V2 HEADER ============ -->
 
@@ -5478,6 +5486,16 @@ function showTab(t) {
     if (tabEl) tabEl.classList.toggle('active', x === key);
     if (navEl) navEl.classList.toggle('active', x === key);
   });
+  // Al cambiar de tab, salir de cualquier pantalla del cronometro y volver
+  // a s-home (las pantallas del crono viven fuera de los tabs y si no se
+  // resetean quedan encimadas sobre el tab nuevo).
+  document.body.classList.remove('chrono-active');
+  if (typeof TIMER_SCREENS !== 'undefined') {
+    TIMER_SCREENS.forEach(function(s) {
+      var el = document.getElementById(s);
+      if (el) el.classList.toggle('active', s === 's-home');
+    });
+  }
   // Scroll suave al top al cambiar de tab
   try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
 }
@@ -5488,6 +5506,10 @@ function goTimer(id) {
     var el = document.getElementById(s);
     if (el) el.classList.toggle('active', s === id);
   });
+  // El tab-timer (inicio) contiene s-home. Las demas pantallas del crono
+  // estan FUERA de tab-timer; al activarlas hay que ocultar el inicio para
+  // que no deje una caja vacia alta arriba. En s-home, mostrar el inicio.
+  document.body.classList.toggle('chrono-active', id !== 's-home');
   // Al cambiar de pantalla del cronometro, regresar el scroll arriba
   // (evita quedar a media pagina con un hueco grande)
   try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) { window.scrollTo(0, 0); }
