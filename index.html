@@ -5000,6 +5000,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <!-- Vista Nadador/Padre -->
       <div id="premios-nadador-view" style="display:none">
         <div id="premios-progreso-container"></div>
+        <div id="portal-records-container" style="margin-top:1rem"></div>
         <div id="premios-mis-logros-container" style="margin-top:1rem"></div>
       </div>
 
@@ -5042,6 +5043,9 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <option value="5">5 dias por semana</option>
       <option value="6">6 dias por semana</option>
     </select>
+    <label>Fecha de nacimiento</label>
+    <input type="date" id="meta-fnac">
+    <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);margin-bottom:0.6rem">La edad y la categoria (Infantil / Juvenil / Master) se calculan solas conforme crece.</div>
     <label>Vincular a correo (opcional)</label>
     <input id="meta-correo" placeholder="papa-juan@gmail.com" type="email">
     <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);margin-bottom:0.6rem">
@@ -5093,8 +5097,10 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
     </div>
     <label>Nombre completo</label>
     <input id="ev-nombre" placeholder="Juan Perez">
-    <label>Edad</label>
-    <input type="number" id="ev-edad" placeholder="12">
+    <label>Fecha de nacimiento</label>
+    <input type="date" id="ev-fnac">
+    <label>Equipo (opcional)</label>
+    <input id="ev-equipo" placeholder="Laguna Swim">
     <label>Nivel inicial</label>
     <select id="ev-nivel">
       <option value="NB">Nivel Basico (NB) - 20 ejercicios</option>
@@ -9675,21 +9681,25 @@ function abrirAltaNadador() {
 function cerrarAltaNadador() {
   document.getElementById('modal-alta-nadador').classList.add('modal-hidden');
   document.getElementById('ev-nombre').value = '';
-  document.getElementById('ev-edad').value = '';
+  var _f = document.getElementById('ev-fnac'); if (_f) _f.value = '';
+  var _e = document.getElementById('ev-equipo'); if (_e) _e.value = '';
 }
 
 function guardarNadador() {
   if (!evalState.esCoach) { alert('Solo el entrenador puede registrar.'); return; }
   var nombre = (document.getElementById('ev-nombre').value || '').trim();
-  var edad = parseInt(document.getElementById('ev-edad').value);
+  var fnac = document.getElementById('ev-fnac').value || '';
+  var equipo = (document.getElementById('ev-equipo').value || '').trim();
   var nivel = document.getElementById('ev-nivel').value;
-  if (!nombre || !edad) { alert('Completa nombre y edad'); return; }
+  if (!nombre || !fnac) { alert('Completa nombre y fecha de nacimiento'); return; }
 
   var id = 'n' + Date.now();
   db.ref('nadadores/' + id).set({
     id: id,
     nombre: nombre,
-    edad: edad,
+    fechaNacimiento: fnac,
+    equipo: equipo,
+    nombreKey: portalNormNombre(nombre),
     nivel: nivel,
     ejercicios: {},
     fechaAlta: new Date().toISOString(),
@@ -10425,9 +10435,10 @@ function abrirMetaNadador(id, nadador) {
   premios.metaNadadorActual = { id: id, data: nadador };
   document.getElementById('meta-nadador-info').innerHTML =
     '<div style="font-size:0.9rem;font-weight:700">' + escapeHtml(nadador.nombre) + '</div>' +
-    '<div style="font-size:0.7rem;color:var(--accent-soft)">' + nadador.edad + ' anos</div>';
+    '<div style="font-size:0.7rem;color:var(--accent-soft)">' + portalEdadCatTexto(nadador) + '</div>';
   document.getElementById('meta-dias-semana').value = nadador.metaSemanal || 4;
   document.getElementById('meta-correo').value = nadador.correoVinculado || '';
+  document.getElementById('meta-fnac').value = nadador.fechaNacimiento || '';
   document.getElementById('modal-meta-nadador').classList.remove('modal-hidden');
 }
 function cerrarMetaNadador() {
@@ -10440,8 +10451,10 @@ function guardarMetaNadador() {
   var id = premios.metaNadadorActual.id;
   var meta = parseInt(document.getElementById('meta-dias-semana').value);
   var correo = document.getElementById('meta-correo').value.trim().toLowerCase();
+  var fnac = document.getElementById('meta-fnac').value || '';
   var updates = { metaSemanal: meta };
   if (correo) updates.correoVinculado = correo;
+  if (fnac) { updates.fechaNacimiento = fnac; if (premios.metaNadadorActual && premios.metaNadadorActual.data && premios.metaNadadorActual.data.nombre) updates.nombreKey = portalNormNombre(premios.metaNadadorActual.data.nombre); }
   db.ref('nadadores/' + id).update(updates).then(function() {
     cerrarMetaNadador();
     cargarNadadoresCoach();
@@ -10555,7 +10568,7 @@ function renderProgresoNadador(nadadorId, nadador) {
           fotoHtml +
           '<div style="flex:1;min-width:0">' +
             '<div style="font-size:1rem;font-weight:800">' + escapeHtml(nadador.nombre) + '</div>' +
-            '<div style="font-size:0.72rem;color:var(--accent-soft)">' + nadador.edad + ' años - ' + (EVAL_NIVELES[nadador.nivel] ? EVAL_NIVELES[nadador.nivel].nombre : nadador.nivel) + '</div>' +
+            '<div style="font-size:0.72rem;color:var(--accent-soft)">' + portalEdadCatNivel(nadador) + '</div>' +
             '<div style="font-size:0.7rem;color:var(--gold);margin-top:3px;font-weight:700">' +
               'Meta semanal: ' + meta + ' entrenamientos' +
             '</div>' +
@@ -12985,5 +12998,247 @@ function escapeHtml(str) {
   </div>
 </div>
 <!-- ============ FIN MODALES V4 ============ -->
+
+<!-- ============ PORTAL DEL NADADOR (records, ranking interno, grafica) ============ -->
+<style id="portal-styles">
+  .portal-sec{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:0.9rem;margin-top:0.9rem}
+  .portal-sec-title{font-size:0.7rem;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:0.7rem;border-bottom:1px solid rgba(56,189,248,0.2);padding-bottom:0.35rem}
+  .portal-pr-row{display:flex;align-items:center;justify-content:space-between;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+  .portal-pr-row:last-child{border-bottom:none}
+  .portal-pr-ev{font-size:0.8rem;font-weight:800;color:#fff}
+  .portal-pr-meta{font-size:0.6rem;color:var(--accent-soft);margin-top:1px}
+  .portal-pr-time{font-size:1.05rem;font-weight:900;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+  .portal-rank-badge{font-size:0.62rem;font-weight:800;padding:2px 7px;border-radius:50px;white-space:nowrap}
+  .portal-rank-1{background:rgba(255,215,0,0.18);color:var(--gold);border:1px solid rgba(255,215,0,0.4)}
+  .portal-rank-top{background:rgba(34,197,94,0.15);color:var(--success);border:1px solid rgba(34,197,94,0.35)}
+  .portal-rank-norm{background:rgba(255,255,255,0.07);color:var(--accent-soft);border:1px solid rgba(255,255,255,0.12)}
+  .portal-chart-tabs{display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.6rem}
+  .portal-chart-tab{font-size:0.62rem;font-weight:700;padding:3px 9px;border-radius:50px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--accent-soft);cursor:pointer}
+  .portal-chart-tab.active{background:rgba(56,189,248,0.18);border-color:var(--accent);color:var(--accent)}
+  .portal-empty{font-size:0.72rem;color:var(--accent-soft);text-align:center;padding:0.6rem 0;line-height:1.5}
+</style>
+<script>
+function portalNormNombre(s){
+  return (s == null ? '' : String(s)).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+}
+function portalEdad(fnac){
+  if(!fnac) return null;
+  var p = String(fnac).split('-');
+  if(p.length < 3) return null;
+  var y=+p[0], m=+p[1], d=+p[2];
+  if(!y||!m||!d) return null;
+  var hoy = new Date();
+  var e = hoy.getFullYear() - y;
+  var cm = (hoy.getMonth()+1) - m;
+  if(cm < 0 || (cm === 0 && hoy.getDate() < d)) e--;
+  return e >= 0 && e < 120 ? e : null;
+}
+function portalCategoria(edad){
+  if(edad == null) return null;
+  if(edad <= 10) return 'Infantil';
+  if(edad <= 18) return 'Juvenil';
+  return 'Master';
+}
+function portalEdadCatTexto(nadador){
+  var e = portalEdad(nadador && nadador.fechaNacimiento);
+  if(e != null) return e + ' años · ' + portalCategoria(e);
+  if(nadador && nadador.edad != null) return nadador.edad + ' años';
+  return 'Sin fecha de nacimiento';
+}
+function portalEdadCatNivel(nadador){
+  var niv = '';
+  try { niv = (typeof EVAL_NIVELES !== 'undefined' && EVAL_NIVELES[nadador.nivel]) ? EVAL_NIVELES[nadador.nivel].nombre : (nadador.nivel || ''); } catch(_e){ niv = nadador.nivel || ''; }
+  var base = portalEdadCatTexto(nadador);
+  return niv ? (base + ' · ' + niv) : base;
+}
+function portalFmtMs(ms){
+  ms = Math.max(0, Math.round(ms));
+  var cc = Math.round((ms % 1000) / 10);
+  var totalSeg = Math.floor(ms / 1000);
+  var s = totalSeg % 60, m = Math.floor(totalSeg / 60);
+  var ss = (s < 10 ? '0' : '') + s;
+  var ccs = (cc < 10 ? '0' : '') + cc;
+  return m > 0 ? (m + ':' + ss + '.' + ccs) : (s + '.' + ccs);
+}
+var PORTAL_ESTILOS = { libre:'Libre', dorso:'Dorso', pecho:'Pecho', mariposa:'Mariposa' };
+function portalNombreEvento(dist, style){
+  var st = PORTAL_ESTILOS[style] || (style || '');
+  return dist + 'm ' + st;
+}
+var PORTAL = { series:{}, chartTitulos:{} };
+
+function portalRenderRecords(nadador){
+  var cont = document.getElementById('portal-records-container');
+  if(!cont || !nadador) return;
+  var key = nadador.nombreKey || portalNormNombre(nadador.nombre);
+  if(!key){ cont.innerHTML = ''; return; }
+
+  db.ref('ranking').once('value').then(function(snap){
+    var all = [];
+    snap.forEach(function(c){ var r = c.val(); if(r && r.swimmer) all.push(r); });
+    var mios = all.filter(function(r){ return portalNormNombre(r.swimmer) === key; });
+
+    if(mios.length === 0){
+      cont.innerHTML =
+        '<div class="portal-sec">' +
+          '<div class="portal-sec-title">🏊 Récords personales</div>' +
+          '<div class="portal-empty">Aún no hay tiempos de competencia ligados a <b>' + escapeHtml(nadador.nombre || '') + '</b>.<br>' +
+          'Se ligan solos cuando el nombre completo coincide con el de los resultados registrados.</div>' +
+        '</div>';
+      return;
+    }
+
+    var porEvento = {};
+    mios.forEach(function(r){
+      var ms = (typeof r.timeMs === 'number' && r.timeMs > 0) ? r.timeMs : (typeof timeStrToMs === 'function' ? timeStrToMs(r.time) : 0);
+      if(!ms || ms <= 0) return;
+      r._ms = ms;
+      var ek = r.dist + '|' + r.style;
+      if(!porEvento[ek]) porEvento[ek] = [];
+      porEvento[ek].push(r);
+    });
+
+    var eventos = Object.keys(porEvento);
+    eventos.sort(function(a,b){ return (+a.split('|')[0]) - (+b.split('|')[0]); });
+
+    var prHtml = '<div class="portal-sec"><div class="portal-sec-title">🏅 Récords personales</div>';
+    eventos.forEach(function(ek){
+      var best = porEvento[ek].slice().sort(function(a,b){ return a._ms - b._ms; })[0];
+      prHtml +=
+        '<div class="portal-pr-row">' +
+          '<div style="min-width:0">' +
+            '<div class="portal-pr-ev">' + escapeHtml(portalNombreEvento(best.dist, best.style)) + '</div>' +
+            '<div class="portal-pr-meta">' + escapeHtml((best.comp || '') + (best.year ? ' · ' + best.year : '')) + '</div>' +
+          '</div>' +
+          '<div class="portal-pr-time">' + escapeHtml(best.time || portalFmtMs(best._ms)) + '</div>' +
+        '</div>';
+    });
+    prHtml += '</div>';
+
+    function mejorPorNadador(filtrados){
+      var m = {};
+      filtrados.forEach(function(r){
+        var ms = (typeof r.timeMs === 'number' && r.timeMs > 0) ? r.timeMs : (typeof timeStrToMs === 'function' ? timeStrToMs(r.time) : 0);
+        if(!ms || ms <= 0) return;
+        var nk = portalNormNombre(r.swimmer);
+        if(!m[nk] || ms < m[nk]) m[nk] = ms;
+      });
+      return m;
+    }
+    var rkHtml = '<div class="portal-sec"><div class="portal-sec-title">📊 Ranking interno del equipo</div>';
+    var huboRank = false;
+    eventos.forEach(function(ek){
+      var best = porEvento[ek].slice().sort(function(a,b){ return a._ms - b._ms; })[0];
+      var grupo = all.filter(function(r){
+        return +r.dist === +best.dist && r.style === best.style && r.cat === best.cat && r.gender === best.gender;
+      });
+      var mp = mejorPorNadador(grupo);
+      var lista = Object.keys(mp).map(function(nk){ return { nk:nk, ms:mp[nk] }; }).sort(function(a,b){ return a.ms - b.ms; });
+      var total = lista.length;
+      if(total < 2) return;
+      var pos = 0;
+      for(var i=0;i<lista.length;i++){ if(lista[i].nk === key){ pos = i+1; break; } }
+      if(pos === 0) return;
+      huboRank = true;
+      var cls = pos === 1 ? 'portal-rank-1' : (pos <= 3 ? 'portal-rank-top' : 'portal-rank-norm');
+      var medalla = pos === 1 ? '🥇 ' : (pos === 2 ? '🥈 ' : (pos === 3 ? '🥉 ' : ''));
+      rkHtml +=
+        '<div class="portal-pr-row">' +
+          '<div style="min-width:0">' +
+            '<div class="portal-pr-ev">' + escapeHtml(portalNombreEvento(best.dist, best.style)) + '</div>' +
+            '<div class="portal-pr-meta">' + escapeHtml((best.cat || '') + ' · ' + (best.gender === 'F' ? 'Femenil' : 'Varonil')) + '</div>' +
+          '</div>' +
+          '<div class="portal-rank-badge ' + cls + '">' + medalla + '#' + pos + ' de ' + total + '</div>' +
+        '</div>';
+    });
+    rkHtml += '</div>';
+    if(!huboRank) rkHtml = '';
+
+    PORTAL.series = {}; PORTAL.chartTitulos = {};
+    eventos.forEach(function(ek){
+      var arr = porEvento[ek].slice().sort(function(a,b){
+        var ya = a.year || 0, yb = b.year || 0;
+        if(ya !== yb) return ya - yb;
+        return (a.addedAt || 0) - (b.addedAt || 0);
+      });
+      if(arr.length >= 2){
+        PORTAL.series[ek] = arr.map(function(r){
+          return { ms:r._ms, label:(r.year || ''), comp:r.comp || '', time:r.time || portalFmtMs(r._ms) };
+        });
+        PORTAL.chartTitulos[ek] = portalNombreEvento(arr[0].dist, arr[0].style);
+      }
+    });
+    var chartKeys = Object.keys(PORTAL.series);
+    var chartHtml = '';
+    if(chartKeys.length > 0){
+      chartKeys.sort(function(a,b){ return PORTAL.series[b].length - PORTAL.series[a].length; });
+      var tabs = '';
+      if(chartKeys.length > 1){
+        tabs = '<div class="portal-chart-tabs">' + chartKeys.map(function(ek,i){
+          return '<div class="portal-chart-tab' + (i===0?' active':'') + '" onclick="portalDrawChart(\'' + ek + '\', this)">' + escapeHtml(PORTAL.chartTitulos[ek]) + '</div>';
+        }).join('') + '</div>';
+      }
+      chartHtml =
+        '<div class="portal-sec"><div class="portal-sec-title">📈 Mejora de tiempos</div>' +
+          tabs +
+          '<div id="portal-chart-host"></div>' +
+          '<div style="font-size:0.58rem;color:rgba(255,255,255,0.45);text-align:center;margin-top:0.4rem">La línea baja = nada más rápido ↓</div>' +
+        '</div>';
+    }
+
+    cont.innerHTML = prHtml + rkHtml + chartHtml;
+    if(chartKeys.length > 0) portalDrawChart(chartKeys[0], null);
+  }).catch(function(e){ console.warn('portalRenderRecords', e); });
+}
+
+function portalDrawChart(ek, tabEl){
+  var host = document.getElementById('portal-chart-host');
+  var serie = PORTAL.series[ek];
+  if(!host || !serie || serie.length < 2) return;
+  if(tabEl){
+    var tabs = tabEl.parentNode.querySelectorAll('.portal-chart-tab');
+    for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+    tabEl.classList.add('active');
+  }
+  var W=320, H=170, padL=44, padR=14, padT=16, padB=26;
+  var msArr = serie.map(function(p){ return p.ms; });
+  var min = Math.min.apply(null, msArr), max = Math.max.apply(null, msArr);
+  if(max === min){ max = min + 1000; min = Math.max(0, min - 1000); }
+  var rng = max - min;
+  var n = serie.length;
+  function X(i){ return padL + (n === 1 ? 0 : (i/(n-1))*(W-padL-padR)); }
+  function Y(ms){ return padT + ((ms - min)/rng)*(H-padT-padB); }
+  var pts = serie.map(function(p,i){ return X(i) + ',' + Y(p.ms); }).join(' ');
+  var dots = '', labels = '';
+  serie.forEach(function(p,i){
+    var x=X(i), y=Y(p.ms);
+    dots += '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="#ffd700" stroke="#071e38" stroke-width="1.5"/>';
+    labels += '<text x="'+x.toFixed(1)+'" y="'+(y-8).toFixed(1)+'" fill="#ffd700" font-size="8.5" font-weight="700" text-anchor="middle">'+escapeHtml(p.time)+'</text>';
+    labels += '<text x="'+x.toFixed(1)+'" y="'+(H-10)+'" fill="rgba(255,255,255,0.55)" font-size="8" text-anchor="middle">'+escapeHtml(String(p.label||''))+'</text>';
+  });
+  var yBest = Y(min);
+  var svg =
+    '<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block">' +
+      '<line x1="'+padL+'" y1="'+yBest.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+yBest.toFixed(1)+'" stroke="rgba(34,197,94,0.5)" stroke-width="1" stroke-dasharray="3 3"/>' +
+      '<text x="'+padL+'" y="'+(yBest-4).toFixed(1)+'" fill="rgba(34,197,94,0.85)" font-size="8" font-weight="700">PR ' + escapeHtml(portalFmtMs(min)) + '</text>' +
+      '<polyline points="'+pts+'" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>' +
+      dots + labels +
+    '</svg>';
+  host.innerHTML = svg;
+}
+window.portalDrawChart = portalDrawChart;
+
+(function(){
+  if(typeof window.renderProgresoNadador === 'function'){
+    var _orig = window.renderProgresoNadador;
+    window.renderProgresoNadador = function(id, nadador){
+      _orig(id, nadador);
+      try { portalRenderRecords(nadador); } catch(e){ console.warn('portal hook', e); }
+    };
+  }
+})();
+</script>
 </body>
 </html>
