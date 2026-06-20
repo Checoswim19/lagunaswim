@@ -3367,6 +3367,69 @@ body.v3-fluid .v2-coach-poster:active {
   #oc-ambient *,#oc-bubbles *,.v5-hero .oc-hero-rays{animation:none!important;}}
 /* === FIN ambiente oceánico === */
 
+
+/* >>> BLOG CSS >>> */
+/* ============ BLOG / MURO INFORMATIVO ============ */
+body.blog-active .tab.active { display: none !important; }
+body.blog-active #tab-timer { display: none !important; }
+.blog-screen { animation: v3FadeIn 0.4s ease-out; }
+.blog-back { background: none; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 700; cursor: pointer; padding: 0.4rem 0 0.6rem; }
+.blog-cat { display: inline-block; font-size: 0.6rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #071e38; background: var(--gold); padding: 3px 10px; border-radius: 50px; }
+.blog-feat { position: relative; border-radius: 18px; overflow: hidden; margin-bottom: 1rem; border: 1px solid rgba(56,189,248,0.25); background: var(--bg-card); cursor: pointer; }
+.blog-feat-img { width: 100%; height: 200px; object-fit: cover; display: block; }
+.blog-feat-noimg { width: 100%; height: 110px; background: linear-gradient(135deg, var(--bg-deep), #0a2a4a); }
+.blog-feat-body { padding: 0.9rem 1rem 1.1rem; }
+.blog-feat-title { font-size: 1.15rem; font-weight: 900; line-height: 1.25; margin-top: 0.5rem; }
+.blog-feat-meta { font-size: 0.65rem; color: rgba(255,255,255,0.45); margin-top: 0.3rem; letter-spacing: 0.5px; }
+.blog-feat-exc { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 0.5rem; line-height: 1.45; }
+.blog-chips { display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 0.8rem; -webkit-overflow-scrolling: touch; }
+.blog-chip { flex-shrink: 0; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 50px; border: 1px solid rgba(56,189,248,0.3); background: rgba(56,189,248,0.08); color: var(--accent-soft); cursor: pointer; white-space: nowrap; }
+.blog-chip.active { background: var(--accent); color: #071e38; border-color: var(--accent); }
+.blog-item { display: flex; gap: 0.7rem; align-items: center; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 0.6rem; margin-bottom: 0.6rem; cursor: pointer; }
+.blog-item-img { width: 64px; height: 64px; border-radius: 9px; object-fit: cover; flex-shrink: 0; background: var(--bg-deep); }
+.blog-item-title { font-size: 0.85rem; font-weight: 800; line-height: 1.2; margin-top: 3px; }
+.blog-item-meta { font-size: 0.6rem; color: rgba(255,255,255,0.4); margin-top: 3px; letter-spacing: 0.5px; }
+.blog-post-img { width: 100%; max-height: 260px; object-fit: cover; border-radius: 16px; margin-bottom: 0.9rem; }
+.blog-post-title { font-size: 1.5rem; font-weight: 900; line-height: 1.2; margin: 0.4rem 0 0.2rem; }
+.blog-post-body { font-size: 0.92rem; line-height: 1.65; color: rgba(255,255,255,0.85); white-space: pre-wrap; margin-top: 0.7rem; }
+.blog-cmt { display: flex; gap: 0.6rem; padding: 0.7rem 0; border-top: 1px solid rgba(255,255,255,0.06); }
+.blog-cmt-av { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: rgba(56,189,248,0.2); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--accent); }
+.blog-cmt-name { font-size: 0.78rem; font-weight: 800; }
+.blog-cmt-time { font-size: 0.6rem; color: rgba(255,255,255,0.35); white-space: nowrap; }
+.blog-cmt-text { font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-top: 2px; line-height: 1.4; white-space: pre-wrap; }
+#b-editor label, #b-list label { font-size: 0.75rem; color: var(--accent-soft); display: block; margin-bottom: 4px; }
+/* <<< BLOG CSS <<< */
+
+/* >>> RECO CSS >>> */
+/* ===== RECOMENDACIONES DE PAPAS (resenas moderadas + mensaje al director) ===== */
+.reco-box{background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(56,189,248,0.07));border:1px solid rgba(255,215,0,0.22);border-radius:16px;padding:1.1rem;min-height:150px;position:relative;margin-bottom:0.8rem}
+.reco-stars{font-size:1.05rem;letter-spacing:2px;margin:0.2rem 0 0.5rem}
+.star-on{color:var(--gold)}.star-off{color:rgba(255,255,255,0.18)}
+.reco-text{font-size:0.92rem;line-height:1.5;color:rgba(255,255,255,0.92);font-style:italic;min-height:60px}
+.reco-author{display:flex;align-items:center;gap:0.5rem;margin-top:0.8rem}
+.reco-av{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#071e38;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.9rem;flex-shrink:0}
+.reco-name{font-weight:800;font-size:0.85rem}
+.reco-rel{font-size:0.62rem;color:rgba(255,255,255,0.45)}
+.reco-dots{display:flex;justify-content:center;gap:6px;margin-top:0.8rem}
+.reco-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:all .2s}
+.reco-dot.active{background:var(--gold);width:18px;border-radius:50px}
+.reco-empty{text-align:center;color:rgba(255,255,255,0.4);font-size:0.82rem;padding:1.5rem 0.5rem}
+.star-pick{font-size:2.2rem;letter-spacing:6px;cursor:pointer;text-align:center;margin:0.3rem 0}
+/* Sheet inferior reutilizable */
+.ls-modal{position:fixed;inset:0;background:rgba(3,10,20,0.82);display:none;align-items:flex-end;justify-content:center;z-index:60}
+.ls-modal.open{display:flex}
+.ls-sheet{width:100%;max-width:520px;background:var(--bg-main);border-radius:20px 20px 0 0;padding:1.3rem 1.1rem calc(1.5rem + env(safe-area-inset-bottom));border-top:1px solid rgba(56,189,248,0.2);animation:lsUp .25s ease;max-height:90vh;overflow-y:auto}
+@keyframes lsUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.ls-sheet h3{margin:0 0 0.3rem;font-size:1.1rem;font-weight:900}
+.ls-sheet .sub{margin:0 0 1rem;font-size:0.78rem;color:rgba(255,255,255,0.5)}
+.ls-choice{display:flex;gap:0.7rem;align-items:center;background:var(--bg-card);border:1px solid var(--bg-card-border);border-radius:14px;padding:1rem;margin-bottom:0.7rem;cursor:pointer}
+.ls-choice .ic{font-size:1.7rem}
+.ls-choice .ct{font-weight:800;font-size:0.95rem}
+.ls-choice .cs{font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:2px}
+.reco-pend{background:var(--bg-card);border:1px solid var(--bg-card-border);border-radius:12px;padding:0.9rem;margin-bottom:0.7rem}
+.reco-badge{display:inline-block;font-size:0.58rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:rgba(255,215,0,0.18);color:var(--gold);padding:2px 8px;border-radius:50px;margin-bottom:0.5rem}
+.reco-badge.ok{background:rgba(34,197,94,0.18);color:var(--success)}
+/* <<< RECO CSS <<< */
 </style>
 </head>
 <body class="v2-redesign v3-fluid">
@@ -3405,7 +3468,7 @@ body.v3-fluid .v2-coach-poster:active {
     <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
     <div class="v2-app-header-sub">INTERNATIONAL</div>
   </div>
-  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v7 · 18jun</div>
+  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v9 · 18jun</div>
 </div>
 <!-- ============ FIN V2 HEADER ============ -->
 
@@ -3966,6 +4029,134 @@ body.v3-fluid .v2-coach-poster:active {
 </div>
 
 <!-- ============ STORE TAB ============ -->
+
+<!-- >>> BLOG SCREENS >>> -->
+<!-- ============ BLOG: LISTA ============ -->
+<div id="b-list" class="screen blog-screen">
+  <div class="hdr">
+    <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" class="logo-img" alt="">
+    <div>
+      <div class="logo-main">BLOG <em>LAGUNA</em></div>
+      <div class="logo-sub">Muro informativo</div>
+    </div>
+  </div>
+  <button class="blog-back" onclick="closeBlog()">&#8249; Volver al perfil</button>
+  <div id="blog-coach-bar"></div>
+  <!-- ===== RECOMENDACIONES DE PAPAS ===== -->
+  <div class="sect-title" style="font-size:0.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin:0.4rem 0 0.6rem">&#11088; Lo que dicen los pap&aacute;s</div>
+  <div class="reco-box" id="reco-box">
+    <div class="reco-empty">Cargando recomendaciones...</div>
+  </div>
+  <button class="btn btn-gold" style="margin-bottom:1rem" onclick="shareAbrir()">&#9997;&#65039; Comparte tu experiencia</button>
+  <div id="reco-coach-mod"></div>
+  <div id="blog-chips" class="blog-chips"></div>
+  <div id="blog-feat"></div>
+  <div id="blog-list"></div>
+  <div id="blog-empty" style="display:none;text-align:center;color:rgba(255,255,255,0.4);padding:2rem 1rem;font-size:0.85rem">A&uacute;n no hay publicaciones.</div>
+</div>
+
+<!-- ============ BLOG: POST DETALLE ============ -->
+<div id="b-post" class="screen blog-screen">
+  <button class="blog-back" onclick="goBlog('b-list')">&#8249; Todas las publicaciones</button>
+  <div id="blog-post-content"></div>
+  <div style="margin-top:1.4rem">
+    <div style="font-size:0.8rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--accent);border-bottom:1px solid rgba(56,189,248,0.15);padding-bottom:0.3rem;margin-bottom:0.7rem">Comentarios</div>
+    <div id="blog-cmt-box"></div>
+    <div id="blog-cmt-list"></div>
+  </div>
+</div>
+
+<!-- ============ BLOG: EDITOR (solo coach) ============ -->
+<div id="b-editor" class="screen blog-screen">
+  <button class="blog-back" onclick="goBlog('b-list')">&#8249; Cancelar</button>
+  <div style="font-size:1.2rem;font-weight:900;margin:0.4rem 0 0.8rem" id="blog-editor-title">Nueva publicaci&oacute;n</div>
+  <div class="card">
+    <label>T&iacute;tulo</label>
+    <input id="blog-in-title" placeholder="Ej. Todo sobre las aletas">
+    <label style="margin-top:0.7rem">Categor&iacute;a</label>
+    <select id="blog-in-cat"></select>
+    <label style="margin-top:0.7rem">Portada (foto)</label>
+    <input type="file" id="blog-in-img" accept="image/*" onchange="blogPreviewImg(this)">
+    <img id="blog-img-preview" style="display:none;width:100%;border-radius:10px;margin-top:0.5rem;max-height:180px;object-fit:cover">
+    <div id="blog-img-status" style="font-size:0.7rem;color:var(--accent-soft);margin-top:0.3rem"></div>
+    <label style="margin-top:0.7rem">Contenido</label>
+    <textarea id="blog-in-body" rows="10" placeholder="Escribe aqu&iacute; tu publicaci&oacute;n..."></textarea>
+  </div>
+  <button class="btn btn-sky" onclick="blogPublicar()" id="blog-publish-btn">Publicar</button>
+  <div id="blog-manage" style="margin-top:1rem"></div>
+</div>
+
+<!-- ============ BLOG: MODERACION DE RESENAS (solo coach) ============ -->
+<div id="b-resenas" class="screen blog-screen">
+  <button class="blog-back" onclick="goBlog('b-list')">&#8249; Volver al muro</button>
+  <div style="font-size:1.2rem;font-weight:900;margin:0.4rem 0 0.3rem">Rese&ntilde;as de pap&aacute;s</div>
+  <div style="font-size:0.75rem;color:var(--accent-soft);margin-bottom:0.9rem">Nada se publica hasta que t&uacute; lo apruebes.</div>
+  <div class="sect-title" style="font-size:0.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin:0.4rem 0 0.6rem">Por aprobar (<span id="reco-pend-count">0</span>)</div>
+  <div id="reco-pend-list"></div>
+  <div class="sect-title" style="font-size:0.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin:1.2rem 0 0.6rem">Publicadas</div>
+  <div id="reco-ok-list"></div>
+</div>
+
+<!-- ============ MODAL: COMPARTIR EXPERIENCIA ============ -->
+<div class="ls-modal" id="m-share">
+  <div class="ls-sheet">
+    <h3>Comparte tu experiencia</h3>
+    <div class="sub">&iquest;C&oacute;mo quieres hacerlo?</div>
+    <div class="ls-choice" onclick="shareForm('review')">
+      <div class="ic">&#11088;</div>
+      <div><div class="ct">Rese&ntilde;a p&uacute;blica con estrellas</div><div class="cs">Aparece en el muro despu&eacute;s de que el coach la apruebe</div></div>
+    </div>
+    <div class="ls-choice" onclick="shareForm('message')">
+      <div class="ic">&#9993;&#65039;</div>
+      <div><div class="ct">Mensaje privado al director</div><div class="cs">Llega directo al correo del coach Checo</div></div>
+    </div>
+    <button class="btn btn-ghost" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--bg-card-border)" onclick="shareCerrar()">Cancelar</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: RESENA ============ -->
+<div class="ls-modal" id="m-review">
+  <div class="ls-sheet">
+    <div id="rev-form-wrap">
+      <h3>&#11088; Tu rese&ntilde;a</h3>
+      <div class="sub">Cu&eacute;ntanos tu experiencia en Laguna Swim</div>
+      <label>Tu calificaci&oacute;n</label>
+      <div class="star-pick" id="rev-pick"></div>
+      <label>Tu nombre</label>
+      <input id="rev-r-name" placeholder="Ej. Mam&aacute; de Sof&iacute;a">
+      <label>Tu comentario</label>
+      <textarea id="rev-r-text" rows="4" placeholder="Escribe aqu&iacute;..."></textarea>
+      <div style="font-size:0.7rem;color:var(--accent-soft);background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:10px;padding:0.7rem;margin-top:0.7rem;line-height:1.4">Tu rese&ntilde;a se env&iacute;a al coach para revisi&oacute;n. Aparecer&aacute; en el muro cuando &eacute;l la apruebe.</div>
+      <button class="btn btn-gold" onclick="shareResenaEnviar()" id="rev-send-btn">Enviar rese&ntilde;a</button>
+      <button class="btn btn-ghost" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--bg-card-border)" onclick="shareCerrar()">Cancelar</button>
+    </div>
+    <div id="rev-ok-wrap" style="display:none;text-align:center;padding:1.5rem 1rem">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem">&#129305;</div>
+      <div style="font-weight:900;font-size:1.1rem">&iexcl;Gracias!</div>
+      <div style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-top:0.4rem">Tu rese&ntilde;a lleg&oacute; al coach. Aparecer&aacute; en el muro cuando la apruebe.</div>
+      <button class="btn btn-sky" onclick="shareCerrar()">Listo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: MENSAJE AL DIRECTOR ============ -->
+<div class="ls-modal" id="m-message">
+  <div class="ls-sheet">
+    <h3>&#9993;&#65039; Mensaje al director</h3>
+    <div class="sub">Privado. Llega directo al correo del coach Checo.</div>
+    <label>Tu nombre</label>
+    <input id="msg-m-name" placeholder="Tu nombre">
+    <label>Tu correo (para que te responda)</label>
+    <input id="msg-m-email" type="email" placeholder="tucorreo@ejemplo.com">
+    <label>Mensaje</label>
+    <textarea id="msg-m-text" rows="5" placeholder="Escribe tu mensaje..."></textarea>
+    <button class="btn btn-sky" onclick="shareMensajeEnviar()">Abrir correo y enviar</button>
+    <button class="btn btn-ghost" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--bg-card-border)" onclick="shareCerrar()">Cancelar</button>
+  </div>
+</div>
+
+<!-- <<< BLOG SCREENS <<< -->
+
 <div id="tab-store" class="tab">
   <div class="hdr">
     <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" class="logo-img" alt="">
@@ -5173,6 +5364,25 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
     <div class="stat-box"><div class="stat-num">60+</div><div class="stat-lbl">Medallas Panam</div></div>
     <div class="stat-box"><div class="stat-num">80+</div><div class="stat-lbl">Nadadores/evento</div></div>
   </div>
+  <!-- ===== ACCESO BLOG / MURO INFORMATIVO ===== -->
+  <div onclick="openBlog()" style="display:flex;align-items:center;gap:0.8rem;background:linear-gradient(135deg,rgba(56,189,248,0.16),rgba(255,215,0,0.10));border:1px solid rgba(56,189,248,0.35);border-radius:14px;padding:0.9rem 1rem;margin:0.4rem 0 0.9rem;cursor:pointer">
+    <div style="font-size:1.8rem">&#128240;</div>
+    <div style="flex:1">
+      <div style="font-weight:900;font-size:1rem">Blog Laguna Swim</div>
+      <div style="font-size:0.7rem;color:var(--accent-soft);margin-top:1px">Aletas, competencias, t&eacute;cnica y m&aacute;s</div>
+    </div>
+    <div style="color:var(--accent);font-size:1.3rem">&#8250;</div>
+  </div>
+
+  <!-- ===== ACCESO RECOMENDACIONES (facil de encontrar) ===== -->
+  <div onclick="shareAbrir()" style="display:flex;align-items:center;gap:0.8rem;background:linear-gradient(135deg,rgba(255,215,0,0.14),rgba(56,189,248,0.08));border:1px solid rgba(255,215,0,0.3);border-radius:14px;padding:0.9rem 1rem;margin:0 0 0.9rem;cursor:pointer">
+    <div style="font-size:1.8rem">&#11088;</div>
+    <div style="flex:1">
+      <div style="font-weight:900;font-size:1rem">Comparte tu experiencia</div>
+      <div style="font-size:0.7rem;color:var(--accent-soft);margin-top:1px">Deja tu rese&ntilde;a o escr&iacute;bele al director</div>
+    </div>
+    <div style="color:var(--gold);font-size:1.3rem">&#8250;</div>
+  </div>
   <div style="font-size:0.82rem;font-weight:700;margin:0.8rem 0 0.5rem">Programas Laguna Swim</div>
   <div class="prog-card" onclick="openUrl('https://wa.me/528713164850?text=Hola%20Sergio!%20Me%20interesa%20Natacion%20Infantil')">
     <div>
@@ -5495,6 +5705,10 @@ function showTab(t) {
       var el = document.getElementById(s);
       if (el) el.classList.toggle('active', s === 's-home');
     });
+  }
+  document.body.classList.remove('blog-active');
+  if (typeof BLOG_SCREENS !== 'undefined') {
+    BLOG_SCREENS.forEach(function(s) { var el = document.getElementById(s); if (el) el.classList.remove('active'); });
   }
   // Scroll suave al top al cambiar de tab
   try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
@@ -6520,6 +6734,417 @@ function pedirArticulo(nombre) {
   var msg = 'Hola Sergio! Me interesa pedir: ' + nombre + '. Quisiera saber disponibilidad y formas de pago.';
   openUrl('https://wa.me/528713164850?text=' + encodeURIComponent(msg));
 }
+
+
+// ============ BLOG / MURO INFORMATIVO ============
+var BLOG_SCREENS = ['b-list', 'b-post', 'b-editor', 'b-resenas'];
+var BLOG_CATS = ['General', 'Aletas', 'Competencias Infantil', 'Competencias Adultos', 'Aguas Abiertas', 'Tecnica', 'Nutricion', 'Masters'];
+var blogState = { posts: [], filter: 'Todas', current: null, editId: null, coverUrl: '', bound: false };
+
+function goBlog(id) {
+  BLOG_SCREENS.forEach(function(s) { var el = document.getElementById(s); if (el) el.classList.toggle('active', s === id); });
+  document.body.classList.add('blog-active');
+  try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) { window.scrollTo(0, 0); }
+}
+function closeBlog() {
+  BLOG_SCREENS.forEach(function(s) { var el = document.getElementById(s); if (el) el.classList.remove('active'); });
+  document.body.classList.remove('blog-active');
+  try { if (location.search.indexOf('post=') > -1) history.replaceState(null, '', location.pathname); } catch (e) {}
+  try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
+}
+function openBlog() { goBlog('b-list'); blogLoad(); blogResenasLoad(); }
+
+function blogLoad() {
+  if (!db) return;
+  if (blogState.bound) { blogRenderList(); return; }
+  blogState.bound = true;
+  db.ref('blog/posts').on('value', function(snap) {
+    var arr = [];
+    snap.forEach(function(ch) { var v = ch.val() || {}; v.id = ch.key; arr.push(v); });
+    arr.sort(function(a, b) { return (b.ts || 0) - (a.ts || 0); });
+    blogState.posts = arr;
+    blogRenderList();
+  });
+}
+
+function blogExcerpt(t) { t = (t || '').replace(/\s+/g, ' ').trim(); return t.length > 120 ? t.slice(0, 120) + '...' : t; }
+function blogFecha(ts) { if (!ts) return ''; try { return new Date(ts).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } }
+function blogFechaHora(ts) { if (!ts) return ''; try { var d = new Date(ts); return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) + ' ' + d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
+
+function blogRenderList() {
+  var chips = document.getElementById('blog-chips');
+  var feat = document.getElementById('blog-feat');
+  var list = document.getElementById('blog-list');
+  var empty = document.getElementById('blog-empty');
+  var bar = document.getElementById('blog-coach-bar');
+  if (!list) return;
+  if (bar) bar.innerHTML = (state && state.isCoach)
+    ? '<button class="btn btn-sky" style="margin-bottom:0.8rem" onclick="blogNuevo()">&#9999;&#65039; Nueva publicacion</button>'
+    : '';
+  var cats = ['Todas'];
+  blogState.posts.forEach(function(p) { if (p.categoria && cats.indexOf(p.categoria) < 0) cats.push(p.categoria); });
+  if (chips) {
+    chips.innerHTML = cats.map(function(c) {
+      return '<div class="blog-chip' + (blogState.filter === c ? ' active' : '') + '" onclick="blogFiltrar(\'' + c + '\')">' + escapeHtml(c) + '</div>';
+    }).join('');
+  }
+  var posts = blogState.posts.filter(function(p) { return blogState.filter === 'Todas' || p.categoria === blogState.filter; });
+  if (!posts.length) { if (feat) feat.innerHTML = ''; list.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
+  if (empty) empty.style.display = 'none';
+  var f = posts[0];
+  if (feat) {
+    feat.innerHTML = '<div class="blog-feat" onclick="blogAbrir(\'' + f.id + '\')">' +
+      (f.portada ? '<img class="blog-feat-img" src="' + f.portada + '" alt="">' : '<div class="blog-feat-noimg"></div>') +
+      '<div class="blog-feat-body">' +
+        (f.categoria ? '<span class="blog-cat">' + escapeHtml(f.categoria) + '</span>' : '') +
+        '<div class="blog-feat-title">' + escapeHtml(f.titulo || '') + '</div>' +
+        '<div class="blog-feat-meta">' + blogFecha(f.ts) + '</div>' +
+        '<div class="blog-feat-exc">' + escapeHtml(blogExcerpt(f.cuerpo)) + '</div>' +
+      '</div></div>';
+  }
+  list.innerHTML = posts.slice(1).map(function(p) {
+    return '<div class="blog-item" onclick="blogAbrir(\'' + p.id + '\')">' +
+      (p.portada ? '<img class="blog-item-img" src="' + p.portada + '" alt="">' : '<div class="blog-item-img"></div>') +
+      '<div style="flex:1;min-width:0">' +
+        (p.categoria ? '<span class="blog-cat">' + escapeHtml(p.categoria) + '</span>' : '') +
+        '<div class="blog-item-title">' + escapeHtml(p.titulo || '') + '</div>' +
+        '<div class="blog-item-meta">' + blogFecha(p.ts) + '</div>' +
+      '</div></div>';
+  }).join('');
+}
+function blogFiltrar(c) { blogState.filter = c; blogRenderList(); }
+
+function blogAbrir(id) {
+  var found = blogState.posts.filter(function(x) { return x.id === id; })[0];
+  if (found) { blogState.current = found; blogRenderPost(found); blogLoadComments(id); goBlog('b-post'); return; }
+  if (!db) return;
+  db.ref('blog/posts/' + id).once('value').then(function(s) {
+    var v = s.val();
+    if (v) { v.id = id; blogState.current = v; blogRenderPost(v); blogLoadComments(id); goBlog('b-post'); }
+    else { alert('Publicacion no encontrada.'); openBlog(); }
+  });
+}
+function blogRenderPost(p) {
+  var c = document.getElementById('blog-post-content');
+  if (!c) return;
+  var editBtn = (state && state.isCoach) ? '<button class="btn btn-gray" style="margin-top:0.7rem" onclick="blogEditar(\'' + p.id + '\')">&#9999;&#65039; Editar</button>' : '';
+  c.innerHTML =
+    (p.portada ? '<img class="blog-post-img" src="' + p.portada + '" alt="">' : '') +
+    (p.categoria ? '<span class="blog-cat">' + escapeHtml(p.categoria) + '</span>' : '') +
+    '<div class="blog-post-title">' + escapeHtml(p.titulo || '') + '</div>' +
+    '<div class="blog-feat-meta">' + blogFecha(p.ts) + '</div>' +
+    '<div class="blog-post-body">' + escapeHtml(p.cuerpo || '') + '</div>' +
+    '<button class="btn btn-sky" style="margin-top:1rem" onclick="blogCompartir(\'' + p.id + '\')">&#128279; Compartir</button>' +
+    editBtn;
+}
+function blogCompartir(id) {
+  var url = location.origin + location.pathname + '?post=' + id;
+  var p = blogState.current || {};
+  var txt = (p.titulo ? p.titulo + ' - ' : '') + 'Blog Laguna Swim';
+  if (navigator.share) { navigator.share({ title: p.titulo || 'Blog Laguna Swim', text: txt, url: url }).catch(function() {}); }
+  else if (navigator.clipboard) { navigator.clipboard.writeText(url).then(function() { alert('Link copiado:\n' + url); }); }
+  else { prompt('Copia el link:', url); }
+}
+
+// ----- Comentarios -----
+function blogLoadComments(postId) {
+  var box = document.getElementById('blog-cmt-box');
+  var listEl = document.getElementById('blog-cmt-list');
+  if (box) {
+    if (state && state.user) {
+      box.innerHTML = '<textarea id="blog-cmt-input" rows="2" placeholder="Escribe un comentario..." style="margin-bottom:0.5rem"></textarea>' +
+        '<button class="btn btn-sky" style="margin-bottom:0.9rem" onclick="blogComentar(\'' + postId + '\')">Comentar</button>';
+    } else {
+      box.innerHTML = '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.8rem;text-align:center;margin-bottom:0.8rem">' +
+        '<div style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-bottom:0.5rem">Inicia sesion para comentar</div>' +
+        '<button class="btn btn-sky" onclick="closeBlog();showTab(\'profile\')">Ir a iniciar sesion</button></div>';
+    }
+  }
+  if (!db) return;
+  db.ref('blog/comments/' + postId).off('value');
+  db.ref('blog/comments/' + postId).on('value', function(snap) {
+    var arr = []; snap.forEach(function(ch) { var v = ch.val() || {}; v.id = ch.key; arr.push(v); });
+    arr.sort(function(a, b) { return (a.ts || 0) - (b.ts || 0); });
+    if (!listEl) return;
+    if (!arr.length) { listEl.innerHTML = '<div style="font-size:0.78rem;color:rgba(255,255,255,0.35);padding:0.5rem 0">Se el primero en comentar.</div>'; return; }
+    var esCoach = !!(state && state.isCoach);
+    var myUid = (state && state.user) ? state.user.uid : null;
+    listEl.innerHTML = arr.map(function(cm) {
+      var canDel = esCoach || (myUid && cm.uid === myUid);
+      var av = cm.foto ? '<img class="blog-cmt-av" src="' + cm.foto + '" alt="">' : '<div class="blog-cmt-av">' + escapeHtml((cm.nombre || '?').charAt(0).toUpperCase()) + '</div>';
+      var del = canDel ? ' &middot; <button onclick="blogBorrarComentario(\'' + postId + '\',\'' + cm.id + '\')" style="background:none;border:none;color:#ff6b35;cursor:pointer;font-size:0.7rem;padding:0">&#128465;&#65039;</button>' : '';
+      return '<div class="blog-cmt">' + av + '<div style="flex:1;min-width:0">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px">' +
+          '<span class="blog-cmt-name">' + escapeHtml(cm.nombre || 'Usuario') + '</span>' +
+          '<span class="blog-cmt-time">' + blogFechaHora(cm.ts) + del + '</span>' +
+        '</div>' +
+        '<div class="blog-cmt-text">' + escapeHtml(cm.texto || '') + '</div>' +
+      '</div></div>';
+    }).join('');
+  });
+}
+function blogComentar(postId) {
+  if (!(state && state.user)) { alert('Inicia sesion para comentar.'); return; }
+  var inp = document.getElementById('blog-cmt-input');
+  var txt = (inp && inp.value || '').trim();
+  if (!txt) return;
+  if (txt.length > 1000) txt = txt.slice(0, 1000);
+  db.ref('blog/comments/' + postId).push({
+    uid: state.user.uid,
+    nombre: state.user.displayName || (state.user.email || '').split('@')[0] || 'Usuario',
+    foto: state.user.photoURL || '',
+    texto: txt,
+    ts: Date.now()
+  }).then(function() { if (inp) inp.value = ''; })
+    .catch(function() { alert('No se pudo enviar el comentario. Revisa tu conexion.'); });
+}
+function blogBorrarComentario(postId, cid) {
+  if (!confirm('Borrar este comentario?')) return;
+  db.ref('blog/comments/' + postId + '/' + cid).remove();
+}
+
+// ----- Editor (solo coach) -----
+function blogNuevo() {
+  if (!(state && state.isCoach)) { alert('Solo el coach puede publicar.'); return; }
+  blogState.editId = null; blogState.coverUrl = '';
+  document.getElementById('blog-editor-title').textContent = 'Nueva publicacion';
+  document.getElementById('blog-in-title').value = '';
+  document.getElementById('blog-in-body').value = '';
+  document.getElementById('blog-in-cat').innerHTML = BLOG_CATS.map(function(c) { return '<option>' + c + '</option>'; }).join('');
+  document.getElementById('blog-img-preview').style.display = 'none';
+  document.getElementById('blog-img-status').textContent = '';
+  document.getElementById('blog-in-img').value = '';
+  document.getElementById('blog-publish-btn').textContent = 'Publicar';
+  blogRenderManage();
+  goBlog('b-editor');
+}
+function blogEditar(id) {
+  if (!(state && state.isCoach)) return;
+  var p = blogState.posts.filter(function(x) { return x.id === id; })[0]; if (!p) return;
+  blogState.editId = id; blogState.coverUrl = p.portada || '';
+  document.getElementById('blog-editor-title').textContent = 'Editar publicacion';
+  document.getElementById('blog-in-title').value = p.titulo || '';
+  document.getElementById('blog-in-body').value = p.cuerpo || '';
+  document.getElementById('blog-in-cat').innerHTML = BLOG_CATS.map(function(c) { return '<option' + (c === p.categoria ? ' selected' : '') + '>' + c + '</option>'; }).join('');
+  var prev = document.getElementById('blog-img-preview');
+  if (p.portada) { prev.src = p.portada; prev.style.display = 'block'; } else { prev.style.display = 'none'; }
+  document.getElementById('blog-img-status').textContent = '';
+  document.getElementById('blog-publish-btn').textContent = 'Guardar cambios';
+  blogRenderManage();
+  goBlog('b-editor');
+}
+async function blogPreviewImg(input) {
+  var file = input.files && input.files[0]; if (!file) return;
+  var prev = document.getElementById('blog-img-preview');
+  var st = document.getElementById('blog-img-status');
+  prev.src = URL.createObjectURL(file); prev.style.display = 'block';
+  st.textContent = 'Subiendo foto...';
+  try {
+    var fd = new FormData(); fd.append('file', file); fd.append('upload_preset', CONFIG.uploadPreset);
+    var res = await fetch('https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/image/upload', { method: 'POST', body: fd });
+    var data = await res.json();
+    if (data.secure_url) { blogState.coverUrl = data.secure_url; st.textContent = 'Foto lista'; }
+    else { st.textContent = 'Error al subir la foto'; }
+  } catch (e) { st.textContent = 'Error al subir la foto'; }
+}
+function blogPublicar() {
+  if (!(state && state.isCoach)) { alert('Solo el coach puede publicar.'); return; }
+  var titulo = (document.getElementById('blog-in-title').value || '').trim();
+  var cat = document.getElementById('blog-in-cat').value;
+  var cuerpo = (document.getElementById('blog-in-body').value || '').trim();
+  if (!titulo) { alert('Ponle un titulo.'); return; }
+  if (!cuerpo) { alert('Escribe el contenido.'); return; }
+  var btn = document.getElementById('blog-publish-btn'); btn.disabled = true; var old = btn.textContent; btn.textContent = 'Guardando...';
+  var obj = { titulo: titulo, categoria: cat, cuerpo: cuerpo, portada: blogState.coverUrl || '', autor: (state.user && state.user.displayName) || 'Coach' };
+  var p;
+  if (blogState.editId) { p = db.ref('blog/posts/' + blogState.editId).update(obj); }
+  else { obj.ts = Date.now(); p = db.ref('blog/posts').push(obj); }
+  p.then(function() { btn.disabled = false; btn.textContent = old; goBlog('b-list'); })
+   .catch(function() { btn.disabled = false; btn.textContent = old; alert('No se pudo guardar. Revisa tu conexion o los permisos de Firebase.'); });
+}
+function blogRenderManage() {
+  var m = document.getElementById('blog-manage'); if (!m) return;
+  if (!(state && state.isCoach) || !blogState.posts.length) { m.innerHTML = ''; return; }
+  m.innerHTML = '<div style="font-size:0.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--accent-soft);margin-bottom:0.5rem">Publicaciones</div>' +
+    blogState.posts.map(function(p) {
+      return '<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:8px;padding:0.5rem 0.7rem;margin-bottom:0.4rem">' +
+        '<div style="flex:1;min-width:0;font-size:0.8rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(p.titulo || '') + '</div>' +
+        '<button onclick="blogEditar(\'' + p.id + '\')" style="background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:0.7rem;cursor:pointer">Editar</button>' +
+        '<button onclick="blogBorrar(\'' + p.id + '\')" style="background:rgba(255,107,53,0.15);border:1px solid #ff6b35;color:#ff6b35;border-radius:6px;padding:3px 8px;font-size:0.7rem;cursor:pointer">&#128465;&#65039;</button>' +
+      '</div>';
+    }).join('');
+}
+function blogBorrar(id) {
+  if (!(state && state.isCoach)) return;
+  if (!confirm('Borrar esta publicacion y sus comentarios?')) return;
+  db.ref('blog/posts/' + id).remove();
+  db.ref('blog/comments/' + id).remove();
+  goBlog('b-list');
+}
+
+// ============ RECOMENDACIONES DE PAPAS ============
+var recoState = { aprobadas: [], pend: [], order: [], idx: 0, timer: null, bound: false, revStars: 5 };
+
+function recoShuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+function recoStarHtml(s) { var h = ''; for (var i = 1; i <= 5; i++) { h += '<span class="' + (i <= s ? 'star-on' : 'star-off') + '">&#9733;</span>'; } return h; }
+
+function blogResenasLoad() {
+  if (!db) return;
+  if (recoState.bound) { recoRenderCarousel(); return; }
+  recoState.bound = true;
+  db.ref('blog/resenas').on('value', function(snap) {
+    var ap = [], pe = [];
+    snap.forEach(function(ch) { var v = ch.val() || {}; v.id = ch.key; if (v.aprobada) ap.push(v); else pe.push(v); });
+    ap.sort(function(a, b) { return (b.ts || 0) - (a.ts || 0); });
+    pe.sort(function(a, b) { return (b.ts || 0) - (a.ts || 0); });
+    recoState.aprobadas = ap; recoState.pend = pe; recoState.order = [];
+    recoRenderCarousel();
+    recoRenderCoachBtn();
+    if (document.getElementById('b-resenas') && document.getElementById('b-resenas').classList.contains('active')) recoRenderModeracion();
+  });
+}
+
+function recoRenderCarousel() {
+  var box = document.getElementById('reco-box'); if (!box) return;
+  var ap = recoState.aprobadas;
+  if (!ap.length) {
+    box.innerHTML = '<div class="reco-empty">A&uacute;n no hay recomendaciones publicadas.<br>&iexcl;S&eacute; el primero en dejar la tuya!</div>';
+    if (recoState.timer) clearInterval(recoState.timer);
+    return;
+  }
+  if (!recoState.order.length) recoState.order = recoShuffle(ap.map(function(_, i) { return i; }));
+  if (recoState.idx >= recoState.order.length) recoState.idx = 0;
+  var r = ap[recoState.order[recoState.idx]];
+  var av = (r.nombre || '?').charAt(0).toUpperCase();
+  var dots = '';
+  for (var i = 0; i < recoState.order.length; i++) { dots += '<div class="reco-dot' + (i === recoState.idx ? ' active' : '') + '" onclick="recoIr(' + i + ')"></div>'; }
+  box.innerHTML =
+    '<div class="reco-stars">' + recoStarHtml(r.estrellas || 5) + '</div>' +
+    '<div class="reco-text">&ldquo;' + escapeHtml(r.texto || '') + '&rdquo;</div>' +
+    '<div class="reco-author"><div class="reco-av">' + escapeHtml(av) + '</div>' +
+    '<div><div class="reco-name">' + escapeHtml(r.nombre || 'An&oacute;nimo') + '</div>' +
+    (r.relacion ? '<div class="reco-rel">' + escapeHtml(r.relacion) + '</div>' : '') + '</div></div>' +
+    (recoState.order.length > 1 ? '<div class="reco-dots">' + dots + '</div>' : '');
+  if (recoState.timer) clearInterval(recoState.timer);
+  if (recoState.order.length > 1) recoState.timer = setInterval(recoSiguiente, 5000);
+}
+function recoIr(i) { recoState.idx = i; recoRenderCarousel(); }
+function recoSiguiente() { recoState.idx = (recoState.idx + 1) % recoState.order.length; recoRenderCarousel(); }
+
+function recoRenderCoachBtn() {
+  var c = document.getElementById('reco-coach-mod'); if (!c) return;
+  if (state && state.isCoach) {
+    c.innerHTML = '<button class="btn btn-ghost" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--bg-card-border);margin-bottom:1rem" onclick="goBlog(\'b-resenas\');recoRenderModeracion();">&#129534; Rese&ntilde;as por aprobar (' + recoState.pend.length + ')</button>';
+  } else { c.innerHTML = ''; }
+}
+
+// ----- Compartir experiencia (modales) -----
+function shareAbrir() { shareCerrar(); document.getElementById('m-share').classList.add('open'); }
+function shareCerrar() { ['m-share', 'm-review', 'm-message'].forEach(function(id) { var e = document.getElementById(id); if (e) e.classList.remove('open'); }); }
+function shareForm(type) {
+  shareCerrar();
+  if (type === 'review') {
+    recoRevPick(5);
+    document.getElementById('rev-form-wrap').style.display = 'block';
+    document.getElementById('rev-ok-wrap').style.display = 'none';
+    document.getElementById('rev-r-name').value = (state && state.user && state.user.displayName) || '';
+    document.getElementById('rev-r-text').value = '';
+    document.getElementById('m-review').classList.add('open');
+  } else {
+    document.getElementById('msg-m-name').value = (state && state.user && state.user.displayName) || '';
+    document.getElementById('msg-m-email').value = (state && state.user && state.user.email) || '';
+    document.getElementById('msg-m-text').value = '';
+    document.getElementById('m-message').classList.add('open');
+  }
+}
+function recoRevPick(s) {
+  recoState.revStars = s;
+  var h = '';
+  for (var i = 1; i <= 5; i++) { h += '<span onclick="recoRevPick(' + i + ')" class="' + (i <= s ? 'star-on' : 'star-off') + '">&#9733;</span>'; }
+  document.getElementById('rev-pick').innerHTML = h;
+}
+function shareResenaEnviar() {
+  var nombre = (document.getElementById('rev-r-name').value || '').trim() || 'An&oacute;nimo';
+  var texto = (document.getElementById('rev-r-text').value || '').trim();
+  if (!texto) { alert('Escribe tu comentario'); return; }
+  if (texto.length > 1000) texto = texto.slice(0, 1000);
+  if (!db) { alert('Sin conexion. Intenta de nuevo.'); return; }
+  var btn = document.getElementById('rev-send-btn'); if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
+  db.ref('blog/resenas').push({
+    nombre: nombre, relacion: '', estrellas: recoState.revStars || 5, texto: texto,
+    aprobada: false, ts: Date.now(), uid: (state && state.user) ? state.user.uid : ''
+  }).then(function() {
+    document.getElementById('rev-form-wrap').style.display = 'none';
+    document.getElementById('rev-ok-wrap').style.display = 'block';
+    if (btn) { btn.disabled = false; btn.textContent = 'Enviar rese\u00f1a'; }
+  }).catch(function() {
+    if (btn) { btn.disabled = false; btn.textContent = 'Enviar rese\u00f1a'; }
+    alert('No se pudo enviar. Revisa tu conexion o los permisos de Firebase.');
+  });
+}
+function shareMensajeEnviar() {
+  var nombre = (document.getElementById('msg-m-name').value || '').trim() || 'Sin nombre';
+  var email = (document.getElementById('msg-m-email').value || '').trim();
+  var texto = (document.getElementById('msg-m-text').value || '').trim();
+  if (!texto) { alert('Escribe tu mensaje'); return; }
+  var asunto = 'Mensaje al director - Laguna Swim';
+  var cuerpo = 'Nombre: ' + nombre + '\nCorreo: ' + email + '\n\n' + texto;
+  var url = 'mailto:' + (CONFIG.coach || 'checoswim@gmail.com') + '?subject=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(cuerpo);
+  shareCerrar();
+  try { window.location.href = url; } catch (e) { window.open(url); }
+}
+
+// ----- Moderacion (solo coach) -----
+function recoRenderModeracion() {
+  if (!(state && state.isCoach)) { goBlog('b-list'); return; }
+  var pc = document.getElementById('reco-pend-count'); if (pc) pc.textContent = recoState.pend.length;
+  var pl = document.getElementById('reco-pend-list');
+  if (pl) {
+    if (!recoState.pend.length) { pl.innerHTML = '<div class="reco-empty">No hay rese&ntilde;as pendientes &#128076;</div>'; }
+    else {
+      pl.innerHTML = recoState.pend.map(function(r) {
+        return '<div class="reco-pend"><span class="reco-badge">Rese&ntilde;a</span>' +
+          '<div class="reco-stars" style="font-size:0.9rem">' + recoStarHtml(r.estrellas || 5) + '</div>' +
+          '<div style="font-weight:800;font-size:0.85rem;margin-top:0.3rem">' + escapeHtml(r.nombre || 'An&oacute;nimo') + '</div>' +
+          '<div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.3rem;line-height:1.4">&ldquo;' + escapeHtml(r.texto || '') + '&rdquo;</div>' +
+          '<div style="display:flex;gap:0.5rem;margin-top:0.7rem">' +
+            '<button class="btn btn-green" style="margin-top:0;font-size:0.78rem;padding:0.6rem;background:var(--success);color:#fff" onclick="resenaAprobar(\'' + r.id + '\')">&#10003; Aprobar y publicar</button>' +
+            '<button class="btn" style="margin-top:0;font-size:0.78rem;padding:0.6rem;background:rgba(192,86,59,0.18);color:#e98a6e;border:1px solid rgba(192,86,59,0.5)" onclick="resenaDescartar(\'' + r.id + '\')">Descartar</button>' +
+          '</div></div>';
+      }).join('');
+    }
+  }
+  var ol = document.getElementById('reco-ok-list');
+  if (ol) {
+    if (!recoState.aprobadas.length) { ol.innerHTML = '<div class="reco-empty">A&uacute;n no has publicado rese&ntilde;as.</div>'; }
+    else {
+      ol.innerHTML = recoState.aprobadas.map(function(r) {
+        return '<div class="reco-pend"><span class="reco-badge ok">Publicada</span>' +
+          '<div class="reco-stars" style="font-size:0.9rem">' + recoStarHtml(r.estrellas || 5) + '</div>' +
+          '<div style="font-weight:800;font-size:0.85rem;margin-top:0.3rem">' + escapeHtml(r.nombre || 'An&oacute;nimo') + '</div>' +
+          '<div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.3rem;line-height:1.4">&ldquo;' + escapeHtml(r.texto || '') + '&rdquo;</div>' +
+          '<div style="display:flex;gap:0.5rem;margin-top:0.7rem">' +
+            '<button class="btn" style="margin-top:0;font-size:0.78rem;padding:0.6rem;background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--bg-card-border)" onclick="resenaDespublicar(\'' + r.id + '\')">Ocultar</button>' +
+            '<button class="btn" style="margin-top:0;font-size:0.78rem;padding:0.6rem;background:rgba(192,86,59,0.18);color:#e98a6e;border:1px solid rgba(192,86,59,0.5)" onclick="resenaBorrar(\'' + r.id + '\')">&#128465;&#65039; Borrar</button>' +
+          '</div></div>';
+      }).join('');
+    }
+  }
+}
+function resenaAprobar(id) { if (!(state && state.isCoach)) return; db.ref('blog/resenas/' + id + '/aprobada').set(true); }
+function resenaDescartar(id) { if (!(state && state.isCoach)) return; if (!confirm('Descartar esta rese\u00f1a?')) return; db.ref('blog/resenas/' + id).remove(); }
+function resenaDespublicar(id) { if (!(state && state.isCoach)) return; db.ref('blog/resenas/' + id + '/aprobada').set(false); }
+function resenaBorrar(id) { if (!(state && state.isCoach)) return; if (!confirm('Borrar esta rese\u00f1a?')) return; db.ref('blog/resenas/' + id).remove(); }
+
+
+// ===== DEEP LINK: abrir post compartido (?post=ID) =====
+(function checkUrlPost() {
+  try {
+    var post = new URLSearchParams(location.search).get('post');
+    if (post) { blogLoad(); blogAbrir(post); }
+  } catch (e) {}
+})();
+
 
 // ===== AUTO-JOIN VIA QR =====
 (function checkUrlRoom() {
