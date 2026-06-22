@@ -5053,6 +5053,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
     </div>
     <button class="btn btn-gold" onclick="guardarMetaNadador()">Guardar configuracion</button>
     <button class="btn btn-gray" onclick="cerrarMetaNadador()">Cancelar</button>
+    <button class="btn" onclick="borrarNadador()" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);color:#fca5a5;margin-top:0.3rem">&#128465;&#65039; Borrar nadador</button>
   </div>
 </div>
 
@@ -8416,8 +8417,30 @@ function delRankTime(id) {
   if (!confirm('¿Eliminar este tiempo del ranking?')) return;
   db.ref('ranking/' + id).remove().then(function() {
     loadRanking();
-  });
+  }).catch(function(e) { alert('No se pudo borrar: ' + e.message); });
 }
+
+// FIX: deleteRanking se llamaba desde "Ver todos" y el buscador pero nunca se definio.
+// Borra el tiempo y refresca la vista que este activa (busqueda, filtros o "ver todos").
+function deleteRanking(id) {
+  if (!state.user || state.user.email !== CONFIG.coach) return;
+  if (!confirm('¿Eliminar este tiempo del ranking?')) return;
+  db.ref('ranking/' + id).remove().then(function() {
+    return db.ref('ranking').once('value');
+  }).then(function(snap) {
+    rk.data = [];
+    var d = snap.val() || {};
+    Object.values(d).forEach(function(r) { rk.data.push(r); });
+    rk.data.sort(function(a, b) { return a.timeMs - b.timeMs; });
+    var bq = document.getElementById('ranking-buscador');
+    if (bq && bq.value.trim()) { buscarRanking(); return; }
+    var dist = document.getElementById('rank-dist');
+    var style = document.getElementById('rank-style');
+    if (dist && style && dist.value && style.value) { filterRanking(); }
+    else { verTodosLosResultados(); }
+  }).catch(function(e) { alert('No se pudo borrar: ' + e.message); });
+}
+window.deleteRanking = deleteRanking;
 
 // ===== DIPLOMA =====
 
@@ -10460,6 +10483,21 @@ function guardarMetaNadador() {
     cargarNadadoresCoach();
   });
 }
+
+// Borrar un nadador de la lista (solo coach). Elimina su perfil/nivel/evaluacion.
+function borrarNadador() {
+  if (!state.user || state.user.email !== CONFIG.coach) { alert('Solo el entrenador puede borrar nadadores.'); return; }
+  if (!premios.metaNadadorActual) return;
+  var id = premios.metaNadadorActual.id;
+  var nombre = (premios.metaNadadorActual.data && premios.metaNadadorActual.data.nombre) || 'este nadador';
+  if (!confirm('¿Borrar a ' + nombre + ' de la lista?\n\nSe elimina su perfil, nivel y evaluacion. Sus tiempos en el ranking NO se borran.\n\nEsta accion no se puede deshacer.')) return;
+  db.ref('nadadores/' + id).remove().then(function() {
+    cerrarMetaNadador();
+    if (typeof cargarNadadoresCoach === 'function') cargarNadadoresCoach();
+    if (typeof cargarNadadoresEval === 'function') cargarNadadoresEval();
+  }).catch(function(e) { alert('No se pudo borrar: ' + e.message); });
+}
+window.borrarNadador = borrarNadador;
 
 // ===== VISTA NADADOR/PADRE =====
 function cargarVistaNadador() {
