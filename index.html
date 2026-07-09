@@ -3512,6 +3512,13 @@ body.blog-active #tab-timer { display: none !important; }
 <div class="reto50-game-modal modal-hidden" id="aguasabiertas-game-modal">
   <iframe id="aguasabiertas-iframe" class="reto50-game-iframe" src="about:blank" title="Simulador Aguas Abiertas"></iframe>
 </div>
+
+<!-- Modal contenedor del Waterpolo (iframe) -->
+<div class="reto50-game-modal modal-hidden" id="waterpolo-game-modal">
+  <iframe id="waterpolo-iframe" class="reto50-game-iframe" src="about:blank" title="Waterpolo Laguna Swim"></iframe>
+  <button onclick="waterpoloCerrarJuego()" aria-label="Cerrar"
+    style="position:absolute;top:10px;left:10px;z-index:10;width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.6);background:rgba(6,35,63,.75);color:#fff;font-size:1.05rem;font-weight:900;cursor:pointer;">✕</button>
+</div>
 <!-- ============================================================
      FIN NUEVO RETO 50M
      ============================================================ -->
@@ -3580,6 +3587,18 @@ body.blog-active #tab-timer { display: none !important; }
               <span class="sim-card-badge">NUEVO</span>
             </div>
             <div class="sim-card-desc">5 niveles desde entrenamiento hasta la Gran Travesía 10K con Coach Checo.</div>
+          </div>
+          <div class="sim-card-cta">▶</div>
+        </button>
+
+        <button class="sim-card" onclick="waterpoloAbrirJuego()">
+          <div class="sim-card-icon" style="background:linear-gradient(135deg,#123a6e,#38bdf8)">🤽</div>
+          <div class="sim-card-body">
+            <div class="sim-card-title">WATERPOLO
+              <span class="sim-card-tag" style="background:#0a3a60;color:#7CFFB0">WP</span>
+              <span class="sim-card-badge">NUEVO</span>
+            </div>
+            <div class="sim-card-desc">Partido internacional con salida oficial, tomas de tiro en primera persona y duelo 1v1 en línea.</div>
           </div>
           <div class="sim-card-cta">▶</div>
         </button>
@@ -12028,12 +12047,39 @@ function aguasabiertasCerrarJuego() {
   document.body.style.overflow = '';
 }
 
+// ===== SIMULADOR WATERPOLO =====
+var WATERPOLO = {
+  iframeSrc: 'waterpolo-laguna.html',
+};
+
+function waterpoloAbrirJuego() {
+  var modal = document.getElementById('waterpolo-game-modal');
+  var iframe = document.getElementById('waterpolo-iframe');
+  if (iframe.src === 'about:blank' || iframe.src.indexOf(WATERPOLO.iframeSrc) === -1) {
+    iframe.src = WATERPOLO.iframeSrc + '?t=' + Date.now();
+  }
+  modal.classList.remove('modal-hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function waterpoloCerrarJuego() {
+  var modal = document.getElementById('waterpolo-game-modal');
+  var iframe = document.getElementById('waterpolo-iframe');
+  modal.classList.add('modal-hidden');
+  iframe.src = 'about:blank';
+  document.body.style.overflow = '';
+}
+
 // Cerrar simulador con tecla ESC
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     var aaModal = document.getElementById('aguasabiertas-game-modal');
     if (aaModal && !aaModal.classList.contains('modal-hidden')) {
       aguasabiertasCerrarJuego();
+    }
+    var wpModal = document.getElementById('waterpolo-game-modal');
+    if (wpModal && !wpModal.classList.contains('modal-hidden')) {
+      waterpoloCerrarJuego();
     }
   }
 });
