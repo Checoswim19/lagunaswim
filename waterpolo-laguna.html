@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Waterpolo · Laguna Swim Blanco vs Azul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Luckiest+Guy&display=swap" rel="stylesheet">
+<style>
+  :root{--sky:#86e6ff;--aqua:#33c2e6;--deep:#0f9bc4;--sun:#ffd44d;--coral:#ff7d6b;
+        --grass:#5fd06b;--grape:#7d6bff;--ink:#0c3b54;}
+  *{user-select:none;-webkit-tap-highlight-color:transparent;box-sizing:border-box;}
+  body{font-family:'Baloo 2',system-ui,sans-serif;margin:0;min-height:100vh;display:flex;
+    align-items:center;justify-content:center;padding:14px;overflow:hidden;
+    background:radial-gradient(900px 500px at 50% -8%,#fff6c9 0%,rgba(255,246,201,0) 55%),
+      linear-gradient(180deg,#9bedff 0%,#45cbe9 45%,#1ba3c8 100%);}
+  .bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;}
+  .bubbles span{position:absolute;bottom:-40px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.95),rgba(255,255,255,.12));
+    opacity:.5;animation:rise linear infinite;}
+  .bubbles span:nth-child(1){left:6%;width:24px;height:24px;animation-duration:9s;}
+  .bubbles span:nth-child(2){left:18%;width:14px;height:14px;animation-duration:7s;animation-delay:1s;}
+  .bubbles span:nth-child(3){left:34%;width:30px;height:30px;animation-duration:11s;animation-delay:2s;}
+  .bubbles span:nth-child(4){left:50%;width:18px;height:18px;animation-duration:8s;animation-delay:.5s;}
+  .bubbles span:nth-child(5){left:64%;width:26px;height:26px;animation-duration:10s;animation-delay:3s;}
+  .bubbles span:nth-child(6){left:78%;width:12px;height:12px;animation-duration:6.5s;animation-delay:1.5s;}
+  .bubbles span:nth-child(7){left:88%;width:22px;height:22px;animation-duration:9.5s;animation-delay:2.5s;}
+  .bubbles span:nth-child(8){left:26%;width:16px;height:16px;animation-duration:7.5s;animation-delay:4s;}
+  @keyframes rise{0%{transform:translateY(0) scale(.6);opacity:0;}10%{opacity:.6;}100%{transform:translateY(-112vh) scale(1.1);opacity:0;}}
+
+  .wrap{position:relative;z-index:1;width:100%;max-width:none;
+    background:linear-gradient(180deg,#ffffff,#eaf9ff);border-radius:34px;padding:14px 16px 18px;
+    box-shadow:0 24px 50px rgba(8,60,90,.35),inset 0 0 0 6px #fff,inset 0 0 0 10px var(--sun);}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 6px;}
+  .title{font-family:'Luckiest Guy',cursive;font-size:1.9rem;color:var(--coral);letter-spacing:1px;text-shadow:0 3px 0 #ffd1c8;}
+  .title span{color:var(--deep);text-shadow:0 3px 0 #bfeffb;}
+  .brand{font-weight:800;color:var(--deep);font-size:.85rem;letter-spacing:1px;background:#e7f8ff;padding:5px 12px;border-radius:30px;}
+
+  .info{display:flex;align-items:stretch;justify-content:center;gap:10px;margin:4px 0 12px;}
+  .team{display:flex;align-items:center;gap:8px;border-radius:22px;padding:6px 14px;flex:1;max-width:230px;
+    box-shadow:0 5px 0 rgba(0,0,0,.08);}
+  .tw-card{background:linear-gradient(180deg,#ffffff,#eef4fb);border:3px solid #cfe3f5;}
+  .ta-card{background:linear-gradient(180deg,#dff0ff,#bfe2ff);border:3px solid #7fc2ff;justify-content:flex-end;}
+  .face{font-size:1.9rem;}
+  .team .name{font-weight:800;color:var(--ink);font-size:.78rem;letter-spacing:1px;}
+  .team .pts{font-family:'Luckiest Guy',cursive;font-size:2rem;line-height:1;color:var(--coral);}
+  .ta-card .pts{color:var(--deep);}
+  .timer-card{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:var(--ink);border-radius:22px;padding:5px 16px;box-shadow:0 5px 0 rgba(0,0,0,.25);}
+  .timer{font-family:'Luckiest Guy',cursive;font-size:1.7rem;color:#7CFFB0;letter-spacing:1px;}
+  .timer.extra{color:#ffce5a;}
+  .tlabel{font-size:.58rem;color:#bfeafd;letter-spacing:2px;}
+
+  .pool{position:relative;border-radius:24px;padding:8px;height:min(74vh, 56vw);
+    background:repeating-linear-gradient(45deg,#19a7cc 0 14px,#1593b6 14px 28px);
+    box-shadow:inset 0 0 0 5px #fff,0 10px 24px rgba(8,60,90,.3);}
+  canvas{display:block;width:100%;height:100%;border-radius:16px;touch-action:none;
+    aspect-ratio:1000/520;box-shadow:0 0 0 4px var(--sun);}
+
+  .splash{position:absolute;inset:8px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(180deg,rgba(13,59,84,.5),rgba(13,59,84,.72));z-index:5;transition:opacity .25s;}
+  .splash.hide{opacity:0;pointer-events:none;}
+  .splash-card{background:linear-gradient(180deg,#fff,#eaf9ff);border-radius:26px;padding:16px 20px;max-width:86%;text-align:center;
+    max-height:94%;overflow-y:auto;box-shadow:0 18px 40px rgba(0,0,0,.4),inset 0 0 0 5px var(--sun);animation:pop .3s ease;}
+  @media (orientation:landscape) and (max-height:560px){
+    .splash-title{font-size:1.3rem;}.splash-sub{margin:2px 0 6px;font-size:.78rem;}
+    .splash-card{padding:10px 16px;}
+    .howto{gap:4px;margin-bottom:8px;}.step{padding:4px 9px;font-size:.72rem;}
+    .pick-row{margin:2px 0 5px;}.pick-dur{margin:0 0 5px;}.play-btn{padding:8px 22px;font-size:1.1rem;}
+  }
+  @keyframes pop{0%{transform:scale(.7);opacity:0;}100%{transform:scale(1);opacity:1;}}
+  .splash-title{font-family:'Luckiest Guy',cursive;font-size:1.9rem;color:var(--coral);text-shadow:0 3px 0 #ffd1c8;}
+  .splash-sub{font-weight:700;color:var(--ink);margin:4px 0 12px;font-size:.95rem;}
+  .howto{display:flex;flex-direction:column;gap:7px;text-align:left;margin-bottom:14px;}
+  .step{background:#eaf6ff;border-radius:14px;padding:7px 12px;font-weight:600;color:var(--ink);display:flex;gap:9px;align-items:center;font-size:.9rem;}
+  .step b{font-size:1.3rem;}
+  .play-btn{font-family:'Luckiest Guy',cursive;font-size:1.5rem;color:#16591a;
+    background:linear-gradient(180deg,#8af07a,#5fd06b);border:none;padding:12px 36px;border-radius:40px;
+    box-shadow:0 6px 0 #3aa248;cursor:pointer;letter-spacing:1px;animation:bob 1.2s ease-in-out infinite;}
+  .play-btn:active{transform:translateY(3px);box-shadow:0 3px 0 #3aa248;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+
+  button{font-family:'Baloo 2',sans-serif;border:none;cursor:pointer;font-weight:800;transition:.1s;}
+  .mob{display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+  .mob button{font-size:1.15rem;padding:14px 26px;border-radius:40px;color:#fff;letter-spacing:.5px;}
+  .b-pass{background:linear-gradient(180deg,#7fdc86,#5fd06b);box-shadow:0 5px 0 #3aa248;}
+  .b-switch{background:linear-gradient(180deg,#8c97ff,#6b6bff);box-shadow:0 5px 0 #4a44c8;}
+  .b-shoot{background:linear-gradient(180deg,#ff9a6b,#ff6b6b);box-shadow:0 5px 0 #c83a3a;}
+  .mob button:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.3);}
+  .pose{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+  .pose button{background:#fff;color:var(--deep);border:3px solid #bfe7f5;border-radius:30px;padding:8px 16px;font-size:.9rem;box-shadow:0 4px 0 #d4eef7;}
+  .pose button:active{transform:translateY(2px);box-shadow:0 2px 0 #d4eef7;}
+  .status{margin-top:10px;text-align:center;font-weight:600;color:var(--ink);background:#eaf6ff;border-radius:30px;padding:7px 16px;font-size:.8rem;}
+
+  @media(max-width:750px){
+    .title{font-size:1.4rem;}.brand{font-size:.68rem;}
+    .team{padding:5px 10px;gap:5px;}.face{font-size:1.4rem;}.team .pts{font-size:1.5rem;}.team .name{font-size:.68rem;}
+    .timer{font-size:1.3rem;}
+    .splash-title{font-size:1.5rem;}.play-btn{font-size:1.2rem;}
+  }
+
+  /* ===== Barra de marcador estilo transmisión ===== */
+  .scorebar{display:flex;align-items:center;gap:10px;margin:2px 0 10px;
+    background:linear-gradient(180deg,#06233f,#04172b);border-radius:14px;padding:6px 12px;
+    box-shadow:0 6px 16px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.06);color:#eaf6ff;}
+  .sb-team{display:flex;align-items:center;gap:8px;flex:1;min-width:0;}
+  .sb-team.away{justify-content:flex-end;}
+  .crest{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(180deg,#1b9fd0,#0a6fa0);font-size:14px;box-shadow:0 2px 4px rgba(0,0,0,.4);}
+  .crest.blue{background:linear-gradient(180deg,#243b6e,#16224a);}
+  .abbr{font-family:'Luckiest Guy',cursive;font-size:1.05rem;letter-spacing:1px;}
+  .sb-pts{font-family:'Luckiest Guy',cursive;font-size:1.7rem;color:var(--sun);min-width:24px;text-align:center;}
+  .sb-mid{text-align:center;padding:0 10px;border-left:1px solid rgba(255,255,255,.12);border-right:1px solid rgba(255,255,255,.12);}
+  .sb-clock{font-family:'Luckiest Guy',cursive;font-size:1.45rem;color:#7CFFB0;display:block;line-height:1;}
+  .sb-clock.extra{color:#ffce5a;}
+  .sb-sub{font-size:.52rem;letter-spacing:2px;color:#9fc4dd;}
+  .sb-fps{font-size:.58rem;color:#9fe3b0;white-space:nowrap;}
+  .sb-fps b{color:#7CFFB0;font-size:.8rem;}
+  .scorebar.goal{animation:sbgoal .65s ease;}
+  @keyframes sbgoal{0%{transform:scale(1);}30%{transform:scale(1.05);box-shadow:0 0 24px rgba(255,224,102,.9),inset 0 0 0 1px rgba(255,255,255,.06);}100%{transform:scale(1);}}
+
+  /* ===== Controles tipo consola: cruceta izq, botones der ===== */
+  .pool{position:relative;}
+  .splash{z-index:6;}
+  .pad-hint{position:absolute;left:12px;bottom:12px;z-index:4;pointer-events:none;opacity:.8;
+    width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.16),rgba(7,30,56,.5));
+    border:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;
+    color:rgba(255,255,255,.85);font-size:1rem;}
+  .pad-hint::before{content:'▲';position:absolute;top:5px;font-size:.7rem;}
+  .pad-hint::after{content:'▼';position:absolute;bottom:5px;font-size:.7rem;}
+  .action-pad{position:absolute;right:9px;bottom:9px;z-index:4;display:grid;gap:7px;
+    grid-template-areas:"pass shoot" "lob sprint";align-items:center;justify-items:center;}
+  .act{width:52px;height:52px;border-radius:50%;color:#fff;border:2.5px solid rgba(255,255,255,.85);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1;opacity:.84;
+    box-shadow:0 4px 0 rgba(0,0,0,.3);font-family:'Baloo 2',sans-serif;font-weight:800;}
+  .act span{font-size:.56rem;letter-spacing:.3px;}
+  .act small{font-size:.4rem;opacity:.85;}
+  .act:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.3);opacity:1;}
+  .act-pass{grid-area:pass;background:radial-gradient(circle at 50% 35%,#2f7da0,#0a4a6e);border-color:#2f9fd0;}
+  .act-shoot{grid-area:shoot;background:radial-gradient(circle at 50% 35%,#b06a1e,#7a3d0c);border-color:#ff9e3e;}
+  .act-lob{grid-area:lob;background:radial-gradient(circle at 50% 35%,#5a3d8c,#3a2168);border-color:#9b7bff;}
+  .act-sprint{grid-area:sprint;background:radial-gradient(circle at 50% 35%,#1e8a4e,#0c5a2e);border-color:#34d36e;}
+  .mini-ctrl{position:absolute;top:8px;right:8px;z-index:4;display:flex;gap:6px;}
+  .mini{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;background:rgba(255,255,255,.9);
+    color:var(--deep);font-size:.95rem;box-shadow:0 3px 0 rgba(0,0,0,.18);}
+  .mini:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18);}
+
+  /* ===== Aviso de girar el teléfono ===== */
+  #rotate{display:none;position:fixed;inset:0;z-index:999;
+    background:linear-gradient(160deg,#021a2b,#04223a);color:#fff;
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:14px;}
+  #rotate .ico{font-size:3.2rem;animation:tilt 2s ease-in-out infinite;}
+  #rotate .t{font-family:'Luckiest Guy',cursive;font-size:1.6rem;color:var(--sun);}
+  #rotate .s{font-size:.95rem;color:#bfe7f5;max-width:300px;}
+  @keyframes tilt{0%,100%{transform:rotate(-10deg);}50%{transform:rotate(80deg);}}
+
+  /* ===== Horizontal en teléfono: aprovechar toda la pantalla ===== */
+  @media (orientation:landscape) and (max-height:560px){
+    body{padding:4px;}
+    .wrap{padding:6px 8px;border-radius:16px;max-width:none;
+      box-shadow:0 8px 20px rgba(8,60,90,.3),inset 0 0 0 4px #fff,inset 0 0 0 7px var(--sun);}
+    .topbar{display:none;}
+    .scorebar{margin:2px 0 6px;padding:4px 10px;}.sb-pts{font-size:1.4rem;}.sb-clock{font-size:1.2rem;}
+    .pool{width:100%;height:calc(100dvh - 78px);margin:0;padding:5px;}
+    .act{width:44px;height:44px;border-width:2px;}.act span{font-size:.5rem;}.act small{font-size:.36rem;}
+    .action-pad{gap:6px;right:7px;bottom:7px;}
+    .pad-hint{width:66px;height:66px;left:9px;bottom:9px;}
+  }
+  /* En vertical en teléfono: pedir girar */
+  @media (orientation:portrait) and (max-width:820px){
+    #rotate{display:flex;}
+    .wrap,.bubbles{display:none;}
+  }
+  /* ===== Selección de país y duración (splash) ===== */
+  .pick-row{display:flex;gap:10px;justify-content:center;margin:4px 0 8px;flex-wrap:wrap;}
+  .pick{display:flex;flex-direction:column;gap:3px;font-size:.72rem;font-weight:800;color:#06314f;align-items:flex-start;}
+  .pick select{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:.9rem;padding:6px 8px;border-radius:10px;
+    border:2px solid #0f9bc4;background:#eaf8ff;color:#06314f;min-width:140px;}
+  .pick-dur{display:flex;gap:8px;justify-content:center;align-items:center;margin:2px 0 8px;
+    font-weight:800;color:#06314f;font-size:.8rem;flex-wrap:wrap;}
+  .durb{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:.82rem;padding:6px 12px;border-radius:20px;
+    border:2px solid #0f9bc4;background:#fff;color:#0f9bc4;cursor:pointer;}
+  .durb.active{background:#0f9bc4;color:#fff;}
+  /* ===== Duelo en línea ===== */
+  .duel-btn{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:.92rem;margin-top:8px;padding:8px 18px;
+    border-radius:24px;border:2px solid #6b6bff;background:#f0f0ff;color:#4a44c8;cursor:pointer;display:inline-block;}
+  .motto{margin-top:9px;font-size:.66rem;font-weight:800;color:#0f9bc4;letter-spacing:.3px;}
+  .duel-panel{margin-top:10px;background:#eaf8ff;border:2px solid #0f9bc4;border-radius:16px;padding:10px;}
+  .duel-title{font-family:'Luckiest Guy',cursive;color:#06314f;font-size:1rem;margin-bottom:7px;}
+  .duel-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center;}
+  .duel-opt{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:.85rem;padding:8px 14px;border-radius:14px;
+    border:none;background:#0f9bc4;color:#fff;cursor:pointer;}
+  .duel-join{display:flex;gap:6px;align-items:center;}
+  .duel-join input{width:86px;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:1rem;text-align:center;
+    padding:7px;border-radius:12px;border:2px solid #0f9bc4;letter-spacing:3px;}
+  .duel-info{margin-top:8px;font-weight:700;color:#06314f;font-size:.82rem;min-height:18px;}
+  .duel-info .big-code{font-family:'Luckiest Guy',cursive;font-size:2rem;color:#ff6b6b;letter-spacing:6px;display:block;}
+  .duel-info img{margin-top:6px;border-radius:10px;border:3px solid #0f9bc4;}
+  .duel-info a{display:inline-block;margin-top:6px;background:#25D366;color:#fff;font-weight:800;text-decoration:none;
+    padding:6px 14px;border-radius:18px;font-size:.8rem;}
+  .duel-cancel{margin-top:8px;background:none;border:none;color:#c0392b;font-weight:800;cursor:pointer;font-size:.78rem;}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+<div id="rotate">
+  <div class="ico">🔄📱</div>
+  <div class="t">¡Voltea tu teléfono!</div>
+  <div class="s">Pon el celular en horizontal para jugar waterpolo a pantalla completa.</div>
+</div>
+<div class="bubbles" aria-hidden="true">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+<div class="wrap">
+  <div class="topbar">
+    <div class="title">🤽 WATER<span>POLO</span></div>
+    <div class="brand">🌊 LAGUNA SWIM</div>
+  </div>
+  <div class="scorebar">
+    <div class="sb-team home">
+      <span class="crest" id="crestHome">🇲🇽</span><span class="abbr" id="abbrHome">MEX</span><span class="sb-pts" id="sW">0</span>
+    </div>
+    <div class="sb-mid">
+      <span class="sb-clock" id="timer">02:00</span>
+      <span class="sb-sub" id="periodLbl">PARTIDO</span>
+    </div>
+    <div class="sb-team away">
+      <span class="sb-pts" id="sA">0</span><span class="abbr" id="abbrAway">USA</span><span class="crest blue" id="crestAway">🇺🇸</span>
+    </div>
+    <div class="sb-fps"><b id="fps">60</b> FPS</div>
+  </div>
+  <div class="pool">
+    <canvas id="cv" width="1000" height="520"></canvas>
+
+    <!-- Controles tipo consola: cruceta a la izquierda, botones a la derecha -->
+    <div class="pad-hint">🕹️</div>
+    <div class="action-pad">
+      <button id="passBtn" class="act act-pass"><span>PASE</span></button>
+      <button id="shootBtn" class="act act-shoot"><span>TIRO</span></button>
+      <button id="lobBtn" class="act act-lob"><span>LOBE</span></button>
+      <button id="sprintBtn" class="act act-sprint"><span>SPRINT</span><small>&amp; SKILL</small></button>
+    </div>
+    <div class="mini-ctrl">
+      <button id="snd" class="mini">🔊</button>
+      <button id="reset" class="mini">🔄</button>
+      <button id="help" class="mini">❓</button>
+    </div>
+
+    <div class="splash" id="splash">
+      <div class="splash-card">
+        <div class="splash-title">🤽 ¡WATERPOLO LAGUNA!</div>
+        <div class="splash-sub">Elige países y duración · 🌊 internacional</div>
+        <div class="pick-row">
+          <label class="pick">🤍 Tu equipo<select id="selHome"></select></label>
+          <label class="pick">💙 Rival<select id="selAway"></select></label>
+        </div>
+        <div class="pick-dur">
+          <span>Duración:</span>
+          <button class="durb" data-min="1">1 min</button>
+          <button class="durb active" data-min="2">2 min</button>
+          <button class="durb" data-min="3">3 min</button>
+        </div>
+        <div class="howto">
+          <div class="step"><b>🕹️</b> Cruceta: nada y apunta · <b>SPRINT</b> acelera</div>
+          <div class="step"><b>🤝</b> PASE / <b>LOBE</b> al compañero · <b>🎯 TIRO</b> al arco</div>
+          <div class="step"><b>📏</b> Reglas de polo: <b>30s</b> de posesión · falta = <b>exclusión 20s</b> (¡hombre de más!)</div>
+          <div class="step"><b>🔴</b> Línea de 2m: zona de gol · <b>🟡</b> línea de 5m: penal · como en FINA</div>
+        </div>
+        <button class="play-btn" id="playBtn">▶ ¡JUGAR!</button>
+        <button class="duel-btn" id="duelBtn">📶 1 VS 1 EN LÍNEA</button>
+        <div class="motto">💪 Fuertes y Valientes — Josué 1:9 · 🌊 Laguna Swim</div>
+
+        <!-- Panel de duelo en línea -->
+        <div id="duelPanel" class="duel-panel" style="display:none">
+          <div class="duel-title">📶 DUELO ENTRE TELÉFONOS</div>
+          <div class="duel-row">
+            <button class="duel-opt" id="duelCreate">🏠 CREAR SALA</button>
+            <div class="duel-join">
+              <input id="duelCode" inputmode="numeric" maxlength="4" placeholder="CÓDIGO">
+              <button class="duel-opt" id="duelJoin">🔗 UNIRME</button>
+            </div>
+          </div>
+          <div id="duelInfo" class="duel-info"></div>
+          <button class="duel-cancel" id="duelCancel">✖ Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+/* ===========================================================
+   WATERPOLO · LAGUNA SWIM — Blanco vs Azul
+   JUGABILIDAD ESTILO FÚTBOL ARCADE:
+   - Controlas a UN jugador a la vez, en tiempo real (joystick/teclas)
+   - El control cambia solo al jugador más cercano al balón cuando defiendes
+   - El balón se "pega" al portador (dribbling) y se lanza al pasar/tirar
+   - Los compañeros se mueven solos en formación (ataque/defensa)
+   - 1 min de partido + 15 s extra solo si hay empate
+   - El reloj NO corre hasta el primer movimiento
+   - Equipo AZUL: controlAzul ('ia' hoy, 'remoto' a futuro)
+   =========================================================== */
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+let VW=cv.width, VH=cv.height;     // viewport visible (se adapta a la pantalla)
+const W=1700, H=520;               // MUNDO (más grande: la cámara lo recorre)
+// El lienzo iguala su proporción interna a la del contenedor → llena la pantalla sin deformarse
+function fitViewport(){
+  var r=cv.parentElement.getBoundingClientRect();
+  if(r.width<50||r.height<50)return;
+  var nw=Math.max(700,Math.min(1600,Math.round(VH*(r.width-10)/Math.max(1,r.height-10))));
+  if(Math.abs(nw-VW)>12){VW=nw;cv.width=VW;cv.height=VH;}
+}
+window.addEventListener('resize',function(){setTimeout(fitViewport,60);});
+window.addEventListener('orientationchange',function(){setTimeout(fitViewport,220);});
+const controlAzul='ia';
+let cam={x:0,y:0};                 // cámara que sigue la acción
+
+const M=38, L=M, R=W-M, T=M, B=H-M, MIDX=W/2, MIDY=H/2;
+const GOAL_H=92, GOAL_W=26, GY1=MIDY-GOAL_H/2, GY2=MIDY+GOAL_H/2;
+const PR=17; var BR=8;
+const SPEED=3.0, AI=2.15, MATE=2.4, PASS_V=11, SHOT_V=13;
+const POSSESSION=30, EXTRA=15;
+let MATCH=120;                     // duración elegible: 60 / 120 / 180 s
+let homeC={flag:'🇲🇽',abbr:'MEX'}, awayC={flag:'🇺🇸',abbr:'USA'};  // países
+
+let sW=0,sA=0,timeLeft=MATCH,posLeft=POSSESSION;
+let state='ready',running=false;
+let activo=null;                 // jugador BLANCO que controlas
+let soundOn=true,audioCtx=null;
+let flashMsg='',flashT=0,lastT=performance.now();
+let waves=[];
+var confetti=[];
+var goalFx={t:0,x:0};
+var CROWD_COLS=['#cfe3f5','#9fc4e6','#7fb0d8','#e8eef4','#bcd4ea','#a8c8e6'];
+const keys={};                   // teclas presionadas
+const joy={active:false,ox:0,oy:0,dx:0,dy:0,maxR:55,id:null};
+let sprintHeld=false, stamina=100;
+let fps=60, _fpsAcc=0, _fpsN=0;
+
+// ===== AUDIO =====
+function beep(f,d,t,v){d=d||.08;t=t||'sine';v=v||.13;if(!soundOn)return;
+  try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type=t;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(audioCtx.destination);o.start();
+    g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+d);o.stop(audioCtx.currentTime+d);}catch(e){}}
+const SFX={pass:function(){beep(520,.06,'triangle',.11);},shot:function(){beep(280,.12,'sawtooth',.15);},
+  goal:function(){beep(660,.12);setTimeout(function(){beep(880,.16);},110);setTimeout(function(){beep(1100,.22);},240);},
+  save:function(){beep(1500,.16,'square',.1);},steal:function(){beep(200,.1,'square',.13);},whistle:function(){beep(1400,.18,'square',.1);}};
+
+// ===== JUGADOR =====
+function Player(team,num,x,y,gk){this.team=team;this.num=num;this.x=x;this.y=y;this.tx=x;this.ty=y;
+  this.gk=gk||false;this.r=PR;this.swim=0;this.dirx=team==='white'?1:-1;this.diry=0;this.name='';this.excl=0;this.throwT=0;
+  var SKINS=['#f6c9a0','#eab586','#d99e6b','#b97f4e','#96613a','#7c4e2d'];
+  this.skin=SKINS[(num*3+(team==='white'?0:2))%SKINS.length];}
+Player.prototype.moveToward=function(sp){var dx=this.tx-this.x,dy=this.ty-this.y,d=Math.hypot(dx,dy);
+  if(d>sp){this.x+=dx/d*sp;this.y+=dy/d*sp;this.dirx=dx/d;this.diry=dy/d;this.swim+=0.2+sp*0.09;}else{this.x=this.tx;this.y=this.ty;}this.clamp();};
+Player.prototype.clamp=function(){this.x=Math.max(L+this.r,Math.min(R-this.r,this.x));this.y=Math.max(T+this.r,Math.min(B-this.r,this.y));};
+Player.prototype.hit=function(px,py){return Math.hypot(px-this.x,py-this.y)<=this.r+8;};
+
+function buildTeam(team){
+  var home=team==='white',arr=[],gkX=home?L+24:R-24;
+  var gk=new Player(team,1,gkX,MIDY,true); gk.name=home?'PORTERO':''; arr.push(gk);
+  var cols=home?[W*0.26,W*0.42]:[W*0.74,W*0.58];
+  var layout=[[cols[0],H*0.30],[cols[0],H*0.70],[cols[1],H*0.40],[cols[1],H*0.60]];
+  var names=['CHECO','LUISA','RICARDO','MEMO'];
+  var n=2;for(var i=0;i<layout.length;i++){var p=new Player(team,n++,layout[i][0],layout[i][1]);
+    if(home)p.name=names[i]||('JUGADOR '+(i+1)); arr.push(p);}
+  return arr;
+}
+var white=[],blue=[];
+
+// ===== BALÓN =====
+var ball={x:MIDX,y:MIDY,vx:0,vy:0,holder:null,mode:'loose',recv:null,shooter:null,holdT:0,trail:[],rot:0};
+function ballReset(x,y){ball.x=x;ball.y=y;ball.vx=0;ball.vy=0;ball.holder=null;ball.mode='loose';ball.recv=null;ball.shooter=null;ball.lob=false;ball.holdT=0;ball.trail=[];}
+function launch(tx,ty,sp,mode,from){ball.holder=null;ball.mode=mode;ball.shooter=mode==='shot'?from:null;
+  ball.passer=(mode==='pass')?from:null; ball.passT=(mode==='pass')?14:0;
+  var dx=tx-ball.x,dy=ty-ball.y,d=Math.hypot(dx,dy)||1;ball.vx=dx/d*sp;ball.vy=dy/d*sp;}
+function ballUpdate(){
+  if(ball.passT>0)ball.passT--;
+  if(ball.holdT>0)ball.holdT--;
+  if(ball.holder){ // en alto: sobre la mano del brazo levantado (como waterpolista real)
+    ball.x=ball.holder.x+(ball.holder.dirx||1)*10;
+    ball.y=ball.holder.y-22;
+    ball.trail.length=0;
+    return;
+  }
+  ball.x+=ball.vx;ball.y+=ball.vy;ball.vx*=.985;ball.vy*=.985;
+  var bsp=Math.hypot(ball.vx,ball.vy);
+  ball.rot=(ball.rot||0)+bsp*0.06;
+  if(ball.lob&&bsp<=3.2){ball.lob=false;                       // cae al agua: ¡SPLASH!
+    for(var sp=0;sp<4;sp++)waves.push({x:ball.x,y:ball.y,r:3+sp*4,life:20});
+    beep(300,.07,'sine',.08);}
+  if(bsp>2.2){ball.trail.push({x:ball.x,y:ball.y});if(ball.trail.length>9)ball.trail.shift();}
+  else if(ball.trail.length)ball.trail.shift();
+  if(Math.hypot(ball.vx,ball.vy)<.4&&ball.mode!=='loose'){ball.vx=ball.vy=0;ball.mode='loose';}
+}
+
+// ===== FLUJO =====
+function init(){
+  white=buildTeam('white');blue=buildTeam('blue');
+  sW=0;sA=0;timeLeft=MATCH;posLeft=POSSESSION;
+  lineupSprint();state='swimoff';afterSwim='play';swimT=3.6;running=false;
+  document.getElementById('timer').classList.remove('extra');
+  updateUI();flash('',0);
+}
+var swimT=0, afterSwim='play';
+// SPRINT INICIAL (así arranca el polo): todos en su línea de gol, balón al centro
+function lineupSprint(){
+  white=buildTeam('white');blue=buildTeam('blue');
+  var ys=[0.22,0.42,0.58,0.78];
+  for(var i=1;i<white.length;i++){white[i].x=L+42;white[i].y=T+(B-T)*ys[i-1];white[i].tx=white[i].x;white[i].ty=white[i].y;white[i].dirx=1;}
+  for(var j=1;j<blue.length;j++){blue[j].x=R-42;blue[j].y=T+(B-T)*ys[j-1];blue[j].tx=blue[j].x;blue[j].ty=blue[j].y;blue[j].dirx=-1;}
+  ballReset(MIDX,T-14);            // el árbitro sostiene el balón en la orilla
+  activo=pickActivo(true);
+  cam.x=0;cam.y=0;                 // la cámara arranca en TU portería y viaja al centro
+}
+function faceoff(side){
+  white=buildTeam('white');blue=buildTeam('blue');
+  var team=side==='white'?white:blue;
+  ballReset(team[0].x,team[0].y);ball.holder=team[0];posLeft=POSSESSION;
+  activo=pickActivo(true);
+  cam.x=Math.max(0,Math.min(W-VW, ball.x-VW/2));cam.y=0;   // centra cámara en el balón
+}
+function camFollow(){
+  var fx=(ball.holder?ball.holder.x:ball.x);
+  var tx=Math.max(0,Math.min(W-VW, fx-VW/2));
+  cam.x+=(tx-cam.x)*0.09;                                  // seguimiento suave
+}
+function startPlay(){if(state==='ready')state='play';running=true;}
+function flash(m,t){flashMsg=m;flashT=t;}
+function possessionTeam(){return ball.holder?ball.holder.team:null;}
+
+// Elige el jugador BLANCO a controlar (estilo fútbol)
+function pickActivo(force){
+  if(ball.holder&&ball.holder.team==='white') return ball.holder; // controlas al que tiene el balón
+  // si no tenemos balón: el blanco de campo más cercano al balón
+  var best=null,bd=1e9;
+  for(var i=0;i<white.length;i++){var p=white[i];if(p.gk||p.excl>0)continue;
+    var d=Math.hypot(p.x-ball.x,p.y-ball.y);if(d<bd){bd=d;best=p;}}
+  if(!force&&activo&&!activo.gk){ // histéresis: no cambies por diferencias mínimas
+    var dCur=Math.hypot(activo.x-ball.x,activo.y-ball.y);
+    if(dCur<bd+24) return activo;
+  }
+  return best||activo;
+}
+function switchActivo(){ // cambio manual al siguiente blanco de campo más cercano
+  if(ball.holder&&ball.holder.team==='white')return; // si tienes balón no cambias
+  var field=white.filter(function(p){return !p.gk&&p!==activo;})
+    .map(function(p){return {p:p,d:Math.hypot(p.x-ball.x,p.y-ball.y)};}).sort(function(a,b){return a.d-b.d;});
+  if(field[0]){activo=field[0].p;startPlay();}
+}
+
+// ===== CONTROL DEL JUGADOR ACTIVO (tiempo real) =====
+function controlActivo(){
+  if(!activo||activo.excl>0)return;
+  var vx=0,vy=0;
+  if(joy.active){vx=joy.dx;vy=joy.dy;}
+  else{
+    if(keys['arrowup']||keys['w'])vy-=1;
+    if(keys['arrowdown']||keys['s'])vy+=1;
+    if(keys['arrowleft']||keys['a'])vx-=1;
+    if(keys['arrowright']||keys['d'])vx+=1;
+  }
+  var l=Math.hypot(vx,vy);
+  var sprinting=(sprintHeld||keys['x'])&&stamina>2&&l>0.05;
+  var maxSp=sprinting?SPEED*1.7:SPEED;
+  if(sprinting)stamina=Math.max(0,stamina-1.4);else stamina=Math.min(100,stamina+0.6);
+  // === RESISTENCIA DEL AGUA: aceleras (no tele-transporte) y planeas al soltar ===
+  activo.vx=activo.vx||0;activo.vy=activo.vy||0;
+  if(activo.lungeT>0)activo.lungeT--;
+  if(l>0.05){
+    var nx=vx/l,ny=vy/l;
+    activo.vx+=nx*0.62; activo.vy+=ny*0.62;             // brazada = impulso
+    activo.dirx=nx;activo.diry=ny;
+    startPlay();
+  }
+  activo.vx*=0.90; activo.vy*=0.90;                      // arrastre del agua
+  var cur=Math.hypot(activo.vx,activo.vy);
+  if(cur>maxSp){activo.vx*=maxSp/cur;activo.vy*=maxSp/cur;cur=maxSp;}
+  if(cur>0.15){
+    activo.x+=activo.vx;activo.y+=activo.vy;
+    activo.swim+=0.22+cur*0.12+(sprinting?0.15:0);       // brazadas al ritmo del nado
+    activo.clamp();activo.tx=activo.x;activo.ty=activo.y;
+    if(Math.random()<Math.min(0.9,cur/3.2))waves.push({x:activo.x-activo.dirx*10,y:activo.y+6,r:3,life:16});
+    if(sprinting){var wpx=-activo.diry,wpy=activo.dirx;   // estela en V del sprint
+      waves.push({x:activo.x-activo.dirx*14+wpx*8,y:activo.y-activo.diry*14+wpy*8,r:2.5,life:13});
+      waves.push({x:activo.x-activo.dirx*14-wpx*8,y:activo.y-activo.diry*14-wpy*8,r:2.5,life:13});}
+  }
+}
+
+// ===== DIRECCIÓN DEL VOLANTE → BALÓN =====
+function getAimDir(){
+  var vx=0,vy=0;
+  if(joy.active){vx=joy.dx;vy=joy.dy;}
+  else{
+    if(keys['arrowup']||keys['w'])vy-=1; if(keys['arrowdown']||keys['s'])vy+=1;
+    if(keys['arrowleft']||keys['a'])vx-=1; if(keys['arrowright']||keys['d'])vx+=1;
+  }
+  var l=Math.hypot(vx,vy);
+  if(l>0.3)return{x:vx/l,y:vy/l,aimed:true};
+  if(activo)return{x:activo.dirx,y:activo.diry,aimed:false};
+  return{x:1,y:0,aimed:false};
+}
+// Pase asistido: SIEMPRE elige un buen compañero (no se pierde la pelota)
+function bestMate(dir){
+  var cand=white.filter(function(p){return p!==activo&&!p.gk&&!(p.excl>0);});
+  if(!cand.length)return null;
+  var best=null,bs=-1e9, fwd=null,fws=-1e9;
+  for(var i=0;i<cand.length;i++){var p=cand[i];
+    var dx=p.x-activo.x,dy=p.y-activo.y,d=Math.hypot(dx,dy)||1;
+    var align=(dx/d)*dir.x+(dy/d)*dir.y;
+    var score=align*1.8 - d/700;          // alineado al volante y cerca
+    if(score>bs){bs=score;best=p;}
+    var f=p.x - d*0.25;                    // el más adelantado hacia el arco azul (derecha)
+    if(f>fws){fws=f;fwd=p;}
+  }
+  if(dir.aimed && best && bs>-0.25) return best;  // si apuntas claro, respeta
+  return fwd || best;                              // si no, pase al más adelantado
+}
+// ===== ACCIONES (en la dirección del volante) =====
+function doPass(lob){
+  if(!activo||ball.holder!==activo)return;
+  var dir=getAimDir(), to=bestMate(dir);
+  activo.throwT=10;
+  if(to){ launch(to.x,to.y,lob?PASS_V+4:PASS_V,'pass',activo); ball.recv=to; }
+  else  { launch(activo.x+dir.x*240,activo.y+dir.y*240,lob?PASS_V+4:PASS_V,'pass',activo); ball.recv=null; }
+  ball.lob=!!lob; SFX.pass();
+}
+var PXM_G=(R-L)/25;                                     // px por metro (cancha de 25 m)
+
+// ============================================================
+// 🎥 TOMA DE TIRO (primera persona frente al portero)
+// Entra al disparar dentro de los 5 m. Apunta con la cruceta,
+// TIRO dispara (o se dispara solo al agotarse el tiempo).
+// ============================================================
+var SCAM=null;
+function enterShotCam(){
+  SCAM={mode:'atk',phase:'aim',t:2.4,aimX:0,aimY:0.55,k:0,kv:0.9+Math.random()*0.5,
+        fire:false,fly:0,tx:0,ty:0,save:false,post:false,bx:0,by:0,br:26};
+  beep(500,.06,'sine',.05);
+  flash('',0);
+}
+function enterGKCam(){
+  // el azul elige su tiro: esquinas con altura variable
+  var side=Math.random()<0.5?-1:1;
+  SCAM={mode:'def',phase:'aim',t:1.8,k:0,fire:false,fly:0,
+        tx:side*(0.45+Math.random()*0.6),ty:0.25+Math.random()*0.7,
+        save:false,post:false};
+  SCAM.tx=Math.max(-1,Math.min(1,SCAM.tx));
+  beep(500,.06,'sine',.05);flash('',0);
+}
+function updateShotCam(dt){
+  var S=SCAM;if(!S)return;
+  if(S.mode==='def'){
+    if(S.phase==='aim'){
+      var ax=joy.active?joy.dx:((keys['arrowright']||keys['d'])?1:((keys['arrowleft']||keys['a'])?-1:0));
+      S.k=Math.max(-1,Math.min(1,S.k+ax*dt*3.1));       // TÚ mueves al portero
+      S.t-=dt;
+      if(S.t<=0){S.phase='fly';S.fly=0;SFX.shot();}
+    } else if(S.phase==='fly'){
+      var ax2=joy.active?joy.dx:((keys['arrowright']||keys['d'])?1:((keys['arrowleft']||keys['a'])?-1:0));
+      S.k=Math.max(-1,Math.min(1,S.k+ax2*dt*1.6));      // aún alcanzas a estirarte
+      S.fly+=dt/0.5;
+      if(S.fly>=1){S.phase='res';S.t=1.0;
+        var reach=0.30-S.ty*0.08;
+        S.save=Math.abs(S.k-S.tx)<reach;
+        if(S.save){SFX.save();}else{SFX.goal();}}
+    } else if(S.phase==='res'){
+      S.t-=dt;
+      if(S.t<=0){var wasSave=S.save;SCAM=null;
+        if(wasSave){var gk=white[0];ballReset(gk.x,gk.y);ball.holder=gk;posLeft=POSSESSION;
+          flash('🧤 ¡ATAJADÓN TUYO! Contragolpe',60);}
+        else onGoal('blue');
+      }
+    }
+    return;
+  }
+  if(S.phase==='aim'){
+    // mira con cruceta/teclas
+    var ax=joy.active?joy.dx:((keys['arrowright']||keys['d'])?1:((keys['arrowleft']||keys['a'])?-1:0));
+    var ay=joy.active?joy.dy:((keys['arrowdown']||keys['s'])?1:((keys['arrowup']||keys['w'])?-1:0));
+    S.aimX=Math.max(-1.15,Math.min(1.15,S.aimX+ax*dt*2.6));
+    S.aimY=Math.max(0,Math.min(1,S.aimY-ay*dt*2.2));
+    // portero se pasea esperando
+    S.k+=S.kv*dt; if(S.k>0.55||S.k<-0.55)S.kv*=-1;
+    S.t-=dt;
+    if(S.fire||S.t<=0){ // ¡DISPARO!
+      S.phase='fly';S.fly=0;S.tx=S.aimX;S.ty=S.aimY;
+      // el portero reacciona: se lanza hacia el tiro con error humano
+      S.kEnd=S.tx*0.8+(Math.random()*0.5-0.25);
+      S.kEnd=Math.max(-1,Math.min(1,S.kEnd));
+      // ¿ataja? más difícil a las esquinas y arriba
+      var reach=0.34-S.ty*0.10;
+      S.post=Math.abs(S.tx)>1.02;                       // fuera / poste
+      S.save=!S.post&&Math.abs(S.kEnd-S.tx)<reach;
+      SFX.shot();
+    }
+  } else if(S.phase==='fly'){
+    S.fly+=dt/0.5; S.k+= (S.kEnd-S.k)*Math.min(1,dt*9); // portero volando
+    if(S.fly>=1){S.phase='res';S.t=1.0;
+      if(S.post){beep(220,.12,'square',.12);}
+      else if(S.save){SFX.save();}
+      else{SFX.goal();spawnConfettiAt(VW/2,VH*0.34);}}
+  } else if(S.phase==='res'){
+    S.t-=dt;
+    if(S.t<=0){ // aplicar resultado y volver al juego
+      var wasSave=S.save,wasPost=S.post;SCAM=null;
+      if(!wasSave&&!wasPost){onGoal('white');}
+      else{var gk=blue[0];ballReset(gk.x,gk.y);ball.holder=gk;posLeft=POSSESSION;
+        flash(wasPost?'❌ ¡Poste! Saca el portero':'🧤 ¡ATAJADÓN del portero!',60);}
+    }
+  }
+}
+function drawShotCam(){
+  var S=SCAM;if(!S)return;
+  // --- escenario: gradas arriba, agua abajo (vista desde el agua) ---
+  var g=ctx.createLinearGradient(0,0,0,VH);
+  g.addColorStop(0,'#0a2b44');g.addColorStop(0.34,'#0a2b44');
+  g.addColorStop(0.36,'#37cdef');g.addColorStop(1,'#0f9bc4');
+  ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);
+  for(var cx=12;cx<VW;cx+=18){var ci=(cx/18|0);   // público
+    ctx.fillStyle=CROWD_COLS[ci%CROWD_COLS.length];
+    ctx.beginPath();ctx.arc(cx,14+(ci%3)*12,3.6,0,Math.PI*2);ctx.fill();}
+  ctx.fillStyle='#0f6fa0';ctx.fillRect(VW*0.28,VH*0.30,VW*0.44,16);
+  ctx.fillStyle='#cdefff';ctx.font="800 10px 'Baloo 2',sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('¡FUERZA LAGUNA!',VW*0.5,VH*0.30+8);
+  // --- portería en grande ---
+  var GW=VW*0.54,GH=VH*0.42,gx0=VW/2-GW/2,gy0=VH*0.64-GH,gy1=VH*0.64;
+  ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1;   // red
+  for(var i=1;i<9;i++){var yy=gy0+i*GH/9;ctx.beginPath();ctx.moveTo(gx0,yy);ctx.lineTo(gx0+GW,yy);ctx.stroke();}
+  for(var j=1;j<15;j++){var xx=gx0+j*GW/15;ctx.beginPath();ctx.moveTo(xx,gy0);ctx.lineTo(xx,gy1);ctx.stroke();}
+  ctx.strokeStyle='#fff';ctx.lineWidth=7;ctx.lineJoin='round';
+  ctx.strokeRect(gx0,gy0,GW,GH);                              // postes
+  // línea de agua frente al arco
+  ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(0,gy1+6);ctx.lineTo(VW,gy1+6);ctx.stroke();
+  // --- PORTERO (cerca, gorra roja con orejeras) ---
+  var isDef=(S.mode==='def');
+  var kx=VW/2+S.k*GW*0.40, ky=gy1-14, KS=1+ (S.phase!=='aim'?0.06:0);
+  ctx.save();ctx.translate(kx,ky);ctx.scale(KS,KS);
+  var dive=(S.phase!=='aim'&&S.kEnd!=null)?Math.max(-1,Math.min(1,S.kEnd))*0.5:0;
+  ctx.rotate(dive*0.5);
+  ctx.strokeStyle='#e9b986';ctx.lineWidth=9;ctx.lineCap='round';        // brazos ARRIBA
+  ctx.beginPath();ctx.moveTo(-14,-18);ctx.lineTo(-30,-52);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(14,-18);ctx.lineTo(30,-52);ctx.stroke();
+  ctx.fillStyle='#e9b986';ctx.beginPath();ctx.ellipse(0,-8,20,24,0,0,Math.PI*2);ctx.fill(); // torso
+  ctx.beginPath();ctx.arc(0,-40,13,0,Math.PI*2);ctx.fill();                                  // cabeza
+  ctx.fillStyle='#e33b3b';ctx.beginPath();ctx.ellipse(0,-46,13.5,10,0,0,Math.PI*2);ctx.fill();// gorra roja
+  ctx.beginPath();ctx.arc(-13,-40,5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(13,-40,5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font="bold 11px 'Segoe UI'";ctx.textAlign='center';ctx.fillText('1',0,-45);
+  ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=2.5;                                   // espuma
+  ctx.beginPath();ctx.ellipse(0,12,26,7,0,0,Math.PI*2);ctx.stroke();
+  ctx.restore();
+  if(isDef){ // flecha "TÚ" sobre tu portero
+    ctx.fillStyle='#4dff9e';ctx.font="900 13px 'Baloo 2',sans-serif";ctx.textAlign='center';
+    ctx.fillText('TÚ',kx,ky-78);
+    ctx.beginPath();ctx.moveTo(kx-8,ky-72);ctx.lineTo(kx+8,ky-72);ctx.lineTo(kx,ky-62);ctx.closePath();ctx.fill();
+  }
+  if(S.mode==='def'){
+    // --- tirador AZUL de espaldas (abajo) con el balón en alto ---
+    var sxp=VW*0.5, syp=VH*0.94;
+    ctx.strokeStyle='#c98a5a';ctx.lineWidth=14;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(sxp-26,syp+30);ctx.lineTo(sxp-40,syp-34);ctx.stroke();     // brazo izq
+    if(S.phase==='aim'){ctx.beginPath();ctx.moveTo(sxp+26,syp+30);ctx.lineTo(sxp+44,syp-52);ctx.stroke(); // brazo con balón
+      ctx.save();ctx.translate(sxp+46,syp-58);var obx=ball.x,oby=ball.y;ball.x=0;ball.y=0;
+      var oBR=BR;BR=14;drawBallCore();BR=oBR;ball.x=obx;ball.y=oby;ctx.restore();}
+    ctx.fillStyle='#c98a5a';ctx.beginPath();ctx.ellipse(sxp,syp+18,34,30,0,0,Math.PI*2);ctx.fill(); // espalda
+    ctx.beginPath();ctx.arc(sxp,syp-16,17,0,Math.PI*2);ctx.fill();                                   // cabeza
+    ctx.fillStyle='#123a6e';ctx.beginPath();ctx.ellipse(sxp,syp-22,17.5,13,0,0,Math.PI*2);ctx.fill();// gorra azul
+    ctx.beginPath();ctx.arc(sxp-17,syp-16,6,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(sxp+17,syp-16,6,0,Math.PI*2);ctx.fill();
+    // telegrafía: al inicio se ve A DÓNDE apunta (¡memorízalo!)
+    var tgx2=VW/2+S.tx*GW*0.5, tgy2=gy1-GH*(0.12+S.ty*0.78);
+    if(S.phase==='aim'&&S.t>1.15){
+      var pul=0.5+0.5*Math.sin(Date.now()/90);
+      ctx.strokeStyle='rgba(255,80,80,'+(0.35+0.55*pul)+')';ctx.lineWidth=3.5;
+      ctx.beginPath();ctx.arc(tgx2,tgy2,15+pul*5,0,Math.PI*2);ctx.stroke();
+    }
+    if(S.phase==='aim'){
+      ctx.fillStyle='rgba(6,35,63,.7)';ctx.fillRect(VW/2-90,18,180,14);
+      ctx.fillStyle=S.t>0.6?'#4dff9e':'#ff5b5b';ctx.fillRect(VW/2-88,20,176*Math.max(0,S.t/1.8),10);
+      ctx.fillStyle='#fff';ctx.font="800 11px 'Baloo 2',sans-serif";ctx.textAlign='center';
+      ctx.fillText('🧤 ¡MUÉVETE Y TÁPALA!',VW/2,44);
+    } else {
+      var fx2=sxp+46+(tgx2-(sxp+46))*S.fly, fy2=syp-58+(tgy2-(syp-58))*S.fly, fr2=14-8*S.fly;
+      ctx.save();ctx.translate(fx2,fy2);var ob3x=ball.x,ob3y=ball.y;ball.x=0;ball.y=0;
+      var oBR3=BR;BR=Math.max(6,fr2);drawBallCore();BR=oBR3;ball.x=ob3x;ball.y=ob3y;ctx.restore();
+      if(S.phase==='res'){
+        ctx.font="900 40px 'Baloo 2',sans-serif";ctx.textAlign='center';
+        ctx.lineWidth=7;ctx.strokeStyle='rgba(8,60,90,.65)';
+        var msg2=S.save?'🧤 ¡LA TAPASTE!':'😖 Gol en contra…';
+        ctx.strokeText(msg2,VW/2,VH*0.36);ctx.fillStyle=S.save?'#7CFFB0':'#ffd1c8';ctx.fillText(msg2,VW/2,VH*0.36);
+      }
+    }
+    drawConfetti();
+    return;
+  }
+  // --- brazos del tirador (primera persona, abajo) ---
+  ctx.strokeStyle=activo?activo.skin:'#e9b986';ctx.lineWidth=16;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(VW*0.34,VH+10);ctx.lineTo(VW*0.42,VH*0.86);ctx.stroke();
+  if(S.phase==='aim'){ // mano con balón lista
+    ctx.beginPath();ctx.moveTo(VW*0.66,VH+10);ctx.lineTo(VW*0.60,VH*0.80);ctx.stroke();
+    ctx.save();ctx.translate(VW*0.60,VH*0.78);var obx=ball.x,oby=ball.y;ball.x=0;ball.y=0;
+    var oBR=BR;BR=15;drawBallCore();BR=oBR;ball.x=obx;ball.y=oby;ctx.restore();
+  }
+  // --- mira ---
+  var tgx=VW/2+S.aimX*GW*0.5, tgy=gy1-GH*(0.12+S.aimY*0.78);
+  if(S.phase==='aim'){
+    ctx.strokeStyle='#ff5b5b';ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(tgx,tgy,14,0,Math.PI*2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(tgx-22,tgy);ctx.lineTo(tgx-8,tgy);ctx.moveTo(tgx+8,tgy);ctx.lineTo(tgx+22,tgy);
+    ctx.moveTo(tgx,tgy-22);ctx.lineTo(tgx,tgy-8);ctx.moveTo(tgx,tgy+8);ctx.lineTo(tgx,tgy+22);ctx.stroke();
+    // barra de tiempo
+    ctx.fillStyle='rgba(6,35,63,.7)';ctx.fillRect(VW/2-90,18,180,14);
+    ctx.fillStyle=S.t>0.8?'#4dff9e':'#ff5b5b';ctx.fillRect(VW/2-88,20,176*Math.max(0,S.t/2.4),10);
+    ctx.fillStyle='#fff';ctx.font="800 11px 'Baloo 2',sans-serif";ctx.textAlign='center';
+    ctx.fillText('🎯 APUNTA Y TIRA',VW/2,44);
+  } else { // balón volando hacia la mira
+    var fx=VW*0.60+(VW/2+S.tx*GW*0.5-VW*0.60)*S.fly;
+    var fy=VH*0.78+(gy1-GH*(0.12+S.ty*0.78)-VH*0.78)*S.fly;
+    var fr=15-9*S.fly;
+    ctx.save();ctx.translate(fx,fy);var ob2x=ball.x,ob2y=ball.y;ball.x=0;ball.y=0;
+    var oBR2=BR;BR=Math.max(6,fr);drawBallCore();BR=oBR2;ball.x=ob2x;ball.y=ob2y;ctx.restore();
+    if(S.phase==='res'){
+      ctx.font="900 40px 'Baloo 2',sans-serif";ctx.textAlign='center';
+      ctx.lineWidth=7;ctx.strokeStyle='rgba(8,60,90,.65)';
+      var msg=S.post?'❌ ¡POSTE!':(S.save?'🧤 ¡ATAJADA!':'⚽ ¡GOOOL!');
+      ctx.strokeText(msg,VW/2,VH*0.36);ctx.fillStyle=S.save||S.post?'#cde8ff':'#FFE066';ctx.fillText(msg,VW/2,VH*0.36);
+    }
+  }
+  drawConfetti();
+}
+
+function doShoot(){
+  if(!activo||ball.holder!==activo)return;
+  if(SCAM){if(SCAM.phase==='aim')SCAM.fire=true;return;}       // dentro de la toma: ¡dispara!
+  // ZONA DE TIRO (dentro de los 5 m del arco azul) → cambio de toma en primera persona
+  if(NET.role!=='guest' && activo.x>R-5.4*PXM_G){enterShotCam();return;}
+  var dir=getAimDir(), tx,ty;
+  if(dir.aimed){ tx=activo.x+dir.x*1000; ty=activo.y+dir.y*1000; } // hacia donde apuntas
+  else {
+    // TIRO HÁBIL: busca la esquina contraria a donde está el portero rival
+    var gk=blue[0];
+    ty=(gk.y>MIDY)?GY1+12:GY2-12;
+    // a más distancia, más dispersión (riesgo real)
+    var dist=Math.hypot(R-activo.x,ty-activo.y);
+    ty+=Math.min(1,dist/850)*GOAL_H*0.30*(Math.random()*2-1);
+    tx=R;
+  }
+  activo.throwT=14; activo.swim+=1.2;                    // animación de lanzamiento
+  launch(tx,ty,SHOT_V+1.5,'shot',activo); ball.lob=false; SFX.shot();
+}
+
+// ===== IA AZUL =====
+function aiAdvance(c){ // driblar hacia el arco BLANCO (izquierda) y centrar al gol
+  c.tx=Math.max(L+34, c.x-95);
+  var aim=MIDY+(Math.random()-0.5)*70;
+  c.ty=c.y+(aim-c.y)*0.28;
+  c.moveToward(AI+1.0);
+}
+function updateAI(){
+  if(controlAzul!=='ia')return;
+  var have=ball.holder&&ball.holder.team==='blue';
+  var gk=blue[0];
+
+  // --- Saque rápido del portero azul: NO retiene el balón ---
+  if(have&&ball.holder.gk){
+    ball._gk=(ball._gk||0)+1;
+    if(ball._gk>20){ // ~1/3 de seg y saca
+      var outlet=blue.filter(function(p){return !p.gk&&!(p.excl>0);})
+        .sort(function(a,b){return a.x-b.x;})[0]; // el más adelantado (izquierda)
+      if(outlet){launch(outlet.x,outlet.y,PASS_V+1,'pass',ball.holder);ball.recv=outlet;SFX.pass();ball._gk=0;}
+    }
+  } else { ball._gk=0; }
+
+  have=ball.holder&&ball.holder.team==='blue'; // el portero pudo soltar el balón en el saque
+  if(have&&!ball.holder.gk&&ball.holder!==NETCTL){
+    var c=ball.holder,dGoal=c.x-L,wgk=white[0];
+    var aimY=function(){var ty=(wgk.y>MIDY)?GY1+12:GY2-12;
+      return ty+Math.min(1,(c.x-L)/850)*GOAL_H*0.30*(Math.random()*2-1);};
+    if(dGoal<130&&Math.random()<0.10){ // muy cerca: dispara casi seguro
+      if(NET.role===null&&!SCAM){c.throwT=12;enterGKCam();}
+      else{c.throwT=12;launch(L,aimY(),SHOT_V+1,'shot',c);SFX.shot();}
+    } else if(dGoal<210&&Math.random()<0.035){ // a tiro: lo intenta
+      if(NET.role===null&&!SCAM){c.throwT=12;enterGKCam();}
+      else{c.throwT=12;launch(L,aimY(),SHOT_V+1,'shot',c);SFX.shot();}
+    } else if(dGoal<340&&Math.random()<0.012){ // pase de progresión hacia adelante
+      var m=blue.filter(function(p){return p!==c&&!p.gk&&!(p.excl>0);}).sort(function(a,b){return a.x-b.x;});
+      if(m[0]&&m[0].x<c.x-30){c.throwT=9;launch(m[0].x,m[0].y,PASS_V,'pass',c);ball.recv=m[0];SFX.pass();}
+      else aiAdvance(c);
+    } else { aiAdvance(c); }
+    // compañeros azules acompañan el ataque adelantándose
+    for(var i=0;i<blue.length;i++){var p=blue[i];if(p===c||p.gk||p.excl>0||p===NETCTL)continue;
+      p.tx=Math.max(L+70, c.x-110+(i%2?70:-30)); p.ty=(i%2?H*0.34:H*0.66); p.moveToward(MATE);}
+  } else if(have&&!ball.holder.gk&&ball.holder===NETCTL){
+    var cg=ball.holder;
+    for(var ii=0;ii<blue.length;ii++){var pp=blue[ii];if(pp===cg||pp.gk||pp.excl>0)continue;
+      pp.tx=Math.max(L+70, cg.x-110+(ii%2?70:-30)); pp.ty=(ii%2?H*0.34:H*0.66); pp.moveToward(MATE);}
+  } else if(!have){
+    var tgt=ball.holder||ball;
+    var sorted=blue.filter(function(p){return !p.gk&&!(p.excl>0)&&p!==NETCTL;}).map(function(p){return {p:p,d:Math.hypot(p.x-tgt.x,p.y-tgt.y)};}).sort(function(a,b){return a.d-b.d;});
+    sorted.forEach(function(o,i){if(i<2){o.p.tx=tgt.x;o.p.ty=tgt.y;}else{o.p.tx=MIDX+90+i*30;o.p.ty=T+130+i*150;}o.p.moveToward(AI);});
+  }
+
+  // portero azul vuelve a su arco SOLO si NO tiene el balón
+  if(ball.holder!==gk){ gk.ty=Math.max(GY1,Math.min(GY2,ball.y)); gk.tx=R-24; gk.moveToward(AI+1); }
+}
+
+// ===== COMPAÑEROS BLANCOS (IA, los que no controlas) =====
+function updateMates(){
+  var attacking=ball.holder&&ball.holder.team==='white';
+  var passing=!ball.holder&&ball.mode==='pass'&&ball.recv&&ball.recv.team==='white';
+  var field=white.filter(function(p){return !p.gk&&p!==activo&&!(p.excl>0);});
+  field.forEach(function(p,i){
+    if(passing&&p===ball.recv){ // corre a recibir el pase
+      p.tx=ball.x; p.ty=ball.y; p.moveToward(MATE+1.4); return;
+    }
+    if(attacking){ // ofrécete adelante, escalonado
+      p.tx=Math.min(R-130, MIDX+40+i*70);
+      p.ty=(i%2===0)?H*0.30:H*0.70;
+    } else { // repliega entre el balón y tu arco
+      p.tx=Math.max(L+90, Math.min(MIDX, ball.x-90));
+      p.ty=(i%2===0)?H*0.34:H*0.66;
+    }
+    p.moveToward(MATE);
+  });
+  // portero blanco sigue Y del balón
+  white[0].ty=Math.max(GY1,Math.min(GY2,ball.y));white[0].tx=L+24;white[0].moveToward(AI+1);
+}
+
+// ===== COLISIONES SÓLIDAS =====
+function resolveCollisions(){
+  var all=white.concat(blue);
+  for(var it=0;it<2;it++){
+    for(var i=0;i<all.length;i++)for(var j=i+1;j<all.length;j++){
+      var a=all[i],b=all[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),min=a.r+b.r;
+      if(d<min&&d>0.0001){var ov=(min-d)/2,nx=dx/d,ny=dy/d;
+        a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;a.clamp();b.clamp();}
+    }
+  }
+}
+
+// ===== ROBO / RECEPCIÓN =====
+function resolveBall(){
+  if(!ball.holder){
+    if(ball.lob && Math.hypot(ball.vx,ball.vy)>3.2) return; // bombeado: pasa por encima, nadie lo intercepta
+    var best=null,bd=1e9,all=white.concat(blue);
+    for(var i=0;i<all.length;i++){var p=all[i];
+      if(p===ball.passer&&ball.passT>0)continue;          // el pasador no recupera de inmediato
+      var rad=p.r+BR+6; if(ball.recv===p)rad=p.r+BR+18;    // recepción magnética para el receptor
+      var d=Math.hypot(p.x-ball.x,p.y-ball.y);
+      if(d<rad&&d<bd){bd=d;best=p;}}
+    if(best){if(ball.recv&&best.team!==ball.recv.team)SFX.steal();
+      ball.holder=best;ball.mode='idle';ball.recv=null;ball.shooter=null;ball.lob=false;posLeft=POSSESSION;ball.holdT=24;ball.trail.length=0;
+      for(var s=0;s<3;s++)waves.push({x:ball.x,y:ball.y,r:4+s*4,life:18});}  // salpicadura
+  } else {
+    if(ball.holdT>0)return;                                    // medio segundo de gracia al recuperar
+    var c=ball.holder,rivals=(c.team==='white'?blue:white);
+    for(var k=0;k<rivals.length;k++){var r=rivals[k];if(r.gk||r.excl>0)continue;
+      if(Math.hypot(r.x-c.x,r.y-c.y)<c.r+r.r+3){
+        var roll=Math.random(), pSteal=(r.lungeT>0)?0.35:0.05;      // el LANCE roba mucho mejor
+        if(roll<pSteal){ ball.holder=r;posLeft=POSSESSION;ball.holdT=24;SFX.steal();
+          if(r.team==='white'&&c.team==='blue')flash('⚡ ¡BALÓN ROBADO!',36);break; }
+        else if(roll<pSteal+0.012){ excludePlayer(r); break; }       // FALTA → exclusión 20 s
+      }}
+  }
+}
+
+// ===== GOLES Y LÍMITES =====
+function checkGoal(){
+  if(ball.holder)return;
+  if(ball.x>R-4&&ball.y>GY1&&ball.y<GY2){onGoal('white');return;}
+  if(ball.x<L+4&&ball.y>GY1&&ball.y<GY2){onGoal('blue');return;}
+  for(var t=0;t<2;t++){var gk=(t===0?white:blue)[0];
+    if(ball.mode==='shot'&&Math.hypot(gk.x-ball.x,gk.y-ball.y)<gk.r+BR+4){
+      ball.holder=gk;ball.mode='idle';ball.shooter=null;posLeft=POSSESSION;ball.holdT=30;SFX.save();flash('🧤 ¡Atajada!',30);}}
+  if(ball.y<T+BR){ball.y=T+BR;ball.vy*=-.6;}if(ball.y>B-BR){ball.y=B-BR;ball.vy*=-.6;}
+  if(ball.x<L-2)goalThrow('white');if(ball.x>R+2)goalThrow('blue');
+}
+function goalThrow(side){var gk=(side==='white'?white:blue)[0];ballReset(gk.x,gk.y);ball.holder=gk;posLeft=POSSESSION;}
+
+// ===== REGLAS DE POLO: EXCLUSIÓN 20 s (hombre de más) =====
+function excludePlayer(p){
+  p.excl=20; SFX.whistle();
+  flash('🟥 ¡FALTA! Exclusión 20 s — '+(p.team==='white'?homeC.abbr:awayC.abbr)+' #'+p.num,80);
+}
+function updateExclusions(dt){
+  var all=white.concat(blue);
+  for(var i=0;i<all.length;i++){var p=all[i];
+    if(p.excl>0){
+      p.excl-=dt;
+      // nada hacia su esquina de reingreso (junto a su portería)
+      p.tx=(p.team==='white')?L+14:R-14; p.ty=B-14; p.moveToward(AI);
+      if(p.excl<=0){p.excl=0;flash('✅ Reingresa #'+p.num,30);}
+    }}
+}
+// ===== INSPIRACIÓN LAGUNA (waterpolo) =====
+var INSPIRA=['💪 Fuertes y Valientes','🌊 El agua premia al que no se rinde','🧠 Piensa rápido, nada más rápido',
+  '🤽 El waterpolo se juega con el corazón','🔥 Cada brazada cuenta','⚡ Defiende como equipo, ataca como familia',
+  '🏆 Entrena · Compite · Supera','💙 La presión es un privilegio'];
+function inspira(){return INSPIRA[(Math.random()*INSPIRA.length)|0];}
+function onGoal(scorer){
+  if(scorer==='white')sW++;else sA++;updateUI();SFX.goal();spawnConfetti();
+  goalFx={t:26,x:scorer==='white'?R-GOAL_W/2:L+GOAL_W/2};
+  var sb=document.querySelector('.scorebar');if(sb){sb.classList.add('goal');setTimeout(function(){sb.classList.remove('goal');},700);}
+  var prev=state;running=false;state='goal';
+  flash(scorer==='white'?('⚽ ¡GOL '+homeC.abbr+'! '+homeC.flag):('⚽ ¡GOL '+awayC.abbr+'! '+awayC.flag),60);
+  setTimeout(function(){if(state!=='goal')return;
+    if(prev==='extra'){finish();return;}                 // ⚡ GOL DE ORO: el que anota en el extra, gana
+    faceoff(scorer==='white'?'blue':'white');state='play';running=true;
+    flash(inspira(),70);},1600);
+}
+
+// ===== RELOJ =====
+function tick(dt){
+  if(!running)return;
+  timeLeft-=dt;posLeft-=dt;
+  if(ball.holder&&posLeft<5){var kk=Math.floor(posLeft*2);if(kk!==tick._k){tick._k=kk;beep(900,.04,'square',.06);}}
+  if(posLeft<=0){var lose=possessionTeam()||'white',win=lose==='white'?'blue':'white';
+    var gk=(win==='white'?white:blue)[0];ballReset(gk.x,gk.y);ball.holder=gk;posLeft=POSSESSION;SFX.whistle();
+    flash('⏱️ Posesión perdida (30s)',30);}
+  if(timeLeft<=0){timeLeft=0;running=false;endRegular();}
+  updateUI();
+}
+function endRegular(){
+  SFX.whistle();
+  if(sW===sA){timeLeft=EXTRA;
+    document.getElementById('timer').classList.add('extra');
+    lineupSprint();state='swimoff';afterSwim='extra';swimT=3.4;running=false;
+    flash('🤝 Empate · ¡Tiempo extra!',80);}
+  else finish();
+}
+function finish(){state='fulltime';running=false;
+  if(sW>sA)flash('🏆 ¡GANA '+homeC.abbr+'! '+homeC.flag+' 🎉',400);
+  else if(sA>sW)flash('🏆 ¡GANA '+awayC.abbr+'! '+awayC.flag,400);
+  else flash('🤝 ¡EMPATE FINAL!',400);}
+
+// ===== UI =====
+function updateUI(){
+  document.getElementById('sW').innerText=sW;document.getElementById('sA').innerText=sA;
+  var t=Math.max(0,Math.ceil(timeLeft)),m=Math.floor(t/60),s=t%60;
+  document.getElementById('timer').innerText=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  var pl=document.getElementById('periodLbl');
+  if(pl)pl.textContent= state==='extra'?'TIEMPO EXTRA':(state==='fulltime'?'FINAL':'PARTIDO');
+}
+
+// ===== DIBUJO =====
+function drawPlayer(p){
+  var isW=p.team==='white';
+  var cap=p.gk?'#e33b3b':(isW?'#ffffff':'#123a6e');           // porteros gorra ROJA (regla real)
+  var capEdge=p.gk?'#8f1f1f':(isW?'#9fc4e6':'#06233f');
+  var skin=p.skin||'#f6c9a0';
+  var holding=(ball.holder===p);
+  ctx.save();
+  var sc=0.82+(p.y/H)*0.42;                  // profundidad: más cerca (abajo) = más grande
+  ctx.translate(p.x,p.y);ctx.scale(sc,sc);ctx.translate(-p.x,-p.y);
+  ctx.beginPath();ctx.ellipse(p.x,p.y+10,p.r*0.9,p.r*0.5,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.18)';ctx.fill();
+  // ==== BRAZOS ====
+  var dx=p.dirx||1,dy=p.diry||0, px=-dy,py=dx;
+  ctx.strokeStyle=skin;ctx.lineWidth=5;ctx.lineCap='round';
+  if(holding){                                          // BALÓN EN ALTO (como waterpolista real)
+    ctx.beginPath();ctx.moveTo(p.x+px*6,p.y+py*6-2);
+    ctx.lineTo(p.x+dx*9,p.y+dy*9-20);ctx.stroke();       // brazo levantado hacia el balón
+    var s2h=Math.sin(p.swim);                            // el otro brazo rema
+    ctx.beginPath();ctx.moveTo(p.x-px*7,p.y-py*7);
+    ctx.lineTo(p.x-px*7+dx*(6+Math.max(0,s2h)*8),p.y-py*7+dy*6);ctx.stroke();
+  } else if(p.throwT&&p.throwT>0){                       // gesto de LANZAR
+    var t=p.throwT/14, ext=10+16*(1-t);
+    ctx.beginPath();ctx.moveTo(p.x+px*7,p.y+py*7-2);
+    ctx.lineTo(p.x+px*7+dx*ext,p.y+py*7+dy*ext-9*t);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(p.x-px*7,p.y-py*7);
+    ctx.lineTo(p.x-px*7-dx*5,p.y-py*7-dy*5);ctx.stroke();
+    p.throwT--;
+  } else {                                               // BRAZADA de crol
+    var s1=Math.sin(p.swim), s2=Math.sin(p.swim+Math.PI);
+    var r1=7+Math.max(0,s1)*11, r2=7+Math.max(0,s2)*11;
+    var lift1=Math.max(0,s1)*4, lift2=Math.max(0,s2)*4;
+    ctx.beginPath();ctx.moveTo(p.x+px*7,p.y+py*7);
+    ctx.lineTo(p.x+px*7+dx*r1,p.y+py*7+dy*r1-lift1);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(p.x-px*7,p.y-py*7);
+    ctx.lineTo(p.x-px*7+dx*r2,p.y-py*7+dy*r2-lift2);ctx.stroke();
+    if(Math.max(0,s1)>0.96)waves.push({x:p.x+px*7+dx*r1,y:p.y+py*7+dy*r1,r:2,life:10});
+    if(Math.max(0,s2)>0.96)waves.push({x:p.x-px*7+dx*r2,y:p.y-py*7+dy*r2,r:2,life:10});
+  }
+  // ==== TORSO (piel, como en la foto: hombros fuera del agua) ====
+  ctx.beginPath();ctx.ellipse(p.x,p.y+4,p.r*0.72,p.r*0.55,0,0,Math.PI*2);ctx.fillStyle=skin;ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=1;ctx.stroke();
+  // línea de agua con espuma alrededor del torso
+  ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=2.4;
+  ctx.beginPath();ctx.ellipse(p.x,p.y+9,p.r*0.85,p.r*0.30,0,0,Math.PI*2);ctx.stroke();
+  // ==== CABEZA + GORRA OFICIAL ====
+  ctx.beginPath();ctx.arc(p.x,p.y-6,p.r*0.55,0,Math.PI*2);ctx.fillStyle=skin;ctx.fill();
+  // orejeras (protectores) a los lados
+  ctx.beginPath();ctx.arc(p.x-p.r*0.52,p.y-6,4.2,0,Math.PI*2);ctx.fillStyle=cap;ctx.fill();ctx.strokeStyle=capEdge;ctx.lineWidth=1.4;ctx.stroke();
+  ctx.beginPath();ctx.arc(p.x+p.r*0.52,p.y-6,4.2,0,Math.PI*2);ctx.fillStyle=cap;ctx.fill();ctx.stroke();
+  // gorra (casquete) + barbiquejo
+  ctx.beginPath();ctx.ellipse(p.x,p.y-10,p.r*0.56,p.r*0.42,0,0,Math.PI*2);ctx.fillStyle=cap;ctx.fill();
+  ctx.strokeStyle=capEdge;ctx.lineWidth=1.6;ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(p.x-p.r*0.5,p.y-4);ctx.quadraticCurveTo(p.x,p.y+1,p.x+p.r*0.5,p.y-4);ctx.stroke(); // barbiquejo
+  // número en la gorra (como los oficiales)
+  ctx.fillStyle=(isW&&!p.gk)?'#0a3f7a':'#fff';ctx.font="bold 9px 'Segoe UI'";ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(p.num,p.x,p.y-10);
+  if(p===activo){ // flecha/anillo del jugador que controlas
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r+6,0,Math.PI*2);ctx.strokeStyle='#f2c14e';ctx.lineWidth=2.5;
+    ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(p.x-6,p.y-p.r-12);ctx.lineTo(p.x+6,p.y-p.r-12);ctx.lineTo(p.x,p.y-p.r-4);
+    ctx.closePath();ctx.fillStyle='#f2c14e';ctx.fill();
+  }
+  if(ball.holder===p){ctx.beginPath();ctx.arc(p.x,p.y,p.r+9,0,Math.PI*2);ctx.strokeStyle='#ff8800';ctx.lineWidth=2;ctx.stroke();}
+  if(p.excl>0){ // tarjeta/reloj de exclusión
+    ctx.fillStyle='#ff3b3b';ctx.fillRect(p.x-13,p.y-p.r-24,26,13);
+    ctx.fillStyle='#fff';ctx.font="800 9px 'Baloo 2',sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(Math.ceil(p.excl)+'s',p.x,p.y-p.r-17);
+  }
+  ctx.restore();
+}
+function drawBall(){
+  ctx.save();
+  // estela del balón
+  for(var i=0;i<ball.trail.length;i++){var tp=ball.trail[i],a=(i+1)/ball.trail.length;
+    ctx.fillStyle='rgba(255,224,80,'+(a*0.35)+')';ctx.beginPath();ctx.arc(tp.x,tp.y,BR*a*0.8,0,Math.PI*2);ctx.fill();}
+  ctx.fillStyle='rgba(0,0,0,.28)';ctx.beginPath();ctx.ellipse(ball.x,ball.y+BR*0.7,BR*0.9,BR*0.45,0,0,Math.PI*2);ctx.fill();
+  drawBallCore();
+  ctx.restore();
+}
+function drawBallCore(){
+  ctx.save();ctx.translate(ball.x,ball.y);ctx.rotate(ball.rot||0);ctx.translate(-ball.x,-ball.y);
+  var g=ctx.createRadialGradient(ball.x-BR*0.4,ball.y-BR*0.4,1,ball.x,ball.y,BR);
+  g.addColorStop(0,'#fff3a0');g.addColorStop(.6,'#ffd21f');g.addColorStop(1,'#e6a400');
+  ctx.beginPath();ctx.arc(ball.x,ball.y,BR,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+  ctx.save();ctx.beginPath();ctx.arc(ball.x,ball.y,BR,0,Math.PI*2);ctx.clip();
+  ctx.fillStyle='#2456b0';ctx.beginPath();
+  ctx.ellipse(ball.x-BR*0.55,ball.y-BR*0.15,BR*0.62,BR*0.95,-0.5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#e23b3b';ctx.beginPath();
+  ctx.ellipse(ball.x+BR*0.62,ball.y+BR*0.18,BR*0.55,BR*0.9,0.5,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+  ctx.lineWidth=1;ctx.strokeStyle='#b07d00';ctx.beginPath();ctx.arc(ball.x,ball.y,BR,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(150,90,0,.7)';ctx.lineWidth=1.1;
+  ctx.beginPath();ctx.arc(ball.x,ball.y,BR,-0.5,0.5);ctx.stroke();
+  ctx.beginPath();ctx.arc(ball.x,ball.y,BR,Math.PI-0.5,Math.PI+0.5);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ball.x-BR,ball.y);ctx.quadraticCurveTo(ball.x,ball.y-BR*0.55,ball.x+BR,ball.y);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ball.x-BR,ball.y);ctx.quadraticCurveTo(ball.x,ball.y+BR*0.55,ball.x+BR,ball.y);ctx.stroke();
+  ctx.restore();
+}
+
+// ===== FONDO ESTÁTICO (se dibuja UNA sola vez → no se traba) =====
+var bg=null;
+function drawGoalOn(c,gx,color){c.fillStyle='rgba(0,0,0,.40)';c.fillRect(gx,GY1,GOAL_W,GOAL_H);
+  c.strokeStyle=color;c.lineWidth=3;c.strokeRect(gx,GY1,GOAL_W,GOAL_H);
+  c.strokeStyle='rgba(255,255,255,.3)';c.lineWidth=1;
+  for(var i=1;i<5;i++){var y=GY1+i*GOAL_H/5;c.beginPath();c.moveTo(gx,y);c.lineTo(gx+GOAL_W,y);c.stroke();}}
+function drawLaneRope(c,y){
+  for(var x=L;x<=R;x+=12){var k=((x/12)|0);
+    c.fillStyle=(k%6===0)?'#2f6fd0':(k%2===0?'#ffffff':'#eaf6ff');
+    c.beginPath();c.arc(x,y,3,0,Math.PI*2);c.fill();}
+}
+function drawRef(c,x,y,bottom){
+  c.save();c.translate(x,y);
+  c.fillStyle='#0a3f6e';c.fillRect(-14,-3,28,7);                                 // plataforma del árbitro
+  c.fillStyle='#ffffff';c.beginPath();c.ellipse(0,bottom?7:-7,6,9,0,0,Math.PI*2);c.fill(); // camisa blanca
+  c.fillStyle='#fedba0';c.beginPath();c.arc(0,bottom?-3:3,5,0,Math.PI*2);c.fill();          // cabeza
+  c.fillStyle='#ffd54a';c.font="700 7px 'Baloo 2',sans-serif";c.textAlign='center';c.textBaseline='middle';
+  c.fillText('ÁRBITRO',0,bottom?19:-17);
+  c.restore();
+}
+function buildBackground(){
+  bg=document.createElement('canvas');bg.width=W;bg.height=H;
+  var c=bg.getContext('2d');
+  var grad=c.createLinearGradient(0,0,0,H);grad.addColorStop(0,'#37cdef');grad.addColorStop(1,'#0fa0c8');
+  c.fillStyle=grad;c.fillRect(0,0,W,H);
+  c.strokeStyle='rgba(255,255,255,.05)';c.lineWidth=2;
+  for(var y=T+26;y<B;y+=44){c.beginPath();c.moveTo(L,y);c.lineTo(R,y);c.stroke();}
+  // deck + público
+  c.fillStyle='#0a2b44';c.fillRect(0,0,W,T);c.fillRect(0,B,W,H-B);c.fillRect(0,0,L,H);c.fillRect(R,0,W-R,H);
+  for(var cx=14;cx<W-10;cx+=16){var ci=(cx/16|0);
+    c.fillStyle=CROWD_COLS[ci%CROWD_COLS.length];
+    c.beginPath();c.arc(cx,10+(ci%2)*9,3.4,0,Math.PI*2);c.fill();
+    c.beginPath();c.arc(cx,H-10-(ci%2)*9,3.4,0,Math.PI*2);c.fill();}
+  // árbitros laterales (en el deck superior e inferior)
+  drawRef(c,MIDX-160,T-19,false);drawRef(c,MIDX+160,T-19,false);
+  drawRef(c,MIDX-160,B+19,true); drawRef(c,MIDX+160,B+19,true);
+  // lonas
+  c.fillStyle='#0f6fa0';c.fillRect(W*0.30,1,W*0.40,15);
+  c.fillStyle='#cdefff';c.font="800 9px 'Baloo 2',sans-serif";c.textAlign='center';c.textBaseline='middle';
+  c.fillText('ENTRENA · COMPITE · SUPERA',MIDX,9);
+  c.save();c.translate(W-18,MIDY);c.rotate(Math.PI/2);
+  c.fillStyle='#0f6fa0';c.fillRect(-72,-8,144,15);
+  c.fillStyle='#cdefff';c.fillText('¡FUERZA LAGUNA!',0,0);c.restore();
+  // cuerdas de carril con boyas (líneas de fuera + carriles)
+  var laneYs=[T,T+(B-T)*0.25,MIDY,T+(B-T)*0.75,B];
+  for(var li=0;li<laneYs.length;li++)drawLaneRope(c,laneYs[li]);
+  // ===== MARCAS OFICIALES (waterpolo real) =====
+  // escala: la cancha mide 25 m de largo → px por metro
+  var PXM=(R-L)/25;
+  function vline(x,col,wd){c.strokeStyle=col;c.lineWidth=wd||3;c.beginPath();c.moveTo(x,T);c.lineTo(x,B);c.stroke();}
+  // borde y media cancha (blanca)
+  c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=3;c.strokeRect(L,T,R-L,B-T);
+  vline(MIDX,'rgba(255,255,255,.85)',3);
+  // línea de 2 m (ROJA) — zona de gol: sin atacantes sin balón
+  vline(L+2*PXM,'rgba(255,60,60,.85)',3); vline(R-2*PXM,'rgba(255,60,60,.85)',3);
+  c.fillStyle='rgba(255,60,60,.07)';c.fillRect(L,T,2*PXM,B-T);c.fillRect(R-2*PXM,T,2*PXM,B-T);
+  // línea de 5 m (AMARILLA) — desde aquí se cobra el penal
+  vline(L+5*PXM,'rgba(255,210,60,.85)',3); vline(R-5*PXM,'rgba(255,210,60,.85)',3);
+  // esquinas de reingreso (donde espera el excluido)
+  c.fillStyle='rgba(255,255,255,.5)';
+  c.fillRect(L-4,B-26,8,26);c.fillRect(R-4,B-26,8,26);
+  // etiquetas discretas
+  c.fillStyle='rgba(255,255,255,.55)';c.font="700 8px 'Baloo 2',sans-serif";c.textAlign='center';
+  c.fillText('2m',L+2*PXM,T+10);c.fillText('5m',L+5*PXM,T+10);
+  c.fillText('2m',R-2*PXM,T+10);c.fillText('5m',R-5*PXM,T+10);
+  c.beginPath();c.arc(MIDX,MIDY,55,0,Math.PI*2);c.strokeStyle='rgba(255,255,255,.35)';c.lineWidth=2;c.stroke();
+  // logo central
+  c.save();c.globalAlpha=.30;c.translate(MIDX,MIDY);
+  c.beginPath();c.arc(0,0,40,0,Math.PI*2);c.fillStyle='rgba(173,225,255,.5)';c.fill();
+  c.lineWidth=2;c.strokeStyle='#eaf6ff';c.stroke();
+  c.fillStyle='#fff';c.textAlign='center';c.textBaseline='middle';
+  c.font="bold 13px 'Trebuchet MS'";c.fillText('LAGUNA',0,-7);
+  c.font="bold 12px 'Trebuchet MS'";c.fillText('SWIM',0,8);c.restore();
+  drawGoalOn(c,L,'#ffffff');drawGoalOn(c,R-GOAL_W,'#5db8ff');
+}
+function drawField(){
+  if(!bg)buildBackground();
+  ctx.drawImage(bg,0,0);
+  // destellos del agua (luz en movimiento)
+  var tt=Date.now();
+  ctx.save();ctx.globalAlpha=0.07;ctx.fillStyle='#ffffff';
+  for(var ci=0;ci<7;ci++){
+    var xx=L+((ci*263+tt*0.018*(14+ci*5))%(R-L));
+    var yy=T+((ci*149+tt*0.010*(9+ci*3))%(B-T));
+    ctx.beginPath();ctx.ellipse(xx,yy,46,9,0.5,0,Math.PI*2);ctx.fill();
+  }
+  ctx.restore();
+  // estelas dinámicas de nado
+  for(var w=0;w<waves.length;w++){var ww=waves[w];ctx.beginPath();ctx.arc(ww.x,ww.y,ww.r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,'+(ww.life/36)+')';ctx.lineWidth=2;ctx.stroke();ww.r+=.6;ww.life--;}
+  waves=waves.filter(function(o){return o.life>0;});
+}
+function drawJoystick(){
+  if(!joy.active)return;
+  ctx.save();
+  ctx.beginPath();ctx.arc(joy.ox,joy.oy,joy.maxR,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,.08)';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();ctx.arc(joy.ox+joy.dx*joy.maxR,joy.oy+joy.dy*joy.maxR,20,0,Math.PI*2);
+  ctx.fillStyle='rgba(242,193,78,.85)';ctx.fill();ctx.restore();
+}
+function drawHUD(){
+  ctx.save();ctx.font="bold 12px monospace";ctx.textAlign='left';
+  var pt=possessionTeam();
+  ctx.fillStyle=pt==='white'?'#fff':(pt==='blue'?'#5db8ff':'#bbd9ff');
+  ctx.fillText(pt==='white'?(homeC.flag+' '+homeC.abbr):(pt==='blue'?(awayC.flag+' '+awayC.abbr):'⚪ Balón libre'),L+6,T+16);
+  var bw=150,x=L+6,y=T+22;ctx.fillStyle='rgba(255,255,255,.15)';ctx.fillRect(x,y,bw,5);
+  ctx.fillStyle='#f2c14e';ctx.fillRect(x,y,bw*Math.max(0,posLeft)/POSSESSION,5);
+  var exB=0,exW=0,ii;
+  for(ii=1;ii<blue.length;ii++)if(blue[ii].excl>0)exB++;
+  for(ii=1;ii<white.length;ii++)if(white[ii].excl>0)exW++;
+  if(exB>exW||exW>exB){
+    var pu=0.6+0.4*Math.sin(Date.now()/160);
+    ctx.font="900 15px 'Baloo 2',sans-serif";ctx.textAlign='center';
+    ctx.fillStyle=exB>exW?('rgba(77,255,158,'+pu+')'):('rgba(255,120,120,'+pu+')');
+    ctx.fillText(exB>exW?'💪 ¡HOMBRE DE MÁS!':'⚠️ HOMBRE DE MENOS',VW/2,VH-72);
+  }
+  ctx.restore();
+  if(flashT>0){ctx.save();ctx.font="900 32px 'Baloo 2','Segoe UI',sans-serif";ctx.textAlign='center';
+    ctx.lineWidth=6;ctx.strokeStyle='rgba(8,60,90,.6)';ctx.strokeText(flashMsg,VW/2,80);
+    ctx.fillStyle='#FFE066';ctx.shadowColor='rgba(0,0,0,.4)';ctx.shadowBlur=6;
+    ctx.fillText(flashMsg,VW/2,80);ctx.restore();flashT--;}
+}
+// Indicador FIFA: marca al compañero que recibirá el pase
+function drawPassHint(){
+  if(!(ball.holder&&ball.holder.team==='white'&&ball.holder===activo))return;
+  var to=bestMate(getAimDir());if(!to)return;
+  var x=to.x,y=to.y-to.r-13,a=0.55+0.45*Math.sin(Date.now()/140);
+  ctx.save();ctx.globalAlpha=a;
+  ctx.fillStyle='#4dff9e';ctx.strokeStyle='#0a3f2e';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(x,y+11);ctx.lineTo(x-9,y-3);ctx.lineTo(x+9,y-3);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.restore();
+}
+// Nombre + barra de stamina del jugador activo (estilo transmisión)
+function drawActiveTag(){
+  if(!activo)return;
+  var x=activo.x,y=activo.y,r=activo.r;
+  ctx.save();
+  ctx.strokeStyle='#4dff9e';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y+r+5,r+3,0.12*Math.PI,0.88*Math.PI);ctx.stroke();
+  var nm=activo.name||('#'+activo.num);
+  ctx.font="800 12px 'Baloo 2',sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';
+  var w=ctx.measureText(nm).width+16;
+  ctx.fillStyle='rgba(6,35,63,.85)';ctx.fillRect(x-w/2,y+r+12,w,16);
+  ctx.fillStyle='#fff';ctx.fillText(nm,x,y+r+20);
+  var bw=46,bx=x-bw/2,by=y+r+31;
+  ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(bx,by,bw,5);
+  ctx.fillStyle=stamina>30?'#4dff9e':'#ffce5a';ctx.fillRect(bx,by,bw*stamina/100,5);
+  ctx.restore();
+}
+// Minimapa táctico
+function drawMinimap(){
+  var mw=190,mh=50,mx=VW/2-mw/2,my=VH-mh-12;
+  ctx.save();
+  ctx.fillStyle='rgba(6,35,63,.82)';ctx.fillRect(mx-4,my-4,mw+8,mh+8);
+  ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=1;ctx.strokeRect(mx,my,mw,mh);
+  ctx.beginPath();ctx.moveTo(mx+mw/2,my);ctx.lineTo(mx+mw/2,my+mh);ctx.stroke();
+  ctx.beginPath();ctx.arc(mx+mw/2,my+mh/2,7,0,Math.PI*2);ctx.stroke();
+  function mp(px,py){return{x:mx+(px-L)/(R-L)*mw,y:my+(py-T)/(B-T)*mh};}
+  // recuadro de lo que ve la cámara
+  var camL=mx+(cam.x-L)/(R-L)*mw, camW=VW/(R-L)*mw;
+  ctx.strokeStyle='rgba(255,224,102,.9)';ctx.lineWidth=1.3;ctx.strokeRect(Math.max(mx,camL),my,Math.min(camW,mw),mh);
+  var i,q;
+  for(i=0;i<blue.length;i++){q=mp(blue[i].x,blue[i].y);ctx.fillStyle='#ff6b6b';ctx.beginPath();ctx.arc(q.x,q.y,2.3,0,Math.PI*2);ctx.fill();}
+  for(i=0;i<white.length;i++){q=mp(white[i].x,white[i].y);ctx.fillStyle=(white[i]===activo)?'#ffe066':'#37cdef';ctx.beginPath();ctx.arc(q.x,q.y,2.5,0,Math.PI*2);ctx.fill();}
+  q=mp(ball.x,ball.y);ctx.fillStyle='#ffcf33';ctx.beginPath();ctx.arc(q.x,q.y,2.1,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+}
+
+function spawnConfettiAt(ox,oy){
+  var cols=['#ffd44d','#ff7d6b','#5fd06b','#7d6bff','#ffffff','#37cdef'];
+  for(var i=0;i<70;i++)confetti.push({x:ox+(Math.random()-.5)*260,y:oy,
+    vx:(Math.random()-.5)*9,vy:-Math.random()*9-3,life:60+Math.random()*30,
+    col:cols[(Math.random()*cols.length)|0],s:4+Math.random()*6,rot:Math.random()*6,vr:(Math.random()-.5)*.5});
+}
+function spawnConfetti(){
+  var cols=['#ffd44d','#ff7d6b','#5fd06b','#7d6bff','#ffffff','#37cdef'];
+  var ox=Math.max(L+120,Math.min(R-120,ball.x));
+  for(var i=0;i<80;i++)confetti.push({x:ox+(Math.random()-.5)*260,y:MIDY-20,
+    vx:(Math.random()-.5)*9,vy:-Math.random()*10-3,life:90+Math.random()*40,
+    col:cols[(Math.random()*cols.length)|0],s:4+Math.random()*6,rot:Math.random()*6,vr:(Math.random()-.5)*.5});
+}
+function drawConfetti(){
+  for(var i=0;i<confetti.length;i++){var c=confetti[i];
+    c.vy+=.28;c.x+=c.vx;c.y+=c.vy;c.rot+=c.vr;c.life--;
+    ctx.save();ctx.translate(c.x,c.y);ctx.rotate(c.rot);ctx.fillStyle=c.col;
+    ctx.fillRect(-c.s/2,-c.s/2,c.s,c.s*.6);ctx.restore();}
+  confetti=confetti.filter(function(c){return c.life>0&&c.y<H+30;});
+}
+function loop(now){
+  var dt=Math.min(.05,(now-lastT)/1000);lastT=now;
+  _fpsAcc+=dt;_fpsN++;
+  if(_fpsAcc>=0.5){fps=Math.round(_fpsN/_fpsAcc);_fpsN=0;_fpsAcc=0;var fe=document.getElementById('fps');if(fe)fe.textContent=fps;}
+  try{
+  if(SCAM){ updateShotCam(dt); drawShotCam(); requestAnimationFrame(loop); return; }
+  if(NET.role==='guest'){
+    // El invitado NO simula: dibuja el estado del anfitrión y manda su cruceta
+    netSendInput(now);
+    camFollow();
+    ctx.save();ctx.translate(-Math.round(cam.x),-Math.round(cam.y));
+    drawField();
+    var og=blue.concat(white).sort(function(a,b){return a.y-b.y;});
+    for(var gi=0;gi<og.length;gi++)drawPlayer(og[gi]);
+    drawBall();drawConfetti();
+    ctx.restore();
+    drawJoystick();drawHUD();drawMinimap();
+    requestAnimationFrame(loop);return;
+  }
+  if(state==='play'||state==='ready'||state==='extra'||state==='goal'||state==='swimoff'){
+    if(state==='play'||state==='extra'){
+      activo=pickActivo(false);   // estilo fútbol: control salta al más cercano al balón
+      controlActivo();
+      NETCTL=null; netGuestControlsBlue();         // en duelo online, el invitado mueve a un azul
+      updateAI();
+      updateMates();
+    }
+    ballUpdate();
+    resolveCollisions();
+    if(state==='play'||state==='extra'){resolveBall();checkGoal();tick(dt);updateExclusions(dt);
+      if(timeLeft<=0&&state==='extra'&&!running)finish();}
+  }
+  netPublish(now);
+  camFollow();
+  // ---- MUNDO (se desplaza con la cámara) ----
+  ctx.save();
+  ctx.translate(-Math.round(cam.x),-Math.round(cam.y));
+  drawField();
+  var order=blue.concat(white).sort(function(a,b){return a.y-b.y;}); // dibuja de lejos a cerca
+  for(var i=0;i<order.length;i++)drawPlayer(order[i]);
+  drawPassHint();drawBall();drawActiveTag();drawConfetti();
+  if(goalFx.t>0){ // red sacudida + onda expansiva
+    var gfa=goalFx.t/26;
+    ctx.save();
+    ctx.strokeStyle='rgba(255,224,102,'+(gfa*0.9)+')';ctx.lineWidth=4;
+    ctx.beginPath();ctx.arc(goalFx.x,MIDY,(1-gfa)*130+18,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,'+(gfa*0.8)+')';ctx.lineWidth=2;
+    for(var gl=0;gl<5;gl++){var jy=GY1+gl*GOAL_H/4, jx=goalFx.x+Math.sin(Date.now()/28+gl)*5*gfa;
+      ctx.beginPath();ctx.moveTo(goalFx.x-14,jy);ctx.quadraticCurveTo(jx,jy+6,goalFx.x+14,jy);ctx.stroke();}
+    ctx.restore();goalFx.t--;
+  }
+  ctx.restore();
+  // ---- INTERFAZ (fija en pantalla) ----
+  drawJoystick();drawHUD();drawMinimap();
+  // ---- SPRINT INICIAL: cuenta regresiva y ¡a nadar por el balón! ----
+  if(state==='swimoff'){
+    swimT-=dt;
+    var camT=Math.max(0,Math.min(W-VW, MIDX-VW/2));
+    cam.x+=(camT-cam.x)*0.035;                          // paneo cinematográfico hacia el centro
+    ctx.save();ctx.textAlign='center';
+    ctx.font="800 15px 'Baloo 2',sans-serif";
+    ctx.lineWidth=5;ctx.strokeStyle='rgba(8,60,90,.6)';ctx.fillStyle='#fff';
+    ctx.strokeText('🏊 ¡SPRINT POR EL BALÓN!',VW/2,VH*0.20);ctx.fillText('🏊 ¡SPRINT POR EL BALÓN!',VW/2,VH*0.20);
+    var n=Math.ceil(swimT-0.6);
+    ctx.font="900 64px 'Luckiest Guy',cursive";
+    var txt=n>=1?String(n):'¡YA!';
+    ctx.lineWidth=8;ctx.strokeStyle='rgba(8,60,90,.65)';
+    ctx.strokeText(txt,VW/2,VH*0.44);
+    ctx.fillStyle=n>=1?'#FFE066':'#7CFFB0';ctx.fillText(txt,VW/2,VH*0.44);
+    ctx.restore();
+    if(n>=1&&swimT-0.6+1-n<0.06)beep(700,.06,'sine',.07);
+    if(swimT<=0){state=afterSwim;running=true;SFX.whistle();
+      launch(MIDX+(Math.random()*40-20),MIDY,9.5,'pass',null);ball.lob=true;   // ¡el árbitro lanza el balón al centro!
+      flash(inspira(),70);}
+  }
+  }catch(err){console.error('loop error',err);}
+  requestAnimationFrame(loop);
+}
+
+// ===== ENTRADA: VOLANTE (mitad izquierda, multitáctil) + teclado =====
+function xy(t){var r=cv.getBoundingClientRect();
+  return{x:(t.clientX-r.left)*(VW/r.width),y:(t.clientY-r.top)*(VH/r.height)};}
+function joyStart(p){joy.active=true;joy.ox=p.x;joy.oy=p.y;joy.dx=0;joy.dy=0;startPlay();}
+function joyMove(p){if(!joy.active)return;var dx=p.x-joy.ox,dy=p.y-joy.oy,d=Math.hypot(dx,dy);
+  if(d>joy.maxR){dx=dx/d*joy.maxR;dy=dy/d*joy.maxR;}joy.dx=dx/joy.maxR;joy.dy=dy/joy.maxR;}
+function joyEnd(){joy.active=false;joy.dx=0;joy.dy=0;joy.id=null;}
+cv.addEventListener('touchstart',function(e){
+  for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i],c=xy(t);
+    if(joy.id===null&&c.x<VW*0.55){joy.id=t.identifier;joyStart(c);e.preventDefault();}}
+},{passive:false});
+cv.addEventListener('touchmove',function(e){
+  for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];
+    if(t.identifier===joy.id){joyMove(xy(t));e.preventDefault();}}
+},{passive:false});
+function joyTouchEnd(e){
+  for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===joy.id){joyEnd();}}
+  if(e.touches&&e.touches.length===0)joyEnd();   // seguridad: sin toques → soltar volante
+}
+cv.addEventListener('touchend',joyTouchEnd);
+cv.addEventListener('touchcancel',joyTouchEnd);
+cv.addEventListener('mousedown',function(e){var c=xy(e);if(c.x<VW*0.55)joyStart(c);});
+cv.addEventListener('mousemove',function(e){if(joy.active)joyMove(xy(e));});
+window.addEventListener('mouseup',joyEnd);
+
+window.addEventListener('keydown',function(e){
+  var k=e.key.toLowerCase();keys[k]=true;
+  if(state!=='play'&&state!=='ready'&&state!=='extra')return;
+  if(k==='p'){e.preventDefault();doPass(false);}
+  else if(k==='b'){e.preventDefault();doPass(true);}
+  else if(k==='t'||k===' '){e.preventDefault();doShoot();}
+  else if(k==='q'||k==='shift'){e.preventDefault();switchActivo();}
+});
+window.addEventListener('keyup',function(e){keys[e.key.toLowerCase()]=false;});
+
+document.getElementById('reset').onclick=init;
+function bindBtn(id,fn){var el=document.getElementById(id);if(!el)return;
+  el.addEventListener('touchstart',function(e){e.preventDefault();fn();},{passive:false});
+  el.addEventListener('click',function(){fn();});}
+function defLunge(){ // lance defensivo: estirón hacia el balón con más chance de robo
+  if(!activo||ball.holder===activo||activo.lungeT>0)return;
+  var dx=ball.x-activo.x,dy=ball.y-activo.y,d=Math.hypot(dx,dy)||1;
+  activo.vx=(activo.vx||0)+dx/d*5.2;activo.vy=(activo.vy||0)+dy/d*5.2;
+  activo.dirx=dx/d;activo.diry=dy/d;activo.lungeT=16;
+  for(var i=0;i<3;i++)waves.push({x:activo.x,y:activo.y,r:3+i*3,life:14});
+  beep(420,.05,'sine',.06);
+}
+bindBtn('passBtn',function(){if(NET.role==='guest'){netBtn=1;return;}
+  if(ball.holder===activo){doPass(false);}else{defLunge();}startPlay();});
+bindBtn('lobBtn',function(){if(NET.role==='guest'){netBtn=3;return;}
+  if(ball.holder===activo){doPass(true);}else{defLunge();}startPlay();});
+bindBtn('shootBtn',function(){if(NET.role==='guest'){netBtn=2;return;}
+  if(ball.holder===activo||SCAM){doShoot();}else{defLunge();}startPlay();});
+(function(){var sb=document.getElementById('sprintBtn');if(!sb)return;
+  function on(e){sprintHeld=true;startPlay();if(e&&e.preventDefault)e.preventDefault();}
+  function off(){sprintHeld=false;}
+  sb.addEventListener('touchstart',on,{passive:false});sb.addEventListener('touchend',off);sb.addEventListener('touchcancel',off);
+  sb.addEventListener('mousedown',on);sb.addEventListener('mouseup',off);sb.addEventListener('mouseleave',off);
+})();
+document.getElementById('snd').onclick=function(e){soundOn=!soundOn;e.currentTarget.textContent=soundOn?'🔊':'🔇';};
+
+// ===== PAÍSES (Laguna Swim internacional) + DURACIÓN =====
+var COUNTRIES=[
+  {flag:'🇲🇽',abbr:'MEX',name:'México'},{flag:'🇺🇸',abbr:'USA',name:'Estados Unidos'},
+  {flag:'🇪🇸',abbr:'ESP',name:'España'},{flag:'🇮🇹',abbr:'ITA',name:'Italia'},
+  {flag:'🇧🇷',abbr:'BRA',name:'Brasil'},{flag:'🇦🇷',abbr:'ARG',name:'Argentina'},
+  {flag:'🇨🇴',abbr:'COL',name:'Colombia'},{flag:'🇭🇺',abbr:'HUN',name:'Hungría'},
+  {flag:'🇭🇷',abbr:'CRO',name:'Croacia'},{flag:'🇷🇸',abbr:'SRB',name:'Serbia'},
+  {flag:'🇬🇷',abbr:'GRE',name:'Grecia'},{flag:'🇫🇷',abbr:'FRA',name:'Francia'},
+  {flag:'🇦🇺',abbr:'AUS',name:'Australia'},{flag:'🇯🇵',abbr:'JPN',name:'Japón'},
+  {flag:'🇨🇦',abbr:'CAN',name:'Canadá'},{flag:'🇩🇴',abbr:'DOM',name:'Rep. Dominicana'}
+];
+var selHome=document.getElementById('selHome'),selAway=document.getElementById('selAway');
+COUNTRIES.forEach(function(c,i){
+  var o1=document.createElement('option');o1.value=i;o1.textContent=c.flag+' '+c.name;selHome.appendChild(o1);
+  var o2=document.createElement('option');o2.value=i;o2.textContent=c.flag+' '+c.name;selAway.appendChild(o2);
+});
+var pickedMin=2;
+// recordar selección
+try{var saved=JSON.parse(localStorage.getItem('wp_cfg')||'{}');
+  if(saved.h!=null)selHome.value=saved.h; else selHome.value=0;
+  if(saved.a!=null)selAway.value=saved.a; else selAway.value=1;
+  if(saved.m)pickedMin=saved.m;
+}catch(e){selHome.value=0;selAway.value=1;}
+Array.prototype.forEach.call(document.querySelectorAll('.durb'),function(b){
+  if(+b.dataset.min===pickedMin)b.classList.add('active');else b.classList.remove('active');
+  b.onclick=function(){pickedMin=+b.dataset.min;
+    Array.prototype.forEach.call(document.querySelectorAll('.durb'),function(x){x.classList.toggle('active',x===b);});};
+});
+function applySettings(){
+  var h=COUNTRIES[+selHome.value]||COUNTRIES[0];
+  var a=COUNTRIES[+selAway.value]||COUNTRIES[1];
+  if(a===h)a=COUNTRIES[(+selHome.value+1)%COUNTRIES.length];   // que no sea el mismo
+  homeC=h;awayC=a;MATCH=pickedMin*60;
+  document.getElementById('crestHome').textContent=h.flag;document.getElementById('abbrHome').textContent=h.abbr;
+  document.getElementById('crestAway').textContent=a.flag;document.getElementById('abbrAway').textContent=a.abbr;
+  try{localStorage.setItem('wp_cfg',JSON.stringify({h:+selHome.value,a:+selAway.value,m:pickedMin}));}catch(e){}
+  init();
+}
+document.getElementById('playBtn').onclick=function(){applySettings();document.getElementById('splash').classList.add('hide');setTimeout(fitViewport,80);};
+document.getElementById('help').onclick=function(){document.getElementById('splash').classList.remove('hide');};
+
+applySettings();                  // aplica banderas/duración guardadas al cargar
+fitViewport();setTimeout(fitViewport,300);
+requestAnimationFrame(loop);
+
+// ============================================================
+// 📶 DUELO 1 VS 1 EN LÍNEA (dos teléfonos, Firebase)
+// El ANFITRIÓN simula el partido y publica el estado ~10/s.
+// El INVITADO controla al equipo AZUL: envía cruceta y botones.
+// Nodo: wpduel/{código de 4 dígitos}
+// ============================================================
+var NET={role:null,code:null,ref:null,lastTx:0,gi:{dx:0,dy:0,b:0},giSeen:0,fb:null};
+var NETCTL=null;   // jugador azul controlado por el invitado (en el anfitrión)
+function fbInit(){
+  if(NET.fb)return NET.fb;
+  try{
+    var cfg={apiKey:"AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
+      authDomain:"laguna-swim-chrono.firebaseapp.com",
+      databaseURL:"https://laguna-swim-chrono-default-rtdb.firebaseio.com",
+      projectId:"laguna-swim-chrono",
+      storageBucket:"laguna-swim-chrono.firebasestorage.app",
+      messagingSenderId:"618459577354",appId:"1:618459577354:web:2e26bda92112ce241c33f3"};
+    var app=firebase.apps&&firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
+    NET.fb=firebase.database();return NET.fb;
+  }catch(e){console.error(e);return null;}
+}
+var dInfo=document.getElementById('duelInfo');
+function duelMsg(html){dInfo.innerHTML=html;}
+function duelCleanup(){
+  try{if(NET.ref){NET.ref.child('gi').off();NET.ref.child('s').off();NET.ref.child('meta').off();
+    if(NET.role==='host')NET.ref.remove();}}catch(e){}
+  NET.role=null;NET.code=null;NET.ref=null;
+}
+// --- CREAR SALA (anfitrión) ---
+document.getElementById('duelCreate').onclick=function(){
+  var db=fbInit();if(!db){duelMsg('⚠️ Sin conexión. El duelo necesita internet (abre el juego en lagunaswim.net).');return;}
+  duelCleanup();
+  var code=String(1000+Math.floor(Math.random()*9000));
+  NET.role='host';NET.code=code;NET.ref=db.ref('wpduel/'+code);
+  applySettings();
+  NET.ref.set({meta:{st:'wait',h:homeC.abbr,a:awayC.abbr,m:pickedMin,t:Date.now()}});
+  NET.ref.onDisconnect().remove();
+  var url=location.origin+location.pathname+'?duelo='+code;
+  var qr='https://api.qrserver.com/v1/create-qr-code/?size=130x130&data='+encodeURIComponent(url);
+  var wa='https://wa.me/?text='+encodeURIComponent('🤽 ¡Te reto a WATERPOLO Laguna Swim! Entra y usa el código '+code+' 👉 '+url);
+  duelMsg('<span class="big-code">'+code+'</span>Comparte el código o el QR. Esperando rival…<br><img src="'+qr+'" alt="QR"><br><a href="'+wa+'" target="_blank">📲 Invitar por WhatsApp</a>');
+  // cuando el invitado entre, arranca
+  NET.ref.child('meta/st').on('value',function(sn){
+    if(sn.val()==='play'&&NET.role==='host'){
+      NET.ref.child('gi').on('value',function(g){var v=g.val();if(v)NET.gi=v;});
+      document.getElementById('splash').classList.add('hide');
+      init();state='play';running=true;flash('📶 ¡DUELO EN LÍNEA! '+homeC.abbr+' vs '+awayC.abbr,90);
+    }
+  });
+};
+// --- UNIRSE (invitado) ---
+function duelJoin(code){
+  var db=fbInit();if(!db){duelMsg('⚠️ Sin conexión. El duelo necesita internet.');return;}
+  duelCleanup();
+  var ref=db.ref('wpduel/'+code);
+  ref.child('meta').once('value').then(function(sn){
+    var m=sn.val();
+    if(!m||m.st!=='wait'){duelMsg('❌ Sala no encontrada o ya en juego. Revisa el código.');return;}
+    NET.role='guest';NET.code=code;NET.ref=ref;
+    pickedMin=m.m||2;MATCH=pickedMin*60;
+    // el invitado ve los equipos invertidos en etiquetas (él es el azul)
+    ref.update({'meta/st':'play'});
+    ref.child('gi').onDisconnect().remove();
+    ref.child('s').on('value',function(s){var v=s.val();if(v)netApplyState(v);});
+    document.getElementById('splash').classList.add('hide');
+    init();state='play';running=true;flash('📶 ¡Conectado! Tú eres el equipo AZUL 💙',110);
+  }).catch(function(){duelMsg('❌ No se pudo entrar. Intenta de nuevo.');});
+}
+document.getElementById('duelJoin').onclick=function(){
+  var c=(document.getElementById('duelCode').value||'').trim();
+  if(c.length===4)duelJoin(c);else duelMsg('Escribe el código de 4 dígitos.');
+};
+document.getElementById('duelBtn').onclick=function(){
+  var p=document.getElementById('duelPanel');p.style.display=(p.style.display==='none')?'block':'none';
+};
+document.getElementById('duelCancel').onclick=function(){
+  duelCleanup();document.getElementById('duelPanel').style.display='none';duelMsg('');
+};
+// entrar directo con ?duelo=CODE
+(function(){var mm=location.search.match(/duelo=(\d{4})/);
+  if(mm){document.getElementById('duelPanel').style.display='block';
+    document.getElementById('duelCode').value=mm[1];duelJoin(mm[1]);}})();
+
+// --- SINCRONIZACIÓN ---
+// Anfitrión: publica estado compacto ~10/s (posiciones × 10 jugadores + balón + marcador + reloj)
+function netPublish(now){
+  if(NET.role!=='host'||!NET.ref)return;
+  if(now-NET.lastTx<100)return;NET.lastTx=now;
+  var arr=[];
+  function push(p){arr.push(Math.round(p.x),Math.round(p.y),Math.round((p.dirx||0)*10),Math.round((p.diry||0)*10),Math.round(p.excl||0));}
+  for(var i=0;i<white.length;i++)push(white[i]);
+  for(var j=0;j<blue.length;j++)push(blue[j]);
+  arr.push(Math.round(ball.x),Math.round(ball.y),ball.holder?(ball.holder.team==='white'?1:2):0);
+  arr.push(sW,sA,Math.ceil(timeLeft),Math.ceil(posLeft));
+  NET.ref.child('s').set(arr.join(','));
+}
+// Anfitrión: aplica la cruceta del invitado al azul activo (reemplaza a la IA del portador)
+function netGuestControlsBlue(){
+  if(NET.role!=='host')return;
+  var g=NET.gi||{dx:0,dy:0,b:0};
+  // el invitado controla al azul con balón, o al más cercano al balón
+  var p=null;
+  if(ball.holder&&ball.holder.team==='blue'&&!ball.holder.gk)p=ball.holder;
+  else{var bd=1e9;for(var i=1;i<blue.length;i++){var q=blue[i];if(q.excl>0)continue;
+    var d=Math.hypot(q.x-ball.x,q.y-ball.y);if(d<bd){bd=d;p=q;}}}
+  if(!p)return;
+  NETCTL=p;
+  var l=Math.hypot(g.dx||0,g.dy||0);
+  p.vx=p.vx||0;p.vy=p.vy||0;
+  if(l>0.1){var nx=g.dx/l,ny=g.dy/l;p.vx+=nx*0.62;p.vy+=ny*0.62;p.dirx=nx;p.diry=ny;}
+  p.vx*=0.90;p.vy*=0.90;
+  var cur=Math.hypot(p.vx,p.vy),mx=SPEED;
+  if(cur>mx){p.vx*=mx/cur;p.vy*=mx/cur;}
+  if(cur>0.15){p.x+=p.vx;p.y+=p.vy;p.swim+=0.22+cur*0.12;p.clamp();p.tx=p.x;p.ty=p.y;}
+  // botones del invitado: 1=pase 2=tiro 3=lobe (procesa una vez por pulso)
+  if(g.b&&g.t!==NET.giSeen){NET.giSeen=g.t;
+    if(ball.holder===p){
+      if(g.b===2){p.throwT=14;var wgk=white[0];var ty=(wgk.y>MIDY)?GY1+12:GY2-12;
+        ty+=Math.min(1,(p.x-L)/850)*GOAL_H*0.30*(Math.random()*2-1);
+        launch(L,ty,SHOT_V+1.5,'shot',p);SFX.shot();}
+      else{var mates=blue.filter(function(q){return q!==p&&!q.gk&&!(q.excl>0);})
+        .sort(function(a,b){return a.x-b.x;});
+        var to=mates[0];p.throwT=10;
+        if(to){launch(to.x,to.y,g.b===3?PASS_V+4:PASS_V,'pass',p);ball.recv=to;ball.lob=(g.b===3);SFX.pass();}}
+    }}
+}
+// Invitado: manda su cruceta/botones (throttle 80ms) y renderiza el estado recibido
+function netSendInput(now){
+  if(NET.role!=='guest'||!NET.ref)return;
+  if(now-NET.lastTx<80)return;NET.lastTx=now;
+  var b=0;if(netBtn){b=netBtn;netBtn=0;}
+  NET.ref.child('gi').set({dx:+(joy.dx||0).toFixed(2),dy:+(joy.dy||0).toFixed(2),b:b,t:b?Date.now():(NET.gi.t||0)});
+}
+var netBtn=0;
+function netApplyState(str){
+  try{
+    var a=String(str).split(',').map(Number),k=0;
+    function pull(p){var tx=a[k++],ty=a[k++];p.dirx=a[k++]/10;p.diry=a[k++]/10;p.excl=a[k++];
+      p.x+= (tx-p.x)*0.5; p.y+=(ty-p.y)*0.5; p.swim+=Math.hypot(tx-p.x,ty-p.y)>0.5?0.35:0.05;}
+    for(var i=0;i<white.length;i++)pull(white[i]);
+    for(var j=0;j<blue.length;j++)pull(blue[j]);
+    var bx=a[k++],by=a[k++],hold=a[k++];
+    ball.x+=(bx-ball.x)*0.6;ball.y+=(by-ball.y)*0.6;
+    ball.holder=hold===0?null:(hold===1?white[0]:blue[0]); // aprox visual (anillo)
+    sW=a[k++];sA=a[k++];timeLeft=a[k++];posLeft=a[k++];
+    updateUI();
+  }catch(e){}
+}
+
+})();
+</script>
+</body>
+</html>
