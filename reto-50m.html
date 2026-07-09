@@ -3966,6 +3966,13 @@
         firebase.initializeApp(FIREBASE_CONFIG);
       }
       duelDb = firebase.database();
+      // FIX RELOJES: los teléfonos tienen la hora desfasada entre sí (Samsung vs iPhone).
+      // Sincronizamos ambos con el reloj del SERVIDOR de Firebase.
+      try {
+        duelDb.ref('.info/serverTimeOffset').on('value', function (s) {
+          duelServerOffset = s.val() || 0;
+        });
+      } catch (e) { console.warn('serverTimeOffset no disponible', e); }
       return duelDb;
     } catch (e) {
       console.error('Firebase init failed:', e);
@@ -4352,6 +4359,9 @@
     $('overlayStart').classList.remove('hidden');
   }
 
+  var duelServerOffset = 0;
+  function duelNow() { return Date.now() + duelServerOffset; }   // "ahora" según el servidor
+
   async function iniciarCarreraDuelo() {
     console.log('[DUELO] Click empezar carrera. duelRef:', duelState.duelRef);
     if (!duelState.duelRef) {
@@ -4362,7 +4372,7 @@
     // NOTA: ya el lobby valida que ambos tengan cámara antes de mostrar este botón.
     // Confiamos en eso y arrancamos sin verificación adicional.
     try {
-      const startTime = Date.now() + 4000;
+      const startTime = duelNow() + 4000;
       console.log('[DUELO] Escribiendo a Firebase status=racing, startTime=', startTime);
       await duelState.duelRef.update({
         status: 'racing',
@@ -4502,6 +4512,13 @@
     // FIX: evitar doble arranque (el listener de 'status' puede dispararse más de una vez).
     if (duelState.launched) return;
     duelState.launched = true;
+    // CANDADO ANTI-CONGELAMIENTO: si el timestamp llega raro (relojes desfasados,
+    // mensaje tardío, etc.), lo normalizamos a "en 3 segundos" según el servidor.
+    var nowS = duelNow();
+    if (!startTimestamp || startTimestamp - nowS > 8000 || startTimestamp - nowS < -2000) {
+      console.warn('[DUELO] startTimestamp fuera de rango (', startTimestamp, 'vs', nowS, ') → normalizado');
+      startTimestamp = nowS + 3000;
+    }
     document.body.classList.add('duel-mode');
     duelState.isDuelMode = true;
     duelState.raceStarted = false;
@@ -4575,12 +4592,20 @@
       }
     }, 2000);
 
-    // Esperar al startTimestamp y arrancar
-    const ahora = Date.now();
-    const espera = Math.max(0, startTimestamp - ahora);
+    // Esperar al startTimestamp y arrancar (con reloj del servidor)
+    const ahora = duelNow();
+    const espera = Math.max(0, Math.min(9000, startTimestamp - ahora));
     setTimeout(() => {
       iniciarCarreraDuelEjecutar();
     }, espera);
+    // WATCHDOG: pase lo que pase, si en espera+3s no arrancó, arrancamos.
+    setTimeout(() => {
+      if (!duelState.raceStarted && duelState.isDuelMode !== false) {
+        console.warn('[DUELO] watchdog: forzando arranque');
+        $('countdown').classList.add('hidden');
+        iniciarCarreraDuelEjecutar();
+      }
+    }, espera + 3000);
 
     // Cuenta regresiva visual sincronizada
     iniciarCuentaRegresivaDuelo(startTimestamp);
@@ -4592,7 +4617,7 @@
     overlay.classList.remove('hidden');
 
     const tick = () => {
-      const ahora = Date.now();
+      const ahora = duelNow();
       const restante = startTimestamp - ahora;
       if (restante > 0) {
         const segundos = Math.ceil(restante / 1000);
@@ -4615,6 +4640,7 @@
   }
 
   function iniciarCarreraDuelEjecutar() {
+    if (duelState.raceStarted) return;   // ya arrancó (evita doble arranque del watchdog)
     state = {
       running: true,
       finished: false,
