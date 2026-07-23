@@ -3468,7 +3468,7 @@ body.blog-active #tab-timer { display: none !important; }
     <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
     <div class="v2-app-header-sub">INTERNATIONAL</div>
   </div>
-  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v9 · 18jun</div>
+  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v23 · 23jul</div>
 </div>
 <!-- ============ FIN V2 HEADER ============ -->
 
@@ -5834,35 +5834,28 @@ function loginGoogle() {
   console.log('[Login Debug] Dominio:', window.location.hostname);
   console.log('[Login Debug] Auth domain:', CONFIG.fbCfg && CONFIG.fbCfg.authDomain);
 
-  // Detectar si es móvil
-  var esMobil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  var btn = document.querySelector('button[onclick="loginGoogle()"]');
+  if (btn) btn.innerHTML = '<span class="spinner"></span>Conectando con Google...';
 
-  if (esMobil) {
-    // Mostrar mensaje breve antes del redirect
-    var btn = document.querySelector('button[onclick="loginGoogle()"]');
-    if (btn) btn.innerHTML = '<span class="spinner"></span>Conectando con Google...';
-    // En móvil usar redirect (no popup) - mucho más confiable
-    auth.signInWithRedirect(gProv).catch(function(e) {
+  // Popup primero en TODOS los dispositivos:
+  // Brave/Safari bloquean el redirect (storage de terceros con firebaseapp.com),
+  // pero el popup funciona si se lanza directo desde el tap del boton.
+  auth.signInWithPopup(gProv)
+    .then(function() { closeAuthModal(); })
+    .catch(function(e) {
       console.error('[Login Error]', e.code, e.message);
-      var msg = traducirErrorAuth(e);
-      showAuthErr(msg);
+      if (e.code === 'auth/popup-blocked' ||
+          e.code === 'auth/operation-not-supported-in-this-environment') {
+        // Fallback solo para navegadores in-app (Instagram, Facebook, etc.)
+        auth.signInWithRedirect(gProv).catch(function(e2) {
+          showAuthErr(traducirErrorAuth(e2));
+        });
+      } else if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+        showAuthErr(traducirErrorAuth(e));
+      } else if (btn) {
+        btn.innerHTML = 'Iniciar sesion';
+      }
     });
-  } else {
-    // En escritorio mantener popup (más rápido)
-    auth.signInWithPopup(gProv)
-      .then(function() { closeAuthModal(); })
-      .catch(function(e) {
-        console.error('[Login Error]', e.code, e.message);
-        // Si el popup falla (bloqueado, etc.), intentar redirect como fallback
-        if (e.code === 'auth/popup-blocked') {
-          auth.signInWithRedirect(gProv).catch(function(e2) {
-            showAuthErr(traducirErrorAuth(e2));
-          });
-        } else if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
-          showAuthErr(traducirErrorAuth(e));
-        }
-      });
-  }
 }
 
 // Traducir códigos de error de Firebase a mensajes claros para el usuario
