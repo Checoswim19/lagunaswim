@@ -3489,7 +3489,7 @@ body.blog-active #tab-timer { display: none !important; }
     <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
     <div class="v2-app-header-sub">INTERNATIONAL</div>
   </div>
-  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v23 · 23jul</div>
+  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v24 · 26jul</div>
 </div>
 <!-- ============ FIN V2 HEADER ============ -->
 
@@ -8010,6 +8010,18 @@ function buscarRanking() {
     '🔍 <strong>' + matches.length + '</strong> resultado' + (matches.length === 1 ? '' : 's') + ' para "<strong>' + escapeHtml(q) + '</strong>"' +
     '</div>';
 
+  // NUEVO v24: botones de progreso por nadador (gráfica de mejora por prueba)
+  var nadadoresUnicos = {};
+  matches.forEach(function(r) { if (r.swimmer) nadadoresUnicos[r.swimmer] = (nadadoresUnicos[r.swimmer] || 0) + 1; });
+  var nombresProg = Object.keys(nadadoresUnicos);
+  if (nombresProg.length >= 1 && nombresProg.length <= 4) {
+    html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0.8rem">';
+    nombresProg.forEach(function(n) {
+      html += '<button onclick="verProgresoNadador(decodeURIComponent(\'' + encodeURIComponent(n) + '\'))" style="background:linear-gradient(135deg,#06d6a0,#38bdf8);color:#fff;border:none;border-radius:8px;padding:0.5rem 0.9rem;font-size:0.75rem;font-weight:800;cursor:pointer;font-family:inherit">📈 Progreso de ' + escapeHtml((n || '').split(' ')[0]) + '</button>';
+    });
+    html += '</div>';
+  }
+
   Object.keys(grupos).sort().forEach(function(k) {
     var arr = grupos[k].sort(function(a, b) { return a.timeMs - b.timeMs; });
     html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.8rem;margin-bottom:0.7rem">' +
@@ -8032,6 +8044,127 @@ function buscarRanking() {
   list.innerHTML = html;
 }
 window.buscarRanking = buscarRanking;
+
+// ===== NUEVO v24: PROGRESO POR NADADOR (gráfica por prueba) =====
+function ordenCronoRanking(a, b) {
+  if ((a.year || 0) !== (b.year || 0)) return (a.year || 0) - (b.year || 0);
+  var ta = a.addedAt || (a.id && a.id.charAt(0) === 'r' ? parseInt(a.id.slice(1)) : 0) || 0;
+  var tb = b.addedAt || (b.id && b.id.charAt(0) === 'r' ? parseInt(b.id.slice(1)) : 0) || 0;
+  return ta - tb;
+}
+
+function fmtMsProg(ms) {
+  if (typeof fmt === 'function') { try { return fmt(ms); } catch (e) {} }
+  var t = Math.round(ms) / 1000;
+  var m = Math.floor(t / 60), s = t - m * 60;
+  return (m > 0 ? m + ':' + (s < 10 ? '0' : '') : '') + s.toFixed(2);
+}
+
+function chartProgresoSVG(arr) {
+  var W = 340, H = 200, L = 50, R = 16, T = 24, B = 34;
+  var iw = W - L - R, ih = H - T - B;
+  var times = arr.map(function(r) { return r.timeMs; });
+  var realMin = Math.min.apply(null, times);
+  var min = realMin, max = Math.max.apply(null, times);
+  var span = (max - min) || 1000;
+  var pad = span * 0.18;
+  min -= pad; max += pad; span = max - min;
+  var idxBest = times.indexOf(realMin);
+
+  var pts = arr.map(function(r, i) {
+    var x = arr.length === 1 ? L + iw / 2 : L + (i * iw / (arr.length - 1));
+    var y = T + ((r.timeMs - min) / span) * ih; // menor tiempo = más arriba
+    return { x: x, y: y, r: r };
+  });
+
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
+  // Grid: 3 líneas con etiqueta de tiempo
+  for (var g = 0; g <= 2; g++) {
+    var gy = T + (g * ih / 2);
+    var gms = min + ((gy - T) / ih) * span;
+    svg += '<line x1="' + L + '" y1="' + gy + '" x2="' + (W - R) + '" y2="' + gy + '" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>' +
+      '<text x="' + (L - 5) + '" y="' + (gy + 3) + '" text-anchor="end" font-size="8" fill="rgba(255,255,255,0.45)">' + fmtMsProg(gms) + '</text>';
+  }
+  // Línea de progreso
+  if (pts.length > 1) {
+    var path = pts.map(function(p, i) { return (i === 0 ? 'M' : 'L') + p.x.toFixed(1) + ' ' + p.y.toFixed(1); }).join(' ');
+    svg += '<path d="' + path + '" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+  // Puntos + etiquetas
+  pts.forEach(function(p, i) {
+    var best = (i === idxBest);
+    svg += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + (best ? 6 : 4.5) + '" fill="' + (best ? '#ffd700' : '#38bdf8') + '" stroke="#0a1628" stroke-width="1.5"/>' +
+      '<text x="' + p.x.toFixed(1) + '" y="' + (p.y - 9).toFixed(1) + '" text-anchor="middle" font-size="9" font-weight="800" fill="' + (best ? '#ffd700' : '#fff') + '">' + escapeHtml(p.r.time || fmtMsProg(p.r.timeMs)) + '</text>' +
+      '<text x="' + p.x.toFixed(1) + '" y="' + (H - B + 14) + '" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.55)">' + (p.r.year || '') + '</text>';
+  });
+  svg += '</svg>';
+  return svg;
+}
+
+function verProgresoNadador(nombre) {
+  var list = document.getElementById('ranking-list');
+  if (!list || !nombre) return;
+  var nl = nombre.toLowerCase();
+  var propios = (rk.data || []).filter(function(r) { return (r.swimmer || '').toLowerCase() === nl; });
+
+  var html = '<button onclick="var b=document.getElementById(\'ranking-buscador\');(b&&b.value)?buscarRanking():filterRanking()" style="background:rgba(56,189,248,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:0.45rem 0.9rem;font-size:0.75rem;font-weight:800;cursor:pointer;margin-bottom:0.8rem;font-family:inherit">← Volver</button>' +
+    '<div style="font-weight:900;font-size:1rem;color:var(--gold);margin-bottom:0.2rem">📈 Progreso de ' + escapeHtml(nombre) + '</div>' +
+    '<div style="font-size:0.68rem;color:rgba(255,255,255,0.55);margin-bottom:0.9rem">' + propios.length + ' tiempos registrados · ⬆ más arriba = mejor tiempo</div>';
+
+  if (propios.length === 0) {
+    list.innerHTML = html + '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">Sin tiempos registrados</div>';
+    return;
+  }
+
+  // Agrupar por prueba (distancia + estilo)
+  var pruebas = {};
+  propios.forEach(function(r) {
+    var k = (r.dist || '?') + 'm ' + (r.style || '?');
+    if (!pruebas[k]) pruebas[k] = [];
+    pruebas[k].push(r);
+  });
+
+  // Pruebas con más registros primero
+  Object.keys(pruebas).sort(function(a, b) { return pruebas[b].length - pruebas[a].length; }).forEach(function(k) {
+    var arr = pruebas[k].sort(ordenCronoRanking);
+    var mejor = arr.reduce(function(m, r) { return r.timeMs < m.timeMs ? r : m; }, arr[0]);
+
+    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.2);border-radius:10px;padding:0.8rem;margin-bottom:0.9rem">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:0.5rem">' +
+        '<span style="font-weight:800;color:var(--accent);font-size:0.88rem">' + escapeHtml(k) + '</span>' +
+        '<span style="font-size:0.68rem;color:var(--gold);font-weight:800">🏆 PB ' + escapeHtml(mejor.time || fmtMsProg(mejor.timeMs)) + '</span>' +
+      '</div>';
+
+    if (arr.length >= 2) {
+      var primero = arr[0], ultimo = arr[arr.length - 1];
+      var difMs = primero.timeMs - mejor.timeMs;
+      if (difMs > 0) {
+        var pct = ((difMs / primero.timeMs) * 100).toFixed(1);
+        html += '<div style="display:inline-block;background:rgba(34,197,94,0.12);border:1px solid #22c55e;color:#22c55e;border-radius:6px;padding:3px 9px;font-size:0.7rem;font-weight:800;margin-bottom:0.5rem">▼ Mejoró ' + (difMs / 1000).toFixed(2) + 's (' + pct + '%) desde su primera marca</div>';
+      } else if (ultimo.timeMs > mejor.timeMs) {
+        html += '<div style="display:inline-block;background:rgba(255,215,0,0.1);border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:3px 9px;font-size:0.7rem;font-weight:700;margin-bottom:0.5rem">💪 A ' + ((ultimo.timeMs - mejor.timeMs) / 1000).toFixed(2) + 's de su PB</div>';
+      }
+      html += chartProgresoSVG(arr);
+      // Detalle cronológico
+      html += '<div style="margin-top:0.4rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.4rem">';
+      arr.forEach(function(r, i) {
+        var esPB = r === mejor;
+        html += '<div style="display:flex;justify-content:space-between;gap:8px;font-size:0.7rem;padding:2px 0;color:rgba(255,255,255,0.7)">' +
+          '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (i + 1) + '. ' + escapeHtml(r.comp || '?') + ' (' + (r.year || '?') + ')</span>' +
+          '<span style="font-weight:800;color:' + (esPB ? 'var(--gold)' : '#fff') + '">' + (esPB ? '🏆 ' : '') + escapeHtml(r.time || '') + '</span>' +
+        '</div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<div style="font-size:0.72rem;color:rgba(255,255,255,0.55)">1 registro: ' + escapeHtml(arr[0].comp || '?') + ' (' + (arr[0].year || '?') + '). Se graficará al agregar más tiempos.</div>';
+    }
+    html += '</div>';
+  });
+
+  list.innerHTML = html;
+  list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+window.verProgresoNadador = verProgresoNadador;
 
 // Aplicar filtros y renderizar
 function filterRanking() {
