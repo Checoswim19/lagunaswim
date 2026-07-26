@@ -3489,7 +3489,7 @@ body.blog-active #tab-timer { display: none !important; }
     <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
     <div class="v2-app-header-sub">INTERNATIONAL</div>
   </div>
-  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v24 · 26jul</div>
+  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v24.1 · 26jul</div>
 </div>
 <!-- ============ FIN V2 HEADER ============ -->
 
@@ -8105,11 +8105,18 @@ function verProgresoNadador(nombre) {
   var list = document.getElementById('ranking-list');
   if (!list || !nombre) return;
   var nl = nombre.toLowerCase();
-  var propios = (rk.data || []).filter(function(r) { return (r.swimmer || '').toLowerCase() === nl; });
+  // v24.1: omitir NT/DQ/DNS y tiempos inválidos (rompen la escala de la gráfica)
+  var propios = (rk.data || []).filter(function(r) {
+    if ((r.swimmer || '').toLowerCase() !== nl) return false;
+    var txt = (r.time || '').toUpperCase().trim();
+    if (txt === 'NT' || txt === 'DQ' || txt === 'DNS' || txt === 'DNF' || txt.indexOf('NT') === 0) return false;
+    if (typeof r.timeMs !== 'number' || !isFinite(r.timeMs) || r.timeMs <= 0) return false;
+    return true;
+  });
 
   var html = '<button onclick="var b=document.getElementById(\'ranking-buscador\');(b&&b.value)?buscarRanking():filterRanking()" style="background:rgba(56,189,248,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:0.45rem 0.9rem;font-size:0.75rem;font-weight:800;cursor:pointer;margin-bottom:0.8rem;font-family:inherit">← Volver</button>' +
     '<div style="font-weight:900;font-size:1rem;color:var(--gold);margin-bottom:0.2rem">📈 Progreso de ' + escapeHtml(nombre) + '</div>' +
-    '<div style="font-size:0.68rem;color:rgba(255,255,255,0.55);margin-bottom:0.9rem">' + propios.length + ' tiempos registrados · ⬆ más arriba = mejor tiempo</div>';
+    '<div style="font-size:0.68rem;color:rgba(255,255,255,0.55);margin-bottom:0.9rem">' + propios.length + ' tiempos válidos (sin NT/DQ) · ⬆ más arriba = mejor tiempo</div>';
 
   if (propios.length === 0) {
     list.innerHTML = html + '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.5)">Sin tiempos registrados</div>';
