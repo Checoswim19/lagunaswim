@@ -3489,7 +3489,7 @@ body.blog-active #tab-timer { display: none !important; }
     <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
     <div class="v2-app-header-sub">INTERNATIONAL</div>
   </div>
-  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v24.1 · 26jul</div>
+  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v24.2 · 26jul</div>
 </div>
 <!-- ============ FIN V2 HEADER ============ -->
 
@@ -8000,7 +8000,7 @@ function buscarRanking() {
   // Agrupar por distancia+estilo+competencia para mejor lectura
   var grupos = {};
   matches.forEach(function(r) {
-    var k = (r.dist || '?') + 'm ' + (r.style || '?') + ' · ' + (r.comp || '?');
+    var k = (r.dist || '?') + 'm ' + (normRankStyle(r.style) || '?') + ' · ' + (r.comp || '?');
     if (!grupos[k]) grupos[k] = [];
     grupos[k].push(r);
   });
@@ -8126,7 +8126,7 @@ function verProgresoNadador(nombre) {
   // Agrupar por prueba (distancia + estilo)
   var pruebas = {};
   propios.forEach(function(r) {
-    var k = (r.dist || '?') + 'm ' + (r.style || '?');
+    var k = (r.dist || '?') + 'm ' + (normRankStyle(r.style) || '?');
     if (!pruebas[k]) pruebas[k] = [];
     pruebas[k].push(r);
   });
@@ -8212,7 +8212,7 @@ function filterRanking() {
   if (opt) opt.style.display = 'grid';
   rk.filtered = rk.data.filter(function(r) {
     return r.dist == dist
-      && r.style === style
+      && normRankStyle(r.style) === style
       && (!cat || r.cat === cat)
       && (!gender || r.gender === gender);
   });
