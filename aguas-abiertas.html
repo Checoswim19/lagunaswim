@@ -408,6 +408,7 @@
   <div class="keyboard-hint">
     Desktop: WASD o flechas para nadar · R respirar · F ver al frente
   </div>
+  <button onclick="lsGoHome()" style="margin-top:14px;padding:10px 22px;border-radius:999px;border:1.5px solid rgba(255,255,255,.45);background:rgba(255,255,255,.10);color:#fff;font-size:.78rem;font-weight:800;letter-spacing:1.5px;cursor:pointer;">🏠 REGRESAR A LAGUNA SWIM</button>
 </div>
 
 <!-- Pantalla PAUSA -->
@@ -5269,5 +5270,18 @@ requestAnimationFrame(loop);
 })();
 </script>
 
+
+<!-- ===== Regreso a Laguna Swim (lagunaswim.net) ===== -->
+<script>
+function lsGoHome(){
+  if (window.parent !== window) {
+    try {
+      window.parent.postMessage({source:'laguna-swim-game', type:'CLOSE_GAME'}, '*');
+      return;
+    } catch(e){}
+  }
+  window.location.href = 'index.html';
+}
+</script>
 </body>
 </html>
