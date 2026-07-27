@@ -1658,6 +1658,7 @@
     <!-- ============ FIN ============ -->
 
     <div class="motto">Fuertes y Valientes · Joshua 1:9</div>
+    <button onclick="lsGoHome()" style="margin-top:14px;padding:10px 22px;border-radius:999px;border:1.5px solid rgba(255,255,255,.45);background:rgba(255,255,255,.10);color:#fff;font-size:.78rem;font-weight:800;letter-spacing:1.5px;cursor:pointer;">🏠 REGRESAR A LAGUNA SWIM</button>
   </div>
 
   <!-- ============ NUEVO: OVERLAYS DEL DUELO ============ -->
@@ -4979,6 +4980,19 @@
   // ============================================================
   // FIN MODO DUELO 1v1
   // ============================================================
+</script>
+
+<!-- ===== Regreso a Laguna Swim (lagunaswim.net) ===== -->
+<script>
+function lsGoHome(){
+  if (window.parent !== window) {
+    try {
+      window.parent.postMessage({source:'laguna-swim-game', type:'CLOSE_GAME'}, '*');
+      return;
+    } catch(e){}
+  }
+  window.location.href = 'index.html';
+}
 </script>
 </body>
 </html>
