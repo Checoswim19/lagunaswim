@@ -5292,6 +5292,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <option value="trinidad2024|PanAm Trinidad 2024">PanAm Trinidad 2024</option>
       <option value="italia2025|Oceanman Italia 2025">Oceanman Italia 2025</option>
       <option value="costarica2025|Oceanman Costa Rica 2025">Oceanman Costa Rica 2025</option>
+      <option value="cozumel2026|Oceanman Cozumel 2026">Oceanman Cozumel 2026</option>
     </select>
     <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);margin:0.2rem 0 0.6rem">
       Tip: para subir foto a un proximo evento, abre la tarjeta del evento y toca + Subir foto desde ahi.
@@ -5578,10 +5579,10 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
     <div class="intl-banner-sub">Oceanman + PanAm Masters - 10 pases al mundial</div>
   </div>
 
-  <!-- Logros pasados (4 fijos) -->
+  <!-- Logros pasados (5 fijos) -->
   <div class="intl-section-head">
     <span>&#127881; Logros internacionales</span>
-    <span style="font-size:0.62rem;color:var(--accent-soft);font-weight:600">4 representaciones</span>
+    <span style="font-size:0.62rem;color:var(--accent-soft);font-weight:600">5 representaciones</span>
   </div>
 
   <div class="evento-wrapper">
@@ -5638,6 +5639,20 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <div class="evento-arrow">&#9662;</div>
     </div>
     <div class="evento-galeria" id="gal-costarica2025"></div>
+  </div>
+
+  <div class="evento-wrapper">
+    <div class="evento-card pasado evento-card-clickable" data-evento-id="cozumel2026" onclick="toggleEvento(this)">
+      <div class="evento-flag">&#127474;&#127485;</div>
+      <div class="evento-info">
+        <div class="evento-titulo">Oceanman Cozumel</div>
+        <div class="evento-lugar">Cozumel, Quintana Roo</div>
+        <div class="evento-fecha">Agosto 2026</div>
+      </div>
+      <div class="evento-badge evento-badge-realizado">REALIZADO</div>
+      <div class="evento-arrow">&#9662;</div>
+    </div>
+    <div class="evento-galeria" id="gal-cozumel2026"></div>
   </div>
 
   <!-- Próximos eventos (editable desde Firebase) -->
@@ -10541,7 +10556,8 @@ function cargarFotosEvento(eventoId) {
           'colombia2022': 'PanAm Colombia 2022',
           'trinidad2024': 'PanAm Trinidad 2024',
           'italia2025': 'Oceanman Italia 2025',
-          'costarica2025': 'Oceanman Costa Rica 2025'
+          'costarica2025': 'Oceanman Costa Rica 2025',
+          'cozumel2026': 'Oceanman Cozumel 2026'
         };
         var label = labels[evid];
         if (!label) {
