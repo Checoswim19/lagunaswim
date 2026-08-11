@@ -1253,7 +1253,7 @@ function loop(now){
     drawJoystick();drawHUD();drawMinimap();
     requestAnimationFrame(loop);return;
   }
-  if(state==='play'||state==='ready'||state==='extra'||state==='goal'||state==='swimoff'){
+  if(!NET.lobby && (state==='play'||state==='ready'||state==='extra'||state==='goal'||state==='swimoff')){
     if(state==='play'||state==='extra'){
       activo=pickActivo(false);   // estilo fútbol: control salta al más cercano al balón
       controlActivo();
@@ -1266,7 +1266,7 @@ function loop(now){
     if(state==='play'||state==='extra'){resolveBall();checkGoal();tick(dt);updateExclusions(dt);
       if(timeLeft<=0&&state==='extra'&&!running)finish();}
   }
-  netPublish(now);
+  if(!NET.lobby)netPublish(now);
   camFollow();
   // ---- MUNDO (se desplaza con la cámara) ----
   ctx.save();
@@ -1412,7 +1412,11 @@ function applySettings(){
   try{localStorage.setItem('wp_cfg',JSON.stringify({h:+selHome.value,a:+selAway.value,m:pickedMin}));}catch(e){}
   init();
 }
-document.getElementById('playBtn').onclick=function(){applySettings();document.getElementById('splash').classList.add('hide');setTimeout(fitViewport,80);};
+document.getElementById('playBtn').onclick=function(){
+  if(NET.role||NET.ref)duelCleanup();                 // si había sala abierta, se cierra
+  NET.lobby=false;
+  var dp=document.getElementById('duelPanel');if(dp)dp.style.display='none';
+  applySettings();document.getElementById('splash').classList.add('hide');setTimeout(fitViewport,80);};
 document.getElementById('help').onclick=function(){document.getElementById('splash').classList.remove('hide');};
 
 applySettings();                  // aplica banderas/duración guardadas al cargar
@@ -1425,82 +1429,145 @@ requestAnimationFrame(loop);
 // El INVITADO controla al equipo AZUL: envía cruceta y botones.
 // Nodo: wpduel/{código de 4 dígitos}
 // ============================================================
-var NET={role:null,code:null,ref:null,lastTx:0,gi:{dx:0,dy:0,b:0},giSeen:0,fb:null};
+var NET={role:null,code:null,ref:null,lastTx:0,gi:{dx:0,dy:0,b:0,t:0},giSeen:0,fb:null,
+         lobby:false,synced:false,lastRx:0,online:null,hb:0,lastGi:'',stHandler:null,warned:0};
 var NETCTL=null;   // jugador azul controlado por el invitado (en el anfitrión)
+var netBtn=0;
 function fbInit(){
   if(NET.fb)return NET.fb;
   try{
+    if(typeof firebase==='undefined'||!firebase.database)return null;
     var cfg={apiKey:"AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
       authDomain:"laguna-swim-chrono.firebaseapp.com",
       databaseURL:"https://laguna-swim-chrono-default-rtdb.firebaseio.com",
       projectId:"laguna-swim-chrono",
       storageBucket:"laguna-swim-chrono.firebasestorage.app",
       messagingSenderId:"618459577354",appId:"1:618459577354:web:2e26bda92112ce241c33f3"};
-    var app=firebase.apps&&firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
-    NET.fb=firebase.database();return NET.fb;
-  }catch(e){console.error(e);return null;}
+    firebase.apps&&firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
+    NET.fb=firebase.database();
+    // vigila la conexión real con el servidor
+    try{NET.fb.ref('.info/connected').on('value',function(s){NET.online=!!s.val();netDot();});}catch(e){}
+    return NET.fb;
+  }catch(e){console.error('FB',e);return null;}
 }
 var dInfo=document.getElementById('duelInfo');
-function duelMsg(html){dInfo.innerHTML=html;}
+function duelMsg(html){if(dInfo)dInfo.innerHTML=html;}
+function netDot(){
+  var d=document.getElementById('netDot');if(!d)return;
+  d.textContent=NET.online===null?'':(NET.online?'🟢 Conectado a Firebase':'🔴 Sin conexión con Firebase');
+}
+// traduce el error de Firebase a algo entendible
+function netErr(e){
+  var m=String((e&&(e.code||e.message))||e||'');
+  if(/permission|PERMISSION/i.test(m))
+    return '🔒 <b>Permiso denegado por Firebase.</b><br>Falta autorizar el nodo <b>wpduel</b> en las Reglas de Realtime Database.';
+  if(/network|offline|unavailable/i.test(m))
+    return '📴 Sin internet o Firebase bloqueado por la red.';
+  return '⚠️ Error: '+m;
+}
 function duelCleanup(){
-  try{if(NET.ref){NET.ref.child('gi').off();NET.ref.child('s').off();NET.ref.child('meta').off();
-    if(NET.role==='host')NET.ref.remove();}}catch(e){}
-  NET.role=null;NET.code=null;NET.ref=null;
+  try{
+    if(NET.ref){
+      NET.ref.child('gi').off();NET.ref.child('s').off();
+      NET.ref.child('meta').off();NET.ref.child('meta/st').off();
+      try{NET.ref.onDisconnect().cancel();}catch(e){}
+      if(NET.role==='host')NET.ref.remove();
+      if(NET.role==='guest')NET.ref.child('gi').remove();
+    }
+  }catch(e){}
+  NET.role=null;NET.code=null;NET.ref=null;NET.synced=false;NET.lastRx=0;NET.giSeen=0;NET.lastGi='';
+  NETCTL=null;netBtn=0;
 }
 // --- CREAR SALA (anfitrión) ---
 document.getElementById('duelCreate').onclick=function(){
-  var db=fbInit();if(!db){duelMsg('⚠️ Sin conexión. El duelo necesita internet (abre el juego en lagunaswim.net).');return;}
+  var db=fbInit();
+  if(!db){duelMsg('⚠️ No se cargó Firebase. Abre el juego desde <b>lagunaswim.net</b> (con internet), no como archivo local.');return;}
   duelCleanup();
+  NET.lobby=true;running=false;
   var code=String(1000+Math.floor(Math.random()*9000));
-  NET.role='host';NET.code=code;NET.ref=db.ref('wpduel/'+code);
   applySettings();
-  NET.ref.set({meta:{st:'wait',h:homeC.abbr,a:awayC.abbr,m:pickedMin,t:Date.now()}});
-  NET.ref.onDisconnect().remove();
-  var url=location.origin+location.pathname+'?duelo='+code;
-  var qr='https://api.qrserver.com/v1/create-qr-code/?size=130x130&data='+encodeURIComponent(url);
-  var wa='https://wa.me/?text='+encodeURIComponent('🤽 ¡Te reto a WATERPOLO Laguna Swim! Entra y usa el código '+code+' 👉 '+url);
-  duelMsg('<span class="big-code">'+code+'</span>Comparte el código o el QR. Esperando rival…<br><img src="'+qr+'" alt="QR"><br><a href="'+wa+'" target="_blank">📲 Invitar por WhatsApp</a>');
-  // cuando el invitado entre, arranca
-  NET.ref.child('meta/st').on('value',function(sn){
-    if(sn.val()==='play'&&NET.role==='host'){
-      NET.ref.child('gi').on('value',function(g){var v=g.val();if(v)NET.gi=v;});
-      document.getElementById('splash').classList.add('hide');
-      init();state='play';running=true;flash('📶 ¡DUELO EN LÍNEA! '+homeC.abbr+' vs '+awayC.abbr,90);
-    }
-  });
+  var ref=db.ref('wpduel/'+code);
+  duelMsg('⏳ Creando sala…');
+  ref.set({meta:{st:'wait',h:homeC.abbr,a:awayC.abbr,m:pickedMin,t:Date.now(),hb:Date.now()}})
+    .then(function(){
+      NET.role='host';NET.code=code;NET.ref=ref;
+      ref.onDisconnect().remove();
+      var url=location.origin+location.pathname+'?duelo='+code;
+      var qr='https://api.qrserver.com/v1/create-qr-code/?size=130x130&data='+encodeURIComponent(url);
+      var wa='https://wa.me/?text='+encodeURIComponent('🤽 ¡Te reto a WATERPOLO Laguna Swim! Entra y usa el código '+code+' 👉 '+url);
+      duelMsg('<span class="big-code">'+code+'</span><span id="netDot"></span><br>Comparte el código o el QR. Esperando rival…<br><img src="'+qr+'" alt="QR"><br><a href="'+wa+'" target="_blank">📲 Invitar por WhatsApp</a>');
+      netDot();
+      NET.stHandler=ref.child('meta/st').on('value',function(sn){
+        if(sn.val()==='play'&&NET.role==='host'&&NET.lobby){
+          ref.child('meta/st').off();               // ya no se necesita escuchar
+          ref.child('gi').on('value',function(g){var v=g.val();if(v)NET.gi=v;});
+          netStartMatch('📶 ¡DUELO EN LÍNEA! '+homeC.abbr+' vs '+awayC.abbr);
+        }
+      },function(err){duelMsg(netErr(err));});
+    })
+    .catch(function(e){NET.lobby=false;duelMsg(netErr(e));});
 };
 // --- UNIRSE (invitado) ---
 function duelJoin(code){
-  var db=fbInit();if(!db){duelMsg('⚠️ Sin conexión. El duelo necesita internet.');return;}
+  var db=fbInit();
+  if(!db){duelMsg('⚠️ No se cargó Firebase. Abre el juego desde <b>lagunaswim.net</b> con internet.');return;}
   duelCleanup();
+  NET.lobby=true;running=false;
+  document.getElementById('duelPanel').style.display='block';
+  duelMsg('⏳ Buscando sala '+code+'…');
   var ref=db.ref('wpduel/'+code);
   ref.child('meta').once('value').then(function(sn){
     var m=sn.val();
-    if(!m||m.st!=='wait'){duelMsg('❌ Sala no encontrada o ya en juego. Revisa el código.');return;}
+    if(!m){NET.lobby=false;duelMsg('❌ No existe la sala <b>'+code+'</b>. Revisa el código (el anfitrión debe tener su pantalla abierta).');return;}
+    var vivo=(Date.now()-(m.hb||m.t||0))<15000;
+    if(m.st==='play'&&!vivo){NET.lobby=false;duelMsg('❌ Esa sala ya terminó. Pide un código nuevo.');return;}
     NET.role='guest';NET.code=code;NET.ref=ref;
     pickedMin=m.m||2;MATCH=pickedMin*60;
-    // el invitado ve los equipos invertidos en etiquetas (él es el azul)
-    ref.update({'meta/st':'play'});
     ref.child('gi').onDisconnect().remove();
-    ref.child('s').on('value',function(s){var v=s.val();if(v)netApplyState(v);});
-    document.getElementById('splash').classList.add('hide');
-    init();state='play';running=true;flash('📶 ¡Conectado! Tú eres el equipo AZUL 💙',110);
-  }).catch(function(){duelMsg('❌ No se pudo entrar. Intenta de nuevo.');});
+    ref.child('s').on('value',function(s){
+      var v=s.val();if(!v)return;
+      NET.lastRx=Date.now();
+      if(!NET.synced){NET.synced=true;netStartMatch('📶 ¡Conectado! Tú eres el equipo AZUL 💙');}
+      netApplyState(v);
+    },function(err){NET.lobby=false;duelMsg(netErr(err));});
+    return ref.update({'meta/st':'play','meta/g':Date.now()}).then(function(){
+      duelMsg('⏳ Conectado. Sincronizando con el anfitrión…');
+      setTimeout(function(){
+        if(NET.role==='guest'&&!NET.synced){duelMsg('❌ El anfitrión no está enviando el partido.<br>Que cierre y vuelva a crear la sala, o revisa las Reglas de Firebase.');}
+      },9000);
+    });
+  }).catch(function(e){NET.lobby=false;duelMsg(netErr(e));});
+}
+// arranca el partido de verdad (los dos lados)
+function netStartMatch(msg){
+  NET.lobby=false;
+  document.getElementById('duelPanel').style.display='none';
+  document.getElementById('splash').classList.add('hide');
+  setTimeout(fitViewport,80);
+  init();state='play';running=true;
+  flash(msg,110);
 }
 document.getElementById('duelJoin').onclick=function(){
-  var c=(document.getElementById('duelCode').value||'').trim();
+  var c=(document.getElementById('duelCode').value||'').replace(/\D/g,'');
   if(c.length===4)duelJoin(c);else duelMsg('Escribe el código de 4 dígitos.');
 };
 document.getElementById('duelBtn').onclick=function(){
-  var p=document.getElementById('duelPanel');p.style.display=(p.style.display==='none')?'block':'none';
+  var p=document.getElementById('duelPanel');
+  var abrir=(p.style.display==='none'||!p.style.display);
+  p.style.display=abrir?'block':'none';
+  NET.lobby=abrir;                      // ⛔ congela el partido de fondo
+  if(abrir){running=false;fbInit();duelMsg('Crea una sala o escribe el código de tu rival.');}
+  else{duelCleanup();duelMsg('');}
 };
 document.getElementById('duelCancel').onclick=function(){
-  duelCleanup();document.getElementById('duelPanel').style.display='none';duelMsg('');
+  duelCleanup();NET.lobby=false;
+  document.getElementById('duelPanel').style.display='none';duelMsg('');
 };
 // entrar directo con ?duelo=CODE
 (function(){var mm=location.search.match(/duelo=(\d{4})/);
   if(mm){document.getElementById('duelPanel').style.display='block';
-    document.getElementById('duelCode').value=mm[1];duelJoin(mm[1]);}})();
+    document.getElementById('duelCode').value=mm[1];
+    setTimeout(function(){duelJoin(mm[1]);},400);}})();
 
 // --- SINCRONIZACIÓN ---
 // Anfitrión: publica estado compacto ~10/s (posiciones × 10 jugadores + balón + marcador + reloj)
@@ -1511,15 +1578,21 @@ function netPublish(now){
   function push(p){arr.push(Math.round(p.x),Math.round(p.y),Math.round((p.dirx||0)*10),Math.round((p.diry||0)*10),Math.round(p.excl||0));}
   for(var i=0;i<white.length;i++)push(white[i]);
   for(var j=0;j<blue.length;j++)push(blue[j]);
-  arr.push(Math.round(ball.x),Math.round(ball.y),ball.holder?(ball.holder.team==='white'?1:2):0);
-  arr.push(sW,sA,Math.ceil(timeLeft),Math.ceil(posLeft));
-  NET.ref.child('s').set(arr.join(','));
+  var hold=0;
+  if(ball.holder){var eq=(ball.holder.team==='white')?white:blue;
+    hold=(ball.holder.team==='white'?100:200)+Math.max(0,eq.indexOf(ball.holder));}
+  arr.push(Math.round(ball.x),Math.round(ball.y),hold);
+  arr.push(sW,sA,Math.ceil(timeLeft),Math.ceil(posLeft),state==='play'?1:(state==='goal'?2:0));
+  NET.ref.child('s').set(arr.join(',')).catch(function(e){
+    if(!NET.warnTx){NET.warnTx=1;flash('⚠️ Firebase rechazó el envío',120);console.warn(e);}
+  });
+  // latido: le dice al invitado que el anfitrión sigue vivo
+  if(now-NET.hb>2000){NET.hb=now;NET.ref.child('meta/hb').set(Date.now()).catch(function(){});}
 }
 // Anfitrión: aplica la cruceta del invitado al azul activo (reemplaza a la IA del portador)
 function netGuestControlsBlue(){
   if(NET.role!=='host')return;
   var g=NET.gi||{dx:0,dy:0,b:0};
-  // el invitado controla al azul con balón, o al más cercano al balón
   var p=null;
   if(ball.holder&&ball.holder.team==='blue'&&!ball.holder.gk)p=ball.holder;
   else{var bd=1e9;for(var i=1;i<blue.length;i++){var q=blue[i];if(q.excl>0)continue;
@@ -1534,7 +1607,7 @@ function netGuestControlsBlue(){
   if(cur>mx){p.vx*=mx/cur;p.vy*=mx/cur;}
   if(cur>0.15){p.x+=p.vx;p.y+=p.vy;p.swim+=0.22+cur*0.12;p.clamp();p.tx=p.x;p.ty=p.y;}
   // botones del invitado: 1=pase 2=tiro 3=lobe (procesa una vez por pulso)
-  if(g.b&&g.t!==NET.giSeen){NET.giSeen=g.t;
+  if(g.b&&g.t&&g.t!==NET.giSeen){NET.giSeen=g.t;
     if(ball.holder===p){
       if(g.b===2){p.throwT=14;var wgk=white[0];var ty=(wgk.y>MIDY)?GY1+12:GY2-12;
         ty+=Math.min(1,(p.x-L)/850)*GOAL_H*0.30*(Math.random()*2-1);
@@ -1545,25 +1618,37 @@ function netGuestControlsBlue(){
         if(to){launch(to.x,to.y,g.b===3?PASS_V+4:PASS_V,'pass',p);ball.recv=to;ball.lob=(g.b===3);SFX.pass();}}
     }}
 }
-// Invitado: manda su cruceta/botones (throttle 80ms) y renderiza el estado recibido
+// Invitado: manda su cruceta/botones (throttle 80ms) y avisa si se cae el anfitrión
 function netSendInput(now){
   if(NET.role!=='guest'||!NET.ref)return;
   if(now-NET.lastTx<80)return;NET.lastTx=now;
   var b=0;if(netBtn){b=netBtn;netBtn=0;}
-  NET.ref.child('gi').set({dx:+(joy.dx||0).toFixed(2),dy:+(joy.dy||0).toFixed(2),b:b,t:b?Date.now():(NET.gi.t||0)});
+  var pack={dx:+(joy.dx||0).toFixed(2),dy:+(joy.dy||0).toFixed(2),b:b,t:b?Date.now():(NET.gi.t||0)};
+  var firma=pack.dx+'|'+pack.dy+'|'+pack.b+'|'+pack.t;
+  if(firma===NET.lastGi&&!b)return;          // no gastar red si nada cambió
+  NET.lastGi=firma;NET.gi=pack;
+  NET.ref.child('gi').set(pack).catch(function(){});
+  // ¿se cayó el anfitrión?
+  if(NET.synced&&NET.lastRx&&Date.now()-NET.lastRx>5000&&Date.now()-NET.warned>6000){
+    NET.warned=Date.now();flash('📴 Se perdió la señal del anfitrión…',120);
+  }
 }
-var netBtn=0;
 function netApplyState(str){
   try{
     var a=String(str).split(',').map(Number),k=0;
+    var esperado=(white.length+blue.length)*5+3+5;
+    if(a.length<esperado-1)return;              // paquete incompleto: se ignora
     function pull(p){var tx=a[k++],ty=a[k++];p.dirx=a[k++]/10;p.diry=a[k++]/10;p.excl=a[k++];
-      p.x+= (tx-p.x)*0.5; p.y+=(ty-p.y)*0.5; p.swim+=Math.hypot(tx-p.x,ty-p.y)>0.5?0.35:0.05;}
+      p.swim+=Math.hypot(tx-p.x,ty-p.y)>0.5?0.35:0.05;
+      p.x+=(tx-p.x)*0.5;p.y+=(ty-p.y)*0.5;}
     for(var i=0;i<white.length;i++)pull(white[i]);
     for(var j=0;j<blue.length;j++)pull(blue[j]);
     var bx=a[k++],by=a[k++],hold=a[k++];
     ball.x+=(bx-ball.x)*0.6;ball.y+=(by-ball.y)*0.6;
-    ball.holder=hold===0?null:(hold===1?white[0]:blue[0]); // aprox visual (anillo)
+    if(!hold)ball.holder=null;
+    else{var eq=(hold<200)?white:blue,idx=hold%100;ball.holder=eq[idx]||eq[0];}
     sW=a[k++];sA=a[k++];timeLeft=a[k++];posLeft=a[k++];
+    var st=a[k++];state=(st===2)?'goal':'play';
     updateUI();
   }catch(e){}
 }
