@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laguna Swim International — Agua en el desierto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abismo:#04141C;
+  --laguna:#0E4C5C;
+  --turquesa:#1FB6C1;
+  --oro:#C9A227;
+  --sal:#F2EFE9;
+  --bruma:#8A9AA0;
+
+  --display:'Fraunces',Georgia,serif;
+  --ui:'Inter Tight',system-ui,sans-serif;
+  --num:'JetBrains Mono',ui-monospace,monospace;
+
+  --glide:cubic-bezier(.16,1,.3,1);
+  --t-micro:400ms;
+  --t-sec:800ms;
+  --t-hero:1400ms;
+
+  --linea-agua:62vh;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--abismo);
+  color:var(--sal);
+  font-family:var(--ui);
+  font-weight:400;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.envoltura{width:min(1180px,90vw);margin-inline:auto}
+
+/* ---------- Cáusticas vivas ---------- */
+.causticas{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  opacity:.28;mix-blend-mode:screen;
+  filter:blur(28px);
+}
+.causticas span{
+  position:absolute;inset:-30%;
+  background:
+    radial-gradient(38% 24% at 22% 18%,rgba(31,182,193,.55),transparent 62%),
+    radial-gradient(30% 20% at 74% 32%,rgba(31,182,193,.42),transparent 60%),
+    radial-gradient(26% 34% at 48% 76%,rgba(14,76,92,.65),transparent 66%);
+  animation:deriva 26s var(--glide) infinite alternate;
+}
+.causticas span:nth-child(2){
+  animation-duration:38s;animation-direction:alternate-reverse;
+  background:
+    radial-gradient(34% 18% at 66% 12%,rgba(201,162,39,.20),transparent 64%),
+    radial-gradient(42% 28% at 18% 62%,rgba(31,182,193,.34),transparent 62%);
+}
+@keyframes deriva{
+  0%{transform:translate3d(-4%,-2%,0) scale(1.05) rotate(0deg)}
+  100%{transform:translate3d(5%,4%,0) scale(1.18) rotate(6deg)}
+}
+
+/* ---------- Línea de agua ---------- */
+.linea-agua{
+  position:fixed;left:0;right:0;top:var(--linea-agua);
+  height:1px;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(242,239,233,.28) 12%,rgba(31,182,193,.55) 50%,rgba(242,239,233,.28) 88%,transparent);
+}
+.linea-agua::after{
+  content:"";position:absolute;inset:-40px 0 auto;height:80px;
+  background:linear-gradient(180deg,transparent,rgba(31,182,193,.07),transparent);
+}
+.marca-agua{
+  position:fixed;top:calc(var(--linea-agua) + 14px);right:5vw;z-index:2;
+  font-family:var(--num);font-size:10px;letter-spacing:.28em;
+  color:var(--bruma);text-transform:uppercase;pointer-events:none;
+}
+
+/* ---------- Nav ---------- */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 5vw;
+  backdrop-filter:blur(6px);
+}
+.logotipo{font-family:var(--display);font-size:19px;letter-spacing:-.02em}
+.logotipo em{font-style:italic;color:var(--turquesa)}
+nav .enlaces{display:flex;gap:28px;font-size:14px}
+nav a{color:var(--bruma);text-decoration:none;transition:color var(--t-micro) var(--glide)}
+nav a:hover,nav a:focus-visible{color:var(--sal)}
+@media(max-width:760px){nav .enlaces{display:none}}
+
+/* ---------- Botón: se llena de agua ---------- */
+.boton{
+  position:relative;display:inline-flex;align-items:center;gap:10px;
+  padding:15px 30px;border:1px solid var(--oro);border-radius:2px;
+  color:var(--oro);background:transparent;text-decoration:none;
+  font-size:14px;letter-spacing:.06em;overflow:hidden;cursor:pointer;
+  transition:color var(--t-sec) var(--glide);
+}
+.boton span{position:relative;z-index:1}
+.boton::before{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:100%;
+  background:var(--oro);transform:translateY(101%);
+  transition:transform var(--t-sec) var(--glide);
+}
+.boton:hover,.boton:focus-visible{color:var(--abismo)}
+.boton:hover::before,.boton:focus-visible::before{transform:translateY(0)}
+
+/* ---------- Hero: el clavado ---------- */
+header.hero{
+  position:relative;z-index:3;
+  min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;
+  padding-bottom:calc(100svh - var(--linea-agua) - 210px);
+}
+.epigrafe{
+  font-family:var(--num);font-size:11px;font-weight:300;
+  letter-spacing:.34em;text-transform:uppercase;color:var(--turquesa);
+  margin-bottom:26px;
+}
+h1{
+  font-family:var(--display);
+  font-size:clamp(46px,9vw,104px);
+  font-weight:300;line-height:.94;letter-spacing:-.035em;
+  max-width:14ch;
+}
+h1 em{font-style:italic;color:var(--turquesa);font-weight:300}
+.entrada{font-size:17px;color:var(--bruma);max-width:44ch;margin:28px 0 36px}
+
+.sube{opacity:0;transform:translateY(26px)}
+.listo .sube{
+  animation:emerger var(--t-hero) var(--glide) forwards;
+}
+.listo .sube:nth-child(2){animation-delay:120ms}
+.listo .sube:nth-child(3){animation-delay:240ms}
+.listo .sube:nth-child(4){animation-delay:360ms}
+@keyframes emerger{to{opacity:1;transform:none}}
+
+/* respiración: 4s, ritmo de crol */
+.listo h1{animation:emerger var(--t-hero) var(--glide) forwards,respira 4s ease-in-out 2s infinite}
+@keyframes respira{0%,100%{opacity:1}50%{opacity:.93}}
+
+/* ---------- Secciones ---------- */
+section{position:relative;z-index:3;padding:clamp(90px,14vh,170px) 0}
+.rotulo{
+  font-family:var(--num);font-size:11px;font-weight:300;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--bruma);
+  padding-bottom:18px;border-bottom:1px solid rgba(242,239,233,.12);
+  margin-bottom:56px;display:flex;justify-content:space-between;
+}
+h2{
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(30px,4.6vw,54px);line-height:1.05;letter-spacing:-.03em;
+  max-width:20ch;
+}
+
+/* ---------- Cifras ---------- */
+.cifras{display:grid;grid-template-columns:repeat(4,1fr);gap:40px}
+@media(max-width:860px){.cifras{grid-template-columns:repeat(2,1fr);gap:44px 28px}}
+.cifra b{
+  display:block;font-family:var(--num);font-weight:300;
+  font-size:clamp(46px,7vw,82px);line-height:1;letter-spacing:-.05em;
+  color:var(--sal);font-variant-numeric:tabular-nums;
+}
+.cifra small{
+  display:block;margin-top:14px;font-size:13px;color:var(--bruma);
+  letter-spacing:.02em;max-width:16ch;
+}
+
+/* ---------- Mundial ---------- */
+.mundial{border-top:1px solid rgba(242,239,233,.12)}
+.reloj{display:flex;gap:clamp(20px,5vw,64px);margin:44px 0 40px;flex-wrap:wrap}
+.reloj div{min-width:70px}
+.reloj b{
+  font-family:var(--num);font-weight:300;font-variant-numeric:tabular-nums;
+  font-size:clamp(38px,6vw,68px);line-height:1;color:var(--oro);letter-spacing:-.04em;
+}
+.reloj small{display:block;margin-top:10px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--bruma)}
+
+/* ---------- Carriles ---------- */
+.carriles{margin-top:12px}
+.carril{
+  display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:24px;
+  padding:30px 0;border-bottom:1px solid rgba(242,239,233,.10);
+  transition:padding-left var(--t-sec) var(--glide);
+}
+.carril:hover{padding-left:16px}
+.carril:hover .cuerda{background:var(--turquesa)}
+.cuerda{height:2px;background:rgba(242,239,233,.22);transition:background var(--t-sec) var(--glide)}
+.carril h3{font-family:var(--display);font-weight:300;font-size:clamp(21px,2.6vw,30px);letter-spacing:-.02em}
+.carril p{font-size:14px;color:var(--bruma);margin-top:4px}
+.carril .horario{font-family:var(--num);font-size:13px;color:var(--turquesa);white-space:nowrap}
+@media(max-width:700px){
+  .carril{grid-template-columns:40px 1fr;gap:16px}
+  .carril .horario{grid-column:2;font-size:12px}
+}
+
+/* ---------- Cierre ---------- */
+.cierre{text-align:center;border-top:1px solid rgba(242,239,233,.12)}
+.cierre h2{margin-inline:auto;max-width:16ch}
+.firma{
+  margin-top:110px;font-family:var(--display);font-style:italic;
+  font-size:15px;color:var(--oro);letter-spacing:.02em;
+}
+footer{padding:0 0 70px;text-align:center;font-size:12px;color:var(--bruma);position:relative;z-index:3}
+
+/* ---------- Revelado al scroll ---------- */
+.revela{opacity:0;transform:translateY(24px);transition:opacity var(--t-sec) var(--glide),transform var(--t-sec) var(--glide)}
+.revela.visible{opacity:1;transform:none}
+
+:focus-visible{outline:2px solid var(--turquesa);outline-offset:4px}
+
+@media(prefers-reduced-motion:reduce){
+  .causticas{display:none}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .sube,.revela{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="causticas" aria-hidden="true"><span></span><span></span></div>
+<div class="linea-agua" aria-hidden="true"></div>
+<div class="marca-agua" aria-hidden="true">25 m · Torreón</div>
+
+<nav>
+  <div class="logotipo">Laguna <em>Swim</em></div>
+  <div class="enlaces">
+    <a href="#cifras">Equipo</a>
+    <a href="#mundial">Mundial</a>
+    <a href="#programas">Programas</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+</nav>
+
+<header class="hero envoltura">
+  <p class="epigrafe sube">Torreón, Coahuila · desde 1997</p>
+  <h1 class="sube">El desierto también <em>aprende a nadar.</em></h1>
+  <p class="entrada sube">Formamos nadadores desde preescolar hasta Masters. Este año, doce de ellos van al Mundial de Oceanman.</p>
+  <div class="sube"><a class="boton" href="#contacto"><span>Agenda tu clase</span></a></div>
+</header>
+
+<section id="cifras" class="envoltura">
+  <div class="rotulo revela"><span>El equipo</span><span>2026</span></div>
+  <div class="cifras">
+    <div class="cifra revela"><b data-cuenta="17">0</b><small>pases al Mundial de Oceanman</small></div>
+    <div class="cifra revela"><b data-cuenta="12">0</b><small>nadadores clasificados</small></div>
+    <div class="cifra revela"><b data-cuenta="30">0</b><small>años formando atletas</small></div>
+    <div class="cifra revela"><b data-cuenta="15">0</b><small>campeonatos locales</small></div>
+  </div>
+</section>
+
+<section id="mundial" class="mundial envoltura">
+  <div class="rotulo revela"><span>Miches, República Dominicana</span><span>14–15 nov</span></div>
+  <h2 class="revela">Mundial de Oceanman</h2>
+  <div class="reloj revela" id="reloj">
+    <div><b data-u="d">—</b><small>días</small></div>
+    <div><b data-u="h">—</b><small>horas</small></div>
+    <div><b data-u="m">—</b><small>min</small></div>
+    <div><b data-u="s">—</b><small>seg</small></div>
+  </div>
+  <p class="entrada revela">Diecisiete pases ganados en Cozumel y Costa Rica. La misma agua, otro océano.</p>
+</section>
+
+<section id="programas" class="envoltura">
+  <div class="rotulo revela"><span>Programas</span><span>Unidad Deportiva · Tec Laguna</span></div>
+  <h2 class="revela">Un carril para cada edad</h2>
+  <div class="carriles">
+    <div class="carril revela"><div class="cuerda"></div><div><h3>Preescolar</h3><p>Confianza en el agua, flotación y respiración</p></div><div class="horario">L·MI·V 17:00</div></div>
+    <div class="carril revela"><div class="cuerda"></div><div><h3>Primaria</h3><p>Los cuatro estilos, por nivel de avance</p></div><div class="horario">L a V 18:00</div></div>
+    <div class="carril revela"><div class="cuerda"></div><div><h3>Secundaria</h3><p>Técnica competitiva y preparación a serial</p></div><div class="horario">L a V 19:00</div></div>
+    <div class="carril revela"><div class="cuerda"></div><div><h3>Masters</h3><p>Alberca y aguas abiertas, presencial o a distancia</p></div><div class="horario">L a V 20:00</div></div>
+  </div>
+</section>
+
+<section id="contacto" class="cierre envoltura">
+  <h2 class="revela">Tu primera clase empieza con un clavado.</h2>
+  <p class="entrada revela" style="margin-inline:auto">Escríbenos y te asignamos carril y horario esta misma semana.</p>
+  <div class="revela"><a class="boton" href="https://wa.me/52"><span>Agenda tu clase</span></a></div>
+  <p class="firma revela">Fuertes y Valientes — Josué 1:9</p>
+</section>
+
+<footer class="envoltura">Laguna Swim International · Torreón, Coahuila</footer>
+
+<script>
+document.body.classList.add('listo');
+
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
+},{threshold:.18});
+document.querySelectorAll('.revela').forEach(el=>io.observe(el));
+
+const suave=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const contadores=new IntersectionObserver((es)=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    contadores.unobserve(e.target);
+    const meta=parseInt(e.target.dataset.cuenta,10);
+    if(!suave){e.target.textContent=meta;return;}
+    const inicio=performance.now(),dur=1400;
+    const paso=(t)=>{
+      const p=Math.min((t-inicio)/dur,1);
+      const eas=1-Math.pow(1-p,3);
+      e.target.textContent=Math.round(meta*eas);
+      if(p<1)requestAnimationFrame(paso);
+    };
+    requestAnimationFrame(paso);
+  });
+},{threshold:.6});
+document.querySelectorAll('[data-cuenta]').forEach(el=>contadores.observe(el));
+
+const meta=new Date('2026-11-14T07:00:00-04:00').getTime();
+const campos={};
+document.querySelectorAll('#reloj [data-u]').forEach(el=>campos[el.dataset.u]=el);
+const dosDig=n=>String(n).padStart(2,'0');
+function tic(){
+  const falta=meta-Date.now();
+  if(falta<=0){Object.values(campos).forEach(el=>el.textContent='00');return;}
+  const s=Math.floor(falta/1000);
+  campos.d.textContent=dosDig(Math.floor(s/86400));
+  campos.h.textContent=dosDig(Math.floor(s%86400/3600));
+  campos.m.textContent=dosDig(Math.floor(s%3600/60));
+  campos.s.textContent=dosDig(s%60);
+}
+tic();setInterval(tic,1000);
+</script>
+</body>
+</html>
