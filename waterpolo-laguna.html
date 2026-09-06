@@ -271,6 +271,7 @@
         <button class="play-btn" id="playBtn">▶ ¡JUGAR!</button>
         <button class="duel-btn" id="duelBtn">📶 1 VS 1 EN LÍNEA</button>
         <div class="motto">💪 Fuertes y Valientes — Josué 1:9 · 🌊 Laguna Swim</div>
+        <div style="font-size:11px;opacity:0.55;letter-spacing:1.5px;margin-top:4px;color:#06314f;font-weight:700">Versi&oacute;n 6 de septiembre 2026</div>
         <button onclick="lsGoHome()" style="margin-top:14px;padding:10px 22px;border-radius:999px;border:1.5px solid rgba(255,255,255,.45);background:rgba(255,255,255,.10);color:#fff;font-size:.78rem;font-weight:800;letter-spacing:1.5px;cursor:pointer;">🏠 REGRESAR A LAGUNA SWIM</button>
 
         <!-- Panel de duelo en línea -->
@@ -430,7 +431,7 @@ function camFollow(){
   var tx=Math.max(0,Math.min(W-VW, fx-VW/2));
   cam.x+=(tx-cam.x)*0.09;                                  // seguimiento suave
 }
-function startPlay(){if(state==='ready')state='play';running=true;}
+function startPlay(){if(NET&&NET.salidaBloqueada)return;if(state==='ready')state='play';running=true;}
 function flash(m,t){flashMsg=m;flashT=t;}
 function possessionTeam(){return ball.holder?ball.holder.team:null;}
 
@@ -1539,13 +1540,37 @@ function duelJoin(code){
   }).catch(function(e){NET.lobby=false;duelMsg(netErr(e));});
 }
 // arranca el partido de verdad (los dos lados)
+// FIX: antes el partido arrancaba de golpe y quien se conectaba primero
+// ya estaba jugando mientras el otro apenas cargaba. Ahora hay salida
+// sincronizada 3-2-1 con silbatazo, igual para los dos telefonos.
 function netStartMatch(msg){
   NET.lobby=false;
   document.getElementById('duelPanel').style.display='none';
   document.getElementById('splash').classList.add('hide');
   setTimeout(fitViewport,80);
-  init();state='play';running=true;
-  flash(msg,110);
+  init();
+  state='ready';running=false;
+  netCuentaRegresiva(msg);
+}
+
+function netCuentaRegresiva(msg){
+  NET.salidaBloqueada=true;   // nadie arranca antes del silbatazo
+  var n=3;
+  flash('\u25B6 '+n,900);
+  SFX.whistle();
+  var iv=setInterval(function(){
+    n--;
+    if(n>0){flash('\u25B6 '+n,900);SFX.whistle();}
+    else{
+      clearInterval(iv);
+      flash('\u00a1VA!',700);
+      SFX.whistle();
+      setTimeout(function(){SFX.whistle();},120);
+      NET.salidaBloqueada=false;
+      state='play';running=true;
+      setTimeout(function(){flash(msg,110);},700);
+    }
+  },1000);
 }
 document.getElementById('duelJoin').onclick=function(){
   var c=(document.getElementById('duelCode').value||'').replace(/\D/g,'');
