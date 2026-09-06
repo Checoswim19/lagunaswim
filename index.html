@@ -5927,35 +5927,34 @@ function loginGoogle() {
   console.log('[Login Debug] Dominio:', window.location.hostname);
   console.log('[Login Debug] Auth domain:', CONFIG.fbCfg && CONFIG.fbCfg.authDomain);
 
-  // Detectar si es móvil
-  var esMobil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  // FIX LOGIN MOVIL: antes usabamos signInWithRedirect en telefono.
+  // Firebase guarda el estado del login en laguna-swim-chrono.firebaseapp.com,
+  // que NO es nuestro dominio. Al regresar a lagunaswim.net el navegador tiene
+  // que leer ese dato de un dominio ajeno, y Brave lo bloquea por diseno
+  // (Safari tambien lo esta restringiendo). Resultado: parecia conectar y
+  // regresaba sin sesion. La ventana emergente si conserva el contexto, asi
+  // que ahora se intenta popup primero en TODOS los dispositivos, y solo se
+  // cae a redirect si el navegador bloquea la ventana.
+  var btn = document.querySelector('button[onclick="loginGoogle()"]');
+  var btnHtml = btn ? btn.innerHTML : '';
+  function restaurarBoton() { if (btn) btn.innerHTML = btnHtml; }
+  if (btn) btn.innerHTML = '<span class="spinner"></span>Conectando con Google...';
 
-  if (esMobil) {
-    // Mostrar mensaje breve antes del redirect
-    var btn = document.querySelector('button[onclick="loginGoogle()"]');
-    if (btn) btn.innerHTML = '<span class="spinner"></span>Conectando con Google...';
-    // En móvil usar redirect (no popup) - mucho más confiable
-    auth.signInWithRedirect(gProv).catch(function(e) {
+  auth.signInWithPopup(gProv)
+    .then(function() { restaurarBoton(); closeAuthModal(); })
+    .catch(function(e) {
       console.error('[Login Error]', e.code, e.message);
-      var msg = traducirErrorAuth(e);
-      showAuthErr(msg);
+      restaurarBoton();
+      // El usuario cerro la ventana a proposito: no es un error que mostrar
+      if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
+      // Ventana bloqueada o no soportada: intentamos el camino largo
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+        showAuthErr('Tu navegador bloqueo la ventana de Google. Intentando de otra forma...');
+        auth.signInWithRedirect(gProv).catch(function(e2) { showAuthErr(traducirErrorAuth(e2)); });
+        return;
+      }
+      showAuthErr(traducirErrorAuth(e));
     });
-  } else {
-    // En escritorio mantener popup (más rápido)
-    auth.signInWithPopup(gProv)
-      .then(function() { closeAuthModal(); })
-      .catch(function(e) {
-        console.error('[Login Error]', e.code, e.message);
-        // Si el popup falla (bloqueado, etc.), intentar redirect como fallback
-        if (e.code === 'auth/popup-blocked') {
-          auth.signInWithRedirect(gProv).catch(function(e2) {
-            showAuthErr(traducirErrorAuth(e2));
-          });
-        } else if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
-          showAuthErr(traducirErrorAuth(e));
-        }
-      });
-  }
 }
 
 // Traducir códigos de error de Firebase a mensajes claros para el usuario
@@ -5968,13 +5967,13 @@ function traducirErrorAuth(e) {
       'Ve a console.firebase.google.com → laguna-swim-chrono → Authentication → Settings → Authorized domains → "Add domain" y agrega: ' + dominio;
   }
   if (codigo === 'auth/popup-blocked') {
-    return 'Tu navegador bloqueó el popup. Permite popups en este sitio o usa otro navegador.';
+    return 'Tu navegador bloqueó la ventana de Google. Permite ventanas emergentes para lagunaswim.net e intenta de nuevo.';
   }
   if (codigo === 'auth/network-request-failed') {
     return 'Sin conexión a internet. Revisa tu conexión e intenta de nuevo.';
   }
-  if (codigo === 'auth/web-storage-unsupported') {
-    return 'Tu navegador bloquea el almacenamiento. Sal del modo incógnito y habilita las cookies.';
+  if (codigo === 'auth/web-storage-unsupported' || codigo === 'auth/internal-error') {
+    return 'Tu navegador está bloqueando el acceso de Google. Si usas Brave, toca el león junto a la dirección y baja los Escudos para lagunaswim.net. También puedes abrir la página en Safari o Chrome.';
   }
   if (codigo === 'auth/operation-not-supported-in-this-environment') {
     return 'Este navegador no permite el login. Intenta con Chrome o Safari.';
