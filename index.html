@@ -1181,6 +1181,33 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   margin-top: 2px;
   flex-shrink: 0;
 }
+/* ====== STICKERS POR RACHA SEMANAL ====== */
+.stk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.7rem}
+.stk{text-align:center}
+.stk-disc{
+  width:100%;aspect-ratio:1;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:2px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.04);
+  color:rgba(255,255,255,0.3);
+}
+.stk.on .stk-disc{
+  border-color:var(--gold);
+  background:linear-gradient(160deg,#1e5a9e,#051a3a);
+  color:var(--gold);
+  box-shadow:0 2px 10px rgba(255,215,0,0.25);
+}
+.stk-num{font-size:1.25rem;font-weight:900;line-height:1}
+.stk-sem{font-size:0.45rem;letter-spacing:0.5px;margin-top:1px;opacity:0.75}
+.stk-nom{font-size:0.52rem;line-height:1.2;margin-top:4px;color:rgba(255,255,255,0.45)}
+.stk.on .stk-nom{color:#fff;font-weight:700}
+.stk-racha{
+  display:flex;align-items:center;justify-content:space-between;gap:0.6rem;
+  background:linear-gradient(135deg,rgba(255,107,53,0.15),rgba(255,215,0,0.08));
+  border:1px solid rgba(255,107,53,0.35);border-radius:12px;padding:0.8rem 1rem;
+}
+.stk-racha-num{font-size:2rem;font-weight:900;color:#ff8c42;line-height:1}
+
 /* ====== FRASE MOTIVACIONAL SEMANAL ====== */
 .frase-semana-card {
   background: linear-gradient(135deg, rgba(255,215,0,0.10), rgba(56,189,248,0.06));
@@ -5123,6 +5150,9 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
 
       <!-- Vista Coach -->
       <div id="premios-coach-view" style="display:none">
+        <button class="btn btn-gold" onclick="imprimirHojaStickers()" style="margin-bottom:0.8rem">
+          &#128424;&#65039; Hoja de stickers de esta semana
+        </button>
         <div style="font-size:0.78rem;color:var(--accent-soft);margin-bottom:0.6rem">
           Configura la meta semanal de cada nadador. Toca un nadador para vincularlo con su cuenta.
         </div>
@@ -5135,6 +5165,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <!-- Vista Nadador/Padre -->
       <div id="premios-nadador-view" style="display:none">
         <div id="premios-progreso-container"></div>
+        <div id="premios-stickers-container" style="margin-top:1rem"></div>
         <div id="portal-records-container" style="margin-top:1rem"></div>
         <div id="premios-mis-logros-container" style="margin-top:1rem"></div>
       </div>
@@ -10890,6 +10921,7 @@ function cargarVistaNadador() {
     premios.nadadorActual = { id: nadadorId, data: nadador };
 
     renderProgresoNadador(nadadorId, nadador);
+    renderStickersNadador(nadadorId, nadador);
     cargarMisLogros(nadadorId);
   });
 }
@@ -11352,6 +11384,262 @@ window.guardarSesion = function() {
     });
   });
 };
+
+// ============================================================
+// ====== STICKERS POR RACHA DE SEMANAS SIN FALLAR ============
+// ============================================================
+//
+// Una semana cuenta cuando el nadador cumple SU meta semanal
+// (no es la misma para todos). Si falla una semana la racha
+// vuelve a cero, pero se guarda su mejor marca historica: los
+// stickers ya ganados no se pierden nunca.
+
+var STICKERS = [
+  { sem: 1,  nombre: 'Primera brazada' },
+  { sem: 2,  nombre: 'Agarre ritmo' },
+  { sem: 4,  nombre: 'Un mes sin fallar' },
+  { sem: 8,  nombre: 'Dos meses' },
+  { sem: 12, nombre: 'Un trimestre' },
+  { sem: 24, nombre: 'Medio ano' },
+  { sem: 52, nombre: 'Un ano Fuerte y Valiente' }
+];
+
+// Clave de semana ISO para cualquier fecha (2026-W36)
+function stkSemanaKey(d) {
+  d = new Date(d);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+  var week1 = new Date(d.getFullYear(), 0, 4);
+  var n = 1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  return d.getFullYear() + '-W' + String(n).padStart(2, '0');
+}
+
+// Cuenta dias distintos entrenados por semana y saca racha actual y mejor
+function stkCalcularRacha(entries, meta) {
+  meta = meta || 4;
+  var porSemana = {};
+  entries.forEach(function(e) {
+    var f = e.fecha ? new Date(e.fecha + 'T12:00:00') : (e.timestamp ? new Date(e.timestamp) : null);
+    if (!f || isNaN(f)) return;
+    var k = stkSemanaKey(f);
+    if (!porSemana[k]) porSemana[k] = {};
+    porSemana[k][e.fecha || f.toISOString().split('T')[0]] = true;
+  });
+
+  var cumplidas = {};
+  Object.keys(porSemana).forEach(function(k) {
+    if (Object.keys(porSemana[k]).length >= meta) cumplidas[k] = true;
+  });
+
+  // Recorremos semana por semana hacia atras desde hoy
+  var cursor = new Date();
+  var semanaHoy = stkSemanaKey(cursor);
+  var actual = 0;
+
+  // La semana en curso todavia puede completarse: si aun no cumple,
+  // no rompe la racha, solo no suma.
+  if (cumplidas[semanaHoy]) actual++;
+  cursor.setDate(cursor.getDate() - 7);
+
+  for (var i = 0; i < 260; i++) {
+    var k = stkSemanaKey(cursor);
+    if (cumplidas[k]) { actual++; cursor.setDate(cursor.getDate() - 7); }
+    else break;
+  }
+
+  // Mejor racha historica
+  var keys = Object.keys(cumplidas).sort();
+  var mejor = 0, run = 0, prev = null;
+  keys.forEach(function(k) {
+    if (prev) {
+      var d = new Date(prev.split('-W')[0], 0, 4);
+      // Comparamos si son semanas consecutivas avanzando 7 dias
+      var pd = stkFechaDeSemana(prev);
+      pd.setDate(pd.getDate() + 7);
+      run = (stkSemanaKey(pd) === k) ? run + 1 : 1;
+    } else { run = 1; }
+    if (run > mejor) mejor = run;
+    prev = k;
+  });
+
+  return { actual: actual, mejor: Math.max(mejor, actual), semanasCumplidas: keys.length };
+}
+
+// Fecha del lunes de una clave de semana ISO
+function stkFechaDeSemana(key) {
+  var p = key.split('-W');
+  var anio = parseInt(p[0], 10), sem = parseInt(p[1], 10);
+  var simple = new Date(anio, 0, 1 + (sem - 1) * 7);
+  var dow = simple.getDay();
+  var lunes = simple;
+  if (dow <= 4) lunes.setDate(simple.getDate() - simple.getDay() + 1);
+  else lunes.setDate(simple.getDate() + 8 - simple.getDay());
+  return lunes;
+}
+
+// Sticker mas alto alcanzado con N semanas
+function stkNivel(semanas) {
+  var alcanzado = null;
+  STICKERS.forEach(function(st) { if (semanas >= st.sem) alcanzado = st; });
+  return alcanzado;
+}
+
+// ===== Vista del nadador: mis stickers =====
+function renderStickersNadador(nadadorId, nadador) {
+  var cont = document.getElementById('premios-stickers-container');
+  if (!cont) return;
+  var meta = nadador.metaSemanal || 4;
+
+  db.ref('entrenamientos_publicos').orderByChild('nadadorId').equalTo(nadadorId).once('value').then(function(snap) {
+    var entries = [];
+    if (snap.exists()) snap.forEach(function(c) { entries.push(c.val()); });
+    var r = stkCalcularRacha(entries, meta);
+
+    var siguiente = null;
+    for (var i = 0; i < STICKERS.length; i++) {
+      if (r.mejor < STICKERS[i].sem) { siguiente = STICKERS[i]; break; }
+    }
+
+    var grid = '';
+    STICKERS.forEach(function(st) {
+      var ganado = r.mejor >= st.sem;
+      grid += '<div class="stk' + (ganado ? ' on' : '') + '">' +
+        '<div class="stk-disc">' +
+          '<div class="stk-num">' + st.sem + '</div>' +
+          '<div class="stk-sem">' + (st.sem === 1 ? 'SEMANA' : 'SEMANAS') + '</div>' +
+        '</div>' +
+        '<div class="stk-nom">' + escapeHtml(st.nombre) + '</div>' +
+      '</div>';
+    });
+
+    var pie = siguiente
+      ? 'Te faltan <strong style="color:var(--gold)">' + (siguiente.sem - r.mejor) + '</strong> semana' + ((siguiente.sem - r.mejor) === 1 ? '' : 's') + ' para <strong>' + escapeHtml(siguiente.nombre) + '</strong>'
+      : 'Ganaste todos los stickers. Eres leyenda del equipo.';
+
+    cont.innerHTML =
+      '<div class="portal-sec">' +
+        '<div class="portal-sec-title">&#127894;&#65039; Mis stickers</div>' +
+        '<div class="stk-racha">' +
+          '<div>' +
+            '<div style="font-size:0.68rem;color:var(--accent-soft);letter-spacing:1px;text-transform:uppercase">Racha actual</div>' +
+            '<div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:3px">Meta: ' + meta + ' entrenamientos por semana</div>' +
+          '</div>' +
+          '<div style="text-align:right">' +
+            '<div class="stk-racha-num">&#128293; ' + r.actual + '</div>' +
+            '<div style="font-size:0.58rem;color:rgba(255,255,255,0.5);letter-spacing:1px">SEMANAS SEGUIDAS</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="stk-grid">' + grid + '</div>' +
+        '<div style="font-size:0.72rem;color:var(--accent-soft);text-align:center;margin-top:0.8rem;line-height:1.5">' + pie + '</div>' +
+        (r.mejor > r.actual ? '<div style="font-size:0.62rem;color:rgba(255,255,255,0.4);text-align:center;margin-top:0.3rem">Tu mejor racha: ' + r.mejor + ' semanas</div>' : '') +
+      '</div>';
+  }).catch(function(e) { console.warn('stickers', e); });
+}
+
+// ===== Coach: hoja imprimible con los stickers de la semana =====
+async function imprimirHojaStickers() {
+  if (!state.user || state.user.email !== CONFIG.coach) return;
+  var btn = event && event.target ? event.target : null;
+  if (btn) { btn.disabled = true; btn.textContent = 'Calculando...'; }
+
+  try {
+    var snapN = await db.ref('nadadores').once('value');
+    var snapE = await db.ref('entrenamientos_publicos').once('value');
+
+    var porNadador = {};
+    if (snapE.exists()) {
+      snapE.forEach(function(c) {
+        var v = c.val();
+        if (!v || !v.nadadorId) return;
+        if (!porNadador[v.nadadorId]) porNadador[v.nadadorId] = [];
+        porNadador[v.nadadorId].push(v);
+      });
+    }
+
+    var ganadores = [];
+    if (snapN.exists()) {
+      snapN.forEach(function(c) {
+        var nd = c.val();
+        var entries = porNadador[c.key] || [];
+        if (!entries.length) return;
+        var r = stkCalcularRacha(entries, nd.metaSemanal || 4);
+        if (r.actual >= 1) {
+          ganadores.push({ nombre: nd.nombre || '', semanas: r.actual, nivel: stkNivel(r.actual) });
+        }
+      });
+    }
+
+    if (btn) { btn.disabled = false; btn.innerHTML = '&#128424;&#65039; Hoja de stickers de esta semana'; }
+
+    if (!ganadores.length) {
+      alert('Todavia nadie cumple su meta esta semana.\n\nRecuerda: cuentan los entrenamientos subidos por nadadores vinculados a su cuenta.');
+      return;
+    }
+
+    ganadores.sort(function(a, b) { return b.semanas - a.semanas; });
+    stkGenerarPDF(ganadores);
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.innerHTML = '&#128424;&#65039; Hoja de stickers de esta semana'; }
+    alert('No se pudo generar la hoja: ' + e.message);
+  }
+}
+
+function stkGenerarPDF(lista) {
+  var pdf = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var COLS = 3, FILAS = 4, D = 58, MX = 12, MY = 16;
+  var gapX = (210 - MX * 2 - COLS * D) / (COLS - 1);
+  var gapY = (297 - MY * 2 - FILAS * D) / (FILAS - 1);
+  var porPagina = COLS * FILAS;
+
+  lista.forEach(function(g, i) {
+    if (i > 0 && i % porPagina === 0) pdf.addPage();
+    var idx = i % porPagina;
+    var col = idx % COLS, fila = Math.floor(idx / COLS);
+    var cx = MX + col * (D + gapX) + D / 2;
+    var cy = MY + fila * (D + gapY) + D / 2;
+    var rad = D / 2;
+
+    // Aro dorado
+    pdf.setFillColor(255, 215, 0);
+    pdf.circle(cx, cy, rad, 'F');
+    // Disco azul del equipo
+    pdf.setFillColor(10, 41, 86);
+    pdf.circle(cx, cy, rad - 2.2, 'F');
+
+    // Marca arriba
+    pdf.setTextColor(255, 215, 0);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(6);
+    pdf.text('LAGUNA SWIM', cx, cy - rad + 9, { align: 'center' });
+
+    // Semanas
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(26);
+    pdf.text(String(g.semanas), cx, cy - 2, { align: 'center' });
+    pdf.setFontSize(6.5);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(g.semanas === 1 ? 'SEMANA SIN FALLAR' : 'SEMANAS SIN FALLAR', cx, cy + 3.5, { align: 'center' });
+
+    // Nombre del sticker
+    if (g.nivel) {
+      pdf.setTextColor(255, 215, 0);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(6.5);
+      var t = pdf.splitTextToSize(g.nivel.nombre, D - 14);
+      pdf.text(t, cx, cy + 9, { align: 'center' });
+    }
+
+    // Nombre del nadador
+    pdf.setTextColor(160, 200, 235);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(6);
+    var n = pdf.splitTextToSize(g.nombre, D - 12);
+    pdf.text(n.slice(0, 2), cx, cy + rad - 8, { align: 'center' });
+  });
+
+  var hoy = new Date().toISOString().split('T')[0];
+  pdf.save('Stickers-LagunaSwim-' + hoy + '.pdf');
+}
 
 // ============================================================
 // ============== FRASE MOTIVACIONAL SEMANAL ==================
