@@ -5289,12 +5289,14 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <option value="trinidad2024|PanAm Trinidad 2024">PanAm Trinidad 2024</option>
       <option value="italia2025|Oceanman Italia 2025">Oceanman Italia 2025</option>
       <option value="costarica2025|Oceanman Costa Rica 2025">Oceanman Costa Rica 2025</option>
+      <option value="cozumel2026|Oceanman Cozumel 2026">Oceanman Cozumel 2026</option>
     </select>
     <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);margin:0.2rem 0 0.6rem">
       Tip: para subir foto a un proximo evento, abre la tarjeta del evento y toca + Subir foto desde ahi.
     </div>
     <label>Selecciona imagen</label>
-    <input type="file" id="reg-foto-intl-input" accept="image/*" onchange="prevFotoIntl(this)" style="font-size:0.8rem;padding:0.5rem">
+    <input type="file" id="reg-foto-intl-input" accept="image/*" multiple onchange="prevFotoIntl(this)" style="font-size:0.8rem;padding:0.5rem">
+    <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);margin:-0.2rem 0 0.5rem">Puedes elegir varias a la vez. Todas se guardan en el mismo evento.</div>
     <div id="foto-intl-preview-container" style="margin:0.5rem 0"></div>
     <label>Descripcion (opcional)</label>
     <input id="foto-intl-caption" placeholder="Ej: Equipo Laguna Swim - Top 10">
@@ -5578,7 +5580,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
   <!-- Logros pasados (4 fijos) -->
   <div class="intl-section-head">
     <span>&#127881; Logros internacionales</span>
-    <span style="font-size:0.62rem;color:var(--accent-soft);font-weight:600">4 representaciones</span>
+    <span style="font-size:0.62rem;color:var(--accent-soft);font-weight:600">5 representaciones</span>
   </div>
 
   <div class="evento-wrapper">
@@ -5635,6 +5637,20 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <div class="evento-arrow">&#9662;</div>
     </div>
     <div class="evento-galeria" id="gal-costarica2025"></div>
+  </div>
+
+  <div class="evento-wrapper">
+    <div class="evento-card pasado evento-card-clickable" data-evento-id="cozumel2026" onclick="toggleEvento(this)">
+      <div class="evento-flag">&#127474;&#127485;</div>
+      <div class="evento-info">
+        <div class="evento-titulo">Oceanman Cozumel</div>
+        <div class="evento-lugar">Cozumel, Quintana Roo</div>
+        <div class="evento-fecha">Agosto 2026</div>
+      </div>
+      <div class="evento-badge evento-badge-realizado">REALIZADO</div>
+      <div class="evento-arrow">&#9662;</div>
+    </div>
+    <div class="evento-galeria" id="gal-cozumel2026"></div>
   </div>
 
   <!-- Próximos eventos (editable desde Firebase) -->
@@ -10422,6 +10438,7 @@ function abrirSubirFotoIntl() {
 function cerrarSubirFotoIntl() {
   document.getElementById('modal-foto-intl').classList.add('modal-hidden');
   intl.fotoBase64 = null;
+  intl.fotos = [];
   intl.eventoForzado = null;
   document.getElementById('foto-intl-preview-container').innerHTML = '';
   document.getElementById('reg-foto-intl-input').value = '';
@@ -10434,79 +10451,105 @@ function cerrarSubirFotoIntl() {
 }
 
 function prevFotoIntl(input) {
-  var file = input.files[0];
-  if (!file) return;
-  if (file.size > 10 * 1024 * 1024) {
-    alert('La imagen es muy grande (max 10MB).');
-    input.value = '';
-    return;
+  // Antes solo aceptaba una foto. Ahora acepta varias y las sube en fila.
+  intl.fotos = [];
+  var cont = document.getElementById('foto-intl-preview-container');
+  cont.innerHTML = '';
+  var files = Array.prototype.slice.call(input.files || []);
+  if (!files.length) return;
+
+  var grandes = files.filter(function(f) { return f.size > 10 * 1024 * 1024; });
+  if (grandes.length) {
+    alert(grandes.length + ' foto(s) pesan mas de 10MB y se omitieron.');
+    files = files.filter(function(f) { return f.size <= 10 * 1024 * 1024; });
   }
-  intl.fotoType = file.type;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    intl.fotoBase64 = e.target.result.split(',')[1];
-    document.getElementById('foto-intl-preview-container').innerHTML =
-      '<img src="' + e.target.result + '" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px">';
-  };
-  reader.readAsDataURL(file);
+  if (!files.length) { input.value = ''; return; }
+
+  cont.innerHTML = '<div id="intl-prev-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.35rem"></div>' +
+    '<div id="intl-prev-count" style="font-size:0.68rem;color:var(--accent-soft);margin-top:0.4rem;text-align:center"></div>';
+  var grid = document.getElementById('intl-prev-grid');
+
+  files.forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      intl.fotos.push({ base64: e.target.result.split(',')[1], type: file.type });
+      var d = document.createElement('div');
+      d.style.cssText = 'aspect-ratio:1;border-radius:8px;overflow:hidden;background:#0a1628';
+      d.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;display:block">';
+      grid.appendChild(d);
+      var c = document.getElementById('intl-prev-count');
+      if (c) c.textContent = intl.fotos.length + (intl.fotos.length === 1 ? ' foto lista' : ' fotos listas');
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 async function subirFotoIntl() {
   if (!state.user || state.user.email !== CONFIG.coach) return;
-  if (!intl.fotoBase64) { alert('Elige una foto primero'); return; }
+  if (!intl.fotos || !intl.fotos.length) { alert('Elige al menos una foto'); return; }
 
-  // Validar evento (si no está pre-seleccionado por la tarjeta)
   var eventoData = intl.eventoForzado || document.getElementById('foto-intl-evento').value;
-  if (!eventoData) {
-    alert('Selecciona el evento al que pertenece la foto');
-    return;
-  }
-  // Formato: "id|label"
+  if (!eventoData) { alert('Selecciona el evento al que pertenece la foto'); return; }
   var partes = eventoData.split('|');
   var eventoId = partes[0];
   var eventoLabel = partes[1] || partes[0];
+  var caption = document.getElementById('foto-intl-caption').value || '';
 
   var progress = document.getElementById('foto-intl-progress');
   var btn = document.getElementById('btn-subir-foto-intl');
   progress.style.display = 'block';
   btn.style.display = 'none';
 
-  try {
-    var fd = new FormData();
-    fd.append('file', 'data:' + intl.fotoType + ';base64,' + intl.fotoBase64);
-    fd.append('upload_preset', CONFIG.uploadPreset);
-    fd.append('folder', 'laguna_swim/internacionales/' + eventoId);
-    var res = await fetch('https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/image/upload', {
-      method: 'POST',
-      body: fd
-    });
-    var data = await res.json();
-    if (!data.secure_url) throw new Error('Error en Cloudinary');
+  var total = intl.fotos.length;
+  var ok = 0, fallaron = 0;
 
-    var key = db.ref('fotos_internacionales').push().key;
-    await db.ref('fotos_internacionales/' + key).set({
-      url: data.secure_url,
-      cloudinaryId: data.public_id || '',
-      nombre: 'Laguna Swim',
-      uid: state.user.uid,
-      eventoId: eventoId,
-      eventoLabel: eventoLabel,
-      caption: document.getElementById('foto-intl-caption').value || '',
-      timestamp: Date.now(),
-      likes: 0
-    });
+  for (var i = 0; i < total; i++) {
+    progress.innerHTML = '<div class="spinner"></div> Subiendo ' + (i + 1) + ' de ' + total + '...';
+    try {
+      var foto = intl.fotos[i];
+      var fd = new FormData();
+      fd.append('file', 'data:' + foto.type + ';base64,' + foto.base64);
+      fd.append('upload_preset', CONFIG.uploadPreset);
+      fd.append('folder', 'laguna_swim/internacionales/' + eventoId);
+      var res = await fetch('https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/image/upload', {
+        method: 'POST',
+        body: fd
+      });
+      var data = await res.json();
+      if (!data.secure_url) throw new Error('Cloudinary no devolvio la imagen');
 
+      var key = db.ref('fotos_internacionales').push().key;
+      await db.ref('fotos_internacionales/' + key).set({
+        url: data.secure_url,
+        cloudinaryId: data.public_id || '',
+        nombre: 'Laguna Swim',
+        uid: state.user.uid,
+        eventoId: eventoId,
+        eventoLabel: eventoLabel,
+        caption: caption,
+        timestamp: Date.now() + i,
+        likes: 0
+      });
+      ok++;
+    } catch (e) {
+      console.warn('Foto ' + (i + 1) + ' fallo:', e);
+      fallaron++;
+    }
+  }
+
+  progress.style.display = 'none';
+  progress.innerHTML = '<div class="spinner"></div> Subiendo a Cloudinary...';
+  btn.style.display = 'block';
+
+  if (fallaron) alert(ok + ' foto(s) publicadas. ' + fallaron + ' no se pudieron subir, intenta de nuevo con esas.');
+
+  if (ok) {
+    var evId = eventoId;
     cerrarSubirFotoIntl();
     cargarFotosIntl();
-    // Si se subió desde una tarjeta abierta, refrescar la galería
-    if (intl.eventoForzado) {
-      cargarFotosEvento(eventoId);
-    }
-  } catch (e) {
-    alert('Error: ' + e.message);
+    cargarFotosEvento(evId);
+    cargarFotosEvento('prox_' + evId);
   }
-  progress.style.display = 'none';
-  btn.style.display = 'block';
   intl.eventoForzado = null;
 }
 
@@ -10579,7 +10622,8 @@ function cargarFotosEvento(eventoId) {
           'colombia2022': 'PanAm Colombia 2022',
           'trinidad2024': 'PanAm Trinidad 2024',
           'italia2025': 'Oceanman Italia 2025',
-          'costarica2025': 'Oceanman Costa Rica 2025'
+          'costarica2025': 'Oceanman Costa Rica 2025',
+          'cozumel2026': 'Oceanman Cozumel 2026'
         };
         var label = labels[evid];
         if (!label) {
