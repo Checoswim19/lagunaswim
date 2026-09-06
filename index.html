@@ -9451,14 +9451,17 @@ var PATROCINADORES = [
     link: 'https://lagunaswim.net'
   },
   {
-    logo: 'https://res.cloudinary.com/dg84htrzg/image/upload/v1778099160/rincon_tk62uj.jpg',
-    nombre: 'Rincon de la Noa',
-    link: 'https://www.facebook.com/Rincondelanoatrc/'
+    texto: 'IMPRESORES',
+    subtexto: 'Alvarez',
+    color: '#2563eb',
+    nombre: 'Alvarez Impresores',
+    link: 'https://lagunaswim.net/alvarez.html'
   },
   {
-    logo: 'https://res.cloudinary.com/dg84htrzg/image/upload/v1778099160/margo_uvgdwf.jpg',
-    nombre: 'Margo Sublimacion y Bordados',
-    link: 'https://www.facebook.com/margo.syb/'
+    texto: 'NUTRIÓLOGA',
+    subtexto: 'Linda Alvarez',
+    nombre: 'Lic. Nut. Linda Alvarez',
+    link: 'https://checoswim19.github.io/linda-alvarez/'
   }
 ];
 
@@ -9467,6 +9470,23 @@ var sponsState = {
   interval: null,
   paused: false
 };
+
+function sponsTextoHtml(p) {
+  var col = p.color || '#0f766e';
+  return '<div style="text-align:center;line-height:1.05;padding:0 2px">' +
+    '<div style="font-size:0.5rem;font-weight:800;letter-spacing:0.5px;color:' + col + '">' +
+      escapeHtml(p.texto || p.nombre || '') + '</div>' +
+    (p.subtexto ? '<div style="font-size:0.58rem;font-weight:800;color:#0a2956;margin-top:1px">' +
+      escapeHtml(p.subtexto) + '</div>' : '') +
+  '</div>';
+}
+function sponsFallback(img) {
+  var cont = img.parentNode;
+  if (!cont) return;
+  cont.innerHTML = '<div style="text-align:center;font-size:0.52rem;font-weight:800;color:#0a2956;line-height:1.1;padding:0 2px">' +
+    escapeHtml(img.getAttribute('alt') || '') + '</div>';
+}
+window.sponsFallback = sponsFallback;
 
 function buildSponsCarousel() {
   // Construir barra fija con los 4 logos visibles siempre
@@ -9483,7 +9503,16 @@ function buildSponsCarousel() {
   PATROCINADORES.forEach(function(p) {
     var item = document.createElement('div');
     item.className = 'spons-bar-item';
-    item.innerHTML = '<img src="' + p.logo + '" alt="' + escapeHtml(p.nombre) + '" loading="lazy">';
+    if (p.logo) {
+      // FIX: si el logo no carga (link roto), mostramos el nombre en texto
+      // en vez del icono de imagen rota.
+      item.innerHTML = '<img src="' + p.logo + '" alt="' + escapeHtml(p.nombre) +
+        '" loading="lazy" onerror="sponsFallback(this)">';
+    } else {
+      // FIX: patrocinadores de solo texto (Alvarez Impresores, Linda Alvarez)
+      // antes salian como imagen rota porque la barra solo pintaba <img>.
+      item.innerHTML = sponsTextoHtml(p);
+    }
     if (p.link) {
       item.addEventListener('click', function() {
         openUrl(p.link);
