@@ -1610,12 +1610,15 @@ body.v2-redesign {
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid rgba(255,215,0,0.55);
 }
 .v2-app-header-logo img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(255,215,0,0.3));
+  object-fit: cover;
+  transform: scale(1.02);
 }
 .v2-app-header-text { flex: 1; min-width: 0; }
 .v2-app-header-main {
@@ -2051,6 +2054,31 @@ body.v2-redesign {
   font-weight: 900;
 }
 
+/* Cuenta regresiva World Final Championship */
+.wfc-cd-box {
+  background: rgba(2,14,31,0.55);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 6px;
+  padding: 0.5rem 0.2rem;
+  text-align: center;
+}
+.wfc-cd-num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+}
+.wfc-cd-lbl {
+  font-size: 0.5rem;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
 /* Coach mini poster */
 .v2-coach-poster {
   background: linear-gradient(90deg,
@@ -2447,7 +2475,7 @@ body.v3-fluid .v2-coach-poster:active {
   z-index: 2;
   border-radius: 50%;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 40%, #0a2956 0%, #051a3a 100%);
+  background: #fff;
   border: 2.5px solid var(--gold);
   box-shadow: 0 4px 18px rgba(0,0,0,0.5), 0 0 0 4px rgba(255,215,0,0.15), 0 0 0 7px rgba(255,215,0,0.05);
   animation: v3LogoEntry 0.8s cubic-bezier(0.34,1.56,0.64,1);
@@ -2455,8 +2483,8 @@ body.v3-fluid .v2-coach-poster:active {
 }
 .v5-hero-logo img {
   width: 100%; height: 100%;
-  object-fit: contain;
-  padding: 8px;
+  object-fit: cover;
+  transform: scale(1.02);
 }
 .v5-hero-content {
   position: relative;
@@ -3753,14 +3781,54 @@ body.blog-active #tab-timer { display: none !important; }
         <div class="v2-section-head-line"></div>
       </div>
 
-      <div class="v2-event-poster" onclick="showTab('tab-ranking')">
-        <div class="v2-event-tape">⚠️ INSCRIPCIONES AGOTADAS</div>
+      <!-- EVENTO PRINCIPAL: Oceanman World Final Championship + cuenta regresiva -->
+      <div class="v2-event-poster" style="border-color:var(--gold);margin-bottom:0.8rem"
+        onclick="openUrl('https://dominicanrepublicwfc.lovable.app/')">
+        <div class="v2-event-tape" style="background:linear-gradient(90deg,#0a3a6e,#1a6bb5)">🌎 WORLD FINAL CHAMPIONSHIP</div>
         <div class="v2-event-body">
-          <div class="v2-event-flag">🇲🇽</div>
+          <div class="v2-event-flag">🇩🇴</div>
           <div class="v2-event-info">
-            <div class="v2-event-name">Oceanman Cozumel 2026</div>
-            <div class="v2-event-date">1-2 AGOSTO · 2026</div>
-            <div class="v2-event-loc">Cozumel, Quintana Roo</div>
+            <div class="v2-event-name">Oceanman República Dominicana</div>
+            <div class="v2-event-date">9-15 NOVIEMBRE · 2026</div>
+            <div class="v2-event-loc">Miches, República Dominicana</div>
+          </div>
+          <div class="v2-event-arrow">→</div>
+        </div>
+
+        <!-- Cuenta regresiva al arranque de la semana del mundial -->
+        <div style="padding:0 1rem 1rem">
+          <div style="font-size:0.55rem;letter-spacing:3px;font-weight:800;color:var(--gold);text-align:center;margin-bottom:0.5rem;text-transform:uppercase">Faltan</div>
+          <div id="wfc-countdown" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem">
+            <div class="wfc-cd-box"><div class="wfc-cd-num" id="wfc-d">--</div><div class="wfc-cd-lbl">días</div></div>
+            <div class="wfc-cd-box"><div class="wfc-cd-num" id="wfc-h">--</div><div class="wfc-cd-lbl">horas</div></div>
+            <div class="wfc-cd-box"><div class="wfc-cd-num" id="wfc-m">--</div><div class="wfc-cd-lbl">min</div></div>
+            <div class="wfc-cd-box"><div class="wfc-cd-num" id="wfc-s">--</div><div class="wfc-cd-lbl">seg</div></div>
+          </div>
+          <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);text-align:center;margin-top:0.6rem;line-height:1.4">
+            4,000+ nadadores · 100+ nacionalidades · 7 días en el Caribe
+          </div>
+
+          <!-- El equipo viaja junto: primero se coordinan con el coach -->
+          <button onclick="event.stopPropagation();contactoWFC()"
+            style="width:100%;margin-top:0.8rem;padding:0.85rem;background:#16a34a;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:0.82rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.4rem">
+            💬 Quiero ir · Escríbele al Coach
+          </button>
+          <div style="font-size:0.58rem;color:rgba(255,255,255,0.5);text-align:center;margin-top:0.45rem;line-height:1.4">
+            Vamos como equipo Laguna Swim. Antes de inscribirte,<br>ponte de acuerdo con el Coach Checo.
+          </div>
+        </div>
+      </div>
+
+      <!-- EVENTO CERRADO: Cuba -->
+      <div class="v2-event-poster" style="opacity:0.85"
+        onclick="openUrl('https://www.granretto.com/proximos-eventos/detalle?id=236')">
+        <div class="v2-event-tape">⚠️ INSCRIPCIONES CERRADAS</div>
+        <div class="v2-event-body">
+          <div class="v2-event-flag">🇨🇺</div>
+          <div class="v2-event-info">
+            <div class="v2-event-name">Aguas Abiertas Gran Retto Cuba 2026</div>
+            <div class="v2-event-date">12-13 SEPTIEMBRE · 2026</div>
+            <div class="v2-event-loc">Varadero, Cuba</div>
           </div>
           <div class="v2-event-arrow">→</div>
         </div>
@@ -4074,6 +4142,7 @@ body.blog-active #tab-timer { display: none !important; }
   <div class="reco-box" id="reco-box">
     <div class="reco-empty">Cargando recomendaciones...</div>
   </div>
+  <div id="reco-ver-google"></div>
   <button class="btn btn-gold" style="margin-bottom:1rem" onclick="shareAbrir()">&#9997;&#65039; Comparte tu experiencia</button>
   <div id="reco-coach-mod"></div>
   <div id="blog-chips" class="blog-chips"></div>
@@ -4120,6 +4189,8 @@ body.blog-active #tab-timer { display: none !important; }
   <div style="font-size:0.75rem;color:var(--accent-soft);margin-bottom:0.9rem">Nada se publica hasta que t&uacute; lo apruebes.</div>
   <div class="sect-title" style="font-size:0.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin:0.4rem 0 0.6rem">Por aprobar (<span id="reco-pend-count">0</span>)</div>
   <div id="reco-pend-list"></div>
+  <div class="sect-title" style="font-size:0.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin:1.2rem 0 0.6rem">Rese&ntilde;as de Google</div>
+  <div id="reco-google-list"></div>
   <div class="sect-title" style="font-size:0.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin:1.2rem 0 0.6rem">Publicadas</div>
   <div id="reco-ok-list"></div>
 </div>
@@ -4132,6 +4203,10 @@ body.blog-active #tab-timer { display: none !important; }
     <div class="ls-choice" onclick="shareForm('review')">
       <div class="ic">&#11088;</div>
       <div><div class="ct">Rese&ntilde;a p&uacute;blica con estrellas</div><div class="cs">Aparece en el muro despu&eacute;s de que el coach la apruebe</div></div>
+    </div>
+    <div class="ls-choice" onclick="shareCerrar();openUrl(GOOGLE_RESENA_URL)">
+      <div class="ic" id="ls-google-ic"></div>
+      <div><div class="ct">Opini&oacute;n p&uacute;blica en Google</div><div class="cs">La ve cualquiera que nos busque en internet</div></div>
     </div>
     <div class="ls-choice" onclick="shareForm('message')">
       <div class="ic">&#9993;&#65039;</div>
@@ -4163,6 +4238,24 @@ body.blog-active #tab-timer { display: none !important; }
       <div style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-top:0.4rem">Tu rese&ntilde;a lleg&oacute; al coach. Aparecer&aacute; en el muro cuando la apruebe.</div>
       <button class="btn btn-sky" onclick="shareCerrar()">Listo</button>
     </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: CAPTURAR RESENA DE GOOGLE (solo coach) ============ -->
+<div class="ls-modal" id="m-google">
+  <div class="ls-sheet">
+    <h3>Rese&ntilde;a de Google</h3>
+    <div class="sub">C&oacute;piala tal cual aparece en tu perfil. No la edites ni la resumas: la gente puede ir a verificarla.</div>
+    <label>Nombre de quien la escribi&oacute;</label>
+    <input id="g-nombre" placeholder="Como aparece en Google">
+    <label>Calificaci&oacute;n</label>
+    <div class="star-pick" id="g-pick"></div>
+    <label>Texto de la rese&ntilde;a</label>
+    <textarea id="g-texto" rows="5" placeholder="Pega aqu&iacute; el texto completo"></textarea>
+    <label>Cu&aacute;ndo la dejaron (opcional)</label>
+    <input id="g-fecha" placeholder="Ej. marzo 2026">
+    <button class="btn btn-gold" id="g-btn" onclick="googleGuardar()">Publicar en el muro</button>
+    <button class="btn btn-ghost" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--bg-card-border)" onclick="googleCerrar()">Cancelar</button>
   </div>
 </div>
 
@@ -6754,6 +6847,41 @@ async function shareResults() {
   });
 }
 
+// Los nadadores que quieran ir al mundial se coordinan primero con el coach
+function contactoWFC() {
+  var msg = 'Hola Coach Checo! Me interesa ir al Oceanman World Final Championship en República Dominicana (9-15 de noviembre 2026, Miches). ¿Cómo nos organizamos? Quiero saber distancias, fechas de inscripción y cómo viaja el equipo.';
+  openUrl('https://wa.me/528713164850?text=' + encodeURIComponent(msg));
+}
+window.contactoWFC = contactoWFC;
+
+// ===== CUENTA REGRESIVA: Oceanman World Final Championship =====
+// Arranque de la semana del mundial: 9 nov 2026, hora de Republica Dominicana (AST, UTC-4)
+var WFC_FECHA = new Date('2026-11-09T00:00:00-04:00').getTime();
+
+function wfcTick() {
+  var d = document.getElementById('wfc-d');
+  if (!d) return;
+  var falta = WFC_FECHA - Date.now();
+  if (falta <= 0) {
+    d.textContent = '00';
+    document.getElementById('wfc-h').textContent = '00';
+    document.getElementById('wfc-m').textContent = '00';
+    document.getElementById('wfc-s').textContent = '00';
+    return;
+  }
+  var seg = Math.floor(falta / 1000);
+  var dias = Math.floor(seg / 86400);
+  var horas = Math.floor((seg % 86400) / 3600);
+  var mins = Math.floor((seg % 3600) / 60);
+  var segs = seg % 60;
+  d.textContent = dias;
+  document.getElementById('wfc-h').textContent = String(horas).padStart(2, '0');
+  document.getElementById('wfc-m').textContent = String(mins).padStart(2, '0');
+  document.getElementById('wfc-s').textContent = String(segs).padStart(2, '0');
+}
+wfcTick();
+setInterval(wfcTick, 1000);
+
 // ===== TIENDA =====
 var BOOKS = [
   null,
@@ -6802,7 +6930,7 @@ function closeBlog() {
   try { if (location.search.indexOf('post=') > -1) history.replaceState(null, '', location.pathname); } catch (e) {}
   try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
 }
-function openBlog() { goBlog('b-list'); blogLoad(); blogResenasLoad(); }
+function openBlog() { goBlog('b-list'); blogLoad(); blogResenasLoad(); googleResenasLoad(); }
 
 function blogLoad() {
   if (!db) return;
@@ -7033,7 +7161,11 @@ function blogBorrar(id) {
 }
 
 // ============ RECOMENDACIONES DE PAPAS ============
-var recoState = { aprobadas: [], pend: [], order: [], idx: 0, timer: null, bound: false, revStars: 5 };
+var recoState = { aprobadas: [], pend: [], order: [], idx: 0, timer: null, bound: false, revStars: 5, google: [], gBound: false, gStars: 5 };
+// Perfil de Google del equipo. El primero abre la ficha, el segundo abre
+// directo el formulario para dejar una resena nueva.
+var GOOGLE_PERFIL_URL = 'https://maps.app.goo.gl/g5ud6XLzuPSfdJjJ7';
+var GOOGLE_RESENA_URL = 'https://g.page/r/CSkajLBoPzuIEBE/review';
 
 function recoShuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
 function recoStarHtml(s) { var h = ''; for (var i = 1; i <= 5; i++) { h += '<span class="' + (i <= s ? 'star-on' : 'star-off') + '">&#9733;</span>'; } return h; }
@@ -7054,9 +7186,29 @@ function blogResenasLoad() {
   });
 }
 
+function googleResenasLoad() {
+  if (!db) return;
+  if (recoState.gBound) { recoRenderCarousel(); return; }
+  recoState.gBound = true;
+  db.ref('resenas_google').on('value', function(snap) {
+    var arr = [];
+    snap.forEach(function(ch) { var v = ch.val() || {}; v.id = ch.key; v.google = true; arr.push(v); });
+    arr.sort(function(a, b) { return (b.ts || 0) - (a.ts || 0); });
+    recoState.google = arr;
+    recoState.order = [];
+    recoRenderCarousel();
+    recoRenderCoachBtn();
+  });
+}
+
+// Todas las resenas que se muestran: las de Google + las aprobadas por el coach
+function recoTodas() {
+  return recoState.google.concat(recoState.aprobadas);
+}
+
 function recoRenderCarousel() {
   var box = document.getElementById('reco-box'); if (!box) return;
-  var ap = recoState.aprobadas;
+  var ap = recoTodas();
   if (!ap.length) {
     box.innerHTML = '<div class="reco-empty">A&uacute;n no hay recomendaciones publicadas.<br>&iexcl;S&eacute; el primero en dejar la tuya!</div>';
     if (recoState.timer) clearInterval(recoState.timer);
@@ -7066,9 +7218,17 @@ function recoRenderCarousel() {
   if (recoState.idx >= recoState.order.length) recoState.idx = 0;
   var r = ap[recoState.order[recoState.idx]];
   var av = (r.nombre || '?').charAt(0).toUpperCase();
+  // Sello de Google: deja claro cuales son resenas publicas verificables
+  var sello = r.google
+    ? '<div onclick="openUrl(GOOGLE_PERFIL_URL)" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border-radius:50px;padding:3px 10px;margin-bottom:0.6rem;cursor:pointer">' +
+        googleSvg(12) +
+        '<span style="font-size:0.58rem;font-weight:800;color:#3c4043;letter-spacing:0.3px">Rese\u00f1a de Google</span>' +
+      '</div>'
+    : '';
   var dots = '';
   for (var i = 0; i < recoState.order.length; i++) { dots += '<div class="reco-dot' + (i === recoState.idx ? ' active' : '') + '" onclick="recoIr(' + i + ')"></div>'; }
   box.innerHTML =
+    sello +
     '<div class="reco-stars">' + recoStarHtml(r.estrellas || 5) + '</div>' +
     '<div class="reco-text">&ldquo;' + escapeHtml(r.texto || '') + '&rdquo;</div>' +
     '<div class="reco-author"><div class="reco-av">' + escapeHtml(av) + '</div>' +
@@ -7077,6 +7237,26 @@ function recoRenderCarousel() {
     (recoState.order.length > 1 ? '<div class="reco-dots">' + dots + '</div>' : '');
   if (recoState.timer) clearInterval(recoState.timer);
   if (recoState.order.length > 1) recoState.timer = setInterval(recoSiguiente, 5000);
+  recoRenderVerGoogle();
+}
+
+function googleSvg(px) {
+  return '<svg width="' + px + '" height="' + px + '" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>';
+}
+
+function recoRenderVerGoogle() {
+  var el = document.getElementById('reco-ver-google');
+  if (!el) return;
+  var h = '';
+  if (GOOGLE_PERFIL_URL && recoState.google.length) {
+    h += '<button onclick="openUrl(GOOGLE_PERFIL_URL)" style="width:100%;background:#fff;border:none;border-radius:10px;padding:0.7rem;font-family:inherit;font-size:0.8rem;font-weight:700;color:#3c4043;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.45rem;margin-bottom:0.5rem">' +
+      googleSvg(14) + 'Ver todas nuestras rese\u00f1as en Google</button>';
+  }
+  if (GOOGLE_RESENA_URL) {
+    h += '<button onclick="openUrl(GOOGLE_RESENA_URL)" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:0.7rem;font-family:inherit;font-size:0.78rem;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.45rem;margin-bottom:0.6rem">' +
+      googleSvg(13) + 'Dejar mi opini\u00f3n en Google</button>';
+  }
+  el.innerHTML = h;
 }
 function recoIr(i) { recoState.idx = i; recoRenderCarousel(); }
 function recoSiguiente() { recoState.idx = (recoState.idx + 1) % recoState.order.length; recoRenderCarousel(); }
@@ -7084,12 +7264,19 @@ function recoSiguiente() { recoState.idx = (recoState.idx + 1) % recoState.order
 function recoRenderCoachBtn() {
   var c = document.getElementById('reco-coach-mod'); if (!c) return;
   if (state && state.isCoach) {
-    c.innerHTML = '<button class="btn btn-ghost" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--bg-card-border);margin-bottom:1rem" onclick="goBlog(\'b-resenas\');recoRenderModeracion();">&#129534; Rese&ntilde;as por aprobar (' + recoState.pend.length + ')</button>';
+    c.innerHTML =
+      '<button class="btn btn-ghost" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--bg-card-border);margin-bottom:0.5rem" onclick="goBlog(\'b-resenas\');recoRenderModeracion();">&#129534; Rese&ntilde;as por aprobar (' + recoState.pend.length + ')</button>' +
+      '<button class="btn btn-ghost" style="background:#fff;color:#3c4043;border:none;margin-bottom:1rem;font-weight:800" onclick="googleAbrir()">&#43; Agregar rese&ntilde;a de Google (' + recoState.google.length + ')</button>';
   } else { c.innerHTML = ''; }
 }
 
 // ----- Compartir experiencia (modales) -----
-function shareAbrir() { shareCerrar(); document.getElementById('m-share').classList.add('open'); }
+function shareAbrir() {
+  shareCerrar();
+  var ic = document.getElementById('ls-google-ic');
+  if (ic) ic.innerHTML = googleSvg(26);
+  document.getElementById('m-share').classList.add('open');
+}
 function shareCerrar() { ['m-share', 'm-review', 'm-message'].forEach(function(id) { var e = document.getElementById(id); if (e) e.classList.remove('open'); }); }
 function shareForm(type) {
   shareCerrar();
@@ -7144,6 +7331,52 @@ function shareMensajeEnviar() {
   try { window.location.href = url; } catch (e) { window.open(url); }
 }
 
+// ----- Captura manual de resenas de Google (solo coach) -----
+function googleAbrir() {
+  if (!(state && state.isCoach)) return;
+  recoState.gStars = 5;
+  googlePick(5);
+  document.getElementById('g-nombre').value = '';
+  document.getElementById('g-texto').value = '';
+  document.getElementById('g-fecha').value = '';
+  document.getElementById('m-google').classList.add('open');
+}
+function googleCerrar() { var e = document.getElementById('m-google'); if (e) e.classList.remove('open'); }
+function googlePick(n) {
+  recoState.gStars = n;
+  var h = '';
+  for (var i = 1; i <= 5; i++) { h += '<span onclick="googlePick(' + i + ')" class="' + (i <= n ? 'star-on' : 'star-off') + '">&#9733;</span>'; }
+  document.getElementById('g-pick').innerHTML = h;
+}
+function googleGuardar() {
+  if (!(state && state.isCoach)) return;
+  var nombre = (document.getElementById('g-nombre').value || '').trim();
+  var texto = (document.getElementById('g-texto').value || '').trim();
+  var fecha = (document.getElementById('g-fecha').value || '').trim();
+  if (!nombre) { alert('Pon el nombre tal como aparece en Google'); return; }
+  if (!texto) { alert('Pega el texto de la resena'); return; }
+  var btn = document.getElementById('g-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
+  db.ref('resenas_google').push({
+    nombre: nombre,
+    texto: texto,
+    estrellas: recoState.gStars || 5,
+    relacion: fecha ? ('En Google \u00b7 ' + fecha) : 'En Google',
+    ts: Date.now()
+  }).then(function() {
+    if (btn) { btn.disabled = false; btn.textContent = 'Publicar en el muro'; }
+    googleCerrar();
+  }).catch(function() {
+    if (btn) { btn.disabled = false; btn.textContent = 'Publicar en el muro'; }
+    alert('No se pudo guardar. Revisa tu conexion o los permisos de Firebase.');
+  });
+}
+function googleBorrar(id) {
+  if (!(state && state.isCoach)) return;
+  if (!confirm('\u00bfQuitar esta resena de Google del muro?')) return;
+  db.ref('resenas_google/' + id).remove();
+}
+
 // ----- Moderacion (solo coach) -----
 function recoRenderModeracion() {
   if (!(state && state.isCoach)) { goBlog('b-list'); return; }
@@ -7161,6 +7394,20 @@ function recoRenderModeracion() {
             '<button class="btn btn-green" style="margin-top:0;font-size:0.78rem;padding:0.6rem;background:var(--success);color:#fff" onclick="resenaAprobar(\'' + r.id + '\')">&#10003; Aprobar y publicar</button>' +
             '<button class="btn" style="margin-top:0;font-size:0.78rem;padding:0.6rem;background:rgba(192,86,59,0.18);color:#e98a6e;border:1px solid rgba(192,86,59,0.5)" onclick="resenaDescartar(\'' + r.id + '\')">Descartar</button>' +
           '</div></div>';
+      }).join('');
+    }
+  }
+  var gl = document.getElementById('reco-google-list');
+  if (gl) {
+    if (!recoState.google.length) { gl.innerHTML = '<div class="reco-empty">A&uacute;n no has capturado rese&ntilde;as de Google.</div>'; }
+    else {
+      gl.innerHTML = recoState.google.map(function(r) {
+        return '<div class="reco-pend"><span class="reco-badge ok">Google</span>' +
+          '<div class="reco-stars" style="font-size:0.9rem">' + recoStarHtml(r.estrellas || 5) + '</div>' +
+          '<div style="font-weight:800;font-size:0.85rem;margin-top:0.3rem">' + escapeHtml(r.nombre || '') + '</div>' +
+          '<div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.3rem;line-height:1.4">&ldquo;' + escapeHtml(r.texto || '') + '&rdquo;</div>' +
+          '<button class="btn" style="margin-top:0.7rem;font-size:0.78rem;padding:0.6rem;background:rgba(192,86,59,0.18);color:#e98a6e;border:1px solid rgba(192,86,59,0.5)" onclick="googleBorrar(\'' + r.id + '\')">&#128465;&#65039; Quitar</button>' +
+        '</div>';
       }).join('');
     }
   }
