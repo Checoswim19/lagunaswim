@@ -10,6 +10,15 @@
 <title>Laguna Swim International</title>
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png">
 <meta name="apple-mobile-web-app-title" content="Laguna Swim">
+<meta name="description" content="Escuela de natación en Torreón: clases desde preescolar hasta Masters, aguas abiertas y entrenamiento con el coach Checo Villarreal.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Laguna Swim International">
+<meta property="og:title" content="Laguna Swim International · Torreón">
+<meta property="og:description" content="Clases de natación desde preescolar hasta Masters, aguas abiertas, noticias del equipo y la frase de la semana.">
+<meta property="og:image" content="https://res.cloudinary.com/dg84htrzg/image/upload/c_pad,w_1200,h_630,b_rgb:071e38/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png">
+<meta property="og:url" content="https://lagunaswim.net/">
+<meta property="og:locale" content="es_MX">
+<meta name="twitter:card" content="summary_large_image">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
@@ -3497,6 +3506,140 @@ body.blog-active #tab-timer { display: none !important; }
 .reco-badge{display:inline-block;font-size:0.58rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:rgba(255,215,0,0.18);color:var(--gold);padding:2px 8px;border-radius:50px;margin-bottom:0.5rem}
 .reco-badge.ok{background:rgba(34,197,94,0.18);color:var(--success)}
 /* <<< RECO CSS <<< */
+/* ====== V6: FRASE DE LA SEMANA EN EL HERO ====== */
+.hero-frase {
+  margin: -0.6rem 0 1.5rem;
+  padding: 1rem 0 0;
+  border-top: 1px solid rgba(255,215,0,0.35);
+  animation: v3FadeUp 0.6s 0.45s ease-out backwards;
+}
+.hero-frase blockquote {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.22rem;
+  line-height: 1.45;
+  color: #fff;
+  text-wrap: balance;
+}
+.hero-frase blockquote::before {
+  content: '\201C';
+  display: block;
+  font-size: 3.2rem;
+  line-height: 0.55;
+  margin-bottom: 0.15rem;
+  color: var(--gold);
+}
+.hero-frase figcaption {
+  margin-top: 0.55rem;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.68);
+}
+.hero-frase-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+}
+.hero-frase-sem { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+.hero-frase-btn {
+  flex-shrink: 0;
+  background: rgba(255,215,0,0.14);
+  border: 1px solid rgba(255,215,0,0.55);
+  color: var(--gold);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.hero-frase-btn:focus-visible, .home-muro-card:focus-visible, .home-muro-all:focus-visible, .blog-paste-btn:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+/* Visor de imagen (respaldo si el iPhone no deja compartir directo) */
+.frase-visor {
+  position: fixed; inset: 0; z-index: 99999;
+  background: rgba(3,10,20,0.94);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 1.2rem; gap: 0.8rem;
+}
+.frase-visor img { max-width: 100%; max-height: 72vh; border-radius: 14px; }
+.frase-visor p { color: #fff; font-size: 0.85rem; text-align: center; margin: 0; }
+.frase-visor button { max-width: 320px; }
+
+/* ====== V6: LO ULTIMO DEL MURO EN EL HOME ====== */
+.home-muro {
+  display: flex; gap: 0.7rem;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.5rem; margin-bottom: 0.4rem;
+  scrollbar-width: none;
+}
+.home-muro::-webkit-scrollbar { display: none; }
+.home-muro-card {
+  flex: 0 0 76%; max-width: 300px;
+  scroll-snap-align: start;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 0; text-align: left;
+  color: #fff; font: inherit;
+  cursor: pointer;
+}
+.home-muro-card:only-child { flex-basis: 100%; max-width: none; }
+.home-muro-img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: #0a2956; }
+.home-muro-body { padding: 0.7rem 0.8rem 0.85rem; }
+.home-muro-title {
+  font-weight: 800; font-size: 0.92rem; line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.home-muro-meta { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 0.35rem; }
+.home-muro-all {
+  background: none; border: none; color: var(--accent);
+  font: inherit; font-size: 0.82rem; font-weight: 700;
+  padding: 0.3rem 0; cursor: pointer;
+}
+
+/* Mosaico de plataforma cuando no hay foto */
+.plat-tile {
+  width: 100%; aspect-ratio: 16/10;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1.15rem; color: #fff; letter-spacing: -0.3px;
+}
+.blog-item-img.plat-tile { aspect-ratio: auto; font-size: 0.55rem; }
+.blog-feat-img.plat-tile { aspect-ratio: auto; font-size: 1.6rem; }
+.plat-facebook { background: #1877f2; }
+.plat-instagram { background: linear-gradient(45deg, #f09433, #dc2743 55%, #bc1888); }
+.plat-tiktok { background: #111; box-shadow: inset 3px 0 0 #25f4ee, inset -3px 0 0 #fe2c55; }
+.plat-youtube { background: #e00000; }
+.plat-badge {
+  display: inline-block; vertical-align: middle;
+  font-size: 0.6rem; font-weight: 800;
+  padding: 2px 7px; border-radius: 999px;
+  margin: 0 4px 3px 0; color: #fff;
+}
+
+/* ====== V6: LINKS DE REDES EN EL MURO ====== */
+.blog-link-box { border-color: rgba(56,189,248,0.35); }
+.blog-link-row { display: flex; gap: 6px; }
+.blog-link-row input { flex: 1; min-width: 0; margin-bottom: 0; }
+.blog-paste-btn {
+  flex-shrink: 0;
+  background: var(--accent-strong); color: #fff;
+  border: none; border-radius: 10px;
+  font: inherit; font-size: 0.85rem; font-weight: 700;
+  padding: 0 1rem; cursor: pointer;
+}
+.blog-link-status { font-size: 0.74rem; color: var(--accent-soft); margin-top: 0.45rem; min-height: 1em; }
+.blog-embed { margin: 0.9rem 0 0.4rem; border-radius: 12px; overflow: hidden; background: #000; }
+.blog-embed iframe { display: block; width: 100%; border: 0; }
+.blog-open-link { display: block; text-align: center; text-decoration: none; margin-top: 0.5rem; box-sizing: border-box; }
+#blog-link-preview .blog-embed iframe { max-height: 460px; }
+
 </style>
 </head>
 <body class="v2-redesign v3-fluid">
@@ -3629,6 +3772,14 @@ body.blog-active #tab-timer { display: none !important; }
         </div>
         <div class="v5-hero-title">Fuertes <em>y Valientes</em></div>
         <div class="v5-hero-verse">Josué 1:9</div>
+        <figure class="hero-frase" id="hero-frase">
+          <blockquote id="hero-frase-texto">&nbsp;</blockquote>
+          <figcaption id="hero-frase-autor"></figcaption>
+          <div class="hero-frase-row">
+            <span class="hero-frase-sem" id="hero-frase-sem">Frase de la semana</span>
+            <button type="button" class="hero-frase-btn" onclick="fraseHistoria()">Compartir en historia</button>
+          </div>
+        </figure>
       </div>
 
       <!-- ZONA DE SIMULADORES (catálogo de 2 juegos) -->
@@ -3810,6 +3961,17 @@ body.blog-active #tab-timer { display: none !important; }
           <div class="v2-action-arrow">→</div>
         </div>
       </div>
+    </div>
+
+    <!-- SECCION: LO ULTIMO DEL MURO -->
+    <div class="v2-section" id="home-muro-sec" style="display:none">
+      <div class="v2-section-head">
+        <div class="v2-section-head-bar"></div>
+        <div class="v2-section-head-text">Lo <em>último</em></div>
+        <div class="v2-section-head-line"></div>
+      </div>
+      <div class="home-muro" id="home-muro"></div>
+      <button type="button" class="home-muro-all" onclick="openBlog()">Ver todo el muro</button>
     </div>
 
     <!-- SECCION: PROXIMO EVENTO -->
@@ -4228,6 +4390,15 @@ body.blog-active #tab-timer { display: none !important; }
 <div id="b-editor" class="screen blog-screen">
   <button class="blog-back" onclick="goBlog('b-list')">&#8249; Cancelar</button>
   <div style="font-size:1.2rem;font-weight:900;margin:0.4rem 0 0.8rem" id="blog-editor-title">Nueva publicaci&oacute;n</div>
+  <div class="card blog-link-box">
+    <label for="blog-in-link">Link de Facebook, Instagram, TikTok o YouTube</label>
+    <div class="blog-link-row">
+      <input id="blog-in-link" type="url" inputmode="url" autocomplete="off" placeholder="Pega aqu&iacute; el link de tu publicaci&oacute;n" oninput="blogLinkDetect()">
+      <button type="button" class="blog-paste-btn" onclick="blogPegarLink()">Pegar</button>
+    </div>
+    <div id="blog-link-status" class="blog-link-status"></div>
+    <div id="blog-link-preview"></div>
+  </div>
   <div class="card">
     <label>T&iacute;tulo</label>
     <input id="blog-in-title" placeholder="Ej. Todo sobre las aletas">
@@ -11918,57 +12089,57 @@ function stkGenerarPDF(lista) {
 */
 var FRASES_SEMANA = [
   "Just keep swimming. - Dory, Buscando a Nemo",
-  "El agua no crea barreras; tu mente si. - Proverbio hindu",
+  "El agua no crea barreras; tu mente sí. - Proverbio hindú",
   "It's not about being the best. It's about being better than you were yesterday. - Rocky Balboa",
-  "Los que confian en el Senor renovaran sus fuerzas; nadaran sin cansarse, iran de largo sin fatigarse. - Isaias 40:31",
-  "Conocete a ti mismo en la piscina: alli no hay mascaras. - Adaptacion de Socrates",
-  "El viaje de mil kilometros comienza con una primer brazada. - Lao Tse (adaptado)",
+  "Los que confían en el Señor renovarán sus fuerzas; nadarán sin cansarse, irán de largo sin fatigarse. - Isaías 40:31 (adaptado)",
+  "Conócete a ti mismo en la piscina: allí no hay máscaras. - Adaptación de Sócrates",
+  "El viaje de mil kilómetros comienza con una primera brazada. - Lao Tse (adaptado)",
   "I am the master of my fate, I am the captain of my soul. - Invictus",
-  "Todo lo puedo en Cristo que me fortalece... incluso nadar cada dia sin falta. - Filipenses 4:13",
-  "El que dice que puede y el que dice que no puede, ambos tienen razon. - Confucio",
-  "Dolor es agua salada que entra; la gloria es la que no te saca. - Dicho de entrenadores griegos",
-  "You miss 100% of the shots you don't take. - Wayne Gretzky. Aplica a cada brazada.",
-  "No sabeis que los que nadan en el estadio, todos nadan, pero uno se lleva el premio? Nada asi, para alcanzarlo. - 1 Corintios 9:24",
+  "Todo lo puedo en Cristo que me fortalece... incluso nadar cada día sin falta. - Filipenses 4:13",
+  "El que dice que puede y el que dice que no puede, ambos tienen razón. - Confucio",
+  "El dolor es agua salada que entra; la gloria es la que no te saca. - Dicho de entrenadores griegos",
+  "You miss 100% of the shots you don't take. Aplica a cada brazada. - Wayne Gretzky",
+  "¿No sabéis que los que corren en el estadio, todos corren, pero uno se lleva el premio? Nada así, para alcanzarlo. - 1 Corintios 9:24 (adaptado)",
   "El alma no puede ser cortada, quemada, mojada o secada. Tampoco tu voluntad. - Bhagavad Gita (adaptado)",
   "What we do in life echoes in eternity. - Gladiator",
-  "El agua que obedece a todas las formas, al final las rompe todas. - Filosofia china del Tai Chi",
-  "Esfuerzate y se valiente; no temas ni desmayes, porque el Senor tu Dios estara contigo en cada carril. - Josue 1:9",
-  "La regularidad es mas poderosa que la intensidad. Una brazada al dia vence al sprint de un dia. - Marco Aurelio",
+  "El agua que obedece a todas las formas, al final las rompe todas. - Filosofía china del Tai Chi",
+  "Esfuérzate y sé valiente; no temas ni desmayes, porque el Señor tu Dios estará contigo en cada carril. - Josué 1:9",
+  "La regularidad es más poderosa que la intensidad. Una brazada al día vence al sprint de un día. - Marco Aurelio",
   "Every champion was once a contender who refused to give up. - Rocky",
-  "No cuentes los dias, haz que los dias cuenten. Una brazada a la vez. - Muhammad Ali (adaptado)",
-  "Y todo lo que hagais, hacedlo de corazon, como para el Senor y no para los hombres... incluso nadar cuando no tienes ganas. - Colosenses 3:23",
-  "La victoria es para los que perseveran. - Aristoteles",
+  "No cuentes los días, haz que los días cuenten. Una brazada a la vez. - Muhammad Ali (adaptado)",
+  "Y todo lo que hagáis, hacedlo de corazón, como para el Señor... incluso nadar cuando no tienes ganas. - Colosenses 3:23",
+  "La victoria es para los que perseveran. - Aristóteles",
   "Just when you think you can't go on, your body finds an extra gear. That's your spirit. - The Pursuit of Happyness",
-  "El loto crece en el barro; tu creces en el cloro. - Refran hindu adaptado",
-  "Sabemos que los problemas producen perseverancia; la perseverancia, caracter; el caracter, esperanza... y la esperanza te mete otra vez al agua. - Romanos 5:3-4",
-  "No hay nada mas fuerte que un corazon agradecido que se levanta a las 5 a.m. para nadar. - Proverbio japones moderno",
+  "El loto crece en el barro; tú creces en el cloro. - Refrán hindú adaptado",
+  "Los problemas producen perseverancia; la perseverancia, carácter; el carácter, esperanza... y la esperanza te mete otra vez al agua. - Romanos 5:3-4",
+  "No hay nada más fuerte que un corazón agradecido que se levanta a las 5 a.m. para nadar. - Proverbio japonés moderno",
   "It's not the length of the pool, it's the depth of your will. - Michael Phelps",
-  "El guerrero no se entrena para vencer al otro, sino a su propio miedo. - Cultura samurai (adaptado)",
-  "No nos cansemos de hacer el bien (y de nadar); porque a su tiempo segaremos, si no desmayamos. - Galatas 6:9",
-  "El agua es tu espejo: mirate y sigue avanzando. - Dicho de entrenadores chinos",
+  "El guerrero no se entrena para vencer al otro, sino a su propio miedo. - Cultura samurái (adaptado)",
+  "No nos cansemos de hacer el bien (y de nadar); porque a su tiempo segaremos, si no desmayamos. - Gálatas 6:9",
+  "El agua es tu espejo: mírate y sigue avanzando. - Dicho de entrenadores chinos",
   "You can't put a limit on anything. The more you dream, the farther you get. - Forrest Gump",
-  "El karma de un nadador: cada brazada que das hoy, te impulsa manana. - Adaptacion del Bhagavad Gita",
-  "Despojemonos de todo peso... y nademos con paciencia la carrera que tenemos por delante. - Hebreos 12:1",
-  "La incomodidad de hoy es la fortaleza de manana. Eso es ley. - Cultura espartana",
+  "El karma de un nadador: cada brazada que das hoy te impulsa mañana. - Adaptación del Bhagavad Gita",
+  "Despojémonos de todo peso... y nademos con paciencia la carrera que tenemos por delante. - Hebreos 12:1",
+  "La incomodidad de hoy es la fortaleza de mañana. Eso es ley. - Cultura espartana",
   "Float like a butterfly, sting like a bee. But keep moving. - Muhammad Ali",
-  "Una hora en el agua limpia todo el polvo de tu mente. - Proverbio hindu del yoga",
-  "He peleado la buena batalla, he acabado la carrera (de natacion), he guardado la fe... y la he nadado sin faltar un dia. - 2 Timoteo 4:7",
-  "El hombre de agua no teme a la lluvia, ni al frio, ni a su propia pereza. - Proverbio griego",
+  "Una hora en el agua limpia todo el polvo de tu mente. - Proverbio hindú del yoga",
+  "He peleado la buena batalla, he acabado la carrera, he guardado la fe... y la he nadado sin faltar un día. - 2 Timoteo 4:7",
+  "El hombre de agua no teme a la lluvia, ni al frío, ni a su propia pereza. - Proverbio griego",
   "Win or lose, you show up. That's the only promise that matters. - Creed",
-  "No te ahogues en un vaso de agua. Nada en el. - Filosofia zen",
-  "Dios es quien me cine de fuerza... quien entrena mis manos para la batalla y mis brazos para la brazada. - Salmo 18:32-34",
-  "El placer en el trabajo pone perfeccion en la obra. Asi que disfruta la quemazon. - Aristoteles",
+  "No te ahogues en un vaso de agua. Nada en él. - Filosofía zen",
+  "Dios es quien me ciñe de fuerza... quien entrena mis manos para la batalla y mis brazos para la brazada. - Salmo 18:32-34",
+  "El placer en el trabajo pone perfección en la obra. Así que disfruta la quemazón. - Aristóteles",
   "It's not the critic who counts. It's the one in the water. - Theodore Roosevelt",
-  "El rio que no avanza se convierte en lago muerto. Tu avanza. - Cultura hindu",
-  "Velad, estad firmes en la fe, portaos varonilmente, esforzaos... y naden todas sus semanas. - 1 Corintios 16:13-14",
-  "Cuando el agua te quema los pulmones, recuerda: es tu ego rindiendose. - Inspirado en 300 (adaptado)",
+  "El río que no avanza se convierte en lago muerto. Tú avanza. - Cultura hindú",
+  "Velad, estad firmes en la fe, esforzaos... y naden todas sus semanas. - 1 Corintios 16:13",
+  "Cuando el agua te quema los pulmones, recuerda: es tu ego rindiéndose. - Inspirado en 300",
   "The miracle isn't that I finished. The miracle is that I had the courage to start every single day. - Terry Fox",
-  "No hay viento favorable para el que no sabe a donde va. Traza tu carril. - Seneca",
-  "La alegria del Senor es vuestra fuerza... tambien para nadar cuando no queda nada. - Nehemias 8:10",
-  "Una gota de agua horada la piedra. No por su fuerza, sino por su constancia. - Ovidio",
-  "You have power over your mind - not outside events. Realize this, and you will swim. - Marco Aurelio",
-  "El miedo desaparece cuando tus brazos entran al agua. Siempre. - Adaptacion de epopeya china El viaje al Oeste",
-  "Cuando pases por las aguas, yo estare contigo; cuando pases por los rios, no te anegaran. Esta semana, a nadar sin faltar un dia. - Isaias 43:2"
+  "No hay viento favorable para el que no sabe a dónde va. Traza tu carril. - Séneca",
+  "La alegría del Señor es vuestra fuerza... también para nadar cuando no queda nada. - Nehemías 8:10",
+  "Una gota de agua horada la piedra, no por su fuerza, sino por su constancia. - Ovidio",
+  "You have power over your mind, not outside events. Realize this, and you will swim. - Marco Aurelio",
+  "El miedo desaparece cuando tus brazos entran al agua. Siempre. - Adaptación de El viaje al Oeste",
+  "Cuando pases por las aguas, yo estaré contigo; cuando pases por los ríos, no te anegarán. - Isaías 43:2"
 ];
 
 // Calcular número de semana ISO (1-53) de la fecha actual
@@ -14297,6 +14468,429 @@ window.portalDrawChart = portalDrawChart;
     };
   }
 })();
+</script>
+<script>
+// =====================================================================
+// V6 — FRASE AL FRENTE + MURO CONECTADO A REDES
+// =====================================================================
+var LS_LOGO_URL = 'https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png';
+var PLAT_NOMBRE = { facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube' };
+
+// ---------- FRASE DE LA SEMANA ----------
+function fraseActual() {
+  var info = getSemanaISO();
+  var idx = (info.semana - 1) % FRASES_SEMANA.length;
+  if (idx < 0) idx = 0;
+  var raw = FRASES_SEMANA[idx] || FRASES_SEMANA[0];
+  var k = raw.lastIndexOf(' - ');
+  return { texto: k > 0 ? raw.slice(0, k) : raw, autor: k > 0 ? raw.slice(k + 3) : '', semana: info.semana, anio: info.anio };
+}
+function heroFraseRender() {
+  var f = fraseActual();
+  var t = document.getElementById('hero-frase-texto');
+  var a = document.getElementById('hero-frase-autor');
+  var s = document.getElementById('hero-frase-sem');
+  if (t) t.textContent = f.texto;
+  if (a) a.textContent = f.autor ? '— ' + f.autor : '';
+  if (s) s.textContent = 'Semana ' + f.semana;
+}
+
+// Logo precargado para que la imagen se genere al instante (iPhone exige compartir rápido tras el toque)
+var _lsLogoImg = new Image();
+_lsLogoImg.crossOrigin = 'anonymous';
+_lsLogoImg.src = LS_LOGO_URL;
+
+function _wrapLines(ctx, text, maxW) {
+  var words = text.split(/\s+/), lines = [], line = '';
+  for (var i = 0; i < words.length; i++) {
+    var test = line ? line + ' ' + words[i] : words[i];
+    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = words[i]; }
+    else line = test;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function fraseHistoriaCanvas() {
+  var f = fraseActual();
+  var W = 1080, H = 1920;
+  var c = document.createElement('canvas'); c.width = W; c.height = H;
+  var x = c.getContext('2d');
+
+  var g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#050f1c'); g.addColorStop(0.55, '#0a2956'); g.addColorStop(1, '#1e5a9e');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+
+  // Ondas de agua al pie
+  for (var w = 0; w < 4; w++) {
+    x.beginPath();
+    var base = H - 330 + w * 70;
+    x.moveTo(0, base);
+    for (var px = 0; px <= W; px += 20) x.lineTo(px, base + Math.sin(px / 90 + w * 1.3) * 16);
+    x.lineTo(W, H); x.lineTo(0, H); x.closePath();
+    x.fillStyle = 'rgba(107,184,232,' + (0.06 + w * 0.03) + ')';
+    x.fill();
+  }
+
+  // Logo
+  try {
+    if (_lsLogoImg.complete && _lsLogoImg.naturalWidth) {
+      var lw = 230, lh = lw * _lsLogoImg.naturalHeight / _lsLogoImg.naturalWidth;
+      x.drawImage(_lsLogoImg, (W - lw) / 2, 150, lw, lh);
+    }
+  } catch (e) {}
+
+  x.textAlign = 'center';
+  x.fillStyle = '#ffd700';
+  x.font = '700 42px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+  x.fillText('Frase de la semana', W / 2, 500);
+
+
+  // Texto con tamaño automático
+  var size = 80, lines, lh2;
+  while (true) {
+    x.font = '500 ' + size + 'px Georgia, serif';
+    lines = _wrapLines(x, f.texto, W - 190);
+    lh2 = size * 1.32;
+    if (lines.length * lh2 <= 720 || size <= 44) break;
+    size -= 4;
+  }
+  x.font = '600 44px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+  var al = f.autor ? _wrapLines(x, '— ' + f.autor, W - 220) : [];
+  var bloque = lines.length * lh2 + (al.length ? 30 + al.length * 56 : 0);
+  var grupo = 190 + bloque;
+  var top = 580 + Math.max(0, (1040 - grupo) / 2);
+  x.fillStyle = '#ffd700';
+  x.font = 'bold 230px Georgia, serif';
+  x.fillText('\u201C', W / 2, top + 200);
+  var y = top + 190 + size;
+  x.font = '500 ' + size + 'px Georgia, serif';
+  x.fillStyle = '#ffffff';
+  lines.forEach(function(l) { x.fillText(l, W / 2, y); y += lh2; });
+
+  if (al.length) {
+    x.fillStyle = '#ffd700';
+    x.font = '600 44px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+    y += 30;
+    al.forEach(function(l) { x.fillText(l, W / 2, y); y += 56; });
+  }
+
+  x.fillStyle = 'rgba(255,255,255,0.75)';
+  x.font = '500 36px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+  x.fillText('Semana ' + f.semana + ' de ' + f.anio + '  |  Laguna Swim International', W / 2, H - 200);
+  x.fillStyle = '#ffffff';
+  x.font = '800 50px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+  x.fillText('lagunaswim.net', W / 2, H - 125);
+  return { canvas: c, frase: f };
+}
+
+function fraseHistoria() {
+  var r;
+  try { r = fraseHistoriaCanvas(); } catch (e) { alert('No se pudo crear la imagen.'); return; }
+  var dataUrl;
+  try { dataUrl = r.canvas.toDataURL('image/png'); } catch (e) {
+    // Si el logo bloquea la exportación, se genera sin logo
+    _lsLogoImg = new Image();
+    r = fraseHistoriaCanvas(); dataUrl = r.canvas.toDataURL('image/png');
+  }
+  var name = 'frase-semana-' + r.frase.semana + '.png';
+  var file = null;
+  try {
+    var bin = atob(dataUrl.split(',')[1]); var arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    file = new File([arr], name, { type: 'image/png' });
+  } catch (e) {}
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file] }).catch(function(err) {
+      if (err && err.name !== 'AbortError') fraseVisor(dataUrl);
+    });
+  } else {
+    fraseVisor(dataUrl);
+  }
+}
+function fraseVisor(dataUrl) {
+  var v = document.createElement('div');
+  v.className = 'frase-visor';
+  v.innerHTML = '<img alt="Frase de la semana" src="' + dataUrl + '"><p>Mantén presionada la imagen para guardarla o compartirla.</p>' +
+    '<button type="button" class="btn btn-gray">Cerrar</button>';
+  v.querySelector('button').onclick = function() { v.remove(); };
+  document.body.appendChild(v);
+}
+
+// ---------- DETECCIÓN DE LINKS DE REDES ----------
+function linkExtraer(t) { var m = (t || '').match(/https?:\/\/[^\s"'<>]+/i); return m ? m[0].replace(/[).,!?]+$/, '') : ''; }
+function linkPlataforma(u) {
+  if (/facebook\.com|fb\.watch|fb\.me/i.test(u)) return 'facebook';
+  if (/instagram\.com|instagr\.am/i.test(u)) return 'instagram';
+  if (/tiktok\.com/i.test(u)) return 'tiktok';
+  if (/youtube\.com|youtu\.be/i.test(u)) return 'youtube';
+  return '';
+}
+function ytId(u) { var m = u.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/|\/live\/)([\w-]{11})/); return m ? m[1] : ''; }
+function tkId(u) { var m = u.match(/\/video\/(\d+)/); return m ? m[1] : ''; }
+function igCode(u) {
+  var m = u.match(/instagram\.com\/(?:[\w.]+\/)?(p|reel|reels|tv)\/([\w-]+)/i);
+  return m ? { tipo: m[1].toLowerCase() === 'p' ? 'p' : 'reel', code: m[2] } : null;
+}
+function fbEsVideo(u) { return /\/videos?\/|\/reel\/|fb\.watch|\/share\/[rv]\/|\/watch/i.test(u); }
+
+function linkEmbedHtml(p) {
+  var u = p.link || '', pl = p.plataforma || linkPlataforma(u), h = '';
+  if (pl === 'youtube') {
+    var id = p.embedId || ytId(u);
+    if (id) h = '<iframe src="https://www.youtube.com/embed/' + id + '" style="aspect-ratio:' + (/shorts/.test(u) ? '9/16' : '16/9') + '" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" title="Video de YouTube"></iframe>';
+  } else if (pl === 'tiktok') {
+    var t = p.embedId || tkId(u);
+    if (t) h = '<iframe src="https://www.tiktok.com/embed/v2/' + t + '" style="height:740px" allow="encrypted-media; fullscreen" allowfullscreen loading="lazy" title="Video de TikTok"></iframe>';
+  } else if (pl === 'instagram') {
+    var c = igCode(u);
+    if (c) h = '<iframe src="https://www.instagram.com/' + c.tipo + '/' + c.code + '/embed/captioned/" style="height:720px;background:#fff" loading="lazy" title="Publicación de Instagram"></iframe>';
+  } else if (pl === 'facebook') {
+    var vid = fbEsVideo(u);
+    h = '<iframe src="https://www.facebook.com/plugins/' + (vid ? 'video' : 'post') + '.php?href=' + encodeURIComponent(u) + '&show_text=true&width=500" style="height:' + (vid ? 620 : 640) + 'px;background:#fff" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" title="Publicación de Facebook"></iframe>';
+  }
+  var btn = u ? '<a class="btn btn-gray blog-open-link" href="' + escapeHtml(u) + '" target="_blank" rel="noopener">Abrir en ' + (PLAT_NOMBRE[pl] || 'su página') + '</a>' : '';
+  return (h ? '<div class="blog-embed">' + h + '</div>' : '') + btn;
+}
+function platBadge(pl) { return PLAT_NOMBRE[pl] ? '<span class="plat-badge plat-' + pl + '">' + PLAT_NOMBRE[pl] + '</span>' : ''; }
+function platTile(pl, cls) { return '<div class="' + cls + ' plat-tile plat-' + pl + '">' + PLAT_NOMBRE[pl] + '</div>'; }
+
+// ---------- EDITOR: PEGAR LINK ----------
+var LINK_STATE = { url: '', plataforma: '', embedId: '', token: 0 };
+var _linkTimer = null;
+
+function blogPegarLink() {
+  var el = document.getElementById('blog-in-link');
+  if (navigator.clipboard && navigator.clipboard.readText) {
+    navigator.clipboard.readText().then(function(t) { el.value = t || ''; blogLinkProcesar(); })
+      .catch(function() { el.focus(); });
+  } else { el.focus(); }
+}
+function blogLinkDetect() { clearTimeout(_linkTimer); _linkTimer = setTimeout(blogLinkProcesar, 400); }
+
+async function linkInfo(u, pl) {
+  var r = { titulo: '', thumb: '', embedId: '' };
+  try {
+    if (pl === 'youtube') {
+      r.embedId = ytId(u);
+      if (r.embedId) r.thumb = 'https://i.ytimg.com/vi/' + r.embedId + '/hqdefault.jpg';
+      try { var j = await (await fetch('https://noembed.com/embed?url=' + encodeURIComponent(u))).json(); if (j && j.title) r.titulo = j.title; } catch (e) {}
+    } else if (pl === 'tiktok') {
+      r.embedId = tkId(u);
+      var j2 = await (await fetch('https://www.tiktok.com/oembed?url=' + encodeURIComponent(u))).json();
+      if (j2) {
+        r.titulo = (j2.title || '').replace(/#\S+/g, '').replace(/\s+/g, ' ').trim();
+        r.thumb = j2.thumbnail_url || '';
+        if (!r.embedId) r.embedId = j2.embed_product_id || (((j2.html || '').match(/data-video-id="(\d+)"/) || [])[1]) || '';
+      }
+    }
+  } catch (e) {}
+  return r;
+}
+async function linkSubirPortada(url) {
+  try {
+    var fd = new FormData(); fd.append('file', url); fd.append('upload_preset', CONFIG.uploadPreset);
+    var d = await (await fetch('https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/image/upload', { method: 'POST', body: fd })).json();
+    return d.secure_url || '';
+  } catch (e) { return ''; }
+}
+
+async function blogLinkProcesar() {
+  var input = document.getElementById('blog-in-link');
+  var st = document.getElementById('blog-link-status');
+  var pv = document.getElementById('blog-link-preview');
+  if (!input) return;
+  var raw = input.value, u = linkExtraer(raw);
+  var tok = ++LINK_STATE.token;
+  LINK_STATE.url = u; LINK_STATE.plataforma = u ? linkPlataforma(u) : ''; LINK_STATE.embedId = '';
+  if (!u) { st.textContent = raw.trim() ? 'Eso no parece un link. Cópialo desde el botón Compartir de la red social.' : ''; pv.innerHTML = ''; return; }
+  if (raw.trim() !== u) input.value = u;
+  var pl = LINK_STATE.plataforma;
+  if (!pl) { st.textContent = 'Link guardado. Se mostrará como botón (no es de Facebook, Instagram, TikTok ni YouTube).'; pv.innerHTML = linkEmbedHtml({ link: u }); return; }
+
+  st.textContent = 'Leyendo ' + PLAT_NOMBRE[pl] + '...';
+  var info = await linkInfo(u, pl);
+  if (tok !== LINK_STATE.token) return;
+  LINK_STATE.embedId = info.embedId;
+
+  var ti = document.getElementById('blog-in-title');
+  if (ti && !ti.value.trim() && info.titulo) ti.value = info.titulo.slice(0, 110);
+
+  if (!blogState.coverUrl && info.thumb) {
+    st.textContent = 'Guardando portada...';
+    var cu = await linkSubirPortada(info.thumb);
+    if (tok !== LINK_STATE.token) return;
+    if (!cu && pl === 'youtube') cu = info.thumb; // la miniatura de YouTube no caduca
+    if (cu) {
+      blogState.coverUrl = cu;
+      var prev = document.getElementById('blog-img-preview');
+      if (prev) { prev.src = cu; prev.style.display = 'block'; }
+    }
+  }
+  var falta = [];
+  if (!blogState.coverUrl) falta.push('una foto de portada');
+  if (ti && !ti.value.trim()) falta.push('un título');
+  st.textContent = PLAT_NOMBRE[pl] + ' listo.' + (falta.length ? ' Opcional: agrega ' + falta.join(' y ') + '.' : ' Ya puedes publicar.');
+  pv.innerHTML = linkEmbedHtml({ link: u, plataforma: pl, embedId: LINK_STATE.embedId });
+}
+
+// ---------- OVERRIDES DEL BLOG ----------
+var _blogNuevoV5 = window.blogNuevo;
+window.blogNuevo = function() {
+  _blogNuevoV5();
+  LINK_STATE.url = ''; LINK_STATE.plataforma = ''; LINK_STATE.embedId = ''; LINK_STATE.token++;
+  var el = document.getElementById('blog-in-link'); if (el) el.value = '';
+  document.getElementById('blog-link-status').textContent = '';
+  document.getElementById('blog-link-preview').innerHTML = '';
+  document.getElementById('blog-in-title').placeholder = 'Opcional si pegaste un link';
+  document.getElementById('blog-in-body').placeholder = 'Opcional si pegaste un link. Escribe aquí tu publicación...';
+};
+var _blogEditarV5 = window.blogEditar;
+window.blogEditar = function(id) {
+  _blogEditarV5(id);
+  var p = blogState.posts.filter(function(x) { return x.id === id; })[0] || {};
+  LINK_STATE.token++;
+  LINK_STATE.url = p.link || ''; LINK_STATE.plataforma = p.plataforma || ''; LINK_STATE.embedId = p.embedId || '';
+  var el = document.getElementById('blog-in-link'); if (el) el.value = p.link || '';
+  document.getElementById('blog-link-status').textContent = '';
+  document.getElementById('blog-link-preview').innerHTML = p.link ? linkEmbedHtml(p) : '';
+};
+
+window.blogPublicar = function() {
+  if (!(state && state.isCoach)) { alert('Solo el coach puede publicar.'); return; }
+  var linkIn = document.getElementById('blog-in-link');
+  var link = linkExtraer(linkIn ? linkIn.value : '');
+  var pl = link ? linkPlataforma(link) : '';
+  var titulo = (document.getElementById('blog-in-title').value || '').trim();
+  var cat = document.getElementById('blog-in-cat').value;
+  var cuerpo = (document.getElementById('blog-in-body').value || '').trim();
+  if (!link && !titulo) { alert('Pega un link o escribe un título.'); return; }
+  if (!link && !cuerpo) { alert('Escribe el contenido o pega un link.'); return; }
+  if (!titulo) titulo = pl ? 'Nuevo en ' + PLAT_NOMBRE[pl] : 'Nueva publicación';
+  var btn = document.getElementById('blog-publish-btn'); btn.disabled = true; var old = btn.textContent; btn.textContent = 'Publicando...';
+  var obj = {
+    titulo: titulo, categoria: cat, cuerpo: cuerpo, portada: blogState.coverUrl || '',
+    autor: (state.user && state.user.displayName) || 'Coach',
+    link: link || '', plataforma: pl || '', embedId: (link && link === LINK_STATE.url) ? (LINK_STATE.embedId || '') : ''
+  };
+  var p;
+  if (blogState.editId) { p = db.ref('blog/posts/' + blogState.editId).update(obj); }
+  else { obj.ts = Date.now(); p = db.ref('blog/posts').push(obj); }
+  p.then(function() { btn.disabled = false; btn.textContent = old; goBlog('b-list'); })
+   .catch(function() { btn.disabled = false; btn.textContent = old; alert('No se pudo publicar. Revisa tu conexión o los permisos de Firebase.'); });
+};
+
+window.blogRenderPost = function(p) {
+  var c = document.getElementById('blog-post-content');
+  if (!c) return;
+  var editBtn = (state && state.isCoach) ? '<button class="btn btn-gray" style="margin-top:0.7rem" onclick="blogEditar(\'' + p.id + '\')">&#9999;&#65039; Editar</button>' : '';
+  var tieneEmbed = p.link && PLAT_NOMBRE[p.plataforma || linkPlataforma(p.link)];
+  c.innerHTML =
+    (p.portada && !tieneEmbed ? '<img class="blog-post-img" src="' + p.portada + '" alt="">' : '') +
+    platBadge(p.plataforma) +
+    (p.categoria ? '<span class="blog-cat">' + escapeHtml(p.categoria) + '</span>' : '') +
+    '<div class="blog-post-title">' + escapeHtml(p.titulo || '') + '</div>' +
+    '<div class="blog-feat-meta">' + blogFecha(p.ts) + '</div>' +
+    (p.cuerpo ? '<div class="blog-post-body">' + escapeHtml(p.cuerpo) + '</div>' : '') +
+    (p.link ? linkEmbedHtml(p) : '') +
+    '<button class="btn btn-sky" style="margin-top:1rem" onclick="blogCompartir(\'' + p.id + '\')">&#128279; Compartir</button>' +
+    editBtn;
+};
+
+window.blogRenderList = function() {
+  var chips = document.getElementById('blog-chips');
+  var feat = document.getElementById('blog-feat');
+  var list = document.getElementById('blog-list');
+  var empty = document.getElementById('blog-empty');
+  var bar = document.getElementById('blog-coach-bar');
+  if (!list) return;
+  if (bar) bar.innerHTML = (state && state.isCoach)
+    ? '<button class="btn btn-sky" style="margin-bottom:0.8rem" onclick="blogNuevo()">&#9999;&#65039; Nueva publicación</button>'
+    : '';
+  var cats = ['Todas'];
+  blogState.posts.forEach(function(p) { if (p.categoria && cats.indexOf(p.categoria) < 0) cats.push(p.categoria); });
+  if (chips) chips.innerHTML = cats.map(function(c) {
+    return '<div class="blog-chip' + (blogState.filter === c ? ' active' : '') + '" onclick="blogFiltrar(\'' + c + '\')">' + escapeHtml(c) + '</div>';
+  }).join('');
+  var posts = blogState.posts.filter(function(p) { return blogState.filter === 'Todas' || p.categoria === blogState.filter; });
+  if (!posts.length) { if (feat) feat.innerHTML = ''; list.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
+  if (empty) empty.style.display = 'none';
+  var f = posts[0];
+  if (feat) {
+    feat.innerHTML = '<div class="blog-feat" onclick="blogAbrir(\'' + f.id + '\')">' +
+      (f.portada ? '<img class="blog-feat-img" src="' + f.portada + '" alt="">'
+        : (PLAT_NOMBRE[f.plataforma] ? platTile(f.plataforma, 'blog-feat-img') : '<div class="blog-feat-noimg"></div>')) +
+      '<div class="blog-feat-body">' + platBadge(f.plataforma) +
+        (f.categoria ? '<span class="blog-cat">' + escapeHtml(f.categoria) + '</span>' : '') +
+        '<div class="blog-feat-title">' + escapeHtml(f.titulo || '') + '</div>' +
+        '<div class="blog-feat-meta">' + blogFecha(f.ts) + '</div>' +
+        (f.cuerpo ? '<div class="blog-feat-exc">' + escapeHtml(blogExcerpt(f.cuerpo)) + '</div>' : '') +
+      '</div></div>';
+  }
+  list.innerHTML = posts.slice(1).map(function(p) {
+    return '<div class="blog-item" onclick="blogAbrir(\'' + p.id + '\')">' +
+      (p.portada ? '<img class="blog-item-img" src="' + p.portada + '" alt="">'
+        : (PLAT_NOMBRE[p.plataforma] ? platTile(p.plataforma, 'blog-item-img') : '<div class="blog-item-img"></div>')) +
+      '<div style="flex:1;min-width:0">' + platBadge(p.plataforma) +
+        (p.categoria ? '<span class="blog-cat">' + escapeHtml(p.categoria) + '</span>' : '') +
+        '<div class="blog-item-title">' + escapeHtml(p.titulo || '') + '</div>' +
+        '<div class="blog-item-meta">' + blogFecha(p.ts) + '</div>' +
+      '</div></div>';
+  }).join('');
+};
+
+// ---------- LO ÚLTIMO DEL MURO EN EL HOME ----------
+function homeMuroCargar(intento) {
+  intento = intento || 0;
+  if (typeof db === 'undefined' || !db) { if (intento < 30) setTimeout(function() { homeMuroCargar(intento + 1); }, 700); return; }
+  db.ref('blog/posts').limitToLast(4).on('value', function(snap) {
+    var arr = [];
+    snap.forEach(function(ch) { var v = ch.val() || {}; v.id = ch.key; arr.push(v); });
+    arr.sort(function(a, b) { return (b.ts || 0) - (a.ts || 0); });
+    var sec = document.getElementById('home-muro-sec'), box = document.getElementById('home-muro');
+    if (!sec || !box) return;
+    if (!arr.length) { sec.style.display = 'none'; return; }
+    sec.style.display = '';
+    box.innerHTML = arr.map(function(p) {
+      var img = p.portada ? '<img class="home-muro-img" src="' + p.portada + '" alt="" loading="lazy">'
+        : (PLAT_NOMBRE[p.plataforma] ? platTile(p.plataforma, 'home-muro-img') : '<div class="home-muro-img"></div>');
+      return '<button type="button" class="home-muro-card" onclick="blogLoad();blogAbrir(\'' + p.id + '\')">' + img +
+        '<div class="home-muro-body">' + platBadge(p.plataforma) +
+          '<div class="home-muro-title">' + escapeHtml(p.titulo || '') + '</div>' +
+          '<div class="home-muro-meta">' + blogFecha(p.ts) + '</div>' +
+        '</div></button>';
+    }).join('');
+  });
+}
+
+// ---------- ATAJO DE IPHONE: ?nuevo=LINK abre el editor con el link ----------
+function atajoNuevoPost() {
+  var raw = '';
+  try { var sp = new URLSearchParams(location.search); raw = sp.get('nuevo') || ''; } catch (e) {}
+  if (!raw) return;
+  var u = linkExtraer(raw) || raw.trim();
+  var tries = 0;
+  (function esperar() {
+    if (state && state.isCoach && typeof db !== 'undefined' && db) {
+      try { history.replaceState(null, '', location.pathname); } catch (e) {}
+      openBlog();
+      blogNuevo();
+      var el = document.getElementById('blog-in-link');
+      if (el) { el.value = u; blogLinkProcesar(); }
+      return;
+    }
+    if (++tries > 25) { alert('Para publicar desde el atajo, inicia sesión como coach en esta página una vez (en Safari).'); return; }
+    setTimeout(esperar, 400);
+  })();
+}
+
+// ---------- ARRANQUE ----------
+(function initV6() {
+  try { heroFraseRender(); } catch (e) {}
+  homeMuroCargar();
+  atajoNuevoPost();
+})();
+
 </script>
 </body>
 </html>
