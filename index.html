@@ -5536,6 +5536,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <option value="italia2025|Oceanman Italia 2025">Oceanman Italia 2025</option>
       <option value="costarica2025|Oceanman Costa Rica 2025">Oceanman Costa Rica 2025</option>
       <option value="cozumel2026|Oceanman Cozumel 2026">Oceanman Cozumel 2026</option>
+      <option value="cuba2026|Gran Retto Cuba 2026">Gran Retto Cuba 2026 (Varadero)</option>
     </select>
     <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);margin:0.2rem 0 0.6rem">
       Tip: para subir foto a un proximo evento, abre la tarjeta del evento y toca + Subir foto desde ahi.
@@ -5826,7 +5827,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
   <!-- Logros pasados (4 fijos) -->
   <div class="intl-section-head">
     <span>&#127881; Logros internacionales</span>
-    <span style="font-size:0.62rem;color:var(--accent-soft);font-weight:600">5 representaciones</span>
+    <span style="font-size:0.62rem;color:var(--accent-soft);font-weight:600">6 representaciones</span>
   </div>
 
   <div class="evento-wrapper">
@@ -5897,6 +5898,20 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <div class="evento-arrow">&#9662;</div>
     </div>
     <div class="evento-galeria" id="gal-cozumel2026"></div>
+  </div>
+
+  <div class="evento-wrapper">
+    <div class="evento-card pasado evento-card-clickable" data-evento-id="cuba2026" onclick="toggleEvento(this)">
+      <div class="evento-flag">&#127464;&#127482;</div>
+      <div class="evento-info">
+        <div class="evento-titulo">Gran Retto Cuba</div>
+        <div class="evento-lugar">Varadero, Cuba</div>
+        <div class="evento-fecha">Septiembre 2026</div>
+      </div>
+      <div class="evento-badge evento-badge-realizado">REALIZADO</div>
+      <div class="evento-arrow">&#9662;</div>
+    </div>
+    <div class="evento-galeria" id="gal-cuba2026"></div>
   </div>
 
   <!-- Próximos eventos (editable desde Firebase) -->
@@ -11101,7 +11116,8 @@ function cargarFotosEvento(eventoId) {
           'trinidad2024': 'PanAm Trinidad 2024',
           'italia2025': 'Oceanman Italia 2025',
           'costarica2025': 'Oceanman Costa Rica 2025',
-          'cozumel2026': 'Oceanman Cozumel 2026'
+          'cozumel2026': 'Oceanman Cozumel 2026',
+          'cuba2026': 'Gran Retto Cuba 2026'
         };
         var label = labels[evid];
         if (!label) {
