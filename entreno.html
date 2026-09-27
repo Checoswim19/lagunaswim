@@ -146,9 +146,13 @@ body.viewer .fab{display:block;position:fixed;left:50%;transform:translateX(-50%
 .sign{padding:16px 26px 22px;background:var(--navy);color:#C9D6E6;font-size:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .sign b{color:var(--gold);font-family:"Barlow Condensed",sans-serif;font-style:italic;font-weight:700;font-size:17px;letter-spacing:.3px}
 .empty{padding:40px 26px;color:#6A7A8F}
+.summary{padding:22px 26px 18px}
+.summary ul{list-style:none;margin:10px 0 0;padding:0}
+.summary li{padding:7px 0;border-bottom:1px solid #EDF1F5;font-size:14.5px;color:#1B2A3D}
+.summary li:last-child{border-bottom:0}
 
 @media (max-width:520px){
-  .hero .plate,.day,.quote,.legend,.sign{padding-left:18px;padding-right:18px}
+  .hero .plate,.day,.summary,.quote,.legend,.sign{padding-left:18px;padding-right:18px}
   .stats div{padding:12px 18px}
   .hero h2{font-size:32px}
   .day-name{font-size:30px}
@@ -275,11 +279,17 @@ function kindOf(title){
 }
 function parse(raw){
   var lines = String(raw).replace(/\r/g,"").split("\n").map(function(l){return l.trim();});
-  var intro = [], days = [], day = null, sec = null;
+  var intro = [], days = [], day = null, sec = null, summary = null, seen = {};
   lines.forEach(function(l){
     if(!l || /^[=_*~-]{3,}$/.test(l)) return;
+    if(summary){ summary.push(l.replace(/^[·•*]\s*/,"")); return; }
     var m = l.match(DAY_RE);
+    /* "RESUMEN SEMANAL" (o un día repetido) cierra el plan: lo que sigue es resumen, no días nuevos */
+    if(days.length && (/^[·•*]?\s*resumen\b/i.test(l) || (m && !/^[·•*]/.test(l) && seen[cap(m[1])]))){
+      summary = []; if(!/^[·•*]?\s*resumen\b/i.test(l)) summary.push(l); return;
+    }
     if(m && !/^[·•*]/.test(l)){
+      seen[cap(m[1])] = 1;
       var rest = m[2]||"", tm = rest.match(/\(\s*([\d.,]+)\s*m\s*\)\s*$/i);
       day = { name: cap(m[1]), focus: rest.replace(/\([^)]*\)\s*$/,"").replace(/^[–—:-]\s*/,"").trim(), total: tm?num(tm[1]):0, secs: [] };
       days.push(day); sec = null; return;
@@ -306,7 +316,7 @@ function parse(raw){
     });
     if(!d.total) d.total = sumAll;
   });
-  return { intro: intro, days: days };
+  return { intro: intro, days: days, summary: summary||[] };
 }
 
 /* ---------- render ---------- */
@@ -358,6 +368,11 @@ function render(data, opts){
     });
     h += '</section>';
   });
+  if(p.summary.length){
+    h += '<div class="rope" aria-hidden="true"></div><section class="summary"><h3 class="day-name">Resumen semanal</h3><ul>';
+    p.summary.forEach(function(l){ h += '<li>'+esc(l)+'</li>'; });
+    h += '</ul></section>';
+  }
   if(p.days.length){
     h += '<div class="legend">';
     var rs = Object.keys(usedR).sort();
@@ -397,18 +412,46 @@ function readLink(){
 
 /* ---------- pdf ---------- */
 var downloadsP = (window.claude && typeof window.claude.use==="function") ? window.claude.use("downloads").catch(function(){return null;}) : Promise.resolve(null);
+/* Arma una hoja por bloque (portada + primer día, luego cada día, luego el cierre).
+   Una sola imagen de toda la semana rebasa el límite de canvas del iPhone y sale cortada o en blanco. */
+function pdfChunks(){
+  var kids = Array.prototype.slice.call($("sheet").children), groups = [[]], firstDay = true;
+  kids.forEach(function(n){
+    var c = n.classList;
+    if(c.contains("rope")) return;
+    if(c.contains("day")){ if(firstDay){ firstDay = false; groups[0].push(n); } else groups.push([n]); return; }
+    if(c.contains("summary")){ groups.push([n]); return; }
+    groups[groups.length-1].push(n);
+  });
+  var host = document.createElement("div");
+  host.style.cssText = "position:absolute;left:-10000px;top:0;";
+  document.body.appendChild(host);
+  var els = groups.filter(function(g){ return g.length; }).map(function(g){
+    var w = document.createElement("article"); w.className = "sheet for-pdf";
+    g.forEach(function(n){ w.appendChild(n.cloneNode(true)); });
+    host.appendChild(w); return w;
+  });
+  return { els: els, cleanup: function(){ host.remove(); } };
+}
 function makePdf(d, btns){
   if(!window.html2pdf){ window.print(); return; }
   btns.forEach(function(b){ b.disabled = true; b.dataset.l = b.textContent; b.textContent = "Armando PDF…"; });
-  var el = $("sheet"); el.classList.add("for-pdf");
+  var parts = pdfChunks();
   var opt = { margin:[8,0,10,0], filename:fileName(d), image:{type:"jpeg",quality:0.95},
-    html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",windowWidth:900},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0},
     jsPDF:{unit:"mm",format:"letter",orientation:"portrait"},
-    pagebreak:{mode:["css"],before:".day:not(.first)",avoid:[".set",".sec-head",".day-head"]} };
-  var done = function(){ el.classList.remove("for-pdf"); btns.forEach(function(b){ b.disabled=false; b.textContent=b.dataset.l; }); };
+    pagebreak:{mode:["css"],avoid:[".set",".sec-head",".day-head",".summary li"]} };
+  var done = function(){ parts.cleanup(); btns.forEach(function(b){ b.disabled=false; b.textContent=b.dataset.l; }); };
+  var build = function(){
+    var w = html2pdf().set(opt).from(parts.els[0]).toPdf();
+    parts.els.slice(1).forEach(function(el){
+      w = w.get("pdf").then(function(pdf){ pdf.addPage(); }).from(el).toContainer().toCanvas().toPdf();
+    });
+    return w;
+  };
   downloadsP.then(function(dl){
     if(dl){
-      return html2pdf().set(opt).from(el).outputPdf("blob").then(function(blob){
+      return build().outputPdf("blob").then(function(blob){
         done();
         return dl.save({filename:opt.filename,data:blob}).then(function(){ status("PDF listo."); },function(e){
           if(e && e.code==="declined") status("Descarga cancelada.");
@@ -417,7 +460,7 @@ function makePdf(d, btns){
         });
       });
     }
-    return html2pdf().set(opt).from(el).save().then(function(){ done(); status("PDF descargado."); });
+    return build().save().then(function(){ done(); status("PDF descargado."); });
   }).catch(function(){ done(); status("No se pudo crear el PDF. Intenta de nuevo."); });
 }
 
