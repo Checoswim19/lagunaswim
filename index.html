@@ -15141,6 +15141,87 @@ body.v7 input, body.v7 select, body.v7 textarea {
   -webkit-backdrop-filter: blur(12px);
 }
 
+/* ---------- Encabezado de cada pestaña: título grande ---------- */
+/* El logo ya está en el header de arriba; aquí queda solo el nombre de la sección */
+body.v7 .hdr { padding: 1rem 0 0.4rem; }
+body.v7 .hdr .logo-img,
+body.v7 .hdr .logo-main { display: none; }
+body.v7 .hdr .logo-sub {
+  font-family: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #fff;
+  text-transform: lowercase;
+}
+body.v7 .hdr .logo-sub::first-letter { text-transform: uppercase; }
+
+/* ---------- Títulos de sección de Tienda y Coach ---------- */
+body.v7 .section-title,
+body.v7 .intl-section-head {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: #fff;
+  border-bottom: 0;
+  margin: 1.8rem 0 0.7rem;
+  padding-bottom: 0;
+}
+
+/* ---------- Tarjetas de Tienda, Coach, Tools y Competir ---------- */
+body.v7 .book-card,
+body.v7 .item-card,
+body.v7 .prog-card,
+body.v7 .evento-card,
+body.v7 .stat-box,
+body.v7 .subs-banner,
+body.v7 .wk-mode-card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%);
+  border: 1px solid var(--v7-edge);
+  border-radius: var(--v7-r);
+  box-shadow: var(--v7-hi), var(--v7-shadow);
+  backdrop-filter: blur(22px) saturate(1.6);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+  transition: transform 0.35s var(--v7-spring);
+}
+body.v7 .prog-card:active,
+body.v7 .evento-card-clickable:active,
+body.v7 .wk-mode-card:active { transform: scale(0.965); }
+/* Las tarjetas de modo conservan su color como borde */
+body.v7 .wk-mode-blue   { border-color: rgba(56,189,248,0.45); }
+body.v7 .wk-mode-gold,
+body.v7 .wk-mode-trophy { border-color: rgba(255,215,0,0.45); }
+body.v7 .wk-mode-purple { border-color: rgba(168,85,247,0.45); }
+body.v7 .wk-mode-orange { border-color: rgba(255,107,53,0.45); }
+body.v7 .wk-mode-green  { border-color: rgba(34,197,94,0.45); }
+body.v7 .book-cover, body.v7 .item-icon { border-radius: var(--v7-r-sm); }
+body.v7 .book-price, body.v7 .item-price { font-size: 1.25rem; letter-spacing: -0.02em; }
+body.v7 .stat-num { font-size: 1.6rem; letter-spacing: -0.03em; color: var(--gold); }
+body.v7 .intl-banner,
+body.v7 .hof-card,
+body.v7 .reto50-lb-acc-head {
+  border-width: 1px;
+  border-radius: var(--v7-r);
+  box-shadow: var(--v7-hi), var(--v7-shadow);
+  backdrop-filter: blur(22px) saturate(1.6);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+}
+body.v7 .wk-btn { border-width: 1px; border-radius: var(--v7-r-sm); }
+body.v7 .btn-sm { border-radius: 999px; padding: 0.5rem 1rem; }
+
+/* ---------- Ventanas (modales) como hoja de vidrio ---------- */
+body.v7 .modal-box {
+  background: rgba(8,26,52,0.82);
+  border: 1px solid var(--v7-edge);
+  border-bottom: 0;
+  border-radius: 28px 28px 0 0;
+  box-shadow: var(--v7-hi), 0 -12px 40px rgba(0,0,0,0.45);
+  backdrop-filter: blur(30px) saturate(1.8);
+  -webkit-backdrop-filter: blur(30px) saturate(1.8);
+}
+
 /* ---------- Aparición al hacer scroll (si el navegador lo soporta) ---------- */
 @supports (animation-timeline: view()) {
   body.v7 .v2-section,
