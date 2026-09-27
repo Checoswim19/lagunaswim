@@ -5055,6 +5055,15 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         </div>
         <div style="margin-left:auto;color:var(--gold);font-size:1.2rem">&#8250;</div>
       </div>
+      <!-- Solo coach: generador de hojas de entrenamiento -->
+      <a id="wk-entrenos-card" href="entreno.html" class="wk-mode-card wk-mode-blue" style="display:none;align-items:center;gap:1rem;text-align:left;margin-top:0.6rem;text-decoration:none">
+        <div style="font-size:2rem">&#128203;</div>
+        <div>
+          <div style="font-size:0.9rem;font-weight:800;color:var(--accent)">Entrenamientos</div>
+          <div style="font-size:0.68rem;color:var(--accent-soft)">Hojas para Masters remotos - link, PDF e historial</div>
+        </div>
+        <div style="margin-left:auto;color:var(--accent);font-size:1.2rem">&#8250;</div>
+      </a>
     </div>
 
     <!-- Modo: Sesión del día -->
@@ -8115,6 +8124,8 @@ function refreshWorkoutTab() {
   loginWall.style.display = 'none';
   subsWall.style.display = 'none';
   acceso.style.display = 'block';
+  var entrenosCard = document.getElementById('wk-entrenos-card');
+  if (entrenosCard) entrenosCard.style.display = state.isCoach ? 'flex' : 'none';
   if (state.user.email === CONFIG.coach) {
     setSubsBadge('Entrenador Sergio - Acceso ilimitado', 'coach');
   } else {
