@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Entrenamiento · Laguna Swim International</title>
+<meta name="robots" content="noindex">
+<script>document.documentElement.classList.add(/[#&]p=/.test(location.hash)?"is-viewer":"is-locked");</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,7 +28,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Barlow,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.45}
 img{max-width:100%;display:block}
-button,input,textarea{font:inherit}
+button,input,textarea,select{font:inherit}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
 .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 96px;display:grid;gap:20px;grid-template-columns:1fr}
@@ -39,7 +41,7 @@ button,input,textarea{font:inherit}
 .editor p.hint{margin:0 0 16px;color:var(--muted);font-size:14px}
 .field{margin-bottom:14px}
 .field label{display:block;font-weight:600;font-size:14px;margin-bottom:5px}
-.field input[type=text],.field textarea{width:100%;background:var(--field);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.field input[type=text],.field input[type=date],.field select,.field textarea{width:100%;background:var(--field);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
 .field textarea{min-height:260px;font-size:13.5px;line-height:1.4;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace}
 .cover-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .cover-row img{width:84px;height:56px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
@@ -52,6 +54,34 @@ button,input,textarea{font:inherit}
 .status{font-size:13px;color:var(--muted);min-height:18px;margin-top:6px}
 .linkout{width:100%;font-size:12px;background:var(--field);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px;margin-top:6px;display:none}
 .small{font-size:12.5px;color:var(--muted);margin-top:10px}
+#f-name{margin-top:8px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:-4px 0 12px;font-size:13px;color:var(--muted)}
+.topbar a{color:var(--muted)}
+.topbar .linkbtn{font-size:13px}
+
+/* ---------- historial ---------- */
+.hist{border-top:1px solid var(--line);margin-top:18px;padding-top:16px}
+.hist h2{font-family:"Barlow Condensed",sans-serif;font-style:italic;font-weight:800;font-size:22px;line-height:1;margin:0 0 10px}
+.hist-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.hist-list li{display:flex;gap:8px;align-items:center;background:var(--field);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13.5px}
+.hist-list li.none{color:var(--muted);display:block}
+.hist-list .who{flex:1;min-width:0}
+.hist-list .who b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-list .who span{color:var(--muted);font-size:12.5px}
+.mini{flex:none;appearance:none;border:1.5px solid var(--line);background:transparent;color:var(--text);border-radius:8px;padding:6px 10px;font-weight:700;cursor:pointer;font-size:13px;text-decoration:none}
+
+/* ---------- acceso (solo coach) ---------- */
+.gate{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px 16px}
+.is-locked .gate{display:flex}
+.is-locked .wrap,.is-locked .fab{display:none!important}
+.gate-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 18px;width:100%;max-width:380px;display:grid;gap:10px}
+.gate-box h1{font-family:"Barlow Condensed",sans-serif;font-style:italic;font-weight:800;font-size:28px;line-height:1;margin:0}
+.gate-box p{margin:0;color:var(--muted);font-size:14px}
+.gate-box form,#g-form{display:grid;gap:8px}
+.gate-box input{width:100%;background:var(--field);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.gate-box .or{text-align:center;font-size:12.5px;color:var(--muted)}
+.gate-box a{color:var(--muted);font-size:13.5px;text-align:center}
+.gate-box [hidden]{display:none}
 
 /* ---------- viewer mode ---------- */
 body.viewer .editor{display:none}
@@ -138,13 +168,36 @@ body.viewer .fab{display:block;position:fixed;left:50%;transform:translateX(-50%
 </style>
 </head>
 <body>
+<section class="gate" aria-label="Acceso del coach">
+  <div class="gate-box">
+    <h1>Hoja de entrenamiento</h1>
+    <p>Solo el coach puede entrar al editor.</p>
+    <div id="g-form">
+      <button class="btn" id="g-google" type="button">Continuar con Google</button>
+      <p class="or">o con correo</p>
+      <form id="g-mail">
+        <input type="email" id="g-email" placeholder="tu@correo.com" autocomplete="username" aria-label="Correo">
+        <input type="password" id="g-pass" placeholder="Contraseña" autocomplete="current-password" aria-label="Contraseña">
+        <button class="btn alt" id="g-login" type="submit">Entrar</button>
+      </form>
+    </div>
+    <button class="btn alt" id="g-out" type="button" hidden>Cerrar sesión</button>
+    <div class="status" id="g-status" role="status" aria-live="polite">Conectando…</div>
+    <a href="index.html">Volver a Laguna Swim</a>
+  </div>
+</section>
 <div class="wrap">
   <aside class="editor" aria-label="Crear entrenamiento">
+    <div class="topbar"><a href="index.html">&larr; Panel</a><span><span id="who"></span> · <button class="linkbtn" id="b-out" type="button">Salir</button></span></div>
     <h1>Hoja de entrenamiento</h1>
     <p class="hint">Pega el entreno como lo escribes siempre. La hoja se arma sola a la derecha (o abajo, en el cel).</p>
 
-    <div class="field"><label for="f-name">Nadador(a)</label><input type="text" id="f-name" autocomplete="off"></div>
-    <div class="field"><label for="f-period">Semana o fecha</label><input type="text" id="f-period" autocomplete="off"></div>
+    <div class="field"><label for="f-pick">Nadador(a)</label>
+      <select id="f-pick"></select>
+      <input type="text" id="f-name" autocomplete="off" placeholder="Nombre del nadador(a)" aria-label="Nombre del nadador(a)" hidden>
+    </div>
+    <div class="field"><label for="f-week">Semana (lunes)</label><input type="date" id="f-week"></div>
+    <div class="field"><label for="f-period">Semana o fecha en la hoja</label><input type="text" id="f-period" autocomplete="off"></div>
     <div class="field"><label for="f-coach">Firma del coach</label><input type="text" id="f-coach" autocomplete="off"></div>
     <div class="field">
       <label>Portada (opcional)</label>
@@ -163,7 +216,13 @@ body.viewer .fab{display:block;position:fixed;left:50%;transform:translateX(-50%
     </div>
     <input class="linkout" id="linkout" readonly aria-label="Link del entrenamiento">
     <div class="status" id="status" role="status" aria-live="polite"></div>
-    <p class="small">El link abre la hoja en <span id="basehost"></span> y trae su propio botón de descargar PDF. La portada solo va en el PDF, no en el link.</p>
+    <p class="small">El link abre la hoja en <span id="basehost"></span> y trae su propio botón de descargar PDF. La portada solo va en el PDF, no en el link. Cada link que creas se guarda en el historial por nadador y semana.</p>
+
+    <div class="hist">
+      <h2>Historial</h2>
+      <div class="field"><label for="h-filter">Ver entrenos de</label><select id="h-filter"><option value="">Todos los nadadores</option></select></div>
+      <ul class="hist-list" id="h-list"><li class="none">Cargando…</li></ul>
+    </div>
   </aside>
 
   <main class="sheet-scroll"><article class="sheet" id="sheet"></article></main>
@@ -362,6 +421,140 @@ function makePdf(d, btns){
   }).catch(function(){ done(); status("No se pudo crear el PDF. Intenta de nuevo."); });
 }
 
+/* ---------- semana ---------- */
+var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function pad(n){ return (n<10?"0":"")+n; }
+function monday(d){ d = new Date(d.getFullYear(),d.getMonth(),d.getDate()); d.setDate(d.getDate()-(d.getDay()+6)%7); return d; }
+function isoDate(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function parseIso(s){ var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s||""); return m ? new Date(+m[1],m[2]-1,+m[3]) : null; }
+function weekLabel(s){ var d = parseIso(s); return d ? "Semana del "+d.getDate()+" de "+MESES[d.getMonth()] : ""; }
+function slug(s){ return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80) || "sin-nombre"; }
+
+/* ---------- firebase (solo en modo editor) ---------- */
+var COACH_EMAIL = "checoswim@gmail.com";
+var FB_CFG = {
+  apiKey: "AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
+  authDomain: "laguna-swim-chrono.firebaseapp.com",
+  databaseURL: "https://laguna-swim-chrono-default-rtdb.firebaseio.com",
+  projectId: "laguna-swim-chrono",
+  storageBucket: "laguna-swim-chrono.firebasestorage.app",
+  messagingSenderId: "618459577354",
+  appId: "1:618459577354:web:2e26bda92112ce241c33f3"
+};
+var FB_JS = "https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/";
+var auth = null, db = null, editorOn = false;
+function loadScript(src){ return new Promise(function(ok,ko){ var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); }); }
+function isCoach(u){ return !!(u && u.email && u.email.toLowerCase()===COACH_EMAIL); }
+function gateMsg(msg){ $("g-status").textContent = msg||""; }
+function authErr(e){
+  var m = {
+    "auth/user-not-found":"No existe esa cuenta.",
+    "auth/wrong-password":"Contraseña incorrecta.",
+    "auth/invalid-credential":"Correo o contraseña incorrectos.",
+    "auth/invalid-email":"Correo inválido.",
+    "auth/too-many-requests":"Demasiados intentos. Espera un momento.",
+    "auth/network-request-failed":"Sin conexión a internet.",
+    "auth/unauthorized-domain":"Este dominio no está autorizado en Firebase ("+location.hostname+")."
+  };
+  return (e && m[e.code]) || "No se pudo entrar. Intenta de nuevo.";
+}
+function onUser(u){
+  var ok = isCoach(u);
+  document.documentElement.classList.toggle("is-locked",!ok);
+  $("g-form").hidden = !!u;
+  $("g-out").hidden = !u;
+  gateMsg(u && !ok ? "La cuenta "+u.email+" no tiene acceso al editor." : "");
+  if(!ok) return;
+  $("who").textContent = u.email;
+  if(!editorOn){ editorOn = true; startEditor(); }
+}
+function gate(){
+  $("g-google").addEventListener("click",function(){
+    if(!auth) return;
+    var prov = new firebase.auth.GoogleAuthProvider();
+    gateMsg("Conectando con Google…");
+    auth.signInWithPopup(prov).catch(function(e){
+      if(e.code==="auth/popup-closed-by-user" || e.code==="auth/cancelled-popup-request"){ gateMsg(""); return; }
+      if(e.code==="auth/popup-blocked" || e.code==="auth/operation-not-supported-in-this-environment"){
+        auth.signInWithRedirect(prov).catch(function(e2){ gateMsg(authErr(e2)); }); return;
+      }
+      gateMsg(authErr(e));
+    });
+  });
+  $("g-mail").addEventListener("submit",function(ev){
+    ev.preventDefault(); if(!auth) return;
+    var em = $("g-email").value.trim(), pw = $("g-pass").value;
+    if(!em || !pw){ gateMsg("Escribe tu correo y contraseña."); return; }
+    $("g-login").disabled = true; gateMsg("Verificando…");
+    auth.signInWithEmailAndPassword(em,pw).then(function(){ $("g-login").disabled = false; },function(e){ $("g-login").disabled = false; gateMsg(authErr(e)); });
+  });
+  var out = function(){ if(auth) auth.signOut(); };
+  $("g-out").addEventListener("click",out);
+  $("b-out").addEventListener("click",out);
+  loadScript(FB_JS+"firebase-app-compat.min.js")
+    .then(function(){ return Promise.all([loadScript(FB_JS+"firebase-auth-compat.min.js"),loadScript(FB_JS+"firebase-database-compat.min.js")]); })
+    .then(function(){
+      if(!firebase.apps.length) firebase.initializeApp(FB_CFG);
+      auth = firebase.auth(); db = firebase.database();
+      auth.onAuthStateChanged(onUser);
+    })
+    .catch(function(){ gateMsg("No se pudo conectar. Revisa tu internet y recarga la página."); });
+}
+
+/* ---------- historial y nadadores ---------- */
+var roster = [], entries = [];
+function saveEntreno(d, url){
+  if(!db || !auth || !auth.currentUser) return Promise.resolve(false);
+  if(!d.name) return Promise.resolve(null);
+  var k = slug(d.name), w = $("f-week").value || isoDate(monday(new Date())), upd = {};
+  upd["entrenos/"+k+"/"+w] = { nombre:d.name, periodo:d.period, coach:d.coach, texto:d.text, semana:w, link:url,
+    actualizado:firebase.database.ServerValue.TIMESTAMP, por:auth.currentUser.email };
+  upd["masters_remotos/"+k+"/nombre"] = d.name;
+  return db.ref().update(upd).then(function(){ loadHistory(); return true; },function(){ return false; });
+}
+function saveNote(r){ return r===true ? " Guardado en el historial." : r===null ? " No se guardó: falta el nombre del nadador." : " No se pudo guardar en el historial."; }
+function loadHistory(){
+  return Promise.all([db.ref("masters_remotos").once("value"),db.ref("entrenos").once("value")]).then(function(r){
+    var names = {}, m = r[0].val()||{}, e = r[1].val()||{};
+    Object.keys(m).forEach(function(k){ if(m[k] && m[k].nombre) names[k] = m[k].nombre; });
+    entries = [];
+    Object.keys(e).forEach(function(k){
+      var weeks = e[k]||{};
+      Object.keys(weeks).forEach(function(w){
+        var x = weeks[w]; if(!x || !x.texto) return;
+        if(!names[k] && x.nombre) names[k] = x.nombre;
+        entries.push({ key:k, semana:w, nombre:x.nombre||"", periodo:x.periodo||"", coach:x.coach||"", texto:x.texto, link:x.link||"", actualizado:x.actualizado||0 });
+      });
+    });
+    roster = Object.keys(names).map(function(k){ return { key:k, nombre:names[k] }; }).sort(function(a,b){ return a.nombre.localeCompare(b.nombre,"es"); });
+    entries.sort(function(a,b){ return b.semana.localeCompare(a.semana) || b.actualizado-a.actualizado; });
+    fillPickers(); renderHistory();
+  }).catch(function(){ $("h-list").innerHTML = '<li class="none">No se pudo cargar el historial. Revisa los permisos de Firebase.</li>'; });
+}
+function fillPickers(){
+  var h = '<option value="">Elige un nadador…</option>';
+  roster.forEach(function(r){ h += '<option value="'+esc(r.nombre)+'">'+esc(r.nombre)+'</option>'; });
+  $("f-pick").innerHTML = h+'<option value="__new">+ Escribir otro nombre…</option>';
+  setName($("f-name").value.trim());
+  var f = $("h-filter"), cur = f.value;
+  f.innerHTML = '<option value="">Todos los nadadores</option>'+roster.map(function(r){ return '<option value="'+esc(r.key)+'">'+esc(r.nombre)+'</option>'; }).join("");
+  f.value = cur;
+}
+function setName(n){
+  var known = roster.some(function(r){ return r.nombre===n; });
+  $("f-name").value = n;
+  $("f-pick").value = known ? n : (n ? "__new" : "");
+  $("f-name").hidden = known || !n;
+}
+function renderHistory(){
+  var k = $("h-filter").value, list = entries.filter(function(x){ return !k || x.key===k; }).slice(0,40);
+  $("h-list").innerHTML = list.length ? list.map(function(x){
+    return '<li><div class="who"><b>'+esc(x.nombre)+'</b><span>'+esc(x.periodo || weekLabel(x.semana))+'</span></div>'+
+      '<button class="mini" type="button" data-i="'+entries.indexOf(x)+'">Abrir</button>'+
+      (x.link ? '<a class="mini" href="'+esc(x.link)+'" target="_blank" rel="noopener">Ver</a>' : '')+'</li>';
+  }).join("") : '<li class="none">Aún no hay entrenos guardados'+(k?' de este nadador':'')+'. Se guardan al crear el link.</li>';
+}
+
 /* ---------- init ---------- */
 var shared = readLink();
 if(shared){
@@ -370,14 +563,34 @@ if(shared){
   render(shared,{cover:null});
   $("fab-pdf").addEventListener("click",function(){ makePdf(shared,[$("fab-pdf")]); });
 } else {
-  $("f-name").value = DEFAULT.name;
-  $("f-period").value = DEFAULT.period;
+  gate();
+}
+
+function startEditor(){
+  var autoPeriod = true;
+  $("f-pick").innerHTML = '<option value="__new">+ Escribir otro nombre…</option>';
+  setName(DEFAULT.name);
+  $("f-week").value = isoDate(monday(new Date()));
+  $("f-period").value = weekLabel($("f-week").value);
   $("f-coach").value = load("coach") || DEFAULT.coach;
   $("f-text").value = DEFAULT.text;
   $("basehost").textContent = linkBase().replace(/^https?:\/\//,"");
   var thumb = function(){ if(cover){ $("cover-thumb").src = cover; $("cover-thumb").hidden = false; $("rm-cover").hidden = false; } else { $("cover-thumb").hidden = true; $("rm-cover").hidden = true; } };
   var refresh = function(){ render(current(),{cover:cover,hideNameOnCover:false}); updateWa(); };
   var t; ["f-name","f-period","f-coach","f-text"].forEach(function(id){ $(id).addEventListener("input",function(){ clearTimeout(t); t=setTimeout(refresh,150); $("linkout").style.display="none"; }); });
+  $("f-pick").addEventListener("change",function(){
+    var v = $("f-pick").value;
+    if(v==="__new"){ $("f-name").value = ""; $("f-name").hidden = false; $("f-name").focus(); }
+    else { $("f-name").value = v; $("f-name").hidden = true; }
+    $("linkout").style.display = "none"; refresh();
+  });
+  $("f-period").addEventListener("input",function(){ var v = $("f-period").value.trim(); autoPeriod = !v || v===weekLabel($("f-week").value); });
+  $("f-week").addEventListener("change",function(){
+    var d = parseIso($("f-week").value); if(!d) return;
+    $("f-week").value = isoDate(monday(d));
+    if(autoPeriod) $("f-period").value = weekLabel($("f-week").value);
+    $("linkout").style.display = "none"; refresh();
+  });
   $("f-coach").addEventListener("change",function(){ store("coach",$("f-coach").value.trim()); });
   $("f-cover").addEventListener("change",function(e){
     var f = e.target.files && e.target.files[0]; if(!f) return;
@@ -390,10 +603,29 @@ if(shared){
   $("rm-cover").addEventListener("click",function(){ cover = null; $("f-cover").value = ""; thumb(); refresh(); });
   $("b-pdf").addEventListener("click",function(){ makePdf(current(),[$("b-pdf")]); });
   $("b-link").addEventListener("click",function(){
-    var url = makeLink(current()); if(!url){ status("No se pudo crear el link."); return; }
+    var d = current(), url = makeLink(d); if(!url){ status("No se pudo crear el link."); return; }
     var box = $("linkout"); box.value = url; box.style.display = "block"; box.select();
-    var ok = function(){ status("Link copiado. Pégalo en WhatsApp."); }, no = function(){ status("Link listo: mantén presionado para copiarlo."); };
-    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(ok,no); else no();
+    var copied = (navigator.clipboard && navigator.clipboard.writeText) ? navigator.clipboard.writeText(url).then(function(){ return true; },function(){ return false; }) : Promise.resolve(false);
+    Promise.all([copied,saveEntreno(d,url)]).then(function(r){
+      status((r[0] ? "Link copiado. Pégalo en WhatsApp." : "Link listo: mantén presionado para copiarlo.")+saveNote(r[1]));
+    });
+  });
+  $("b-wa").addEventListener("click",function(){
+    var d = current(); saveEntreno(d,makeLink(d)).then(function(r){ status("Link enviado a WhatsApp."+saveNote(r)); });
+  });
+  $("h-filter").addEventListener("change",renderHistory);
+  $("h-list").addEventListener("click",function(e){
+    var b = e.target.closest("button[data-i]"); if(!b) return;
+    var x = entries[+b.getAttribute("data-i")]; if(!x) return;
+    setName(x.nombre);
+    $("f-week").value = x.semana;
+    $("f-period").value = x.periodo;
+    autoPeriod = !x.periodo || x.periodo===weekLabel(x.semana);
+    if(x.coach) $("f-coach").value = x.coach;
+    $("f-text").value = x.texto;
+    $("linkout").style.display = "none"; refresh();
+    status("Abriste el entreno de "+x.nombre+" ("+(x.periodo||weekLabel(x.semana))+"). Cambia nadador o semana para reutilizarlo.");
+    $("f-pick").scrollIntoView({behavior:"smooth",block:"center"});
   });
   function updateWa(){
     var d = current(), url = makeLink(d);
@@ -402,6 +634,7 @@ if(shared){
     $("b-wa").href = "https://wa.me/?text="+encodeURIComponent(msg);
   }
   thumb(); refresh();
+  loadHistory();
 }
 })();
 </script>
