@@ -3642,7 +3642,7 @@ body.blog-active #tab-timer { display: none !important; }
 
 </style>
 </head>
-<body class="v2-redesign v3-fluid">
+<body class="v2-redesign v3-fluid v7">
 <div id="oc-ambient" aria-hidden="true">
   <div class="oc-depth"></div>
   <div class="oc-caustic"></div>
@@ -14919,5 +14919,244 @@ function atajoNuevoPost() {
 })();
 
 </script>
+<style id="v7-trends">
+/* ============================================================
+   V7: TENDENCIAS 2026 — misma identidad (marino + dorado)
+   Liquid Glass · Bento · Tipografía grande · Carrusel · Scroll reveal
+   Solo presentación: no cambia JS ni Firebase.
+   ============================================================ */
+body.v7 {
+  --bnav-h: 84px;               /* dock flotante + margen: los tabs reservan este espacio */
+  --spons-h: 52px;
+  --v7-glass: rgba(255,255,255,0.075);
+  --v7-glass-strong: rgba(10,30,60,0.55);
+  --v7-edge: rgba(255,255,255,0.16);
+  --v7-hi: inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(255,255,255,0.04);
+  --v7-shadow: 0 10px 30px rgba(0,8,20,0.35);
+  --v7-r: 22px;
+  --v7-r-sm: 14px;
+  --v7-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --v7-muted: rgba(255,255,255,0.66);
+  font-family: -apple-system, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+}
+body.v7 .v5-hero-title,
+body.v7 .v2-section-head-text,
+body.v7 .v2-stat-num-big,
+body.v7 .v2-action-title,
+body.v7 .sim-card-title,
+body.v7 .v2-app-header-main {
+  font-family: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+}
+
+/* ---------- Liquid Glass: material base ---------- */
+body.v7 .sim-card,
+body.v7 .v2-action-card,
+body.v7 .v2-event-poster,
+body.v7 .v2-coach-poster,
+body.v7 .v2-stat-item,
+body.v7 .v4-upload-cta,
+body.v7 .card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%) !important;
+  border: 1px solid var(--v7-edge) !important;
+  border-radius: var(--v7-r) !important;
+  box-shadow: var(--v7-hi), var(--v7-shadow);
+  backdrop-filter: blur(22px) saturate(1.6);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+  transition: transform 0.35s var(--v7-spring), background 0.2s, border-color 0.2s;
+}
+body.v7 .sim-card:active,
+body.v7 .v2-action-card:active,
+body.v7 .v2-event-poster:active,
+body.v7 .v2-coach-poster:active,
+body.v7 .v4-upload-cta:active { transform: scale(0.965); }
+
+/* ---------- Header de vidrio, compacto ---------- */
+body.v7 .v2-app-header {
+  background: rgba(3,16,36,0.55);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border-bottom: 0;
+  box-shadow: inset 0 -1px 0 rgba(255,215,0,0.35);
+  padding: 0.55rem 1rem;
+}
+body.v7 .v2-app-header-logo { width: 38px; height: 38px; border: 0; box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
+body.v7 .v2-app-header-main { font-size: 1.05rem; letter-spacing: 0.5px; }
+body.v7 .v2-app-header-sub { letter-spacing: 3px; font-weight: 700; opacity: 0.8; }
+
+/* ---------- Dock flotante: patrocinadores + menú ---------- */
+body.v7 .bnav {
+  left: 12px; right: 12px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  height: 64px;
+  padding: 0 6px !important;
+  border-radius: 24px;
+  background: rgba(4,18,40,0.62) !important;
+  border: 1px solid var(--v7-edge) !important;
+  box-shadow: var(--v7-hi), 0 12px 32px rgba(0,0,0,0.45);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+}
+body.v7 .bnav-item {
+  opacity: 0.6;
+  margin: 6px 0;
+  border-radius: 18px;
+  letter-spacing: 0.3px !important;
+  text-transform: none !important;
+  font-size: 0.62rem !important;
+  transition: background 0.3s var(--v7-spring), opacity 0.2s;
+}
+body.v7 .bnav-item.active {
+  opacity: 1;
+  background: rgba(255,215,0,0.14);
+  box-shadow: inset 0 0 0 1px rgba(255,215,0,0.3);
+}
+body.v7 .bnav-item.active::before { display: none; }
+body.v7 .spons-bar {
+  left: 12px; right: 12px;
+  bottom: calc(82px + env(safe-area-inset-bottom));
+  height: 44px;
+  border-radius: 14px;
+  border: 0 !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
+}
+
+/* ---------- Hero: tipografía protagonista ---------- */
+body.v7 .v5-hero { border-radius: 0 0 32px 32px; }
+body.v7 .v5-hero-logo { width: 64px; height: 64px; border-width: 2px; }
+body.v7 .v5-hero-title {
+  font-size: clamp(2.6rem, 13.5vw, 4.2rem);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  font-weight: 900;
+}
+body.v7 .v5-hero-title em {
+  background: linear-gradient(100deg, #ffd700 0%, #fff3a8 45%, #ffd700 55%, #e0a800 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  animation: v7Shine 6s ease-in-out infinite;
+}
+@keyframes v7Shine { 0%,100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
+body.v7 .hero-frase-btn { background: #ffd700; color: #051a3a; border: 0; font-weight: 800; }
+
+/* ---------- Simuladores: carrusel horizontal con snap ---------- */
+body.v7 .simuladores-zone {
+  flex-direction: row;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  max-width: none;
+  width: auto;
+  margin: 1rem -1.3rem 0;
+  padding: 2rem 1.3rem 1rem;
+  scroll-padding-left: 1.3rem;
+  gap: 0.75rem;
+  scrollbar-width: none;
+}
+body.v7 .simuladores-zone::-webkit-scrollbar { display: none; }
+body.v7 .simuladores-zone-title {
+  position: absolute; top: 0.3rem; left: 1.3rem;
+  text-align: left; letter-spacing: 0.2em; color: rgba(255,255,255,0.6);
+}
+body.v7 .sim-card {
+  flex: 0 0 74%;
+  scroll-snap-align: start;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 1rem;
+  min-height: 210px;
+  position: relative;
+}
+body.v7 .sim-card-icon { width: 56px; height: 56px; font-size: 30px; border-radius: 16px; }
+body.v7 .sim-card-title { font-size: 1.05rem; letter-spacing: -0.01em; }
+body.v7 .sim-card-desc { font-size: 0.78rem; color: var(--v7-muted); }
+body.v7 .sim-card-cta { position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; background: #ffd700; }
+
+/* ---------- Encabezados de sección grandes ---------- */
+body.v7 .v2-section { margin-top: 2rem; }
+body.v7 .v2-section-head-bar,
+body.v7 .v2-section-head-line { display: none; }
+body.v7 .v2-section-head-text {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  line-height: 1.05;
+}
+
+/* ---------- Bento: cifras ---------- */
+body.v7 .v2-stats-banner {
+  background: none; border: 0;
+  gap: 0.5rem; padding: 0 1rem;
+}
+body.v7 .v2-stat-item { padding: 1rem 0.4rem; }
+body.v7 .v2-stat-item:not(:last-child)::after { display: none; }
+body.v7 .v2-stat-num-big { font-size: 2.2rem; letter-spacing: -0.04em; text-shadow: none; }
+
+/* ---------- Bento: Únete al equipo ---------- */
+body.v7 .v2-nav-grid { gap: 0.6rem; }
+body.v7 .v2-action-card { min-height: 128px; padding: 1rem; border-left-width: 1px !important; }
+body.v7 .v2-action-card.featured {
+  grid-column: 1 / -1;
+  min-height: 150px;
+  background: radial-gradient(120% 140% at 100% 0%, rgba(255,215,0,0.30) 0%, transparent 55%),
+              linear-gradient(160deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03)) !important;
+  border-color: rgba(255,215,0,0.45) !important;
+}
+body.v7 .v2-action-card.featured .v2-action-icon { font-size: 2.6rem; }
+body.v7 .v2-action-card.featured .v2-action-title { font-size: 1.7rem; }
+body.v7 .v2-action-card.featured .v2-action-sub { font-size: 0.8rem; }
+body.v7 .v2-action-title { font-size: 1.05rem; letter-spacing: -0.01em; text-transform: none; }
+body.v7 .v2-action-sub { font-size: 0.7rem; color: var(--v7-muted); }
+body.v7 .v2-action-arrow {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,0.1); font-size: 0.95rem;
+}
+
+/* ---------- Tabla semanal y divisores ---------- */
+body.v7 #v4-home-tabla {
+  background: linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%) !important;
+  border: 1px solid rgba(255,215,0,0.35) !important;
+  border-radius: var(--v7-r) !important;
+  box-shadow: var(--v7-hi), var(--v7-shadow);
+  backdrop-filter: blur(22px) saturate(1.6);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+}
+body.v7 #v4-home-tabla > div > div[style*="background"] { border-radius: var(--v7-r-sm) !important; }
+body.v7 .v3-below-divider-text { background: transparent; }
+
+/* ---------- Eventos y coach ---------- */
+body.v7 .v2-event-poster { overflow: hidden; }
+body.v7 .v2-event-tape { border-radius: 0; }
+body.v7 .wfc-cd-box { border-radius: var(--v7-r-sm) !important; background: rgba(0,10,25,0.45) !important; border: 1px solid var(--v7-edge) !important; }
+body.v7 .v2-event-poster [style*="#16a34a"], body.v7 .v2-event-poster button { border-radius: var(--v7-r-sm) !important; }
+
+/* ---------- Formularios y botones ---------- */
+body.v7 .btn { border-radius: var(--v7-r-sm); }
+body.v7 input, body.v7 select, body.v7 textarea {
+  border-radius: var(--v7-r-sm);
+  background: rgba(255,255,255,0.07);
+  border-color: var(--v7-edge);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ---------- Aparición al hacer scroll (si el navegador lo soporta) ---------- */
+@supports (animation-timeline: view()) {
+  body.v7 .v2-section,
+  body.v7 .v2-stats-banner,
+  body.v7 .v4-upload-cta {
+    animation: v7Reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+  @keyframes v7Reveal { from { opacity: 0; transform: translateY(28px) scale(0.98); } to { opacity: 1; transform: none; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.v7 .v5-hero-title em { animation: none; }
+  body.v7 .v2-section, body.v7 .v2-stats-banner, body.v7 .v4-upload-cta { animation: none !important; }
+}
+</style>
 </body>
 </html>
