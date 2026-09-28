@@ -135,6 +135,41 @@ label.f input,label.f select{display:block;width:100%;margin-top:4px;padding:11p
 .wabtn{background:#1f9e57;color:#fff}
 .mailbtn{background:var(--surf2);color:var(--ink)}
 textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font:inherit;font-size:.92rem}
+.por{color:#b7791f}.venc{color:var(--coral)}.aldia{color:var(--aqua)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .por{color:#f0b24a}}
+.tabs.cuatro{grid-template-columns:repeat(4,1fr)}
+.tabs button small{display:block;font-size:.75rem;font-weight:600;opacity:.8}
+.msg{width:40px;height:40px;border-radius:12px;border:0;display:grid;place-items:center;background:var(--coralSoft);color:var(--coral)}
+.msg svg{width:20px;height:20px}
+.plantillas{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.plantillas button{border:1px solid var(--line);background:none;border-radius:999px;padding:6px 12px;font-size:.88rem}
+.plantillas button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hist{list-style:none;margin:0 0 14px;padding:0;font-size:.9rem}
+.hist li{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hist li span{color:var(--mute)}
+.ayuda{font-size:.82rem;color:var(--mute);margin:-6px 0 12px}
+.linea{display:block;width:100%;border:1px solid var(--line);background:var(--surf);border-radius:14px;padding:12px;font-weight:600;margin:-8px 0 18px}
+.checks{display:grid;gap:6px;margin:0 0 12px}
+.checks label{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 12px}
+.checks input{width:20px;height:20px;accent-color:var(--aqua);flex:none}
+.checks span{flex:1}.checks small{color:var(--mute)}
+.gan{grid-column:1/-1;background:var(--surf);border-radius:16px;padding:12px 14px;font:inherit;color:inherit;display:flex!important;align-items:center;justify-content:space-between;gap:10px;border:0;text-align:left;width:100%;cursor:pointer}
+.gan strong{color:var(--ink)!important}
+.gan em{font-style:normal;font-size:.85rem;color:var(--mute);text-align:right}
+.desc{display:grid;grid-template-columns:1fr 100px 40px;gap:6px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.desc select{grid-column:1/-1;padding:9px 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:.9rem}
+.desc input{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:1rem;min-width:0}
+.desc button{border:0;border-radius:12px;background:var(--coralSoft);color:var(--coral);font-size:1.1rem}
+.queda{background:var(--aquaSoft);border-radius:12px;padding:10px 12px;margin:4px 0 12px;font-weight:600}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem;margin:0 0 16px;font-variant-numeric:tabular-nums}
+table.t th,table.t td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:right}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t th{color:var(--mute);font-weight:600}
+table.t tr.tot td{font-weight:800;border-bottom:0}
+.tscroll{overflow-x:auto}
+.flujo{display:grid;gap:4px;background:var(--bg);border-radius:14px;padding:12px;margin:0 0 16px;font-variant-numeric:tabular-nums}
+.flujo div{display:flex;justify-content:space-between;gap:10px}
+.flujo .fin{font-weight:800;border-top:1px solid var(--line);padding-top:6px;margin-top:2px}
 .tag{display:inline-block;font-size:.72rem;font-weight:600;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px;background:var(--aquaSoft);color:var(--aqua)}
 </style>
 </head>
@@ -176,15 +211,14 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
   <div class="money">
     <div class="in"><p>Cobrado</p><strong id="cobrado"></strong></div>
     <div class="out"><p>Falta por cobrar</p><strong id="falta"></strong></div>
+    <button class="gan" id="ganBtn"><span><p>Tu ganancia del mes</p><strong id="ganMes"></strong></span><em id="ganAnio"></em></button>
   </div>
+
+  <button class="linea" id="lista">Enviar lista de pagados</button>
 
   <div class="alert" id="alerta"></div>
 
-  <div class="tabs" role="group" aria-label="Filtrar por estado">
-    <button data-tab="pend">Pendientes</button>
-    <button data-tab="ok">Pagados</button>
-    <button data-tab="all">Todos</button>
-  </div>
+  <div class="tabs cuatro" role="group" aria-label="Filtrar por estado" id="tabs"></div>
   <div class="chips" role="group" aria-label="Filtrar por horario" id="chips"></div>
   <label class="f" style="margin:8px 0 0"><input type="search" id="buscar" placeholder="Buscar nadador o tutor"></label>
 
@@ -194,6 +228,7 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
     <button id="pegar">Pegar lista desde Excel</button> ·
     <button id="csv">Descargar lista del mes</button> ·
     <button id="horarios">Horarios y cuotas</button> ·
+    <button id="textos">Textos de mensajes</button> ·
     <button id="importar">Importar archivo</button> ·
     <input type="file" id="fImp" accept=".json,application/json" hidden>
     <button id="reiniciar">Empezar de cero</button> ·
@@ -211,7 +246,7 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
     <label class="f">Monto<input type="number" id="pMonto" min="0" step="50" required></label>
   </div>
   <label class="f">Cómo pagó
-    <select id="pMetodo"><option>Playtomic</option><option>Transferencia</option><option>Efectivo</option></select>
+    <select id="pMetodo"></select>
   </label>
   <label class="rule"><input type="checkbox" id="pQuin"><span id="pRuleTxt"></span></label>
   <div class="btns">
@@ -236,14 +271,72 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
 <dialog id="dRec"><div class="sheet">
   <h2 id="qNombre"></h2>
   <p class="note" id="qInfo"></p>
-  <div class="recibo" id="qTexto"></div>
+  <div class="plantillas" role="group" aria-label="Tipo de mensaje" id="qPlant"></div>
+  <label class="f">Mensaje (puedes cambiarlo antes de mandarlo)<textarea id="qTexto" style="min-height:150px"></textarea></label>
   <div class="btns">
-    <a class="wabtn" id="qWa" target="_blank" rel="noopener">Mandar WhatsApp</a>
-    <a class="mailbtn" id="qMail">Mandar correo</a>
+    <a class="wabtn" id="qWa" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="mailbtn" id="qMail">Correo</a>
+    <button type="button" class="ghost" id="qShare">Compartir</button>
+    <button type="button" class="ghost" id="qCopy">Copiar</button>
+  </div>
+  <div class="btns">
     <button type="button" class="primary" id="qPago">Ya pagó</button>
     <button type="button" class="ghost" id="qSig">Siguiente</button>
   </div>
 </div></dialog>
+
+<dialog id="dLista"><div class="sheet">
+  <h2>Lista de pagados</h2>
+  <p class="note" id="lMes"></p>
+  <div class="plantillas" id="lSedes" role="group" aria-label="Elegir por sede"></div>
+  <div class="checks" id="lHor"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="lFecha"><span>Incluir fecha de pago</span></label>
+    <label><input type="checkbox" id="lMonto"><span>Incluir monto y total</span></label>
+    <label><input type="checkbox" id="lAlias" checked><span>Quitar nombres de Playtomic (lo que va entre paréntesis)</span></label>
+  </div>
+  <label class="f">Así se va a mandar (puedes cambiarlo)<textarea id="lTexto" style="min-height:200px"></textarea></label>
+  <div class="btns">
+    <a class="wabtn" id="lWa" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="mailbtn" id="lMail">Correo</a>
+    <button type="button" class="ghost" id="lShare">Compartir</button>
+    <button type="button" class="ghost" id="lCopy">Copiar</button>
+    <button type="button" class="ghost" id="lCsv">Descargar Excel</button>
+  </div>
+</div></dialog>
+
+<dialog id="dGan"><div class="sheet">
+  <h2>Mis ganancias</h2>
+  <p class="note" id="gMes"></p>
+  <div class="tscroll"><table class="t" id="gHor"></table></div>
+  <div class="flujo" id="gFlujo"></div>
+  <h2 style="font-size:1.1rem">A quién le toca</h2>
+  <p class="ayuda">Palomea cuando ya le pagaste. "Ya se lo quedaron" es lo que la app u oficina retuvo sola.</p>
+  <div class="tscroll"><table class="t" id="gConc"></table></div>
+  <h2 style="font-size:1.1rem" id="gAnioT"></h2>
+  <div class="tscroll"><table class="t" id="gAnio"></table></div>
+  <div class="btns">
+    <button type="button" class="ghost" id="gCopy">Copiar resumen</button>
+    <button type="button" class="ghost" data-close>Listo</button>
+  </div>
+</div></dialog>
+
+<dialog id="dTextos"><form class="sheet" id="fTextos">
+  <h2>Textos de mensajes</h2>
+  <p class="note">Se llenan solos con: {tutor} {nadador} {cuota} {vence} {horario} {sede} {firma}</p>
+  <label class="f">Por vencer<textarea id="tPor"></textarea></label>
+  <label class="f">Vencido<textarea id="tVenc"></textarea></label>
+  <label class="f">Te extrañamos<textarea id="tAus"></textarea></label>
+  <div class="grid2">
+    <label class="f">Avisar cuántos días antes<input type="number" id="tAviso" min="0" max="15"></label>
+    <label class="f">"Te extrañamos" después de (días vencido)<input type="number" id="tAusDias" min="7" max="120"></label>
+  </div>
+  <div class="btns">
+    <button type="submit" class="primary">Guardar textos</button>
+    <button type="button" class="ghost" id="tRestaurar">Restaurar originales</button>
+    <button type="button" class="ghost" data-close>Cancelar</button>
+  </div>
+</form></dialog>
 
 <dialog id="dAlumno"><form class="sheet" method="dialog" id="fAlumno">
   <h2 id="aTitulo">Agregar alumno</h2>
@@ -258,8 +351,10 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
     <label class="f">Horario<select id="aHorario"></select></label>
     <label class="f">Ciclo<select id="aCiclo"><option value="mensual">Mes completo</option><option value="quincenal">15 a 15</option></select></label>
   </div>
+  <div id="aHistBox"><p class="note" style="margin:4px 0 6px" id="aVence"></p><ul class="hist" id="aHist"></ul></div>
   <div class="btns">
     <button type="submit" class="primary">Guardar alumno</button>
+    <button type="button" class="ghost" id="aMsg">Mandar mensaje</button>
     <button type="button" class="danger" id="aBaja">Dar de baja</button>
     <button type="button" class="ghost" data-close>Cancelar</button>
   </div>
@@ -277,6 +372,11 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
     </div>
     <label class="f">Sede<input id="hSede" list="sedes" required autocomplete="off"></label>
     <datalist id="sedes"><option value="Tec"><option value="Deportiva"></datalist>
+    <label class="f">Cómo pagan normalmente<select id="hMet"></select></label>
+    <p class="note" style="margin:0 0 6px">Lo que se descuenta por cada nadador, y quién se lo queda</p>
+    <div id="hDesc"></div>
+    <button type="button" class="link" id="hMasDesc" style="margin:-4px 0 6px">+ Agregar descuento</button>
+    <div class="queda" id="hQueda"></div>
     <p class="err" id="hErr" role="alert"></p>
     <div class="btns">
       <button type="submit" class="primary" id="hGuardar">Agregar horario</button>
@@ -317,15 +417,28 @@ function hora12(hm) {
   const [h, m] = (hm || "00:00").split(":").map(Number);
   return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
 }
+// Descuentos por nadador según la sede, si el horario todavía no tiene los suyos
+// ret = forma de pago con la que ese descuento ya se lo quedan ellos (no pasa por tus manos)
+function descPorSede(sede) {
+  if (/tec/i.test(sede || "")) return [{ n: "Playtomic", m: 520, ret: "Playtomic" }, { n: "Profe Manuel", m: 100, ret: "" }];
+  if (/deportiva/i.test(sede || "")) return [{ n: "Deportiva", m: 550, ret: "Oficina Deportiva" }];
+  return [];
+}
+const metPorSede = sede => /deportiva/i.test(sede || "") ? "Oficina Deportiva" : "Playtomic";
+const retPorNombre = n => /playtomic/i.test(n) ? "Playtomic" : /deportiva/i.test(n) ? "Oficina Deportiva" : "";
 function armarH(src) {
   H = {};
   Object.entries(src).forEach(([k, v]) => {
     const [h, m] = (v.hora || "00:00").split(":").map(Number);
-    H[k] = { hora: v.hora, t: hora12(v.hora), s: v.s || "", c: Number(v.c) || 0, m: h * 60 + m };
+    const d = v.d === false ? [] : Array.isArray(v.d) ? v.d.filter(x => x && x.n) : (v.d && typeof v.d === "object" ? Object.values(v.d) : descPorSede(v.s));
+    H[k] = { hora: v.hora, t: hora12(v.hora), s: v.s || "", c: Number(v.c) || 0, m: h * 60 + m, met: v.met || metPorSede(v.s),
+      d: d.map(x => ({ n: x.n, m: Number(x.m) || 0, ret: x.ret ?? retPorNombre(x.n) })) };
   });
 }
+const METODOS = ["Playtomic", "Oficina Deportiva", "Transferencia", "Efectivo"];
+const descTotal = k => (hor(k).d || []).reduce((s, x) => s + x.m, 0);
 armarH(H_INICIO);
-const hor = k => H[k] || { t: "Sin horario", s: "", c: 0, m: 9999 };
+const hor = k => H[k] || { t: "Sin horario", s: "", c: 0, m: 9999, d: [] };
 const horOrden = () => Object.entries(H).sort((a, b) => a[1].m - b[1].m);
 const porHora = (a, b) => hor(a.horario).m - hor(b.horario).m || a.nombre.localeCompare(b.nombre, "es");
 
@@ -348,7 +461,7 @@ const pad = n => String(n).padStart(2, "0");
 const hoy = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
 const n0 = new Date();
 let mes = `${n0.getFullYear()}-${pad(n0.getMonth()+1)}`;
-let tab = "pend", hf = "all", q = "";
+let tab = "cobrar", hf = "all", q = "";
 let st = { alumnos: {}, pagos: {}, recordatorios: {}, folio: 0 };
 
 /* ---------- Sesión ---------- */
@@ -419,10 +532,54 @@ Forma de pago: ${pg.metodo}
 ¡Gracias por tu pago! 🏊
 ${FIRMA} · ${TEL_FIRMA}`;
 }
-function textoRecordatorio(a) {
-  const saludo = a.tutor ? `¡Hola ${a.tutor}!` : "¡Hola!";
-  return `${saludo} 🏊 Te escribe ${FIRMA}. Te recuerdo que la ${periodo(a)} de ${a.nombre} sigue pendiente (${money(hor(a.horario).c)}). ¡Que no se le olvide nadar! 😄 Cualquier duda aquí estoy.`;
+/* ---------- Vencimientos ---------- */
+const TEXTOS_INICIO = {
+  por: "¡Hola {tutor}! 🏊 Te escribe {firma}. El mes de natación de {nadador} termina el {vence}. Para que siga sin pausa, la mensualidad es de {cuota}. ¡Que no se le olvide nadar! 😄 Cualquier duda aquí estoy.",
+  venc: "¡Hola {tutor}! 🏊 Te escribe {firma}. El mes de {nadador} terminó {vence} y sigue pendiente la mensualidad de {cuota}. ¿Me ayudas a ponerte al corriente? ¡Te esperamos en la alberca! 💪",
+  aus: "¡Hola {tutor}! 🏊 Hace tiempo que {nadador} no se da la vuelta por la alberca, ¡se le extraña! Te espero en el horario de {horario} en {sede}, su lugar sigue apartado. Cuando quieras regresamos. {firma}",
+  aviso: 5, ausDias: 30
+};
+const T = () => Object.assign({}, TEXTOS_INICIO, st.textos || {});
+const sumaMes = (k, d) => { let [y, m] = k.split("-").map(Number); m += d; while (m > 12) { m -= 12; y++; } while (m < 1) { m += 12; y--; } return `${y}-${pad(m)}`; };
+const ultimoDia = k => { const [y, m] = k.split("-").map(Number); return `${k}-${pad(new Date(y, m, 0).getDate())}`; };
+function mesesPagados(id) { return Object.keys(st.pagos || {}).filter(m => st.pagos[m] && st.pagos[m][id]).sort(); }
+// Último día que cubre su pago más reciente: fin de mes, o el 14 del mes siguiente si es 15 a 15
+function vence(a) {
+  const ms = mesesPagados(a.id); if (!ms.length) return null;
+  const m = ms[ms.length - 1];
+  return a.ciclo === "quincenal" ? `${sumaMes(m, 1)}-14` : ultimoDia(m);
 }
+const faltan = iso => Math.round((new Date(iso + "T12:00") - new Date(hoy() + "T12:00")) / 864e5);
+function estado(a) {
+  const v = vence(a), t = T();
+  if (!v) return { k: "sin", v: null, d: null };
+  const d = faltan(v);
+  if (d > t.aviso) return { k: "aldia", v, d };
+  if (d >= 0) return { k: "por", v, d };
+  if (-d <= t.ausDias) return { k: "venc", v, d };
+  return { k: "aus", v, d };
+}
+const fechaCorta = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("es-MX", { day: "numeric", month: "short" }).replace(".", ""); };
+const fechaDia = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("es-MX", { day: "numeric", month: "long" }); };
+function lineaEstado(e) {
+  if (e.k === "sin") return '<span class="venc">sin pagos registrados</span>';
+  if (e.k === "aldia") return `<span class="aldia">al día hasta ${fechaCorta(e.v)}</span>`;
+  if (e.k === "por") return `<span class="por">${e.d === 0 ? "vence hoy" : e.d === 1 ? "vence mañana" : `vence ${fechaCorta(e.v)}, faltan ${e.d} d`}</span>`;
+  if (e.k === "venc") return `<span class="venc">venció hace ${-e.d} d</span>`;
+  return `<span class="venc">sin venir desde ${fechaCorta(e.v)}</span>`;
+}
+const plantillaDe = e => e.k === "por" || e.k === "aldia" ? "por" : e.k === "aus" ? "aus" : "venc";
+function llenarTexto(tipo, a) {
+  const e = estado(a), h = hor(a.horario);
+  const venceTxt = e.v ? (tipo === "venc" ? `el ${fechaDia(e.v)}` : fechaDia(e.v)) : (tipo === "venc" ? "hace unos días" : "pronto");
+  return T()[tipo]
+    .replaceAll("{tutor}", a.tutor || nombrePila(a)).replaceAll("{nadador}", a.nombre)
+    .replaceAll("{cuota}", money(h.c)).replaceAll("{vence}", venceTxt)
+    .replaceAll("{horario}", h.t).replaceAll("{sede}", h.s).replaceAll("{firma}", FIRMA);
+}
+const ultimoAviso = id => (st.avisos || {})[id] || null;
+function marcarRecordado(id) { R.child(`avisos/${id}`).set(hoy()); }
+
 const waURL = (a, txt) => `https://wa.me/${tel52(a.tel)}?text=${encodeURIComponent(txt)}`;
 const mailURL = (a, asunto, txt) => `mailto:${encodeURIComponent(a.correo || "")}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(txt)}`;
 
@@ -431,10 +588,13 @@ const waIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
 /* ---------- Recordatorios al pendiente ---------- */
 // Cola: pendientes sin recordar primero, luego los recordados hace más tiempo (3+ días)
 function cola() {
-  const p = pm(), r = rm();
-  return activos().filter(a => !p[a.id])
-    .filter(a => !r[a.id] || dias(r[a.id]) >= 3)
-    .sort((a, b) => (r[a.id] || "").localeCompare(r[b.id] || "") || a.nombre.localeCompare(b.nombre, "es"));
+  return activos().filter(a => ["por", "venc", "sin"].includes(estado(a).k))
+    .filter(a => !ultimoAviso(a.id) || dias(ultimoAviso(a.id)) >= 3)
+    .sort(porUrgencia);
+}
+function porUrgencia(a, b) {
+  const ea = estado(a), eb = estado(b);
+  return (ea.d ?? 999) - (eb.d ?? 999) || porHora(a, b);
 }
 
 /* ---------- Pantalla ---------- */
@@ -452,48 +612,49 @@ function render() {
   $("rope").innerHTML = [...act].sort((a, b) => (p[b.id] ? 1 : 0) - (p[a.id] ? 1 : 0)).map(a => `<span class="float${p[a.id] ? " ok" : ""}"></span>`).join("");
   $("cobrado").textContent = money(cobrado);
   $("falta").textContent = money(falta);
+  pintarGanancia(); if ($("dGan").open) pintarGanDialog();
 
   const c = cola();
   const al = $("alerta");
+  const cuenta = k => c.filter(a => estado(a).k === k).length;
   if (!act.length) al.className = "alert hidden";
   else if (c.length) {
+    const partes = [["por", "por vencer"], ["venc", "vencidos"], ["sin", "sin pagos registrados"]].map(([k, l]) => cuenta(k) ? `${cuenta(k)} ${l}` : "").filter(Boolean).join(", ");
     al.className = "alert";
-    al.innerHTML = `<p><b>Toca recordar a ${c.length}</b>${c.length === 1 ? "Tiene" : "Tienen"} el pago pendiente y no les has escrito en 3 días o más.</p><button id="recordar">Empezar</button>`;
-  } else if (pend) {
+    al.innerHTML = `<p><b>Toca recordar a ${c.length}</b>${partes}. Solo los que se les acaba o ya se les acabó el mes.</p><button id="recordar">Empezar</button>`;
+  } else {
     al.className = "alert ok";
-    al.innerHTML = `<p><b>Recordatorios al día</b>Ya les escribiste a todos los pendientes. Te aviso aquí cuando pasen 3 días.</p>`;
-  } else al.className = "alert hidden";
+    al.innerHTML = `<p><b>Recordatorios al día</b>A nadie se le acaba el mes en los próximos ${T().aviso} días, o ya les escribiste.</p>`;
+  }
 
-  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.tab === tab));
+  const est = Object.fromEntries(act.map(a => [a.id, estado(a)]));
+  const grupos = { cobrar: a => ["por", "venc", "sin"].includes(est[a.id].k), aldia: a => est[a.id].k === "aldia", aus: a => est[a.id].k === "aus", all: () => true };
+  const nombresTab = { cobrar: "Cobrar", aldia: "Al día", aus: "Te extrañamos", all: "Todos" };
+  $("tabs").innerHTML = Object.keys(grupos).map(k => `<button data-tab="${k}" aria-pressed="${tab === k}">${nombresTab[k]}<small>${act.filter(grupos[k]).length}</small></button>`).join("");
   const chipDefs = [["all", "Todos los horarios"], ...horOrden().map(([k, v]) => [k, `${v.t} ${v.s}`])];
   $("chips").innerHTML = chipDefs.map(([k, l]) => `<button data-h="${k}" aria-pressed="${hf === k}">${l}</button>`).join("");
 
-  let rows = act.filter(a => hf === "all" || a.horario === hf);
+  let rows = act.filter(a => hf === "all" || a.horario === hf).filter(grupos[tab]);
   if (q) rows = rows.filter(a => (a.nombre + " " + (a.tutor || "")).toLowerCase().includes(q));
-  if (tab === "pend") rows = rows.filter(a => !p[a.id]);
-  if (tab === "ok") rows = rows.filter(a => p[a.id]);
-  rows.sort(porHora);
+  rows.sort(tab === "cobrar" ? porUrgencia : porHora);
 
   if (!rows.length) {
-    $("list").innerHTML = `<li class="empty">${!act.length ? "Todavía no hay alumnos. Toca “Agregar alumno” o “Pegar lista desde Excel”." : tab === "pend" ? "Nadie pendiente con este filtro." : tab === "ok" ? "Todavía no hay pagos con este filtro." : "No hay alumnos con este filtro."}</li>`;
+    const vacio = { cobrar: "A nadie se le acaba el mes con este filtro. 🎉", aldia: "Nadie al día con este filtro.", aus: "Nadie se ha ausentado. Así se hace.", all: "No hay alumnos con este filtro." };
+    $("list").innerHTML = `<li class="empty">${!act.length ? "Todavía no hay alumnos. Toca “Agregar alumno” o “Importar archivo”." : vacio[tab]}</li>`;
     return;
   }
   $("list").innerHTML = rows.map(a => {
-    const pg = p[a.id];
+    const pg = p[a.id], e = est[a.id], av = ultimoAviso(a.id);
     const qn = a.ciclo === "quincenal" ? '<span class="q">15 a 15</span>' : "";
-    let linea = `${hor(a.horario).t} ${hor(a.horario).s}${a.tutor ? ", " + esc(a.tutor) : ""}`;
-    if (!pg) linea += r[a.id] ? ` · <span class="rec done">recordado hace ${dias(r[a.id])} d</span>` : ` · <span class="rec">sin recordar</span>`;
-    else if (pg.reciboEnviado) linea += ` · recibo enviado`;
-    const acciones = pg
-      ? `<button class="paid" data-recibo="${a.id}">Recibo</button>`
-      : `${a.tel ? `<a class="wa" href="${waURL(a, textoRecordatorio(a))}" target="_blank" rel="noopener" data-rec="${a.id}" aria-label="Recordar por WhatsApp a ${esc(a.nombre)}">${waIcon}</a>` : ""}
-         ${a.correo ? `<a class="mail" href="${mailURL(a, "Recordatorio de pago – Laguna Swim", textoRecordatorio(a))}" data-rec="${a.id}" aria-label="Recordar por correo a ${esc(a.nombre)}">✉︎</a>` : ""}
-         <button class="cobrar" data-pay="${a.id}">Cobrar</button>`;
+    let linea = `${hor(a.horario).t} ${hor(a.horario).s} · ${lineaEstado(e)}`;
+    if (e.k !== "aldia" && av) linea += ` · avisado hace ${dias(av)} d`;
+    const btnMsg = `<button class="msg" data-msg="${a.id}" aria-label="Mandar mensaje a ${esc(a.nombre)}">${waIcon}</button>`;
+    const acciones = pg ? `${e.k !== "aldia" ? btnMsg : ""}<button class="paid" data-recibo="${a.id}">Recibo</button>`
+      : `${btnMsg}<button class="cobrar" data-pay="${a.id}">Cobrar</button>`;
     return `<li class="row"><button class="who" data-edit="${a.id}"><b>${esc(a.nombre)}${qn}</b><span>${linea}</span></button><div class="act">${acciones}</div></li>`;
   }).join("");
 }
 
-function marcarRecordado(id) { R.child(`recordatorios/${mes}/${id}`).set(hoy()); }
 
 /* ---------- Cobrar ---------- */
 let payId = null;
@@ -510,7 +671,9 @@ function openPago(id) {
   $("pInfo").textContent = `${hor(a.horario).t} ${hor(a.horario).s}, ${mesLabel(mes)}`;
   $("pFecha").value = pg ? pg.fecha : (hoy().startsWith(mes) ? hoy() : `${mes}-01`);
   $("pMonto").value = pg ? pg.monto : hor(a.horario).c;
-  $("pMetodo").value = pg ? pg.metodo : "Playtomic";
+  $("pMetodo").innerHTML = METODOS.map(mt => `<option>${mt}</option>`).join("");
+  if (pg && !METODOS.includes(pg.metodo)) $("pMetodo").insertAdjacentHTML("beforeend", `<option>${esc(pg.metodo)}</option>`);
+  $("pMetodo").value = pg ? pg.metodo : hor(a.horario).met;
   const aplica = reglaTxt();
   $("pQuin").checked = a.ciclo === "quincenal" || (!pg && aplica);
   $("pQuitar").hidden = !pg;
@@ -524,7 +687,10 @@ $("fPago").addEventListener("submit", async () => {
     const t = await R.child("folio").transaction(n => (n || 0) + 1);
     folio = `LS-${mes.replace("-", "")}-${pad(t.snapshot.val()).padStart(4, "0")}`;
   }
-  const pg = { fecha: $("pFecha").value, metodo: $("pMetodo").value, monto: Number($("pMonto").value), folio, reciboEnviado: !!(prev && prev.reciboEnviado) };
+  const hk = st.alumnos[id].horario, monto = Number($("pMonto").value);
+  // Se guarda la foto de los descuentos de ese momento: si luego cambian, el historial no se mueve
+  const pg = { fecha: $("pFecha").value, metodo: $("pMetodo").value, monto, folio, reciboEnviado: !!(prev && prev.reciboEnviado),
+    h: hk, d: hor(hk).d.length ? hor(hk).d.map(x => ({ n: x.n, m: x.m, ret: x.ret || "" })) : false, gan: monto - descTotal(hk) };
   const ciclo = $("pQuin").checked ? "quincenal" : "mensual";
   await R.update({ [`pagos/${mes}/${id}`]: pg, [`alumnos/${id}/ciclo`]: ciclo });
   openRecibo(id);
@@ -553,25 +719,66 @@ $("rCopiar").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText($("rTexto").textContent); $("rCopiar").textContent = "Copiado"; setTimeout(() => $("rCopiar").textContent = "Copiar", 1500); } catch (e) {}
 });
 
-/* ---------- Recordar uno por uno ---------- */
-let colaIds = [], qi = 0;
-function mostrarCola() {
-  while (qi < colaIds.length && pm()[colaIds[qi]]) qi++;
-  if (qi >= colaIds.length) { $("dRec").close(); return; }
-  const a = { id: colaIds[qi], ...st.alumnos[colaIds[qi]] }, r = rm()[a.id];
-  const txt = textoRecordatorio(a);
-  $("qNombre").textContent = a.nombre;
-  $("qInfo").textContent = `${qi + 1} de ${colaIds.length} · ${hor(a.horario).t} ${hor(a.horario).s} · ${r ? "último recordatorio hace " + dias(r) + " días" : "sin recordar este mes"}${!a.tel && !a.correo ? " · no tiene WhatsApp ni correo, agrégalos en su ficha" : ""}`;
-  $("qTexto").textContent = txt;
-  $("qWa").hidden = !a.tel; $("qWa").href = waURL(a, txt);
-  $("qMail").hidden = !a.correo; $("qMail").href = mailURL(a, "Recordatorio de pago – Laguna Swim", txt);
-  $("qSig").textContent = qi + 1 < colaIds.length ? "Siguiente" : "Terminar";
+/* ---------- Mensajes: uno por uno o a un solo nadador ---------- */
+let colaIds = [], qi = 0, qTipo = "venc", enCola = false;
+const PLANT = { por: "Por vencer", venc: "Vencido", aus: "Te extrañamos" };
+function actualQ() { return colaIds[qi]; }
+function pintarMensaje(tipo) {
+  const a = { id: actualQ(), ...st.alumnos[actualQ()] };
+  qTipo = tipo;
+  $("qPlant").innerHTML = Object.entries(PLANT).map(([k, l]) => `<button data-t="${k}" aria-pressed="${k === tipo}">${l}</button>`).join("");
+  $("qTexto").value = llenarTexto(tipo, a);
+  links();
 }
-function recActual() { return colaIds[qi]; }
-$("qWa").addEventListener("click", () => { marcarRecordado(recActual()); setTimeout(() => { qi++; mostrarCola(); }, 400); });
-$("qMail").addEventListener("click", () => { marcarRecordado(recActual()); setTimeout(() => { qi++; mostrarCola(); }, 400); });
-$("qSig").addEventListener("click", () => { qi++; mostrarCola(); });
-$("qPago").addEventListener("click", () => { const id = recActual(); $("dRec").close(); openPago(id); });
+function links() {
+  const a = st.alumnos[actualQ()], txt = $("qTexto").value;
+  $("qWa").hidden = false; $("qWa").href = waURL(a, txt); // sin número, WhatsApp te deja elegir el chat
+  $("qMail").hidden = !a.correo; $("qMail").href = mailURL(a, qTipo === "aus" ? "Te extrañamos en la alberca – Laguna Swim" : "Mensualidad de natación – Laguna Swim", txt);
+}
+function mostrarMensaje() {
+  if (enCola) while (qi < colaIds.length && !["por", "venc", "sin"].includes(estado({ id: colaIds[qi], ...st.alumnos[colaIds[qi]] }).k)) qi++;
+  if (qi >= colaIds.length) { $("dRec").close(); return; }
+  const a = { id: actualQ(), ...st.alumnos[actualQ()] }, e = estado(a), av = ultimoAviso(a.id);
+  $("qNombre").textContent = a.nombre;
+  $("qInfo").innerHTML = `${enCola ? `${qi + 1} de ${colaIds.length} · ` : ""}${hor(a.horario).t} ${hor(a.horario).s} · ${lineaEstado(e)} · ${av ? "último aviso hace " + dias(av) + " d" : "sin avisar"}${!a.tel && !a.correo ? " · sin número guardado: WhatsApp te deja elegir el chat" : ""}`;
+  $("qSig").hidden = !enCola;
+  $("qSig").textContent = qi + 1 < colaIds.length ? "Siguiente" : "Terminar";
+  pintarMensaje(plantillaDe(e));
+  if (!$("dRec").open) $("dRec").showModal();
+}
+function abrirMensaje(id) { enCola = false; colaIds = [id]; qi = 0; mostrarMensaje(); }
+const avanzar = () => { if (enCola) setTimeout(() => { qi++; mostrarMensaje(); }, 400); };
+$("qPlant").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (b) pintarMensaje(b.dataset.t); });
+$("qTexto").addEventListener("input", links);
+$("qWa").addEventListener("click", () => { marcarRecordado(actualQ()); avanzar(); });
+$("qMail").addEventListener("click", () => { marcarRecordado(actualQ()); avanzar(); });
+$("qShare").addEventListener("click", async () => {
+  const txt = $("qTexto").value;
+  if (navigator.share) { try { await navigator.share({ text: txt }); marcarRecordado(actualQ()); avanzar(); } catch (e) {} }
+  else { try { await navigator.clipboard.writeText(txt); $("qShare").textContent = "Copiado, pégalo donde quieras"; setTimeout(() => $("qShare").textContent = "Compartir", 1800); marcarRecordado(actualQ()); } catch (e) {} }
+});
+$("qCopy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("qTexto").value); $("qCopy").textContent = "Copiado"; setTimeout(() => $("qCopy").textContent = "Copiar", 1500); } catch (e) {}
+});
+$("qSig").addEventListener("click", () => { qi++; mostrarMensaje(); });
+$("qPago").addEventListener("click", () => { const id = actualQ(); $("dRec").close(); openPago(id); });
+
+/* ---------- Textos editables ---------- */
+$("textos").addEventListener("click", () => {
+  const t = T();
+  $("tPor").value = t.por; $("tVenc").value = t.venc; $("tAus").value = t.aus; $("tAviso").value = t.aviso; $("tAusDias").value = t.ausDias;
+  $("dTextos").showModal();
+});
+$("fTextos").addEventListener("submit", e => {
+  e.preventDefault();
+  R.child("textos").set({ por: $("tPor").value.trim(), venc: $("tVenc").value.trim(), aus: $("tAus").value.trim(),
+    aviso: Math.max(0, Number($("tAviso").value) || 5), ausDias: Math.max(7, Number($("tAusDias").value) || 30) });
+  $("dTextos").close();
+});
+$("tRestaurar").addEventListener("click", () => {
+  $("tPor").value = TEXTOS_INICIO.por; $("tVenc").value = TEXTOS_INICIO.venc; $("tAus").value = TEXTOS_INICIO.aus;
+  $("tAviso").value = TEXTOS_INICIO.aviso; $("tAusDias").value = TEXTOS_INICIO.ausDias;
+});
 
 /* ---------- Alumno ---------- */
 let editId = null;
@@ -584,7 +791,13 @@ function openAlumno(id) {
   $("aTitulo").textContent = id ? "Editar alumno" : "Agregar alumno";
   $("aNombre").value = a.nombre || ""; $("aTutor").value = a.tutor || ""; $("aTel").value = a.tel || ""; $("aCorreo").value = a.correo || "";
   $("aHorario").value = a.horario; $("aCiclo").value = a.ciclo || "mensual";
-  $("aBaja").hidden = !id;
+  $("aBaja").hidden = !id; $("aMsg").hidden = !id; $("aHistBox").hidden = !id;
+  if (id) {
+    const e = estado({ id, ...a });
+    $("aVence").innerHTML = e.v ? `Pagado hasta el ${fechaDia(e.v)} · ${lineaEstado(e)}` : lineaEstado(e);
+    const ms = mesesPagados(id).reverse().slice(0, 6);
+    $("aHist").innerHTML = ms.map(m => { const pg = st.pagos[m][id]; return `<li><b>${mesLabel(m)}</b><span>${money(pg.monto)} · ${pg.metodo} · ${fechaCorta(pg.fecha)}</span></li>`; }).join("") || "<li><span>Sin pagos registrados todavía.</span></li>";
+  }
   $("dAlumno").showModal();
 }
 $("fAlumno").addEventListener("submit", () => {
@@ -592,6 +805,7 @@ $("fAlumno").addEventListener("submit", () => {
   if (!data.nombre) return;
   if (editId) R.child("alumnos/" + editId).update(data); else R.child("alumnos").push(data);
 });
+$("aMsg").addEventListener("click", () => { const id = editId; $("dAlumno").close(); abrirMensaje(id); });
 $("aBaja").addEventListener("click", () => {
   const a = st.alumnos[editId];
   if (confirm(`¿Dar de baja a ${a.nombre}? Deja de contar en pagos y pendientes.`)) { R.child(`alumnos/${editId}/activo`).set(false); $("dAlumno").close(); }
@@ -640,11 +854,12 @@ $("fPegar").addEventListener("submit", async e => {
 /* ---------- Descargar ---------- */
 $("csv").addEventListener("click", () => {
   const p = pm(), r = rm();
-  const filas = [["Nadador","Tutor","WhatsApp","Correo","Horario","Ciclo","Estado","Fecha pago","Monto","Método","Folio","Último recordatorio"]];
+  const filas = [["Nadador","Tutor","WhatsApp","Correo","Horario","Ciclo","Pagado hasta","Situación","Pago del mes","Fecha pago","Monto","Método","Folio","Último aviso"]];
+  const sit = { sin: "Sin pagos", aldia: "Al día", por: "Por vencer", venc: "Vencido", aus: "Te extrañamos" };
   activos().sort(porHora).forEach(a => {
     const pg = p[a.id];
     filas.push([a.nombre, a.tutor, a.tel, a.correo, `${hor(a.horario).t} ${hor(a.horario).s}`, a.ciclo === "quincenal" ? "15 a 15" : "Mes completo",
-      pg ? "Pagado" : "Pendiente", pg ? pg.fecha : "", pg ? pg.monto : "", pg ? pg.metodo : "", pg ? pg.folio : "", r[a.id] || ""]);
+      estado(a).v || "", sit[estado(a).k], pg ? "Pagado" : "Pendiente", pg ? pg.fecha : "", pg ? pg.monto : "", pg ? pg.metodo : "", pg ? pg.folio : "", ultimoAviso(a.id) || ""]);
   });
   const csv = "\ufeff" + filas.map(f => f.map(x => `"${String(x ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
   const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -655,15 +870,15 @@ $("csv").addEventListener("click", () => {
 /* ---------- Eventos ---------- */
 document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
 document.querySelectorAll("dialog").forEach(d => d.addEventListener("click", e => { if (e.target === d) d.close(); }));
-document.querySelector(".tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { tab = b.dataset.tab; render(); } });
+$("tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { tab = b.dataset.tab; render(); } });
 $("chips").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { hf = b.dataset.h; render(); } });
 $("buscar").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); render(); });
 $("alerta").addEventListener("click", e => {
   if (e.target.id !== "recordar") return;
-  colaIds = cola().map(a => a.id); qi = 0; mostrarCola(); $("dRec").showModal();
+  colaIds = cola().map(a => a.id); qi = 0; enCola = true; mostrarMensaje();
 });
 $("list").addEventListener("click", e => {
-  const rec = e.target.closest("[data-rec]"); if (rec) return marcarRecordado(rec.dataset.rec);
+  const ms = e.target.closest("[data-msg]"); if (ms) return abrirMensaje(ms.dataset.msg);
   const pay = e.target.closest("[data-pay]"); if (pay) return openPago(pay.dataset.pay);
   const rb = e.target.closest("[data-recibo]"); if (rb) return openRecibo(rb.dataset.recibo);
   const ed = e.target.closest("[data-edit]"); if (ed) return openAlumno(ed.dataset.edit);
@@ -701,7 +916,7 @@ $("reiniciar").addEventListener("click", async () => {
   const n = Object.keys(st.alumnos || {}).length;
   const r = prompt(`Se borran los ${n} alumnos, sus pagos, recibos y recordatorios. Los horarios y cuotas se quedan.\n\nEscribe BORRAR para confirmar:`);
   if ((r || "").trim().toUpperCase() !== "BORRAR") return;
-  await R.update({ alumnos: null, pagos: null, recordatorios: null, folio: null });
+  await R.update({ alumnos: null, pagos: null, recordatorios: null, avisos: null, folio: null });
   alert("Listo, el panel quedó vacío. Ya puedes importar tu lista.");
 });
 
@@ -711,33 +926,53 @@ function pintarHorarios() {
   const act = activos();
   $("hLista").innerHTML = horOrden().map(([k, v]) => {
     const n = act.filter(a => a.horario === k).length;
-    return `<li class="row"><button class="who" data-h="${k}"><b>${v.t} ${esc(v.s)}</b><span>${money(v.c)} al mes · ${n} ${n === 1 ? "alumno" : "alumnos"}</span></button></li>`;
+    return `<li class="row"><button class="who" data-h="${k}"><b>${v.t} ${esc(v.s)}</b><span>${money(v.c)} al mes · te quedan ${money(v.c - descTotal(k))} · ${n} ${n === 1 ? "alumno" : "alumnos"}</span></button></li>`;
   }).join("") || '<li class="empty">No hay horarios. Agrega el primero abajo.</li>';
+}
+function filaDesc(x) {
+  const ops = [["", "Me llega a mí y yo se lo pago"], ...METODOS.map(mt => [mt, `Se lo quedan si pagan por ${mt}`])]
+    .map(([v, l]) => `<option value="${v}" ${(x.ret || "") === v ? "selected" : ""}>${l}</option>`).join("");
+  return `<div class="desc"><input placeholder="Concepto" value="${esc(x.n)}" aria-label="Concepto"><input type="number" min="0" step="10" placeholder="Monto" value="${x.m ?? ""}" aria-label="Monto"><button type="button" aria-label="Quitar descuento">×</button><select aria-label="Quién se lo queda">${ops}</select></div>`;
+}
+function leerDesc() {
+  return [...$("hDesc").querySelectorAll(".desc")].map(r => { const [n, m] = r.querySelectorAll("input"); return { n: n.value.trim(), m: Number(m.value) || 0, ret: r.querySelector("select").value }; }).filter(x => x.n);
+}
+function queda() {
+  const c = Number($("hCuota").value) || 0, d = leerDesc().reduce((s, x) => s + x.m, 0);
+  $("hQueda").textContent = `Cobras ${money(c)} − descuentos ${money(d)} = te quedan ${money(c - d)} por nadador`;
 }
 function formHorario(k) {
   horId = k; $("hErr").textContent = "";
-  const v = k ? H[k] : { hora: "", s: "", c: "" };
+  const v = k ? H[k] : { hora: "", s: "", c: "", d: [] };
   $("hHora").value = v.hora; $("hSede").value = v.s; $("hCuota").value = v.c;
+  $("hMet").innerHTML = METODOS.map(mt => `<option>${mt}</option>`).join(""); $("hMet").value = v.met || metPorSede(v.s);
+  $("hDesc").innerHTML = (v.d || []).map(filaDesc).join(""); queda();
   $("hTitulo").textContent = k ? `Editar ${v.t} ${v.s}` : "Agregar horario";
   $("hGuardar").textContent = k ? "Guardar cambios" : "Agregar horario";
   $("hBorrar").hidden = !k; $("hNuevo").hidden = !k;
 }
 function guardarH() {
   const out = {};
-  Object.entries(H).forEach(([k, v]) => out[k] = { hora: v.hora, s: v.s, c: v.c });
+  Object.entries(H).forEach(([k, v]) => out[k] = { hora: v.hora, s: v.s, c: v.c, met: v.met || metPorSede(v.s), d: (v.d && v.d.length) ? v.d : false }); // false = sin descuentos (Firebase borra listas vacías)
   return R.child("horarios").set(out);
 }
 $("horarios").addEventListener("click", () => { pintarHorarios(); formHorario(null); $("dHor").showModal(); });
 $("hLista").addEventListener("click", e => { const b = e.target.closest("[data-h]"); if (b) formHorario(b.dataset.h); });
 $("hNuevo").addEventListener("click", () => formHorario(null));
+$("hMasDesc").addEventListener("click", () => { $("hDesc").insertAdjacentHTML("beforeend", filaDesc({ n: "", m: "" })); queda(); });
+$("hDesc").addEventListener("click", e => { if (e.target.tagName === "BUTTON") { e.target.closest(".desc").remove(); queda(); } });
+$("hDesc").addEventListener("input", queda);
+$("hCuota").addEventListener("input", queda);
+// Al escribir la sede de un horario nuevo, sugiere sus descuentos de siempre
+$("hSede").addEventListener("change", () => { if (!horId && !leerDesc().length) { $("hDesc").innerHTML = descPorSede($("hSede").value).map(filaDesc).join(""); $("hMet").value = metPorSede($("hSede").value); queda(); } });
 $("fHor").addEventListener("submit", async e => {
   e.preventDefault();
   const hora = $("hHora").value, sede = $("hSede").value.trim(), c = Number($("hCuota").value);
   const choca = Object.entries(H).find(([k, v]) => k !== horId && v.hora === hora && v.s.toLowerCase() === sede.toLowerCase());
   if (choca) { $("hErr").textContent = `Ya existe ${hora12(hora)} en ${sede}.`; return; }
   const k = horId || "h" + Date.now().toString(36);
-  H[k] = { hora, s: sede, c };
-  armarH(Object.fromEntries(Object.entries(H).map(([x, v]) => [x, { hora: v.hora, s: v.s, c: v.c }])));
+  H[k] = { hora, s: sede, c, d: leerDesc(), met: $("hMet").value };
+  armarH(Object.fromEntries(Object.entries(H).map(([x, v]) => [x, { hora: v.hora, s: v.s, c: v.c, d: v.d, met: v.met }])));
   await guardarH(); pintarHorarios(); formHorario(null);
 });
 $("hBorrar").addEventListener("click", async () => {
@@ -745,6 +980,146 @@ $("hBorrar").addEventListener("click", async () => {
   if (n) { $("hErr").textContent = `Tiene ${n} ${n === 1 ? "alumno" : "alumnos"}. Cámbialos de horario antes de quitarlo.`; return; }
   if (!confirm(`¿Quitar ${H[horId].t} ${H[horId].s}?`)) return;
   delete H[horId]; await guardarH(); pintarHorarios(); formHorario(null);
+});
+
+/* ---------- Lista de pagados por horario (para el Tec, la Deportiva, etc.) ---------- */
+let lSel = new Set();
+const sinAlias = n => n.replace(/\s*\([^)]*\)\s*/g, " ").trim();
+function pagadosLista() {
+  const p = pm(), limpiar = $("lAlias").checked;
+  return horOrden().filter(([k]) => lSel.has(k)).map(([k, h]) => ({
+    k, h, filas: activos().filter(a => a.horario === k && p[a.id]).sort(porHora)
+      .map(a => ({ nombre: limpiar ? sinAlias(a.nombre) : a.nombre, pg: p[a.id], ciclo: a.ciclo }))
+  }));
+}
+function armarLista() {
+  const grupos = pagadosLista(), conF = $("lFecha").checked, conM = $("lMonto").checked;
+  const sedes = [...new Set(grupos.map(g => g.h.s))].join(" y ");
+  let total = 0, n = 0;
+  const partes = grupos.map(g => {
+    const lineas = g.filas.map((f, i) => {
+      n++; total += Number(f.pg.monto || 0);
+      const extra = [conF ? fechaCorta(f.pg.fecha) : "", conM ? money(f.pg.monto) : "", f.ciclo === "quincenal" ? "15 a 15" : ""].filter(Boolean).join(" · ");
+      return `${i + 1}. ${f.nombre}${extra ? " – " + extra : ""}`;
+    });
+    return `🕐 ${g.h.t} ${g.h.s} (${g.filas.length})\n${lineas.join("\n") || "Sin pagos todavía"}`;
+  });
+  $("lTexto").value = grupos.length ? `Laguna Swim International\nNadadores pagados – ${mesLabel(mes)}${sedes ? "\n" + sedes : ""}\n\n${partes.join("\n\n")}\n\nTotal: ${n} ${n === 1 ? "nadador" : "nadadores"}${conM ? " · " + money(total) : ""}\n${FIRMA}` : "";
+  linksLista();
+}
+function linksLista() {
+  const txt = $("lTexto").value;
+  $("lWa").href = `https://wa.me/?text=${encodeURIComponent(txt)}`;
+  $("lMail").href = `mailto:?subject=${encodeURIComponent("Nadadores pagados " + mesLabel(mes) + " – Laguna Swim")}&body=${encodeURIComponent(txt)}`;
+}
+function pintarChecks() {
+  const p = pm();
+  $("lHor").innerHTML = horOrden().map(([k, h]) => {
+    const n = activos().filter(a => a.horario === k && p[a.id]).length;
+    return `<label><input type="checkbox" data-k="${k}" ${lSel.has(k) ? "checked" : ""}><span>${h.t} ${esc(h.s)}</span><small>${n} pagados</small></label>`;
+  }).join("");
+  const sedes = [...new Set(Object.values(H).map(h => h.s))];
+  $("lSedes").innerHTML = sedes.map(sd => `<button data-sede="${esc(sd)}">Solo ${esc(sd)}</button>`).join("") + '<button data-sede="*">Todos</button>';
+}
+$("lista").addEventListener("click", () => {
+  if (!lSel.size) { const tec = horOrden().filter(([, h]) => /tec/i.test(h.s)).map(([k]) => k); lSel = new Set(tec.length ? tec : Object.keys(H)); }
+  $("lMes").textContent = `${mesLabel(mes)}. Para otro mes, cámbialo arriba con las flechas.`;
+  pintarChecks(); armarLista(); $("dLista").showModal();
+});
+$("lHor").addEventListener("change", e => { const k = e.target.dataset.k; if (!k) return; e.target.checked ? lSel.add(k) : lSel.delete(k); armarLista(); });
+$("lSedes").addEventListener("click", e => {
+  const b = e.target.closest("[data-sede]"); if (!b) return;
+  const sd = b.dataset.sede;
+  lSel = new Set(horOrden().filter(([, h]) => sd === "*" || h.s === sd).map(([k]) => k));
+  pintarChecks(); armarLista();
+});
+["lFecha", "lMonto", "lAlias"].forEach(id => $(id).addEventListener("change", armarLista));
+$("lTexto").addEventListener("input", linksLista);
+$("lCopy").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("lTexto").value); $("lCopy").textContent = "Copiado"; setTimeout(() => $("lCopy").textContent = "Copiar", 1500); } catch (e) {} });
+$("lShare").addEventListener("click", async () => {
+  const txt = $("lTexto").value;
+  if (navigator.share) { try { await navigator.share({ text: txt }); } catch (e) {} }
+  else { try { await navigator.clipboard.writeText(txt); $("lShare").textContent = "Copiado"; setTimeout(() => $("lShare").textContent = "Compartir", 1500); } catch (e) {} }
+});
+$("lCsv").addEventListener("click", () => {
+  const conF = $("lFecha").checked, conM = $("lMonto").checked;
+  const enc = ["No.", "Nadador", "Horario", "Sede", "Ciclo"].concat(conF ? ["Fecha de pago"] : [], conM ? ["Monto"] : []);
+  const filas = [enc]; let i = 0;
+  pagadosLista().forEach(g => g.filas.forEach(f => filas.push([++i, f.nombre, g.h.t, g.h.s, f.ciclo === "quincenal" ? "15 a 15" : "Mes completo"]
+    .concat(conF ? [f.pg.fecha] : [], conM ? [f.pg.monto] : []))));
+  const csv = "\ufeff" + filas.map(f => f.map(x => `"${String(x ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  const el = document.createElement("a"); el.href = url; el.download = `pagados-${mes}.csv`; el.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+});
+
+/* ---------- Ganancias ---------- */
+// Por cada pago: qué pagó el papá, qué retuvo la app/oficina, qué te llegó y qué te toca pagar a ti
+function detallePago(id, pg) {
+  const hk = pg.h || (st.alumnos[id] || {}).horario;
+  const d = pg.d === false ? [] : Array.isArray(pg.d) ? pg.d : (pg.d && typeof pg.d === "object") ? Object.values(pg.d) : hor(hk).d;
+  const monto = Number(pg.monto || 0);
+  let desc = 0, retenido = 0, debes = 0;
+  const partes = d.map(x => {
+    const m = Number(x.m || 0), ret = x.ret ?? retPorNombre(x.n), yaRet = !!ret && ret === pg.metodo;
+    desc += m; if (yaRet) retenido += m; else debes += m;
+    return { n: x.n, m, yaRet };
+  });
+  return { hk, partes, monto, desc, retenido, debes, llega: monto - retenido, gan: monto - desc };
+}
+function resumenMes(m) {
+  const lista = (st.pagos && st.pagos[m]) || {};
+  const r = { n: 0, cobrado: 0, desc: 0, retenido: 0, debes: 0, llega: 0, gan: 0, porH: {}, porC: {} };
+  Object.entries(lista).forEach(([id, pg]) => {
+    const x = detallePago(id, pg);
+    r.n++; r.cobrado += x.monto; r.desc += x.desc; r.retenido += x.retenido; r.debes += x.debes; r.llega += x.llega; r.gan += x.gan;
+    const h = (r.porH[x.hk] ||= { n: 0, cobrado: 0, desc: 0, gan: 0 });
+    h.n++; h.cobrado += x.monto; h.desc += x.desc; h.gan += x.gan;
+    x.partes.forEach(c => { const k = (r.porC[c.n] ||= { n: 0, ret: 0, debes: 0 }); k.n++; if (c.yaRet) k.ret += c.m; else k.debes += c.m; });
+  });
+  return r;
+}
+function acumuladoAnio(m) {
+  const y = m.slice(0, 4);
+  return Object.keys(st.pagos || {}).filter(k => k.startsWith(y) && k <= m).sort().map(k => ({ k, ...resumenMes(k) }));
+}
+const liq = () => (st.liquidado && st.liquidado[mes]) || {};
+const keyC = n => n.replace(/[.#$\[\]\/]/g, "_");
+function pendientePagar(r) { const l = liq(); return Object.entries(r.porC).filter(([n]) => !l[keyC(n)]).reduce((s, [, x]) => s + x.debes, 0); }
+function pintarGanancia() {
+  const r = resumenMes(mes), a = acumuladoAnio(mes), pend = pendientePagar(r);
+  $("ganMes").textContent = money(r.gan);
+  $("ganAnio").innerHTML = `${pend ? `Te toca pagar <b>${money(pend)}</b><br>` : ""}Acumulado ${mes.slice(0, 4)} <b>${money(a.reduce((s, x) => s + x.gan, 0))}</b>`;
+}
+function pintarGanDialog() {
+  const r = resumenMes(mes), a = acumuladoAnio(mes), l = liq();
+  $("gMes").textContent = `${mesLabel(mes)}: ${r.n} ${r.n === 1 ? "pago" : "pagos"}. Para otro mes, cámbialo arriba con las flechas.`;
+  $("gFlujo").innerHTML = `<div><span>Pagaron los papás</span><span>${money(r.cobrado)}</span></div>
+    <div><span>Ya se lo quedaron Playtomic u oficina</span><span>− ${money(r.retenido)}</span></div>
+    <div><span>Te llegó a ti</span><span>${money(r.llega)}</span></div>
+    <div><span>Te toca pagar a ti</span><span>− ${money(r.debes)}</span></div>
+    <div class="fin"><span>Tu ganancia</span><span>${money(r.gan)}</span></div>`;
+  const filasH = horOrden().filter(([k]) => r.porH[k]).map(([k, h]) => { const x = r.porH[k]; return `<tr><td>${h.t} ${esc(h.s)}</td><td>${x.n}</td><td>${money(x.cobrado)}</td><td>${money(x.desc)}</td><td>${money(x.gan)}</td></tr>`; });
+  Object.entries(r.porH).filter(([k]) => !H[k]).forEach(([k, x]) => filasH.push(`<tr><td>Horario quitado</td><td>${x.n}</td><td>${money(x.cobrado)}</td><td>${money(x.desc)}</td><td>${money(x.gan)}</td></tr>`));
+  $("gHor").innerHTML = `<tr><th>Horario</th><th>Pagos</th><th>Cobrado</th><th>Descuentos</th><th>Te quedan</th></tr>${filasH.join("")}<tr class="tot"><td>Total</td><td>${r.n}</td><td>${money(r.cobrado)}</td><td>${money(r.desc)}</td><td>${money(r.gan)}</td></tr>`;
+  const conc = Object.entries(r.porC);
+  $("gConc").innerHTML = conc.length ? `<tr><th>A quién</th><th>Nadadores</th><th>Ya se lo quedaron</th><th>Te toca pagar</th><th>Pagado</th></tr>${conc.map(([n, x]) =>
+    `<tr><td>${esc(n)}</td><td>${x.n}</td><td>${money(x.ret)}</td><td>${money(x.debes)}</td><td>${x.debes ? `<input type="checkbox" data-liq="${esc(keyC(n))}" ${l[keyC(n)] ? "checked" : ""} aria-label="Ya le pagué a ${esc(n)}">` : "—"}</td></tr>`).join("")}` : "<tr><td>Sin descuentos este mes.</td></tr>";
+  let acc = 0;
+  $("gAnioT").textContent = `Acumulado ${mes.slice(0, 4)}`;
+  $("gAnio").innerHTML = `<tr><th>Mes</th><th>Pagos</th><th>Cobrado</th><th>Te quedan</th><th>Acumulado</th></tr>${a.map(x => { acc += x.gan; return `<tr><td>${mesCorto(x.k)}</td><td>${x.n}</td><td>${money(x.cobrado)}</td><td>${money(x.gan)}</td><td>${money(acc)}</td></tr>`; }).join("")}`;
+}
+$("ganBtn").addEventListener("click", () => { pintarGanDialog(); $("dGan").showModal(); });
+$("gConc").addEventListener("change", e => {
+  const k = e.target.dataset.liq; if (!k) return;
+  R.child(`liquidado/${mes}/${k}`).set(e.target.checked ? hoy() : null);
+});
+$("gCopy").addEventListener("click", async () => {
+  const r = resumenMes(mes), a = acumuladoAnio(mes), l = liq();
+  const txt = `Ganancias ${mesLabel(mes)} (${r.n} pagos)\nPagaron los papás: ${money(r.cobrado)}\nYa retenido (Playtomic/oficina): ${money(r.retenido)}\nMe llegó: ${money(r.llega)}\n` +
+    Object.entries(r.porC).filter(([, x]) => x.debes).map(([n, x]) => `Pagar a ${n}: ${money(x.debes)}${l[keyC(n)] ? " ✓ pagado" : ""}`).join("\n") +
+    `\nMi ganancia: ${money(r.gan)}\nAcumulado ${mes.slice(0, 4)}: ${money(a.reduce((s, x) => s + x.gan, 0))}`;
+  try { await navigator.clipboard.writeText(txt); $("gCopy").textContent = "Copiado"; setTimeout(() => $("gCopy").textContent = "Copiar resumen", 1500); } catch (e) {}
 });
 
 </script>
