@@ -174,6 +174,7 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
 .tabs.cinco button{font-size:.85rem;padding:9px 2px}
 .react{border:0;border-radius:12px;background:var(--surf2);padding:0 12px;height:40px;font-weight:600;font-size:.88rem}
 .todos{display:block;width:100%;border:0;border-radius:12px;background:var(--aqua);color:var(--btnInk);font-weight:700;padding:12px;margin:10px 0 4px}
+#cLista{max-height:45vh;overflow:auto;margin:0 0 12px}
 .tag{display:inline-block;font-size:.72rem;font-weight:600;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px;background:var(--aquaSoft);color:var(--aqua)}
 </style>
 </head>
@@ -230,6 +231,7 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
 
   <p class="foot">
     <button id="pegar">Pegar lista desde Excel</button> ·
+    <button id="contactos">Importar contactos del cel</button> ·
     <button id="csv">Descargar lista del mes</button> ·
     <button id="horarios">Horarios y cuotas</button> ·
     <button id="textos">Textos de mensajes</button> ·
@@ -325,6 +327,37 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
   </div>
 </div></dialog>
 
+<dialog id="dCont"><div class="sheet">
+  <h2>Contactos del celular</h2>
+  <div id="cPaso1">
+    <p class="note">WhatsApp no deja sacar los contactos directo, pero son los mismos de tu teléfono. Exporta tus contactos y súbelos aquí; luego eliges cuáles guardar.</p>
+    <div class="flujo">
+      <div><span><b>iPhone:</b> app Contactos → Listas → deja presionado “Todos los contactos” → Exportar. Se guarda un archivo .vcf.</span></div>
+      <div><span><b>Android:</b> app Contactos → Arreglar y administrar (o Configuración) → Exportar a archivo .vcf. También sirve contacts.google.com → Exportar.</span></div>
+    </div>
+    <div class="btns">
+      <button type="button" class="primary" id="cArchivo">Subir archivo .vcf o .csv</button>
+      <button type="button" class="ghost" id="cAndroid">Elegir de mis contactos</button>
+      <button type="button" class="ghost" data-close>Cancelar</button>
+    </div>
+    <input type="file" id="cFile" accept=".vcf,.vcard,.csv,text/vcard,text/csv" hidden>
+  </div>
+  <div id="cPaso2" hidden>
+    <p class="note" id="cInfo"></p>
+    <label class="f"><input type="search" id="cBuscar" placeholder="Buscar nombre o número"></label>
+    <div class="btns" style="margin:0 0 8px"><button type="button" class="ghost" id="cTodos">Marcar los que se ven</button><button type="button" class="ghost" id="cNinguno">Quitar todos</button></div>
+    <div class="checks" id="cLista"></div>
+    <div class="grid2">
+      <label class="f">Guardarlos como<select id="cTipo"><option value="contacto">Posibles clientes</option><option value="ex">Ex alumnos</option></select></label>
+      <label class="f">Nota<input id="cNota" value="Contactos del cel" autocomplete="off"></label>
+    </div>
+    <div class="btns">
+      <button type="button" class="primary" id="cGuardar">Guardar</button>
+      <button type="button" class="ghost" data-close>Cancelar</button>
+    </div>
+  </div>
+</div></dialog>
+
 <dialog id="dTextos"><form class="sheet" id="fTextos">
   <h2>Textos de mensajes</h2>
   <p class="note">Se llenan solos con: {tutor} {nadador} {cuota} {vence} {horario} {sede} {horarios} {firma}</p>
@@ -332,6 +365,7 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
   <label class="f">Vencido<textarea id="tVenc"></textarea></label>
   <label class="f">Te extrañamos<textarea id="tAus"></textarea></label>
   <label class="f">Invitación a ex alumnos (usa {horarios} para listar todos tus horarios)<textarea id="tInv"></textarea></label>
+  <label class="f">Promoción a posibles clientes<textarea id="tPromo"></textarea></label>
   <div class="grid2">
     <label class="f">Avisar cuántos días antes<input type="number" id="tAviso" min="0" max="15"></label>
     <label class="f">"Te extrañamos" después de (días vencido)<input type="number" id="tAusDias" min="7" max="120"></label>
@@ -361,6 +395,7 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
     <button type="submit" class="primary">Guardar alumno</button>
     <button type="button" class="ghost" id="aMsg">Mandar mensaje</button>
     <button type="button" class="danger" id="aBaja">Dar de baja</button>
+    <button type="button" class="danger" id="aBorrar">Eliminar del sistema</button>
     <button type="button" class="ghost" data-close>Cancelar</button>
   </div>
 </form></dialog>
@@ -557,6 +592,7 @@ ${FIRMA} · ${TEL_FIRMA}`;
 const TEXTOS_INICIO = {
   por: "¡Hola {tutor}! 🏊 Te escribe {firma}. El mes de natación de {nadador} termina el {vence}. Para que siga sin pausa, la mensualidad es de {cuota}. ¡Que no se le olvide nadar! 😄 Cualquier duda aquí estoy.",
   venc: "¡Hola {tutor}! 🏊 Te escribe {firma}. El mes de {nadador} terminó {vence} y sigue pendiente la mensualidad de {cuota}. ¿Me ayudas a ponerte al corriente? ¡Te esperamos en la alberca! 💪",
+  promo: "¡Hola {tutor}! 🏊 Soy {firma}, de Laguna Swim International. Te comparto nuestros horarios de natación: {horarios}. Tenemos clases desde preescolar hasta adultos. ¿Te interesa para alguien de tu familia? Con gusto te aparto lugar.",
   inv: "¡Hola {tutor}! 🏊 Soy {firma}, de Laguna Swim. Hace tiempo que {nadador} no se da la vuelta por la alberca y aquí se le extraña. Te cuento que tenemos estos horarios: {horarios}. ¿Te aparto su lugar? ¡Te espero en la alberca!",
   aus: "¡Hola {tutor}! 🏊 Hace tiempo que {nadador} no se da la vuelta por la alberca, ¡se le extraña! Te espero en el horario de {horario} en {sede}, su lugar sigue apartado. Cuando quieras regresamos. {firma}",
   aviso: 5, ausDias: 30
@@ -590,7 +626,7 @@ function lineaEstado(e) {
   if (e.k === "venc") return `<span class="venc">venció hace ${-e.d} d</span>`;
   return `<span class="venc">sin venir desde ${fechaCorta(e.v)}</span>`;
 }
-const plantillaDe = (e, a) => a && a.activo === false ? "inv" : e.k === "por" || e.k === "aldia" ? "por" : e.k === "aus" ? "aus" : "venc";
+const plantillaDe = (e, a) => a && a.activo === false ? (a.tipo === "contacto" ? "promo" : "inv") : e.k === "por" || e.k === "aldia" ? "por" : e.k === "aus" ? "aus" : "venc";
 function llenarTexto(tipo, a) {
   const e = estado(a), h = hor(a.horario);
   const venceTxt = e.v ? (tipo === "venc" ? `el ${fechaDia(e.v)}` : fechaDia(e.v)) : (tipo === "venc" ? "hace unos días" : "pronto");
@@ -660,7 +696,7 @@ function render() {
 
   const est = Object.fromEntries(act.map(a => [a.id, estado(a)]));
   const grupos = { cobrar: a => ["por", "venc", "sin"].includes(est[a.id].k), aldia: a => est[a.id].k === "aldia", aus: a => est[a.id].k === "aus", all: () => true };
-  const nombresTab = { cobrar: "Cobrar", aldia: "Al día", aus: "Te extrañamos", all: "Todos", ex: "Ex alumnos" };
+  const nombresTab = { cobrar: "Cobrar", aldia: "Al día", aus: "Te extrañamos", all: "Todos", ex: "Invitar" };
   const exs = exAlumnos();
   $("tabs").innerHTML = Object.keys(nombresTab).map(k => `<button data-tab="${k}" aria-pressed="${tab === k}">${nombresTab[k]}<small>${k === "ex" ? exs.length : act.filter(grupos[k]).length}</small></button>`).join("");
   if (tab === "ex") return pintarEx(exs);
@@ -695,19 +731,24 @@ function render() {
 
 /* ---------- Ex alumnos: para escribirles de vez en cuando ---------- */
 const exAlumnos = () => Object.entries(st.alumnos || {}).map(([id, a]) => ({ id, ...a })).filter(a => a.activo === false);
-const colaEx = () => exAlumnos().filter(a => !ultimoAviso(a.id) || dias(ultimoAviso(a.id)) >= 30)
+const colaEx = () => exAlumnos().filter(a => exF === "all" || (exF === "cont" ? esContacto(a) : !esContacto(a))).filter(a => !ultimoAviso(a.id) || dias(ultimoAviso(a.id)) >= 30)
   .sort((a, b) => (ultimoAviso(a.id) || "").localeCompare(ultimoAviso(b.id) || "") || a.nombre.localeCompare(b.nombre, "es"));
-function pintarEx(exs) {
+let exF = "all";
+const esContacto = a => a.tipo === "contacto";
+function pintarEx(todos) {
+  const exs = todos.filter(a => exF === "all" || (exF === "cont" ? esContacto(a) : !esContacto(a)));
   let rows = exs;
   if (q) rows = rows.filter(a => (a.nombre + " " + (a.tutor || "") + " " + (a.nota || "")).toLowerCase().includes(q));
   rows.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
   const pend = colaEx().length;
-  const cab = `<li>${pend ? `<button class="todos" id="exTodos">Escribirles uno por uno (${pend})</button><p class="ayuda" style="margin:4px 0 8px">Solo los que no tienen mensaje en los últimos 30 días.</p>` : exs.length ? '<p class="ayuda" style="margin:10px 0">Ya les escribiste a todos en los últimos 30 días.</p>' : ""}</li>`;
-  if (!rows.length) { $("list").innerHTML = cab + `<li class="empty">${exs.length ? "Nadie con esa búsqueda." : "Aún no hay ex alumnos. Toca “Pegar lista desde Excel” y marca “Son ex alumnos”."}</li>`; return; }
+  const nEx = todos.filter(a => !esContacto(a)).length, nCont = todos.length - nEx;
+  const chipsEx = `<div class="chips" style="padding-top:0">${[["all", `Todos ${todos.length}`], ["ex", `Ex alumnos ${nEx}`], ["cont", `Posibles clientes ${nCont}`]].map(([k, l]) => `<button data-exf="${k}" aria-pressed="${exF === k}">${l}</button>`).join("")}</div>`;
+  const cab = `<li>${chipsEx}${pend ? `<button class="todos" id="exTodos">Escribirles uno por uno (${pend})</button><p class="ayuda" style="margin:4px 0 8px">Solo los que no tienen mensaje en los últimos 30 días.</p>` : exs.length ? '<p class="ayuda" style="margin:10px 0">Ya les escribiste a todos en los últimos 30 días.</p>' : ""}</li>`;
+  if (!rows.length) { $("list").innerHTML = cab + `<li class="empty">${exs.length ? "Nadie con esa búsqueda." : "Aún no hay nadie aquí. Usa “Importar contactos del cel” o “Pegar lista desde Excel” y marca “Son ex alumnos”."}</li>`; return; }
   $("list").innerHTML = cab + rows.map(a => {
     const av = ultimoAviso(a.id), ms = mesesPagados(a.id);
-    const linea = [a.nota ? esc(a.nota) : "", ms.length ? `último pago ${mesCorto(ms[ms.length - 1])}` : "", a.tel || a.correo ? "" : "sin teléfono", av ? `mensaje hace ${dias(av)} d` : "sin mensaje"].filter(Boolean).join(" · ");
-    return `<li class="row"><button class="who" data-edit="${a.id}"><b>${esc(a.nombre)}</b><span>${linea}</span></button><div class="act"><button class="msg" data-msg="${a.id}" aria-label="Mandar mensaje a ${esc(a.nombre)}">${waIcon}</button><button class="react" data-react="${a.id}">Regresó</button></div></li>`;
+    const linea = [esContacto(a) ? "posible cliente" : "", a.nota ? esc(a.nota) : "", ms.length ? `último pago ${mesCorto(ms[ms.length - 1])}` : "", a.tel || a.correo ? "" : "sin teléfono", av ? `mensaje hace ${dias(av)} d` : "sin mensaje"].filter(Boolean).join(" · ");
+    return `<li class="row"><button class="who" data-edit="${a.id}"><b>${esc(a.nombre)}</b><span>${linea}</span></button><div class="act"><button class="msg" data-msg="${a.id}" aria-label="Mandar mensaje a ${esc(a.nombre)}">${waIcon}</button><button class="react" data-react="${a.id}">${esContacto(a) ? "Se inscribió" : "Regresó"}</button></div></li>`;
   }).join("");
 }
 
@@ -778,7 +819,7 @@ $("rCopiar").addEventListener("click", async () => {
 
 /* ---------- Mensajes: uno por uno o a un solo nadador ---------- */
 let colaIds = [], qi = 0, qTipo = "venc", enCola = false;
-const PLANT = { por: "Por vencer", venc: "Vencido", aus: "Te extrañamos", inv: "Invitación" };
+const PLANT = { por: "Por vencer", venc: "Vencido", aus: "Te extrañamos", inv: "Invitación", promo: "Promoción" };
 function actualQ() { return colaIds[qi]; }
 function pintarMensaje(tipo) {
   const a = { id: actualQ(), ...st.alumnos[actualQ()] };
@@ -798,7 +839,7 @@ function mostrarMensaje() {
   if (qi >= colaIds.length) { $("dRec").close(); return; }
   const a = { id: actualQ(), ...st.alumnos[actualQ()] }, e = estado(a), av = ultimoAviso(a.id);
   $("qNombre").textContent = a.nombre;
-  $("qInfo").innerHTML = `${enCola ? `${qi + 1} de ${colaIds.length} · ` : ""}${a.activo === false ? `ex alumno${a.nota ? " · " + esc(a.nota) : ""}` : `${hor(a.horario).t} ${hor(a.horario).s} · ${lineaEstado(e)}`} · ${av ? "último aviso hace " + dias(av) + " d" : "sin avisar"}${!a.tel && !a.correo ? " · sin número guardado: WhatsApp te deja elegir el chat" : ""}`;
+  $("qInfo").innerHTML = `${enCola ? `${qi + 1} de ${colaIds.length} · ` : ""}${a.activo === false ? `${a.tipo === "contacto" ? "posible cliente" : "ex alumno"}${a.nota ? " · " + esc(a.nota) : ""}` : `${hor(a.horario).t} ${hor(a.horario).s} · ${lineaEstado(e)}`} · ${av ? "último aviso hace " + dias(av) + " d" : "sin avisar"}${!a.tel && !a.correo ? " · sin número guardado: WhatsApp te deja elegir el chat" : ""}`;
   $("qSig").hidden = !enCola;
   $("qSig").textContent = qi + 1 < colaIds.length ? "Siguiente" : "Terminar";
   pintarMensaje(plantillaDe(e, a));
@@ -824,17 +865,17 @@ $("qPago").addEventListener("click", () => { const id = actualQ(); $("dRec").clo
 /* ---------- Textos editables ---------- */
 $("textos").addEventListener("click", () => {
   const t = T();
-  $("tPor").value = t.por; $("tVenc").value = t.venc; $("tAus").value = t.aus; $("tInv").value = t.inv; $("tAviso").value = t.aviso; $("tAusDias").value = t.ausDias;
+  $("tPor").value = t.por; $("tVenc").value = t.venc; $("tAus").value = t.aus; $("tInv").value = t.inv; $("tPromo").value = t.promo; $("tAviso").value = t.aviso; $("tAusDias").value = t.ausDias;
   $("dTextos").showModal();
 });
 $("fTextos").addEventListener("submit", e => {
   e.preventDefault();
-  R.child("textos").set({ por: $("tPor").value.trim(), venc: $("tVenc").value.trim(), aus: $("tAus").value.trim(), inv: $("tInv").value.trim(),
+  R.child("textos").set({ por: $("tPor").value.trim(), venc: $("tVenc").value.trim(), aus: $("tAus").value.trim(), inv: $("tInv").value.trim(), promo: $("tPromo").value.trim(),
     aviso: Math.max(0, Number($("tAviso").value) || 5), ausDias: Math.max(7, Number($("tAusDias").value) || 30) });
   $("dTextos").close();
 });
 $("tRestaurar").addEventListener("click", () => {
-  $("tPor").value = TEXTOS_INICIO.por; $("tVenc").value = TEXTOS_INICIO.venc; $("tAus").value = TEXTOS_INICIO.aus; $("tInv").value = TEXTOS_INICIO.inv;
+  $("tPor").value = TEXTOS_INICIO.por; $("tVenc").value = TEXTOS_INICIO.venc; $("tAus").value = TEXTOS_INICIO.aus; $("tInv").value = TEXTOS_INICIO.inv; $("tPromo").value = TEXTOS_INICIO.promo;
   $("tAviso").value = TEXTOS_INICIO.aviso; $("tAusDias").value = TEXTOS_INICIO.ausDias;
 });
 
@@ -849,6 +890,7 @@ function openAlumno(id) {
   $("aTitulo").textContent = id ? "Editar alumno" : "Agregar alumno";
   $("aNombre").value = a.nombre || ""; $("aTutor").value = a.tutor || ""; $("aTel").value = a.tel || ""; $("aCorreo").value = a.correo || "";
   $("aHorario").value = a.horario; $("aCiclo").value = a.ciclo || "mensual";
+  $("aBorrar").hidden = !(id && a.activo === false);
   $("aBaja").hidden = !id; $("aBaja").textContent = id && a.activo === false ? "Regresó (reactivar)" : "Dar de baja"; $("aMsg").hidden = !id; $("aHistBox").hidden = !id;
   if (id) {
     const e = estado({ id, ...a });
@@ -864,6 +906,11 @@ $("fAlumno").addEventListener("submit", () => {
   if (editId) R.child("alumnos/" + editId).update(data); else R.child("alumnos").push({ ...data, activo: tab !== "ex" });
 });
 $("aMsg").addEventListener("click", () => { const id = editId; $("dAlumno").close(); abrirMensaje(id); });
+$("aBorrar").addEventListener("click", () => {
+  const a = st.alumnos[editId];
+  if (mesesPagados(editId).length) { alert(`${a.nombre} tiene pagos registrados; se queda en el sistema para no perder tu historial.`); return; }
+  if (confirm(`¿Eliminar a ${a.nombre} por completo? Ya no aparecerá en ningún lado.`)) { R.child("alumnos/" + editId).remove(); $("dAlumno").close(); }
+});
 $("aBaja").addEventListener("click", () => {
   const a = st.alumnos[editId];
   if (a.activo === false) { if (confirm(`¿${a.nombre} regresó? Vuelve a tu lista de alumnos activos.`)) { R.child(`alumnos/${editId}/activo`).set(true); $("dAlumno").close(); } return; }
@@ -944,9 +991,10 @@ $("alerta").addEventListener("click", e => {
 });
 $("list").addEventListener("click", e => {
   const ms = e.target.closest("[data-msg]"); if (ms) return abrirMensaje(ms.dataset.msg);
+  const xf = e.target.closest("[data-exf]"); if (xf) { exF = xf.dataset.exf; return render(); }
   if (e.target.id === "exTodos") { colaIds = colaEx().map(a => a.id); qi = 0; enCola = true; colaModo = "ex"; return mostrarMensaje(); }
   const rc = e.target.closest("[data-react]");
-  if (rc) { const a = st.alumnos[rc.dataset.react]; if (confirm(`¿${a.nombre} regresó? Vuelve a tu lista de alumnos activos.`)) { R.child(`alumnos/${rc.dataset.react}/activo`).set(true); } return; }
+  if (rc) { const a = st.alumnos[rc.dataset.react]; if (confirm(esContacto(a) ? `¿Se inscribió? Abre su ficha para poner el nombre del nadador y su horario.` : `¿${a.nombre} regresó? Vuelve a tu lista de alumnos activos.`)) { R.child(`alumnos/${rc.dataset.react}`).update({ activo: true, tipo: null }); if (esContacto(a)) { tab = "all"; openAlumno(rc.dataset.react); } } return; }
   const pay = e.target.closest("[data-pay]"); if (pay) return openPago(pay.dataset.pay);
   const rb = e.target.closest("[data-recibo]"); if (rb) return openRecibo(rb.dataset.recibo, rb.dataset.k);
   const ed = e.target.closest("[data-edit]"); if (ed) return openAlumno(ed.dataset.edit);
@@ -1188,6 +1236,106 @@ $("gCopy").addEventListener("click", async () => {
     Object.entries(r.porC).filter(([, x]) => x.debes).map(([n, x]) => `Pagar a ${n}: ${money(x.debes)}${l[keyC(n)] ? " ✓ pagado" : ""}`).join("\n") +
     `\nMi ganancia: ${money(r.gan)}\nAcumulado ${mes.slice(0, 4)}: ${money(a.reduce((s, x) => s + x.gan, 0))}`;
   try { await navigator.clipboard.writeText(txt); $("gCopy").textContent = "Copiado"; setTimeout(() => $("gCopy").textContent = "Copiar resumen", 1500); } catch (e) {}
+});
+
+/* ---------- Contactos del celular (vCard .vcf, CSV de Google o selector de Android) ---------- */
+let contCand = [];   // { nombre, tel, sel }
+const tel10 = t => { const d = String(t || "").replace(/\D/g, ""); return d.length > 10 ? d.slice(-10) : d; };
+function qpDecode(v) {   // vCards viejas de Android vienen en "quoted-printable"
+  try { const bytes = v.replace(/=\r?\n/g, "").replace(/=([0-9A-F]{2})/gi, (_, h) => String.fromCharCode(parseInt(h, 16))); return decodeURIComponent(escape(bytes)); } catch (e) { return v; }
+}
+function leerVcf(txt) {
+  const out = [];
+  txt.replace(/\r?\n[ \t]/g, "").split(/BEGIN:VCARD/i).slice(1).forEach(card => {
+    let nombre = "", n = "", tels = [];
+    card.split(/\r?\n/).forEach(l => {
+      const i = l.indexOf(":"); if (i < 0) return;
+      const k = l.slice(0, i).toUpperCase(); let v = l.slice(i + 1).trim();
+      if (/QUOTED-PRINTABLE/.test(k)) v = qpDecode(v);
+      if (/^(ITEM\d+\.)?FN\b/.test(k)) nombre = v;
+      else if (/^N\b/.test(k) || /^N;/.test(k)) n = v.split(";").slice(0, 2).reverse().join(" ").trim();
+      else if (/^(ITEM\d+\.)?TEL\b/.test(k)) tels.push({ v, cel: /CELL|MOBILE|IPHONE/.test(k) });
+    });
+    const t = (tels.find(x => x.cel) || tels[0] || {}).v;
+    if (t) out.push({ nombre: (nombre || n).replace(/\\,/g, ",").trim(), tel: tel10(t) });
+  });
+  return out;
+}
+function leerCsv(txt) {
+  const filas = []; let f = [], c = "", q = false;
+  for (let i = 0; i < txt.length; i++) {
+    const ch = txt[i];
+    if (q) { if (ch === '"' && txt[i + 1] === '"') { c += '"'; i++; } else if (ch === '"') q = false; else c += ch; }
+    else if (ch === '"') q = true; else if (ch === ",") { f.push(c); c = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && txt[i + 1] === "\n") i++; f.push(c); filas.push(f); f = []; c = ""; }
+    else c += ch;
+  }
+  if (c || f.length) { f.push(c); filas.push(f); }
+  const enc = (filas.shift() || []).map(x => x.trim().toLowerCase());
+  const col = re => enc.findIndex(h => re.test(h));
+  const iNom = col(/^(name|nombre|display name)$/), iFirst = col(/^(first name|given name|nombre de pila)$/), iLast = col(/^(last name|family name|apellido)/);
+  const iTels = enc.map((h, i) => /phone.*value|tel[eé]fono|^phone|m[oó]vil|celular/.test(h) ? i : -1).filter(i => i >= 0);
+  return filas.map(r => {
+    const nombre = (iNom >= 0 && r[iNom]) || [r[iFirst], r[iLast]].filter(Boolean).join(" ");
+    const t = iTels.map(i => (r[i] || "").split(":::")[0]).find(x => x.replace(/\D/g, "").length >= 10);
+    return { nombre: (nombre || "").trim(), tel: tel10(t) };
+  }).filter(x => x.tel);
+}
+function prepararCont(lista) {
+  const telesYa = new Set(Object.values(st.alumnos || {}).map(a => tel10(a.tel)).filter(Boolean));
+  const vistos = new Set(); let yaN = 0;
+  contCand = lista.filter(x => x.tel && x.tel.length === 10).filter(x => {
+    if (telesYa.has(x.tel)) { yaN++; return false; }
+    if (vistos.has(x.tel)) return false; vistos.add(x.tel); return true;
+  }).map(x => ({ nombre: x.nombre || "Sin nombre", tel: x.tel, sel: false }))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+  $("cPaso1").hidden = true; $("cPaso2").hidden = false;
+  $("cInfo").textContent = `${contCand.length} contactos nuevos con celular${yaN ? ` (${yaN} ya estaban en el sistema y los quité)` : ""}. Palomea los que quieras guardar.`;
+  pintarCont();
+}
+function pintarCont() {
+  const f = $("cBuscar").value.trim().toLowerCase();
+  const vis = contCand.filter(x => !f || x.nombre.toLowerCase().includes(f) || x.tel.includes(f));
+  $("cLista").innerHTML = vis.slice(0, 600).map(x => `<label><input type="checkbox" data-t="${x.tel}" ${x.sel ? "checked" : ""}><span>${esc(x.nombre)}</span><small>${x.tel}</small></label>`).join("")
+    + (vis.length > 600 ? `<p class="ayuda">Mostrando 600 de ${vis.length}. Usa el buscador para encontrar los demás.</p>` : "")
+    + (!vis.length ? '<p class="ayuda">Nadie con esa búsqueda.</p>' : "");
+  const n = contCand.filter(x => x.sel).length;
+  $("cGuardar").textContent = n ? `Guardar ${n} ${n === 1 ? "contacto" : "contactos"}` : "Palomea al menos uno";
+  $("cGuardar").disabled = !n;
+}
+$("contactos").addEventListener("click", () => {
+  contCand = []; $("cPaso1").hidden = false; $("cPaso2").hidden = true; $("cBuscar").value = "";
+  $("cAndroid").hidden = !("contacts" in navigator && "select" in navigator.contacts);
+  $("dCont").showModal();
+});
+$("cArchivo").addEventListener("click", () => $("cFile").click());
+$("cFile").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const txt = await f.text();
+  const lista = /BEGIN:VCARD/i.test(txt) ? leerVcf(txt) : leerCsv(txt);
+  if (!lista.length) { alert("No encontré contactos con teléfono en ese archivo. Debe ser .vcf (vCard) o el CSV que exporta Google Contactos."); return; }
+  prepararCont(lista);
+});
+$("cAndroid").addEventListener("click", async () => {
+  try {
+    const sel = await navigator.contacts.select(["name", "tel"], { multiple: true });
+    prepararCont(sel.map(c => ({ nombre: (c.name || [])[0] || "", tel: tel10((c.tel || [])[0]) })));
+  } catch (e) {}
+});
+$("cBuscar").addEventListener("input", pintarCont);
+$("cLista").addEventListener("change", e => { const x = contCand.find(c => c.tel === e.target.dataset.t); if (x) { x.sel = e.target.checked; pintarCont(); } });
+$("cTodos").addEventListener("click", () => { const f = $("cBuscar").value.trim().toLowerCase(); contCand.forEach(x => { if (!f || x.nombre.toLowerCase().includes(f) || x.tel.includes(f)) x.sel = true; }); pintarCont(); });
+$("cNinguno").addEventListener("click", () => { contCand.forEach(x => x.sel = false); pintarCont(); });
+$("cGuardar").addEventListener("click", async () => {
+  const elegidos = contCand.filter(x => x.sel); if (!elegidos.length) return;
+  const tipo = $("cTipo").value, nota = $("cNota").value.trim(), upd = {};
+  const hk = (horOrden()[0] || [""])[0];
+  elegidos.forEach(x => {
+    upd[R.child("alumnos").push().key] = { nombre: x.nombre, tutor: tipo === "contacto" ? x.nombre.split(" ")[0] : "", tel: x.tel, correo: "", horario: hk, ciclo: "mensual", activo: false, tipo, ...(nota ? { nota } : {}) };
+  });
+  await R.child("alumnos").update(upd);
+  $("dCont").close(); tab = "ex"; exF = tipo === "contacto" ? "cont" : "ex"; render();
+  alert(`Listo: ${elegidos.length} guardados en "Invitar".`);
 });
 
 </script>
