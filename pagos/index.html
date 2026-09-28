@@ -196,6 +196,7 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
     <button id="horarios">Horarios y cuotas</button> ·
     <button id="importar">Importar archivo</button> ·
     <input type="file" id="fImp" accept=".json,application/json" hidden>
+    <button id="reiniciar">Empezar de cero</button> ·
     <button id="salir">Cerrar sesión</button>
   </p>
 </div>
@@ -288,8 +289,8 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
 
 <dialog id="dPegar"><form class="sheet" method="dialog" id="fPegar">
   <h2>Pegar lista</h2>
-  <p class="note">Copia las columnas de tu Excel en este orden: nombre, tutor, WhatsApp, correo. Una fila por nadador. Las columnas que no tengas déjalas vacías.</p>
-  <label class="f">Horario para todos<select id="gHorario"></select></label>
+  <p class="note">Copia de tu Excel: nombre, horario, tutor, WhatsApp y correo (las que tengas). Si la fila trae la hora (7:00, 8:00), el nadador se va a ese horario; si no, al que elijas aquí.</p>
+  <label class="f">Horario si la fila no trae hora<select id="gHorario"></select></label>
   <label class="f">Lista<textarea id="gTexto" placeholder="Mateo Garza	Laura	8711234567	laura@correo.com"></textarea></label>
   <div class="btns">
     <button type="submit" class="primary">Agregar alumnos</button>
@@ -598,18 +599,42 @@ $("aBaja").addEventListener("click", () => {
 
 /* ---------- Pegar lista ---------- */
 $("pegar").addEventListener("click", () => { llenarSelects(); $("gTexto").value = ""; $("dPegar").showModal(); });
-$("fPegar").addEventListener("submit", () => {
-  const upd = {}; let n = 0;
-  $("gTexto").value.split(/\r?\n/).forEach(l => {
-    const c = l.split(/\t|;|,(?=\s*\S)/).map(x => x.trim());
-    if (!c[0]) return;
+// Reconoce una hora escrita en la fila ("7:00", "8 pm", "19:00") y la liga al horario que exista
+function horarioDeTexto(x) {
+  const m = String(x).toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$/);
+  if (!m) return null;
+  let h = Number(m[1]); const mi = Number(m[2] || 0), ap = m[3] || "";
+  if (h > 23 || mi > 59) return null;
+  const busca = hh => (horOrden().find(([k, v]) => v.hora === `${pad(hh)}:${pad(mi)}`) || [null])[0];
+  if (ap.startsWith("p") && h < 12) h += 12;
+  if (ap.startsWith("a") && h === 12) h = 0;
+  if (ap || h >= 12) return busca(h);
+  return busca(h + 12) || busca(h); // "7:00" sin am/pm: primero la tarde
+}
+$("fPegar").addEventListener("submit", async e => {
+  const txt = $("gTexto").value.trim();
+  if (txt.startsWith("{")) {           // pegaron el archivo .json: se importa bien
+    try { await importarDatos(JSON.parse(txt)); } catch (err) { alert("Eso parece el archivo de importar pero está incompleto. Mejor usa el botón Importar archivo."); }
+    return;
+  }
+  const upd = {}; let n = 0, sinHora = 0;
+  txt.split(/\r?\n/).forEach(l => {
+    const c = l.split(/\t|;|,(?=\s*\S)/).map(x => x.trim()).filter(x => x !== "");
+    if (/^\d+$/.test(c[0] || "")) c.shift();   // quita el "No." del Excel
+    if (!c[0] || /^(no\.?|nombre)$/i.test(c[0])) return;
     const correo = c.find(x => /@/.test(x)) || "";
     const tel = c.find(x => /\d{7,}/.test(x.replace(/\D/g, ""))) || "";
-    const tutor = c[1] && c[1] !== tel && c[1] !== correo ? c[1] : "";
-    upd[R.child("alumnos").push().key] = { nombre: c[0], tutor, tel, correo, horario: $("gHorario").value, ciclo: "mensual", activo: true };
+    const horaCelda = c.find(x => horarioDeTexto(x));
+    const horario = horaCelda ? horarioDeTexto(horaCelda) : $("gHorario").value;
+    if (!horaCelda) sinHora++;
+    const tutor = c.slice(1).find(x => x !== tel && x !== correo && x !== horaCelda && !/\d/.test(x) && !/contactar|pendiente|pagad|recibo|estado|horario/i.test(x)) || "";
+    upd[R.child("alumnos").push().key] = { nombre: c[0], tutor, tel, correo, horario, ciclo: "mensual", activo: true };
     n++;
   });
-  if (n) R.child("alumnos").update(upd);
+  if (!n) return;
+  if (n > 150 && !confirm(`Se van a crear ${n} alumnos. ¿Seguro que es la lista correcta?`)) return;
+  await R.child("alumnos").update(upd);
+  alert(`Listo: ${n} alumnos agregados.${sinHora ? ` ${sinHora} sin hora en la fila quedaron en el horario elegido.` : ""}`);
 });
 
 /* ---------- Descargar ---------- */
@@ -649,22 +674,35 @@ $("add").addEventListener("click", () => openAlumno(null));
 
 /* ---------- Importar archivo (no borra ni duplica: respeta lo que ya llenaste) ---------- */
 $("importar").addEventListener("click", () => $("fImp").click());
-$("fImp").addEventListener("change", async e => {
-  const f = e.target.files[0]; e.target.value = "";
-  if (!f) return;
-  let d;
-  try { d = JSON.parse(await f.text()); } catch (err) { alert("Ese archivo no se pudo leer. Usa el .json que te pasé."); return; }
+async function importarDatos(d) {
   const upd = {}; let nuevos = 0, pagosN = 0;
   Object.entries(d.alumnos || {}).forEach(([id, a]) => { if (!st.alumnos[id]) { upd[`alumnos/${id}`] = a; nuevos++; } });
   Object.entries(d.pagos || {}).forEach(([m, lista]) => Object.entries(lista).forEach(([id, pg]) => {
     if (!(st.pagos && st.pagos[m] && st.pagos[m][id])) { upd[`pagos/${m}/${id}`] = pg; pagosN++; }
   }));
-  if (!nuevos && !pagosN) { alert("Todo lo de este archivo ya estaba en tu panel."); return; }
-  if (!confirm(`Se van a agregar ${nuevos} alumnos y ${pagosN} pagos. ¿Continuar?`)) return;
+  if (!nuevos && !pagosN) { alert("Todo lo de este archivo ya estaba en tu panel."); return false; }
+  if (!confirm(`Se van a agregar ${nuevos} alumnos y ${pagosN} pagos. ¿Continuar?`)) return false;
   await R.update(upd);
   if (d.folio) await R.child("folio").transaction(n => Math.max(n || 0, d.folio));
   const [m0] = Object.keys(d.pagos || {}); if (m0) { mes = m0; render(); }
   alert(`Listo: ${nuevos} alumnos y ${pagosN} pagos importados.`);
+  return true;
+}
+$("fImp").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  let d;
+  try { d = JSON.parse(await f.text()); } catch (err) { alert("Ese archivo no se pudo leer. Usa el .json que te pasé."); return; }
+  importarDatos(d);
+});
+
+/* ---------- Empezar de cero ---------- */
+$("reiniciar").addEventListener("click", async () => {
+  const n = Object.keys(st.alumnos || {}).length;
+  const r = prompt(`Se borran los ${n} alumnos, sus pagos, recibos y recordatorios. Los horarios y cuotas se quedan.\n\nEscribe BORRAR para confirmar:`);
+  if ((r || "").trim().toUpperCase() !== "BORRAR") return;
+  await R.update({ alumnos: null, pagos: null, recordatorios: null, folio: null });
+  alert("Listo, el panel quedó vacío. Ya puedes importar tu lista.");
 });
 
 /* ---------- Horarios y cuotas ---------- */
