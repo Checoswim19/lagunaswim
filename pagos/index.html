@@ -513,17 +513,31 @@ const tel52 = t => { const d = String(t || "").replace(/\D/g, ""); return d.leng
 const dias = iso => Math.floor((new Date(hoy()) - new Date(iso)) / 864e5);
 function nombrePila(a) { return (a.nombre || "").split(" ")[0]; }
 
-function periodo(a, pg) {
-  if (a.ciclo !== "quincenal") return `mensualidad de ${mesLabel(mes)}`;
-  const [y, m] = mes.split("-").map(Number);
+function periodo(a, pg, k = mes) {
+  if (cicloDe(pg, a) !== "quincenal") return `mensualidad de ${mesLabel(k)}`;
+  const [y, m] = k.split("-").map(Number);
   const sig = new Date(y, m, 14).toLocaleDateString("es-MX", { day: "numeric", month: "long" });
-  return `periodo del 15 de ${mesCorto(mes)} al ${sig}`;
+  return `periodo del 15 de ${mesCorto(k)} al ${sig}`;
 }
-function textoRecibo(a, pg) {
+// El ciclo se guarda en cada pago; los pagos viejos toman el del alumno
+const cicloDe = (pg, a) => (pg && pg.ciclo) || (a && a.ciclo) || "mensual";
+// Qué pago cubre a este nadador en el mes m: el suyo de ese mes, o el 15 a 15 del mes anterior (vigente hasta el 14)
+function cubre(a, m = mes) {
+  const own = st.pagos && st.pagos[m] && st.pagos[m][a.id];
+  if (own) return { pg: own, k: m, propio: true };
+  const k = sumaMes(m, -1), prev = st.pagos && st.pagos[k] && st.pagos[k][a.id];
+  if (prev && cicloDe(prev, a) === "quincenal") return { pg: prev, k, propio: false };
+  return null;
+}
+function vigencia(c, a) {
+  if (cicloDe(c.pg, a) === "quincenal") return `vigente 15 ${fechaCorta(c.k + "-15").split(" ")[1]} – 14 ${fechaCorta(sumaMes(c.k, 1) + "-14").split(" ")[1]}`;
+  return `vigente todo ${mesCorto(c.k)}`;
+}
+function textoRecibo(a, pg, k = mes) {
   return `🧾 RECIBO DE PAGO – Laguna Swim International
 Folio: ${pg.folio || "—"}
 Nadador(a): ${a.nombre}
-Concepto: ${periodo(a, pg)}
+Concepto: ${periodo(a, pg, k)}
 Horario: ${hor(a.horario).t} ${hor(a.horario).s}
 Monto: ${money(pg.monto)}
 Fecha de pago: ${fechaLarga(pg.fecha)}
@@ -601,15 +615,17 @@ function porUrgencia(a, b) {
 function render() {
   $("mes").textContent = mesLabel(mes);
   const act = activos(), p = pm(), r = rm();
-  const pagados = act.filter(a => p[a.id]);
-  const cobrado = pagados.reduce((s, a) => s + Number(p[a.id].monto || 0), 0);
-  const falta = act.filter(a => !p[a.id]).reduce((s, a) => s + hor(a.horario).c, 0);
+  const cov = Object.fromEntries(act.map(a => [a.id, cubre(a)]));
+  const pagados = act.filter(a => cov[a.id]);
+  // Cobrado = dinero registrado en este mes; los 15 a 15 del mes pasado cuentan como pagados pero su dinero ya se contó allá
+  const cobrado = act.filter(a => p[a.id]).reduce((s, a) => s + Number(p[a.id].monto || 0), 0);
+  const falta = act.filter(a => !cov[a.id]).reduce((s, a) => s + hor(a.horario).c, 0);
   const pend = act.length - pagados.length;
 
   $("big").innerHTML = `${pagados.length} <small>de ${act.length} ya pagaron</small>`;
   $("sub").textContent = act.length === 0 ? "Agrega tus nadadores o pega tu lista del Excel para empezar." :
     pend === 0 ? `Todos al corriente en ${mesCorto(mes)}.` : `${pend} ${pend === 1 ? "pendiente" : "pendientes"} en ${mesCorto(mes)}.`;
-  $("rope").innerHTML = [...act].sort((a, b) => (p[b.id] ? 1 : 0) - (p[a.id] ? 1 : 0)).map(a => `<span class="float${p[a.id] ? " ok" : ""}"></span>`).join("");
+  $("rope").innerHTML = [...act].sort((a, b) => (cov[b.id] ? 1 : 0) - (cov[a.id] ? 1 : 0)).map(a => `<span class="float${cov[a.id] ? " ok" : ""}"></span>`).join("");
   $("cobrado").textContent = money(cobrado);
   $("falta").textContent = money(falta);
   pintarGanancia(); if ($("dGan").open) pintarGanDialog();
@@ -644,12 +660,16 @@ function render() {
     return;
   }
   $("list").innerHTML = rows.map(a => {
-    const pg = p[a.id], e = est[a.id], av = ultimoAviso(a.id);
+    const pg = p[a.id], c = cov[a.id], e = est[a.id], av = ultimoAviso(a.id);
     const qn = a.ciclo === "quincenal" ? '<span class="q">15 a 15</span>' : "";
-    let linea = `${hor(a.horario).t} ${hor(a.horario).s} · ${lineaEstado(e)}`;
+    let linea = `${hor(a.horario).t} ${hor(a.horario).s} · ${c ? `<span class="aldia">${vigencia(c, a)}</span>` : lineaEstado(e)}`;
+    if (c && e.k !== "aldia") linea += ` · ${lineaEstado(e)}`;
     if (e.k !== "aldia" && av) linea += ` · avisado hace ${dias(av)} d`;
     const btnMsg = `<button class="msg" data-msg="${a.id}" aria-label="Mandar mensaje a ${esc(a.nombre)}">${waIcon}</button>`;
-    const acciones = pg ? `${e.k !== "aldia" ? btnMsg : ""}<button class="paid" data-recibo="${a.id}">Recibo</button>`
+    const btnRec = c ? `<button class="paid" data-recibo="${a.id}" data-k="${c.k}">Recibo</button>` : "";
+    // Pagado con el 15 a 15 del mes pasado: queda como pagado, y cuando se le acaba aparece también "Cobrar" para el siguiente periodo
+    const acciones = pg ? `${e.k !== "aldia" ? btnMsg : ""}${btnRec}`
+      : c ? `${e.k !== "aldia" ? btnMsg + `<button class="cobrar" data-pay="${a.id}">Cobrar</button>` : ""}${btnRec}`
       : `${btnMsg}<button class="cobrar" data-pay="${a.id}">Cobrar</button>`;
     return `<li class="row"><button class="who" data-edit="${a.id}"><b>${esc(a.nombre)}${qn}</b><span>${linea}</span></button><div class="act">${acciones}</div></li>`;
   }).join("");
@@ -692,6 +712,7 @@ $("fPago").addEventListener("submit", async () => {
   const pg = { fecha: $("pFecha").value, metodo: $("pMetodo").value, monto, folio, reciboEnviado: !!(prev && prev.reciboEnviado),
     h: hk, d: hor(hk).d.length ? hor(hk).d.map(x => ({ n: x.n, m: x.m, ret: x.ret || "" })) : false, gan: monto - descTotal(hk) };
   const ciclo = $("pQuin").checked ? "quincenal" : "mensual";
+  pg.ciclo = ciclo;
   await R.update({ [`pagos/${mes}/${id}`]: pg, [`alumnos/${id}/ciclo`]: ciclo });
   openRecibo(id);
 });
@@ -701,18 +722,19 @@ $("pQuitar").addEventListener("click", () => {
 
 /* ---------- Recibo ---------- */
 let recId = null;
-function openRecibo(id) {
-  recId = id;
-  const a = st.alumnos[id], pg = pm()[id];
+let recK = null;
+function openRecibo(id, k = mes) {
+  recId = id; recK = k;
+  const a = st.alumnos[id], pg = st.pagos && st.pagos[k] && st.pagos[k][id];
   if (!a || !pg) return;
-  const txt = textoRecibo(a, pg);
+  const txt = textoRecibo(a, pg, k);
   $("rTexto").textContent = txt;
   $("rNota").textContent = pg.reciboEnviado ? "Este recibo ya se envió. Puedes mandarlo otra vez." : `Mándaselo a ${a.tutor || nombrePila(a)}.`;
   $("rWa").hidden = !a.tel; $("rWa").href = waURL(a, txt);
   $("rMail").hidden = !a.correo; $("rMail").href = mailURL(a, `Recibo ${pg.folio} – Laguna Swim`, txt);
   if (!$("dRecibo").open) $("dRecibo").showModal();
 }
-const enviado = () => R.child(`pagos/${mes}/${recId}/reciboEnviado`).set(true);
+const enviado = () => R.child(`pagos/${recK}/${recId}/reciboEnviado`).set(true);
 $("rWa").addEventListener("click", enviado);
 $("rMail").addEventListener("click", enviado);
 $("rCopiar").addEventListener("click", async () => {
@@ -880,7 +902,7 @@ $("alerta").addEventListener("click", e => {
 $("list").addEventListener("click", e => {
   const ms = e.target.closest("[data-msg]"); if (ms) return abrirMensaje(ms.dataset.msg);
   const pay = e.target.closest("[data-pay]"); if (pay) return openPago(pay.dataset.pay);
-  const rb = e.target.closest("[data-recibo]"); if (rb) return openRecibo(rb.dataset.recibo);
+  const rb = e.target.closest("[data-recibo]"); if (rb) return openRecibo(rb.dataset.recibo, rb.dataset.k);
   const ed = e.target.closest("[data-edit]"); if (ed) return openAlumno(ed.dataset.edit);
 });
 $("prev").addEventListener("click", () => shiftMes(-1));
@@ -986,10 +1008,10 @@ $("hBorrar").addEventListener("click", async () => {
 let lSel = new Set();
 const sinAlias = n => n.replace(/\s*\([^)]*\)\s*/g, " ").trim();
 function pagadosLista() {
-  const p = pm(), limpiar = $("lAlias").checked;
+  const limpiar = $("lAlias").checked;
   return horOrden().filter(([k]) => lSel.has(k)).map(([k, h]) => ({
-    k, h, filas: activos().filter(a => a.horario === k && p[a.id]).sort(porHora)
-      .map(a => ({ nombre: limpiar ? sinAlias(a.nombre) : a.nombre, pg: p[a.id], ciclo: a.ciclo }))
+    k, h, filas: activos().filter(a => a.horario === k && cubre(a)).sort(porHora)
+      .map(a => { const c = cubre(a); return { nombre: limpiar ? sinAlias(a.nombre) : a.nombre, pg: c.pg, ciclo: cicloDe(c.pg, a), vig: vigencia(c, a) }; })
   }));
 }
 function armarLista() {
@@ -999,7 +1021,7 @@ function armarLista() {
   const partes = grupos.map(g => {
     const lineas = g.filas.map((f, i) => {
       n++; total += Number(f.pg.monto || 0);
-      const extra = [conF ? fechaCorta(f.pg.fecha) : "", conM ? money(f.pg.monto) : "", f.ciclo === "quincenal" ? "15 a 15" : ""].filter(Boolean).join(" · ");
+      const extra = [f.ciclo === "quincenal" ? f.vig : "", conF ? "pagó " + fechaCorta(f.pg.fecha) : "", conM ? money(f.pg.monto) : ""].filter(Boolean).join(" · ");
       return `${i + 1}. ${f.nombre}${extra ? " – " + extra : ""}`;
     });
     return `🕐 ${g.h.t} ${g.h.s} (${g.filas.length})\n${lineas.join("\n") || "Sin pagos todavía"}`;
@@ -1015,7 +1037,7 @@ function linksLista() {
 function pintarChecks() {
   const p = pm();
   $("lHor").innerHTML = horOrden().map(([k, h]) => {
-    const n = activos().filter(a => a.horario === k && p[a.id]).length;
+    const n = activos().filter(a => a.horario === k && cubre(a)).length;
     return `<label><input type="checkbox" data-k="${k}" ${lSel.has(k) ? "checked" : ""}><span>${h.t} ${esc(h.s)}</span><small>${n} pagados</small></label>`;
   }).join("");
   const sedes = [...new Set(Object.values(H).map(h => h.s))];
@@ -1043,9 +1065,9 @@ $("lShare").addEventListener("click", async () => {
 });
 $("lCsv").addEventListener("click", () => {
   const conF = $("lFecha").checked, conM = $("lMonto").checked;
-  const enc = ["No.", "Nadador", "Horario", "Sede", "Ciclo"].concat(conF ? ["Fecha de pago"] : [], conM ? ["Monto"] : []);
+  const enc = ["No.", "Nadador", "Horario", "Sede", "Ciclo", "Vigencia"].concat(conF ? ["Fecha de pago"] : [], conM ? ["Monto"] : []);
   const filas = [enc]; let i = 0;
-  pagadosLista().forEach(g => g.filas.forEach(f => filas.push([++i, f.nombre, g.h.t, g.h.s, f.ciclo === "quincenal" ? "15 a 15" : "Mes completo"]
+  pagadosLista().forEach(g => g.filas.forEach(f => filas.push([++i, f.nombre, g.h.t, g.h.s, f.ciclo === "quincenal" ? "15 a 15" : "Mes completo", f.vig]
     .concat(conF ? [f.pg.fecha] : [], conM ? [f.pg.monto] : []))));
   const csv = "\ufeff" + filas.map(f => f.map(x => `"${String(x ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
   const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
