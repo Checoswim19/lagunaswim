@@ -193,6 +193,9 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
   <p class="foot">
     <button id="pegar">Pegar lista desde Excel</button> ·
     <button id="csv">Descargar lista del mes</button> ·
+    <button id="horarios">Horarios y cuotas</button> ·
+    <button id="importar">Importar archivo</button> ·
+    <input type="file" id="fImp" accept=".json,application/json" hidden>
     <button id="salir">Cerrar sesión</button>
   </p>
 </div>
@@ -261,6 +264,28 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
   </div>
 </form></dialog>
 
+<dialog id="dHor"><div class="sheet">
+  <h2>Horarios y cuotas</h2>
+  <p class="note">Toca un horario para cambiarlo. La cuota nueva cuenta para lo que falta por cobrar; los pagos ya guardados no cambian.</p>
+  <ul class="list" id="hLista" style="margin:0 0 14px"></ul>
+  <form id="fHor">
+    <h2 id="hTitulo" style="font-size:1.1rem">Agregar horario</h2>
+    <div class="grid2">
+      <label class="f">Hora<input type="time" id="hHora" required></label>
+      <label class="f">Cuota mensual<input type="number" id="hCuota" min="0" step="50" required></label>
+    </div>
+    <label class="f">Sede<input id="hSede" list="sedes" required autocomplete="off"></label>
+    <datalist id="sedes"><option value="Tec"><option value="Deportiva"></datalist>
+    <p class="err" id="hErr" role="alert"></p>
+    <div class="btns">
+      <button type="submit" class="primary" id="hGuardar">Agregar horario</button>
+      <button type="button" class="danger" id="hBorrar">Quitar horario</button>
+      <button type="button" class="ghost" id="hNuevo">Nuevo</button>
+      <button type="button" class="ghost" data-close>Listo</button>
+    </div>
+  </form>
+</div></dialog>
+
 <dialog id="dPegar"><form class="sheet" method="dialog" id="fPegar">
   <h2>Pegar lista</h2>
   <p class="note">Copia las columnas de tu Excel en este orden: nombre, tutor, WhatsApp, correo. Una fila por nadador. Las columnas que no tengas déjalas vacías.</p>
@@ -279,13 +304,29 @@ textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 1
 const DUENO = "checoswim@gmail.com";
 const FIRMA = "Checo Villarreal";
 const TEL_FIRMA = "871 316 4850";
-const H = {
-  "07": { t: "7:00 am", s: "Tec", c: 1100 },
-  "17": { t: "5:00 pm", s: "Deportiva", c: 1000 },
-  "19": { t: "7:00 pm", s: "Tec", c: 1100 },
-  "20": { t: "8:00 pm", s: "Tec", c: 1100 }
+// Horarios de arranque. Después se editan desde "Horarios y cuotas" y se guardan en la nube.
+const H_INICIO = {
+  "07": { hora: "07:00", s: "Tec", c: 1100 },
+  "17": { hora: "17:00", s: "Deportiva", c: 950 },
+  "19": { hora: "19:00", s: "Tec", c: 1100 },
+  "20": { hora: "20:00", s: "Tec", c: 1100 }
 };
-const hor = k => H[k] || { t: k, s: "", c: 0 };
+let H = {};
+function hora12(hm) {
+  const [h, m] = (hm || "00:00").split(":").map(Number);
+  return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
+}
+function armarH(src) {
+  H = {};
+  Object.entries(src).forEach(([k, v]) => {
+    const [h, m] = (v.hora || "00:00").split(":").map(Number);
+    H[k] = { hora: v.hora, t: hora12(v.hora), s: v.s || "", c: Number(v.c) || 0, m: h * 60 + m };
+  });
+}
+armarH(H_INICIO);
+const hor = k => H[k] || { t: "Sin horario", s: "", c: 0, m: 9999 };
+const horOrden = () => Object.entries(H).sort((a, b) => a[1].m - b[1].m);
+const porHora = (a, b) => hor(a.horario).m - hor(b.horario).m || a.nombre.localeCompare(b.nombre, "es");
 
 firebase.initializeApp({
   apiKey: "AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
@@ -332,7 +373,7 @@ auth.onAuthStateChanged(u => {
     $("vLogin").classList.add("hidden"); $("vApp").classList.remove("hidden");
     if (!escuchando) {
       escuchando = true;
-      R.on("value", s => { st = Object.assign({ alumnos: {}, pagos: {}, recordatorios: {}, folio: 0 }, s.val() || {}); render(); },
+      R.on("value", s => { st = Object.assign({ alumnos: {}, pagos: {}, recordatorios: {}, folio: 0 }, s.val() || {}); armarH(st.horarios || H_INICIO); render(); },
         () => { $("sync").className = "sync"; $("sync").innerHTML = "<i></i>Sin permiso: revisa las reglas de Firebase"; });
     }
   } else {
@@ -423,14 +464,14 @@ function render() {
   } else al.className = "alert hidden";
 
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.tab === tab));
-  const chipDefs = [["all", "Todos los horarios"], ...Object.entries(H).map(([k, v]) => [k, `${v.t} ${v.s}`])];
+  const chipDefs = [["all", "Todos los horarios"], ...horOrden().map(([k, v]) => [k, `${v.t} ${v.s}`])];
   $("chips").innerHTML = chipDefs.map(([k, l]) => `<button data-h="${k}" aria-pressed="${hf === k}">${l}</button>`).join("");
 
   let rows = act.filter(a => hf === "all" || a.horario === hf);
   if (q) rows = rows.filter(a => (a.nombre + " " + (a.tutor || "")).toLowerCase().includes(q));
   if (tab === "pend") rows = rows.filter(a => !p[a.id]);
   if (tab === "ok") rows = rows.filter(a => p[a.id]);
-  rows.sort((a, b) => a.horario.localeCompare(b.horario) || a.nombre.localeCompare(b.nombre, "es"));
+  rows.sort(porHora);
 
   if (!rows.length) {
     $("list").innerHTML = `<li class="empty">${!act.length ? "Todavía no hay alumnos. Toca “Agregar alumno” o “Pegar lista desde Excel”." : tab === "pend" ? "Nadie pendiente con este filtro." : tab === "ok" ? "Todavía no hay pagos con este filtro." : "No hay alumnos con este filtro."}</li>`;
@@ -533,14 +574,15 @@ $("qPago").addEventListener("click", () => { const id = recActual(); $("dRec").c
 
 /* ---------- Alumno ---------- */
 let editId = null;
-const opcionesH = Object.entries(H).map(([k, v]) => `<option value="${k}">${v.t} ${v.s} (${money(v.c)})</option>`).join("");
-$("aHorario").innerHTML = opcionesH; $("gHorario").innerHTML = opcionesH;
+const opcionesH = () => horOrden().map(([k, v]) => `<option value="${k}">${v.t} ${v.s} (${money(v.c)})</option>`).join("");
+function llenarSelects() { $("aHorario").innerHTML = opcionesH(); $("gHorario").innerHTML = opcionesH(); }
 function openAlumno(id) {
   editId = id;
-  const a = id ? st.alumnos[id] : { nombre: "", tutor: "", tel: "", correo: "", horario: "20", ciclo: "mensual" };
+  llenarSelects();
+  const a = id ? st.alumnos[id] : { nombre: "", tutor: "", tel: "", correo: "", horario: H["20"] ? "20" : (horOrden()[0] || [""])[0], ciclo: "mensual" };
   $("aTitulo").textContent = id ? "Editar alumno" : "Agregar alumno";
   $("aNombre").value = a.nombre || ""; $("aTutor").value = a.tutor || ""; $("aTel").value = a.tel || ""; $("aCorreo").value = a.correo || "";
-  $("aHorario").value = a.horario || "20"; $("aCiclo").value = a.ciclo || "mensual";
+  $("aHorario").value = a.horario; $("aCiclo").value = a.ciclo || "mensual";
   $("aBaja").hidden = !id;
   $("dAlumno").showModal();
 }
@@ -555,7 +597,7 @@ $("aBaja").addEventListener("click", () => {
 });
 
 /* ---------- Pegar lista ---------- */
-$("pegar").addEventListener("click", () => { $("gTexto").value = ""; $("dPegar").showModal(); });
+$("pegar").addEventListener("click", () => { llenarSelects(); $("gTexto").value = ""; $("dPegar").showModal(); });
 $("fPegar").addEventListener("submit", () => {
   const upd = {}; let n = 0;
   $("gTexto").value.split(/\r?\n/).forEach(l => {
@@ -574,7 +616,7 @@ $("fPegar").addEventListener("submit", () => {
 $("csv").addEventListener("click", () => {
   const p = pm(), r = rm();
   const filas = [["Nadador","Tutor","WhatsApp","Correo","Horario","Ciclo","Estado","Fecha pago","Monto","Método","Folio","Último recordatorio"]];
-  activos().sort((a, b) => a.horario.localeCompare(b.horario) || a.nombre.localeCompare(b.nombre, "es")).forEach(a => {
+  activos().sort(porHora).forEach(a => {
     const pg = p[a.id];
     filas.push([a.nombre, a.tutor, a.tel, a.correo, `${hor(a.horario).t} ${hor(a.horario).s}`, a.ciclo === "quincenal" ? "15 a 15" : "Mes completo",
       pg ? "Pagado" : "Pendiente", pg ? pg.fecha : "", pg ? pg.monto : "", pg ? pg.metodo : "", pg ? pg.folio : "", r[a.id] || ""]);
@@ -604,6 +646,68 @@ $("list").addEventListener("click", e => {
 $("prev").addEventListener("click", () => shiftMes(-1));
 $("next").addEventListener("click", () => shiftMes(1));
 $("add").addEventListener("click", () => openAlumno(null));
+
+/* ---------- Importar archivo (no borra ni duplica: respeta lo que ya llenaste) ---------- */
+$("importar").addEventListener("click", () => $("fImp").click());
+$("fImp").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  let d;
+  try { d = JSON.parse(await f.text()); } catch (err) { alert("Ese archivo no se pudo leer. Usa el .json que te pasé."); return; }
+  const upd = {}; let nuevos = 0, pagosN = 0;
+  Object.entries(d.alumnos || {}).forEach(([id, a]) => { if (!st.alumnos[id]) { upd[`alumnos/${id}`] = a; nuevos++; } });
+  Object.entries(d.pagos || {}).forEach(([m, lista]) => Object.entries(lista).forEach(([id, pg]) => {
+    if (!(st.pagos && st.pagos[m] && st.pagos[m][id])) { upd[`pagos/${m}/${id}`] = pg; pagosN++; }
+  }));
+  if (!nuevos && !pagosN) { alert("Todo lo de este archivo ya estaba en tu panel."); return; }
+  if (!confirm(`Se van a agregar ${nuevos} alumnos y ${pagosN} pagos. ¿Continuar?`)) return;
+  await R.update(upd);
+  if (d.folio) await R.child("folio").transaction(n => Math.max(n || 0, d.folio));
+  const [m0] = Object.keys(d.pagos || {}); if (m0) { mes = m0; render(); }
+  alert(`Listo: ${nuevos} alumnos y ${pagosN} pagos importados.`);
+});
+
+/* ---------- Horarios y cuotas ---------- */
+let horId = null;
+function pintarHorarios() {
+  const act = activos();
+  $("hLista").innerHTML = horOrden().map(([k, v]) => {
+    const n = act.filter(a => a.horario === k).length;
+    return `<li class="row"><button class="who" data-h="${k}"><b>${v.t} ${esc(v.s)}</b><span>${money(v.c)} al mes · ${n} ${n === 1 ? "alumno" : "alumnos"}</span></button></li>`;
+  }).join("") || '<li class="empty">No hay horarios. Agrega el primero abajo.</li>';
+}
+function formHorario(k) {
+  horId = k; $("hErr").textContent = "";
+  const v = k ? H[k] : { hora: "", s: "", c: "" };
+  $("hHora").value = v.hora; $("hSede").value = v.s; $("hCuota").value = v.c;
+  $("hTitulo").textContent = k ? `Editar ${v.t} ${v.s}` : "Agregar horario";
+  $("hGuardar").textContent = k ? "Guardar cambios" : "Agregar horario";
+  $("hBorrar").hidden = !k; $("hNuevo").hidden = !k;
+}
+function guardarH() {
+  const out = {};
+  Object.entries(H).forEach(([k, v]) => out[k] = { hora: v.hora, s: v.s, c: v.c });
+  return R.child("horarios").set(out);
+}
+$("horarios").addEventListener("click", () => { pintarHorarios(); formHorario(null); $("dHor").showModal(); });
+$("hLista").addEventListener("click", e => { const b = e.target.closest("[data-h]"); if (b) formHorario(b.dataset.h); });
+$("hNuevo").addEventListener("click", () => formHorario(null));
+$("fHor").addEventListener("submit", async e => {
+  e.preventDefault();
+  const hora = $("hHora").value, sede = $("hSede").value.trim(), c = Number($("hCuota").value);
+  const choca = Object.entries(H).find(([k, v]) => k !== horId && v.hora === hora && v.s.toLowerCase() === sede.toLowerCase());
+  if (choca) { $("hErr").textContent = `Ya existe ${hora12(hora)} en ${sede}.`; return; }
+  const k = horId || "h" + Date.now().toString(36);
+  H[k] = { hora, s: sede, c };
+  armarH(Object.fromEntries(Object.entries(H).map(([x, v]) => [x, { hora: v.hora, s: v.s, c: v.c }])));
+  await guardarH(); pintarHorarios(); formHorario(null);
+});
+$("hBorrar").addEventListener("click", async () => {
+  const n = activos().filter(a => a.horario === horId).length;
+  if (n) { $("hErr").textContent = `Tiene ${n} ${n === 1 ? "alumno" : "alumnos"}. Cámbialos de horario antes de quitarlo.`; return; }
+  if (!confirm(`¿Quitar ${H[horId].t} ${H[horId].s}?`)) return;
+  delete H[horId]; await guardarH(); pintarHorarios(); formHorario(null);
+});
 
 </script>
 </body>
