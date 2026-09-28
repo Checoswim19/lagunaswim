@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Pagos · Laguna Swim</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e8f3f4; --surf:#ffffff; --surf2:#d6eaec; --ink:#0b2a3a; --mute:#557080; --line:#c3dcdf;
+  --aqua:#08899a; --aquaSoft:#cdeef1; --coral:#d9493a; --coralSoft:#fbe2dd; --btnInk:#ffffff;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#051a28; --surf:#0b2738; --surf2:#123447; --ink:#e6f3f5; --mute:#8eaab6; --line:#1d4358;
+    --aqua:#45cbd8; --aquaSoft:#0f3c48; --coral:#ff7b67; --coralSoft:#3e201d; --btnInk:#051a28;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#051a28; --surf:#0b2738; --surf2:#123447; --ink:#e6f3f5; --mute:#8eaab6; --line:#1d4358;
+  --aqua:#45cbd8; --aquaSoft:#0f3c48; --coral:#ff7b67; --coralSoft:#3e201d; --btnInk:#051a28;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding:16px 18px 110px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--aqua);outline-offset:2px;border-radius:8px}
+
+.demo{font-size:.82rem;color:var(--mute);background:var(--surf2);border-radius:12px;padding:8px 12px;margin-bottom:18px}
+.demo b{color:var(--ink)}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{font-weight:600;font-size:.95rem;color:var(--mute)}
+.month{display:flex;align-items:center;gap:4px}
+.month button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surf);font-size:1.1rem;line-height:1}
+.month span{min-width:128px;text-align:center;font-weight:600;text-transform:capitalize}
+
+.hero{margin:22px 0 8px}
+.big{font-size:clamp(2.6rem,11vw,3.6rem);font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big small{font-size:.42em;font-weight:600;color:var(--mute);letter-spacing:0}
+.sub{color:var(--mute);margin-top:6px}
+
+/* La cuerda de carril: cada flotador es un nadador */
+.rope{position:relative;display:flex;flex-wrap:wrap;gap:5px;padding:14px 0 6px;margin:6px 0 4px}
+.float{width:18px;height:18px;border-radius:50%;background:var(--coral);
+  box-shadow:inset -3px -3px 0 rgba(0,0,0,.16);transition:background .35s}
+.float.ok{background:var(--aqua)}
+@media (prefers-reduced-motion:reduce){.float{transition:none}}
+.money{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 22px}
+.money div{background:var(--surf);border-radius:16px;padding:12px 14px}
+.money p{margin:0;font-size:.85rem;color:var(--mute)}
+.money strong{display:block;font-size:1.35rem;font-variant-numeric:tabular-nums}
+.money .in strong{color:var(--aqua)} .money .out strong{color:var(--coral)}
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surf2);border-radius:14px;padding:4px;gap:4px}
+.tabs button{border:0;background:none;padding:9px 4px;border-radius:10px;font-weight:600;color:var(--mute)}
+.tabs button[aria-pressed="true"]{background:var(--surf);color:var(--ink)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chips button{flex:none;border:1px solid var(--line);background:none;border-radius:999px;padding:6px 14px;font-size:.9rem}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+ul.list{list-style:none;margin:10px 0 0;padding:0}
+.row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.who{flex:1;min-width:0;background:none;border:0;text-align:left;padding:0}
+.who b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{display:block;font-size:.85rem;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q{display:inline-block;font-size:.72rem;font-weight:600;background:var(--surf2);color:var(--ink);border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px}
+.act{display:flex;gap:6px;flex:none}
+.wa{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--coralSoft);color:var(--coral);text-decoration:none}
+.wa svg{width:20px;height:20px}
+.cobrar{border:0;border-radius:12px;background:var(--ink);color:var(--bg);padding:0 14px;height:40px;font-weight:600}
+.paid{border:0;border-radius:12px;background:var(--aquaSoft);color:var(--aqua);padding:0 12px;height:40px;font-weight:600;font-size:.88rem}
+.empty{padding:34px 8px;text-align:center;color:var(--mute)}
+
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  border:0;border-radius:999px;background:var(--aqua);color:var(--btnInk);font-weight:700;padding:14px 24px;
+  box-shadow:0 8px 24px rgba(0,40,60,.25)}
+.foot{margin-top:28px;font-size:.82rem;color:var(--mute)}
+.foot button{background:none;border:0;color:var(--mute);text-decoration:underline;padding:0}
+
+dialog{border:0;padding:0;width:100%;max-width:560px;margin:auto auto 0;border-radius:22px 22px 0 0;
+  background:var(--surf);color:var(--ink);max-height:92vh}
+dialog::backdrop{background:rgba(2,16,26,.55)}
+.sheet{padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px))}
+.sheet h2{margin:0 0 2px;font-size:1.4rem;line-height:1.2}
+.sheet .note{margin:0 0 16px;color:var(--mute);font-size:.9rem}
+label.f{display:block;margin-bottom:12px;font-size:.88rem;color:var(--mute)}
+label.f input,label.f select{display:block;width:100%;margin-top:4px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:1rem}
+.rule{display:flex;gap:10px;align-items:flex-start;background:var(--aquaSoft);border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:.88rem}
+.rule input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--aqua);flex:none}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.btns button{flex:1 1 auto;border:0;border-radius:12px;padding:12px 14px;font-weight:600}
+.primary{background:var(--aqua);color:var(--btnInk)}
+.ghost{background:var(--surf2)}
+.danger{background:var(--coralSoft);color:var(--coral)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.hidden{display:none!important}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 18px}
+.card{width:100%;max-width:400px;background:var(--surf);border-radius:22px;padding:26px 22px}
+.card h1{margin:0 0 4px;font-size:1.8rem;line-height:1.1}
+.card p.lead{margin:0 0 20px;color:var(--mute)}
+.full{width:100%;border:0;border-radius:12px;padding:13px;font-weight:700;background:var(--aqua);color:var(--btnInk);margin-top:4px}
+.link{background:none;border:0;color:var(--aqua);font-weight:600;padding:8px 0;text-decoration:underline}
+.err{color:var(--coral);font-size:.9rem;min-height:1.3em;margin:6px 0 0}
+.tools{display:flex;align-items:center;gap:6px}
+.icon{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surf);display:grid;place-items:center;font-size:1rem}
+.sync{font-size:.78rem;color:var(--mute);margin:6px 0 0}
+.sync i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--coral);margin-right:6px}
+.sync.on i{background:var(--aqua)}
+.alert{display:flex;align-items:center;gap:12px;background:var(--coralSoft);border-radius:16px;padding:14px;margin:0 0 18px}
+.alert p{margin:0;flex:1;font-size:.95rem}
+.alert b{display:block;font-size:1.05rem}
+.alert button{border:0;border-radius:12px;background:var(--coral);color:#fff;font-weight:700;padding:11px 14px;flex:none}
+.alert.ok{background:var(--aquaSoft)}
+.who .rec{color:var(--coral)}
+.who .rec.done{color:var(--mute)}
+.mail{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--surf2);color:var(--ink);text-decoration:none;font-size:1.05rem}
+.recibo{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:14px;white-space:pre-wrap;font-size:.92rem;margin:0 0 14px}
+.btns a{flex:1 1 auto;border-radius:12px;padding:12px 14px;font-weight:600;text-align:center;text-decoration:none}
+.wabtn{background:#1f9e57;color:#fff}
+.mailbtn{background:var(--surf2);color:var(--ink)}
+textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font:inherit;font-size:.92rem}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px;background:var(--aquaSoft);color:var(--aqua)}
+</style>
+</head>
+<body>
+<section id="vLogin" class="login">
+  <form class="card" id="fLogin">
+    <h1>Pagos Laguna Swim</h1>
+    <p class="lead">Solo para Checo. Entra con tu correo.</p>
+    <label class="f">Correo<input type="email" id="lEmail" value="checoswim@gmail.com" autocomplete="username" required></label>
+    <label class="f">Contraseña<input type="password" id="lPass" autocomplete="current-password" required></label>
+    <button class="full" type="submit">Entrar</button>
+    <p class="err" id="lErr" role="alert"></p>
+    <button class="link" type="button" id="lReset">Olvidé mi contraseña</button>
+  </form>
+</section>
+
+<div id="vApp" class="hidden">
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">Pagos Laguna Swim</div>
+      <p class="sync" id="sync"><i></i>Conectando…</p>
+    </div>
+    <div class="tools">
+      <div class="month">
+        <button id="prev" aria-label="Mes anterior">‹</button>
+        <span id="mes"></span>
+        <button id="next" aria-label="Mes siguiente">›</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" aria-live="polite">
+    <div class="big" id="big"></div>
+    <div class="sub" id="sub"></div>
+    <div class="rope" id="rope" aria-hidden="true"></div>
+  </section>
+
+  <div class="money">
+    <div class="in"><p>Cobrado</p><strong id="cobrado"></strong></div>
+    <div class="out"><p>Falta por cobrar</p><strong id="falta"></strong></div>
+  </div>
+
+  <div class="alert" id="alerta"></div>
+
+  <div class="tabs" role="group" aria-label="Filtrar por estado">
+    <button data-tab="pend">Pendientes</button>
+    <button data-tab="ok">Pagados</button>
+    <button data-tab="all">Todos</button>
+  </div>
+  <div class="chips" role="group" aria-label="Filtrar por horario" id="chips"></div>
+  <label class="f" style="margin:8px 0 0"><input type="search" id="buscar" placeholder="Buscar nadador o tutor"></label>
+
+  <ul class="list" id="list"></ul>
+
+  <p class="foot">
+    <button id="pegar">Pegar lista desde Excel</button> ·
+    <button id="csv">Descargar lista del mes</button> ·
+    <button id="salir">Cerrar sesión</button>
+  </p>
+</div>
+<button class="fab" id="add">Agregar alumno</button>
+</div>
+
+<dialog id="dPago"><form class="sheet" method="dialog" id="fPago">
+  <h2 id="pNombre"></h2>
+  <p class="note" id="pInfo"></p>
+  <div class="grid2">
+    <label class="f">Fecha de pago<input type="date" id="pFecha" required></label>
+    <label class="f">Monto<input type="number" id="pMonto" min="0" step="50" required></label>
+  </div>
+  <label class="f">Cómo pagó
+    <select id="pMetodo"><option>Playtomic</option><option>Transferencia</option><option>Efectivo</option></select>
+  </label>
+  <label class="rule"><input type="checkbox" id="pQuin"><span id="pRuleTxt"></span></label>
+  <div class="btns">
+    <button type="submit" class="primary">Guardar y ver recibo</button>
+    <button type="button" class="danger" id="pQuitar">Quitar pago</button>
+    <button type="button" class="ghost" data-close>Cancelar</button>
+  </div>
+</form></dialog>
+
+<dialog id="dRecibo"><div class="sheet">
+  <h2>Recibo</h2>
+  <p class="note" id="rNota"></p>
+  <div class="recibo" id="rTexto"></div>
+  <div class="btns">
+    <a class="wabtn" id="rWa" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+    <a class="mailbtn" id="rMail">Enviar por correo</a>
+    <button type="button" class="ghost" id="rCopiar">Copiar</button>
+    <button type="button" class="ghost" data-close>Listo</button>
+  </div>
+</div></dialog>
+
+<dialog id="dRec"><div class="sheet">
+  <h2 id="qNombre"></h2>
+  <p class="note" id="qInfo"></p>
+  <div class="recibo" id="qTexto"></div>
+  <div class="btns">
+    <a class="wabtn" id="qWa" target="_blank" rel="noopener">Mandar WhatsApp</a>
+    <a class="mailbtn" id="qMail">Mandar correo</a>
+    <button type="button" class="primary" id="qPago">Ya pagó</button>
+    <button type="button" class="ghost" id="qSig">Siguiente</button>
+  </div>
+</div></dialog>
+
+<dialog id="dAlumno"><form class="sheet" method="dialog" id="fAlumno">
+  <h2 id="aTitulo">Agregar alumno</h2>
+  <p class="note">El WhatsApp y el correo sirven para mandar recibos y recordatorios con un toque.</p>
+  <label class="f">Nombre del nadador<input id="aNombre" required autocomplete="off"></label>
+  <label class="f">Mamá, papá o tutor<input id="aTutor" autocomplete="off"></label>
+  <div class="grid2">
+    <label class="f">WhatsApp (10 dígitos)<input id="aTel" inputmode="tel" autocomplete="off"></label>
+    <label class="f">Correo<input id="aCorreo" type="email" autocomplete="off"></label>
+  </div>
+  <div class="grid2">
+    <label class="f">Horario<select id="aHorario"></select></label>
+    <label class="f">Ciclo<select id="aCiclo"><option value="mensual">Mes completo</option><option value="quincenal">15 a 15</option></select></label>
+  </div>
+  <div class="btns">
+    <button type="submit" class="primary">Guardar alumno</button>
+    <button type="button" class="danger" id="aBaja">Dar de baja</button>
+    <button type="button" class="ghost" data-close>Cancelar</button>
+  </div>
+</form></dialog>
+
+<dialog id="dPegar"><form class="sheet" method="dialog" id="fPegar">
+  <h2>Pegar lista</h2>
+  <p class="note">Copia las columnas de tu Excel en este orden: nombre, tutor, WhatsApp, correo. Una fila por nadador. Las columnas que no tengas déjalas vacías.</p>
+  <label class="f">Horario para todos<select id="gHorario"></select></label>
+  <label class="f">Lista<textarea id="gTexto" placeholder="Mateo Garza	Laura	8711234567	laura@correo.com"></textarea></label>
+  <div class="btns">
+    <button type="submit" class="primary">Agregar alumnos</button>
+    <button type="button" class="ghost" data-close>Cancelar</button>
+  </div>
+</form></dialog>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const DUENO = "checoswim@gmail.com";
+const FIRMA = "Checo Villarreal";
+const TEL_FIRMA = "871 316 4850";
+const H = {
+  "07": { t: "7:00 am", s: "Tec", c: 1100 },
+  "17": { t: "5:00 pm", s: "Deportiva", c: 1000 },
+  "19": { t: "7:00 pm", s: "Tec", c: 1100 },
+  "20": { t: "8:00 pm", s: "Tec", c: 1100 }
+};
+const hor = k => H[k] || { t: k, s: "", c: 0 };
+
+firebase.initializeApp({
+  apiKey: "AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
+  authDomain: "laguna-swim-chrono.firebaseapp.com",
+  databaseURL: "https://laguna-swim-chrono-default-rtdb.firebaseio.com",
+  projectId: "laguna-swim-chrono",
+  storageBucket: "laguna-swim-chrono.firebasestorage.app",
+  messagingSenderId: "618459577354",
+  appId: "1:618459577354:web:2e26bda92112ce241c33f3"
+});
+const auth = firebase.auth(), db = firebase.database();
+const R = db.ref("pagosCheco");
+
+const $ = id => document.getElementById(id);
+const money = n => "$" + Math.round(n).toLocaleString("es-MX");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2, "0");
+const hoy = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const n0 = new Date();
+let mes = `${n0.getFullYear()}-${pad(n0.getMonth()+1)}`;
+let tab = "pend", hf = "all", q = "";
+let st = { alumnos: {}, pagos: {}, recordatorios: {}, folio: 0 };
+
+/* ---------- Sesión ---------- */
+$("fLogin").addEventListener("submit", async e => {
+  e.preventDefault(); $("lErr").textContent = "";
+  const em = $("lEmail").value.trim().toLowerCase();
+  if (em !== DUENO) { $("lErr").textContent = "Este panel es solo para la cuenta de Checo."; return; }
+  try { await auth.signInWithEmailAndPassword(em, $("lPass").value); }
+  catch (err) {
+    $("lErr").textContent = err.code === "auth/too-many-requests" ? "Demasiados intentos. Espera unos minutos."
+      : "Correo o contraseña incorrectos. Usa “Olvidé mi contraseña” si no la recuerdas.";
+  }
+});
+$("lReset").addEventListener("click", async () => {
+  try { await auth.sendPasswordResetEmail(DUENO); $("lErr").textContent = "Te mandé un correo a " + DUENO + " para cambiar la contraseña."; }
+  catch (e) { $("lErr").textContent = "No se pudo mandar el correo. Revisa tu conexión."; }
+});
+$("salir").addEventListener("click", () => auth.signOut());
+
+let escuchando = false;
+auth.onAuthStateChanged(u => {
+  if (u && (u.email || "").toLowerCase() === DUENO) {
+    $("vLogin").classList.add("hidden"); $("vApp").classList.remove("hidden");
+    if (!escuchando) {
+      escuchando = true;
+      R.on("value", s => { st = Object.assign({ alumnos: {}, pagos: {}, recordatorios: {}, folio: 0 }, s.val() || {}); render(); },
+        () => { $("sync").className = "sync"; $("sync").innerHTML = "<i></i>Sin permiso: revisa las reglas de Firebase"; });
+    }
+  } else {
+    if (u) auth.signOut();
+    if (escuchando) { R.off(); escuchando = false; }
+    $("vApp").classList.add("hidden"); $("vLogin").classList.remove("hidden");
+  }
+});
+db.ref(".info/connected").on("value", s => {
+  $("sync").className = "sync" + (s.val() ? " on" : "");
+  $("sync").innerHTML = s.val() ? "<i></i>Guardado en la nube" : "<i></i>Sin conexión, se guarda al volver";
+});
+
+/* ---------- Utilidades ---------- */
+function mesLabel(k) { const [y, m] = k.split("-").map(Number); return new Date(y, m-1, 1).toLocaleDateString("es-MX", { month: "long", year: "numeric" }); }
+function mesCorto(k) { const [y, m] = k.split("-").map(Number); return new Date(y, m-1, 1).toLocaleDateString("es-MX", { month: "long" }); }
+function fechaLarga(iso) { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }); }
+function shiftMes(d) { let [y, m] = mes.split("-").map(Number); m += d; if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } mes = `${y}-${pad(m)}`; render(); }
+const activos = () => Object.entries(st.alumnos || {}).map(([id, a]) => ({ id, ...a })).filter(a => a.activo !== false);
+const pm = () => (st.pagos && st.pagos[mes]) || {};
+const rm = () => (st.recordatorios && st.recordatorios[mes]) || {};
+const tel52 = t => { const d = String(t || "").replace(/\D/g, ""); return d.length === 10 ? "52" + d : d; };
+const dias = iso => Math.floor((new Date(hoy()) - new Date(iso)) / 864e5);
+function nombrePila(a) { return (a.nombre || "").split(" ")[0]; }
+
+function periodo(a, pg) {
+  if (a.ciclo !== "quincenal") return `mensualidad de ${mesLabel(mes)}`;
+  const [y, m] = mes.split("-").map(Number);
+  const sig = new Date(y, m, 14).toLocaleDateString("es-MX", { day: "numeric", month: "long" });
+  return `periodo del 15 de ${mesCorto(mes)} al ${sig}`;
+}
+function textoRecibo(a, pg) {
+  return `🧾 RECIBO DE PAGO – Laguna Swim International
+Folio: ${pg.folio || "—"}
+Nadador(a): ${a.nombre}
+Concepto: ${periodo(a, pg)}
+Horario: ${hor(a.horario).t} ${hor(a.horario).s}
+Monto: ${money(pg.monto)}
+Fecha de pago: ${fechaLarga(pg.fecha)}
+Forma de pago: ${pg.metodo}
+
+¡Gracias por tu pago! 🏊
+${FIRMA} · ${TEL_FIRMA}`;
+}
+function textoRecordatorio(a) {
+  const saludo = a.tutor ? `¡Hola ${a.tutor}!` : "¡Hola!";
+  return `${saludo} 🏊 Te escribe ${FIRMA}. Te recuerdo que la ${periodo(a)} de ${a.nombre} sigue pendiente (${money(hor(a.horario).c)}). ¡Que no se le olvide nadar! 😄 Cualquier duda aquí estoy.`;
+}
+const waURL = (a, txt) => `https://wa.me/${tel52(a.tel)}?text=${encodeURIComponent(txt)}`;
+const mailURL = (a, asunto, txt) => `mailto:${encodeURIComponent(a.correo || "")}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(txt)}`;
+
+const waIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9 4.5 4.5 0 0 0 1 2.4 10.3 10.3 0 0 0 3.9 3.5c1.5.6 2 .7 2.7.6.4-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>';
+
+/* ---------- Recordatorios al pendiente ---------- */
+// Cola: pendientes sin recordar primero, luego los recordados hace más tiempo (3+ días)
+function cola() {
+  const p = pm(), r = rm();
+  return activos().filter(a => !p[a.id])
+    .filter(a => !r[a.id] || dias(r[a.id]) >= 3)
+    .sort((a, b) => (r[a.id] || "").localeCompare(r[b.id] || "") || a.nombre.localeCompare(b.nombre, "es"));
+}
+
+/* ---------- Pantalla ---------- */
+function render() {
+  $("mes").textContent = mesLabel(mes);
+  const act = activos(), p = pm(), r = rm();
+  const pagados = act.filter(a => p[a.id]);
+  const cobrado = pagados.reduce((s, a) => s + Number(p[a.id].monto || 0), 0);
+  const falta = act.filter(a => !p[a.id]).reduce((s, a) => s + hor(a.horario).c, 0);
+  const pend = act.length - pagados.length;
+
+  $("big").innerHTML = `${pagados.length} <small>de ${act.length} ya pagaron</small>`;
+  $("sub").textContent = act.length === 0 ? "Agrega tus nadadores o pega tu lista del Excel para empezar." :
+    pend === 0 ? `Todos al corriente en ${mesCorto(mes)}.` : `${pend} ${pend === 1 ? "pendiente" : "pendientes"} en ${mesCorto(mes)}.`;
+  $("rope").innerHTML = [...act].sort((a, b) => (p[b.id] ? 1 : 0) - (p[a.id] ? 1 : 0)).map(a => `<span class="float${p[a.id] ? " ok" : ""}"></span>`).join("");
+  $("cobrado").textContent = money(cobrado);
+  $("falta").textContent = money(falta);
+
+  const c = cola();
+  const al = $("alerta");
+  if (!act.length) al.className = "alert hidden";
+  else if (c.length) {
+    al.className = "alert";
+    al.innerHTML = `<p><b>Toca recordar a ${c.length}</b>${c.length === 1 ? "Tiene" : "Tienen"} el pago pendiente y no les has escrito en 3 días o más.</p><button id="recordar">Empezar</button>`;
+  } else if (pend) {
+    al.className = "alert ok";
+    al.innerHTML = `<p><b>Recordatorios al día</b>Ya les escribiste a todos los pendientes. Te aviso aquí cuando pasen 3 días.</p>`;
+  } else al.className = "alert hidden";
+
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.tab === tab));
+  const chipDefs = [["all", "Todos los horarios"], ...Object.entries(H).map(([k, v]) => [k, `${v.t} ${v.s}`])];
+  $("chips").innerHTML = chipDefs.map(([k, l]) => `<button data-h="${k}" aria-pressed="${hf === k}">${l}</button>`).join("");
+
+  let rows = act.filter(a => hf === "all" || a.horario === hf);
+  if (q) rows = rows.filter(a => (a.nombre + " " + (a.tutor || "")).toLowerCase().includes(q));
+  if (tab === "pend") rows = rows.filter(a => !p[a.id]);
+  if (tab === "ok") rows = rows.filter(a => p[a.id]);
+  rows.sort((a, b) => a.horario.localeCompare(b.horario) || a.nombre.localeCompare(b.nombre, "es"));
+
+  if (!rows.length) {
+    $("list").innerHTML = `<li class="empty">${!act.length ? "Todavía no hay alumnos. Toca “Agregar alumno” o “Pegar lista desde Excel”." : tab === "pend" ? "Nadie pendiente con este filtro." : tab === "ok" ? "Todavía no hay pagos con este filtro." : "No hay alumnos con este filtro."}</li>`;
+    return;
+  }
+  $("list").innerHTML = rows.map(a => {
+    const pg = p[a.id];
+    const qn = a.ciclo === "quincenal" ? '<span class="q">15 a 15</span>' : "";
+    let linea = `${hor(a.horario).t} ${hor(a.horario).s}${a.tutor ? ", " + esc(a.tutor) : ""}`;
+    if (!pg) linea += r[a.id] ? ` · <span class="rec done">recordado hace ${dias(r[a.id])} d</span>` : ` · <span class="rec">sin recordar</span>`;
+    else if (pg.reciboEnviado) linea += ` · recibo enviado`;
+    const acciones = pg
+      ? `<button class="paid" data-recibo="${a.id}">Recibo</button>`
+      : `${a.tel ? `<a class="wa" href="${waURL(a, textoRecordatorio(a))}" target="_blank" rel="noopener" data-rec="${a.id}" aria-label="Recordar por WhatsApp a ${esc(a.nombre)}">${waIcon}</a>` : ""}
+         ${a.correo ? `<a class="mail" href="${mailURL(a, "Recordatorio de pago – Laguna Swim", textoRecordatorio(a))}" data-rec="${a.id}" aria-label="Recordar por correo a ${esc(a.nombre)}">✉︎</a>` : ""}
+         <button class="cobrar" data-pay="${a.id}">Cobrar</button>`;
+    return `<li class="row"><button class="who" data-edit="${a.id}"><b>${esc(a.nombre)}${qn}</b><span>${linea}</span></button><div class="act">${acciones}</div></li>`;
+  }).join("");
+}
+
+function marcarRecordado(id) { R.child(`recordatorios/${mes}/${id}`).set(hoy()); }
+
+/* ---------- Cobrar ---------- */
+let payId = null;
+function reglaTxt() {
+  const d = Number(($("pFecha").value || "").slice(8));
+  const aplica = d >= 15 && d <= 27;
+  $("pRuleTxt").textContent = aplica ? `Pagó el día ${d}: por la regla del 27 va en ciclo 15 a 15.` : "Registrar en ciclo 15 a 15.";
+  return aplica;
+}
+function openPago(id) {
+  payId = id;
+  const a = st.alumnos[id], pg = pm()[id];
+  $("pNombre").textContent = a.nombre;
+  $("pInfo").textContent = `${hor(a.horario).t} ${hor(a.horario).s}, ${mesLabel(mes)}`;
+  $("pFecha").value = pg ? pg.fecha : (hoy().startsWith(mes) ? hoy() : `${mes}-01`);
+  $("pMonto").value = pg ? pg.monto : hor(a.horario).c;
+  $("pMetodo").value = pg ? pg.metodo : "Playtomic";
+  const aplica = reglaTxt();
+  $("pQuin").checked = a.ciclo === "quincenal" || (!pg && aplica);
+  $("pQuitar").hidden = !pg;
+  $("dPago").showModal();
+}
+$("pFecha").addEventListener("change", () => { if (reglaTxt()) $("pQuin").checked = true; });
+$("fPago").addEventListener("submit", async () => {
+  const id = payId, prev = pm()[id];
+  let folio = prev && prev.folio;
+  if (!folio) {
+    const t = await R.child("folio").transaction(n => (n || 0) + 1);
+    folio = `LS-${mes.replace("-", "")}-${pad(t.snapshot.val()).padStart(4, "0")}`;
+  }
+  const pg = { fecha: $("pFecha").value, metodo: $("pMetodo").value, monto: Number($("pMonto").value), folio, reciboEnviado: !!(prev && prev.reciboEnviado) };
+  const ciclo = $("pQuin").checked ? "quincenal" : "mensual";
+  await R.update({ [`pagos/${mes}/${id}`]: pg, [`alumnos/${id}/ciclo`]: ciclo });
+  openRecibo(id);
+});
+$("pQuitar").addEventListener("click", () => {
+  if (confirm("¿Quitar este pago? El alumno vuelve a pendientes.")) { R.child(`pagos/${mes}/${payId}`).remove(); $("dPago").close(); }
+});
+
+/* ---------- Recibo ---------- */
+let recId = null;
+function openRecibo(id) {
+  recId = id;
+  const a = st.alumnos[id], pg = pm()[id];
+  if (!a || !pg) return;
+  const txt = textoRecibo(a, pg);
+  $("rTexto").textContent = txt;
+  $("rNota").textContent = pg.reciboEnviado ? "Este recibo ya se envió. Puedes mandarlo otra vez." : `Mándaselo a ${a.tutor || nombrePila(a)}.`;
+  $("rWa").hidden = !a.tel; $("rWa").href = waURL(a, txt);
+  $("rMail").hidden = !a.correo; $("rMail").href = mailURL(a, `Recibo ${pg.folio} – Laguna Swim`, txt);
+  if (!$("dRecibo").open) $("dRecibo").showModal();
+}
+const enviado = () => R.child(`pagos/${mes}/${recId}/reciboEnviado`).set(true);
+$("rWa").addEventListener("click", enviado);
+$("rMail").addEventListener("click", enviado);
+$("rCopiar").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("rTexto").textContent); $("rCopiar").textContent = "Copiado"; setTimeout(() => $("rCopiar").textContent = "Copiar", 1500); } catch (e) {}
+});
+
+/* ---------- Recordar uno por uno ---------- */
+let colaIds = [], qi = 0;
+function mostrarCola() {
+  while (qi < colaIds.length && pm()[colaIds[qi]]) qi++;
+  if (qi >= colaIds.length) { $("dRec").close(); return; }
+  const a = { id: colaIds[qi], ...st.alumnos[colaIds[qi]] }, r = rm()[a.id];
+  const txt = textoRecordatorio(a);
+  $("qNombre").textContent = a.nombre;
+  $("qInfo").textContent = `${qi + 1} de ${colaIds.length} · ${hor(a.horario).t} ${hor(a.horario).s} · ${r ? "último recordatorio hace " + dias(r) + " días" : "sin recordar este mes"}${!a.tel && !a.correo ? " · no tiene WhatsApp ni correo, agrégalos en su ficha" : ""}`;
+  $("qTexto").textContent = txt;
+  $("qWa").hidden = !a.tel; $("qWa").href = waURL(a, txt);
+  $("qMail").hidden = !a.correo; $("qMail").href = mailURL(a, "Recordatorio de pago – Laguna Swim", txt);
+  $("qSig").textContent = qi + 1 < colaIds.length ? "Siguiente" : "Terminar";
+}
+function recActual() { return colaIds[qi]; }
+$("qWa").addEventListener("click", () => { marcarRecordado(recActual()); setTimeout(() => { qi++; mostrarCola(); }, 400); });
+$("qMail").addEventListener("click", () => { marcarRecordado(recActual()); setTimeout(() => { qi++; mostrarCola(); }, 400); });
+$("qSig").addEventListener("click", () => { qi++; mostrarCola(); });
+$("qPago").addEventListener("click", () => { const id = recActual(); $("dRec").close(); openPago(id); });
+
+/* ---------- Alumno ---------- */
+let editId = null;
+const opcionesH = Object.entries(H).map(([k, v]) => `<option value="${k}">${v.t} ${v.s} (${money(v.c)})</option>`).join("");
+$("aHorario").innerHTML = opcionesH; $("gHorario").innerHTML = opcionesH;
+function openAlumno(id) {
+  editId = id;
+  const a = id ? st.alumnos[id] : { nombre: "", tutor: "", tel: "", correo: "", horario: "20", ciclo: "mensual" };
+  $("aTitulo").textContent = id ? "Editar alumno" : "Agregar alumno";
+  $("aNombre").value = a.nombre || ""; $("aTutor").value = a.tutor || ""; $("aTel").value = a.tel || ""; $("aCorreo").value = a.correo || "";
+  $("aHorario").value = a.horario || "20"; $("aCiclo").value = a.ciclo || "mensual";
+  $("aBaja").hidden = !id;
+  $("dAlumno").showModal();
+}
+$("fAlumno").addEventListener("submit", () => {
+  const data = { nombre: $("aNombre").value.trim(), tutor: $("aTutor").value.trim(), tel: $("aTel").value.trim(), correo: $("aCorreo").value.trim(), horario: $("aHorario").value, ciclo: $("aCiclo").value, activo: true };
+  if (!data.nombre) return;
+  if (editId) R.child("alumnos/" + editId).update(data); else R.child("alumnos").push(data);
+});
+$("aBaja").addEventListener("click", () => {
+  const a = st.alumnos[editId];
+  if (confirm(`¿Dar de baja a ${a.nombre}? Deja de contar en pagos y pendientes.`)) { R.child(`alumnos/${editId}/activo`).set(false); $("dAlumno").close(); }
+});
+
+/* ---------- Pegar lista ---------- */
+$("pegar").addEventListener("click", () => { $("gTexto").value = ""; $("dPegar").showModal(); });
+$("fPegar").addEventListener("submit", () => {
+  const upd = {}; let n = 0;
+  $("gTexto").value.split(/\r?\n/).forEach(l => {
+    const c = l.split(/\t|;|,(?=\s*\S)/).map(x => x.trim());
+    if (!c[0]) return;
+    const correo = c.find(x => /@/.test(x)) || "";
+    const tel = c.find(x => /\d{7,}/.test(x.replace(/\D/g, ""))) || "";
+    const tutor = c[1] && c[1] !== tel && c[1] !== correo ? c[1] : "";
+    upd[R.child("alumnos").push().key] = { nombre: c[0], tutor, tel, correo, horario: $("gHorario").value, ciclo: "mensual", activo: true };
+    n++;
+  });
+  if (n) R.child("alumnos").update(upd);
+});
+
+/* ---------- Descargar ---------- */
+$("csv").addEventListener("click", () => {
+  const p = pm(), r = rm();
+  const filas = [["Nadador","Tutor","WhatsApp","Correo","Horario","Ciclo","Estado","Fecha pago","Monto","Método","Folio","Último recordatorio"]];
+  activos().sort((a, b) => a.horario.localeCompare(b.horario) || a.nombre.localeCompare(b.nombre, "es")).forEach(a => {
+    const pg = p[a.id];
+    filas.push([a.nombre, a.tutor, a.tel, a.correo, `${hor(a.horario).t} ${hor(a.horario).s}`, a.ciclo === "quincenal" ? "15 a 15" : "Mes completo",
+      pg ? "Pagado" : "Pendiente", pg ? pg.fecha : "", pg ? pg.monto : "", pg ? pg.metodo : "", pg ? pg.folio : "", r[a.id] || ""]);
+  });
+  const csv = "\ufeff" + filas.map(f => f.map(x => `"${String(x ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  const el = document.createElement("a"); el.href = url; el.download = `pagos-${mes}.csv`; el.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+});
+
+/* ---------- Eventos ---------- */
+document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
+document.querySelectorAll("dialog").forEach(d => d.addEventListener("click", e => { if (e.target === d) d.close(); }));
+document.querySelector(".tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { tab = b.dataset.tab; render(); } });
+$("chips").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { hf = b.dataset.h; render(); } });
+$("buscar").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); render(); });
+$("alerta").addEventListener("click", e => {
+  if (e.target.id !== "recordar") return;
+  colaIds = cola().map(a => a.id); qi = 0; mostrarCola(); $("dRec").showModal();
+});
+$("list").addEventListener("click", e => {
+  const rec = e.target.closest("[data-rec]"); if (rec) return marcarRecordado(rec.dataset.rec);
+  const pay = e.target.closest("[data-pay]"); if (pay) return openPago(pay.dataset.pay);
+  const rb = e.target.closest("[data-recibo]"); if (rb) return openRecibo(rb.dataset.recibo);
+  const ed = e.target.closest("[data-edit]"); if (ed) return openAlumno(ed.dataset.edit);
+});
+$("prev").addEventListener("click", () => shiftMes(-1));
+$("next").addEventListener("click", () => shiftMes(1));
+$("add").addEventListener("click", () => openAlumno(null));
+
+</script>
+</body>
+</html>
