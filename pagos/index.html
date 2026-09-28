@@ -170,6 +170,10 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
 .flujo{display:grid;gap:4px;background:var(--bg);border-radius:14px;padding:12px;margin:0 0 16px;font-variant-numeric:tabular-nums}
 .flujo div{display:flex;justify-content:space-between;gap:10px}
 .flujo .fin{font-weight:800;border-top:1px solid var(--line);padding-top:6px;margin-top:2px}
+.tabs.cinco{grid-template-columns:repeat(5,1fr)}
+.tabs.cinco button{font-size:.85rem;padding:9px 2px}
+.react{border:0;border-radius:12px;background:var(--surf2);padding:0 12px;height:40px;font-weight:600;font-size:.88rem}
+.todos{display:block;width:100%;border:0;border-radius:12px;background:var(--aqua);color:var(--btnInk);font-weight:700;padding:12px;margin:10px 0 4px}
 .tag{display:inline-block;font-size:.72rem;font-weight:600;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px;background:var(--aquaSoft);color:var(--aqua)}
 </style>
 </head>
@@ -218,7 +222,7 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
 
   <div class="alert" id="alerta"></div>
 
-  <div class="tabs cuatro" role="group" aria-label="Filtrar por estado" id="tabs"></div>
+  <div class="tabs cinco" role="group" aria-label="Filtrar por estado" id="tabs"></div>
   <div class="chips" role="group" aria-label="Filtrar por horario" id="chips"></div>
   <label class="f" style="margin:8px 0 0"><input type="search" id="buscar" placeholder="Buscar nadador o tutor"></label>
 
@@ -323,10 +327,11 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
 
 <dialog id="dTextos"><form class="sheet" id="fTextos">
   <h2>Textos de mensajes</h2>
-  <p class="note">Se llenan solos con: {tutor} {nadador} {cuota} {vence} {horario} {sede} {firma}</p>
+  <p class="note">Se llenan solos con: {tutor} {nadador} {cuota} {vence} {horario} {sede} {horarios} {firma}</p>
   <label class="f">Por vencer<textarea id="tPor"></textarea></label>
   <label class="f">Vencido<textarea id="tVenc"></textarea></label>
   <label class="f">Te extrañamos<textarea id="tAus"></textarea></label>
+  <label class="f">Invitación a ex alumnos (usa {horarios} para listar todos tus horarios)<textarea id="tInv"></textarea></label>
   <div class="grid2">
     <label class="f">Avisar cuántos días antes<input type="number" id="tAviso" min="0" max="15"></label>
     <label class="f">"Te extrañamos" después de (días vencido)<input type="number" id="tAusDias" min="7" max="120"></label>
@@ -391,6 +396,8 @@ table.t tr.tot td{font-weight:800;border-bottom:0}
   <h2>Pegar lista</h2>
   <p class="note">Copia de tu Excel: nombre, horario, tutor, WhatsApp y correo (las que tengas). Si la fila trae la hora (7:00, 8:00), el nadador se va a ese horario; si no, al que elijas aquí.</p>
   <label class="f">Horario si la fila no trae hora<select id="gHorario"></select></label>
+  <label class="rule"><input type="checkbox" id="gEx"><span>Son ex alumnos: van a la pestaña "Ex alumnos" para escribirles de vez en cuando. No cuentan en pagos.</span></label>
+  <label class="f">Nota para reconocerlos (opcional)<input id="gNota" placeholder="Ej. Lista de mayo 2026" autocomplete="off"></label>
   <label class="f">Lista<textarea id="gTexto" placeholder="Mateo Garza	Laura	8711234567	laura@correo.com"></textarea></label>
   <div class="btns">
     <button type="submit" class="primary">Agregar alumnos</button>
@@ -550,6 +557,7 @@ ${FIRMA} · ${TEL_FIRMA}`;
 const TEXTOS_INICIO = {
   por: "¡Hola {tutor}! 🏊 Te escribe {firma}. El mes de natación de {nadador} termina el {vence}. Para que siga sin pausa, la mensualidad es de {cuota}. ¡Que no se le olvide nadar! 😄 Cualquier duda aquí estoy.",
   venc: "¡Hola {tutor}! 🏊 Te escribe {firma}. El mes de {nadador} terminó {vence} y sigue pendiente la mensualidad de {cuota}. ¿Me ayudas a ponerte al corriente? ¡Te esperamos en la alberca! 💪",
+  inv: "¡Hola {tutor}! 🏊 Soy {firma}, de Laguna Swim. Hace tiempo que {nadador} no se da la vuelta por la alberca y aquí se le extraña. Te cuento que tenemos estos horarios: {horarios}. ¿Te aparto su lugar? ¡Te espero en la alberca!",
   aus: "¡Hola {tutor}! 🏊 Hace tiempo que {nadador} no se da la vuelta por la alberca, ¡se le extraña! Te espero en el horario de {horario} en {sede}, su lugar sigue apartado. Cuando quieras regresamos. {firma}",
   aviso: 5, ausDias: 30
 };
@@ -582,14 +590,21 @@ function lineaEstado(e) {
   if (e.k === "venc") return `<span class="venc">venció hace ${-e.d} d</span>`;
   return `<span class="venc">sin venir desde ${fechaCorta(e.v)}</span>`;
 }
-const plantillaDe = e => e.k === "por" || e.k === "aldia" ? "por" : e.k === "aus" ? "aus" : "venc";
+const plantillaDe = (e, a) => a && a.activo === false ? "inv" : e.k === "por" || e.k === "aldia" ? "por" : e.k === "aus" ? "aus" : "venc";
 function llenarTexto(tipo, a) {
   const e = estado(a), h = hor(a.horario);
   const venceTxt = e.v ? (tipo === "venc" ? `el ${fechaDia(e.v)}` : fechaDia(e.v)) : (tipo === "venc" ? "hace unos días" : "pronto");
   return T()[tipo]
     .replaceAll("{tutor}", a.tutor || nombrePila(a)).replaceAll("{nadador}", a.nombre)
     .replaceAll("{cuota}", money(h.c)).replaceAll("{vence}", venceTxt)
-    .replaceAll("{horario}", h.t).replaceAll("{sede}", h.s).replaceAll("{firma}", FIRMA);
+    .replaceAll("{horario}", h.t).replaceAll("{sede}", h.s).replaceAll("{firma}", FIRMA)
+    .replaceAll("{horarios}", listaHorarios());
+}
+// "7:00 am, 7:00 pm y 8:00 pm en el Tec y 5:00 pm en la Deportiva"
+function listaHorarios() {
+  const por = {}; horOrden().forEach(([, h]) => (por[h.s] ||= []).push(h.t));
+  const y = arr => arr.length > 1 ? arr.slice(0, -1).join(", ") + " y " + arr[arr.length - 1] : arr[0] || "";
+  return y(Object.entries(por).map(([sd, ts]) => `${y(ts)} en ${/^(tec|deportiva)$/i.test(sd) ? "la " + sd : sd}`.replace("la Tec", "el Tec")));
 }
 const ultimoAviso = id => (st.avisos || {})[id] || null;
 function marcarRecordado(id) { R.child(`avisos/${id}`).set(hoy()); }
@@ -645,8 +660,10 @@ function render() {
 
   const est = Object.fromEntries(act.map(a => [a.id, estado(a)]));
   const grupos = { cobrar: a => ["por", "venc", "sin"].includes(est[a.id].k), aldia: a => est[a.id].k === "aldia", aus: a => est[a.id].k === "aus", all: () => true };
-  const nombresTab = { cobrar: "Cobrar", aldia: "Al día", aus: "Te extrañamos", all: "Todos" };
-  $("tabs").innerHTML = Object.keys(grupos).map(k => `<button data-tab="${k}" aria-pressed="${tab === k}">${nombresTab[k]}<small>${act.filter(grupos[k]).length}</small></button>`).join("");
+  const nombresTab = { cobrar: "Cobrar", aldia: "Al día", aus: "Te extrañamos", all: "Todos", ex: "Ex alumnos" };
+  const exs = exAlumnos();
+  $("tabs").innerHTML = Object.keys(nombresTab).map(k => `<button data-tab="${k}" aria-pressed="${tab === k}">${nombresTab[k]}<small>${k === "ex" ? exs.length : act.filter(grupos[k]).length}</small></button>`).join("");
+  if (tab === "ex") return pintarEx(exs);
   const chipDefs = [["all", "Todos los horarios"], ...horOrden().map(([k, v]) => [k, `${v.t} ${v.s}`])];
   $("chips").innerHTML = chipDefs.map(([k, l]) => `<button data-h="${k}" aria-pressed="${hf === k}">${l}</button>`).join("");
 
@@ -675,6 +692,24 @@ function render() {
   }).join("");
 }
 
+
+/* ---------- Ex alumnos: para escribirles de vez en cuando ---------- */
+const exAlumnos = () => Object.entries(st.alumnos || {}).map(([id, a]) => ({ id, ...a })).filter(a => a.activo === false);
+const colaEx = () => exAlumnos().filter(a => !ultimoAviso(a.id) || dias(ultimoAviso(a.id)) >= 30)
+  .sort((a, b) => (ultimoAviso(a.id) || "").localeCompare(ultimoAviso(b.id) || "") || a.nombre.localeCompare(b.nombre, "es"));
+function pintarEx(exs) {
+  let rows = exs;
+  if (q) rows = rows.filter(a => (a.nombre + " " + (a.tutor || "") + " " + (a.nota || "")).toLowerCase().includes(q));
+  rows.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+  const pend = colaEx().length;
+  const cab = `<li>${pend ? `<button class="todos" id="exTodos">Escribirles uno por uno (${pend})</button><p class="ayuda" style="margin:4px 0 8px">Solo los que no tienen mensaje en los últimos 30 días.</p>` : exs.length ? '<p class="ayuda" style="margin:10px 0">Ya les escribiste a todos en los últimos 30 días.</p>' : ""}</li>`;
+  if (!rows.length) { $("list").innerHTML = cab + `<li class="empty">${exs.length ? "Nadie con esa búsqueda." : "Aún no hay ex alumnos. Toca “Pegar lista desde Excel” y marca “Son ex alumnos”."}</li>`; return; }
+  $("list").innerHTML = cab + rows.map(a => {
+    const av = ultimoAviso(a.id), ms = mesesPagados(a.id);
+    const linea = [a.nota ? esc(a.nota) : "", ms.length ? `último pago ${mesCorto(ms[ms.length - 1])}` : "", a.tel || a.correo ? "" : "sin teléfono", av ? `mensaje hace ${dias(av)} d` : "sin mensaje"].filter(Boolean).join(" · ");
+    return `<li class="row"><button class="who" data-edit="${a.id}"><b>${esc(a.nombre)}</b><span>${linea}</span></button><div class="act"><button class="msg" data-msg="${a.id}" aria-label="Mandar mensaje a ${esc(a.nombre)}">${waIcon}</button><button class="react" data-react="${a.id}">Regresó</button></div></li>`;
+  }).join("");
+}
 
 /* ---------- Cobrar ---------- */
 let payId = null;
@@ -743,7 +778,7 @@ $("rCopiar").addEventListener("click", async () => {
 
 /* ---------- Mensajes: uno por uno o a un solo nadador ---------- */
 let colaIds = [], qi = 0, qTipo = "venc", enCola = false;
-const PLANT = { por: "Por vencer", venc: "Vencido", aus: "Te extrañamos" };
+const PLANT = { por: "Por vencer", venc: "Vencido", aus: "Te extrañamos", inv: "Invitación" };
 function actualQ() { return colaIds[qi]; }
 function pintarMensaje(tipo) {
   const a = { id: actualQ(), ...st.alumnos[actualQ()] };
@@ -757,15 +792,16 @@ function links() {
   $("qWa").hidden = false; $("qWa").href = waURL(a, txt); // sin número, WhatsApp te deja elegir el chat
   $("qMail").hidden = !a.correo; $("qMail").href = mailURL(a, qTipo === "aus" ? "Te extrañamos en la alberca – Laguna Swim" : "Mensualidad de natación – Laguna Swim", txt);
 }
+let colaModo = "cobro";
 function mostrarMensaje() {
-  if (enCola) while (qi < colaIds.length && !["por", "venc", "sin"].includes(estado({ id: colaIds[qi], ...st.alumnos[colaIds[qi]] }).k)) qi++;
+  if (enCola && colaModo === "cobro") while (qi < colaIds.length && !["por", "venc", "sin"].includes(estado({ id: colaIds[qi], ...st.alumnos[colaIds[qi]] }).k)) qi++;
   if (qi >= colaIds.length) { $("dRec").close(); return; }
   const a = { id: actualQ(), ...st.alumnos[actualQ()] }, e = estado(a), av = ultimoAviso(a.id);
   $("qNombre").textContent = a.nombre;
-  $("qInfo").innerHTML = `${enCola ? `${qi + 1} de ${colaIds.length} · ` : ""}${hor(a.horario).t} ${hor(a.horario).s} · ${lineaEstado(e)} · ${av ? "último aviso hace " + dias(av) + " d" : "sin avisar"}${!a.tel && !a.correo ? " · sin número guardado: WhatsApp te deja elegir el chat" : ""}`;
+  $("qInfo").innerHTML = `${enCola ? `${qi + 1} de ${colaIds.length} · ` : ""}${a.activo === false ? `ex alumno${a.nota ? " · " + esc(a.nota) : ""}` : `${hor(a.horario).t} ${hor(a.horario).s} · ${lineaEstado(e)}`} · ${av ? "último aviso hace " + dias(av) + " d" : "sin avisar"}${!a.tel && !a.correo ? " · sin número guardado: WhatsApp te deja elegir el chat" : ""}`;
   $("qSig").hidden = !enCola;
   $("qSig").textContent = qi + 1 < colaIds.length ? "Siguiente" : "Terminar";
-  pintarMensaje(plantillaDe(e));
+  pintarMensaje(plantillaDe(e, a));
   if (!$("dRec").open) $("dRec").showModal();
 }
 function abrirMensaje(id) { enCola = false; colaIds = [id]; qi = 0; mostrarMensaje(); }
@@ -788,17 +824,17 @@ $("qPago").addEventListener("click", () => { const id = actualQ(); $("dRec").clo
 /* ---------- Textos editables ---------- */
 $("textos").addEventListener("click", () => {
   const t = T();
-  $("tPor").value = t.por; $("tVenc").value = t.venc; $("tAus").value = t.aus; $("tAviso").value = t.aviso; $("tAusDias").value = t.ausDias;
+  $("tPor").value = t.por; $("tVenc").value = t.venc; $("tAus").value = t.aus; $("tInv").value = t.inv; $("tAviso").value = t.aviso; $("tAusDias").value = t.ausDias;
   $("dTextos").showModal();
 });
 $("fTextos").addEventListener("submit", e => {
   e.preventDefault();
-  R.child("textos").set({ por: $("tPor").value.trim(), venc: $("tVenc").value.trim(), aus: $("tAus").value.trim(),
+  R.child("textos").set({ por: $("tPor").value.trim(), venc: $("tVenc").value.trim(), aus: $("tAus").value.trim(), inv: $("tInv").value.trim(),
     aviso: Math.max(0, Number($("tAviso").value) || 5), ausDias: Math.max(7, Number($("tAusDias").value) || 30) });
   $("dTextos").close();
 });
 $("tRestaurar").addEventListener("click", () => {
-  $("tPor").value = TEXTOS_INICIO.por; $("tVenc").value = TEXTOS_INICIO.venc; $("tAus").value = TEXTOS_INICIO.aus;
+  $("tPor").value = TEXTOS_INICIO.por; $("tVenc").value = TEXTOS_INICIO.venc; $("tAus").value = TEXTOS_INICIO.aus; $("tInv").value = TEXTOS_INICIO.inv;
   $("tAviso").value = TEXTOS_INICIO.aviso; $("tAusDias").value = TEXTOS_INICIO.ausDias;
 });
 
@@ -813,7 +849,7 @@ function openAlumno(id) {
   $("aTitulo").textContent = id ? "Editar alumno" : "Agregar alumno";
   $("aNombre").value = a.nombre || ""; $("aTutor").value = a.tutor || ""; $("aTel").value = a.tel || ""; $("aCorreo").value = a.correo || "";
   $("aHorario").value = a.horario; $("aCiclo").value = a.ciclo || "mensual";
-  $("aBaja").hidden = !id; $("aMsg").hidden = !id; $("aHistBox").hidden = !id;
+  $("aBaja").hidden = !id; $("aBaja").textContent = id && a.activo === false ? "Regresó (reactivar)" : "Dar de baja"; $("aMsg").hidden = !id; $("aHistBox").hidden = !id;
   if (id) {
     const e = estado({ id, ...a });
     $("aVence").innerHTML = e.v ? `Pagado hasta el ${fechaDia(e.v)} · ${lineaEstado(e)}` : lineaEstado(e);
@@ -823,18 +859,19 @@ function openAlumno(id) {
   $("dAlumno").showModal();
 }
 $("fAlumno").addEventListener("submit", () => {
-  const data = { nombre: $("aNombre").value.trim(), tutor: $("aTutor").value.trim(), tel: $("aTel").value.trim(), correo: $("aCorreo").value.trim(), horario: $("aHorario").value, ciclo: $("aCiclo").value, activo: true };
+  const data = { nombre: $("aNombre").value.trim(), tutor: $("aTutor").value.trim(), tel: $("aTel").value.trim(), correo: $("aCorreo").value.trim(), horario: $("aHorario").value, ciclo: $("aCiclo").value };
   if (!data.nombre) return;
-  if (editId) R.child("alumnos/" + editId).update(data); else R.child("alumnos").push(data);
+  if (editId) R.child("alumnos/" + editId).update(data); else R.child("alumnos").push({ ...data, activo: tab !== "ex" });
 });
 $("aMsg").addEventListener("click", () => { const id = editId; $("dAlumno").close(); abrirMensaje(id); });
 $("aBaja").addEventListener("click", () => {
   const a = st.alumnos[editId];
-  if (confirm(`¿Dar de baja a ${a.nombre}? Deja de contar en pagos y pendientes.`)) { R.child(`alumnos/${editId}/activo`).set(false); $("dAlumno").close(); }
+  if (a.activo === false) { if (confirm(`¿${a.nombre} regresó? Vuelve a tu lista de alumnos activos.`)) { R.child(`alumnos/${editId}/activo`).set(true); $("dAlumno").close(); } return; }
+  if (confirm(`¿Dar de baja a ${a.nombre}? Pasa a "Ex alumnos": deja de contar en pagos, pero le puedes seguir escribiendo.`)) { R.child(`alumnos/${editId}/activo`).set(false); $("dAlumno").close(); }
 });
 
 /* ---------- Pegar lista ---------- */
-$("pegar").addEventListener("click", () => { llenarSelects(); $("gTexto").value = ""; $("dPegar").showModal(); });
+$("pegar").addEventListener("click", () => { llenarSelects(); $("gTexto").value = ""; $("gEx").checked = tab === "ex"; $("gNota").value = ""; $("dPegar").showModal(); });
 // Reconoce una hora escrita en la fila ("7:00", "8 pm", "19:00") y la liga al horario que exista
 function horarioDeTexto(x) {
   const m = String(x).toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$/);
@@ -853,7 +890,10 @@ $("fPegar").addEventListener("submit", async e => {
     try { await importarDatos(JSON.parse(txt)); } catch (err) { alert("Eso parece el archivo de importar pero está incompleto. Mejor usa el botón Importar archivo."); }
     return;
   }
-  const upd = {}; let n = 0, sinHora = 0;
+  const upd = {}; let n = 0, sinHora = 0, rep = 0;
+  const ex = $("gEx").checked, nota = $("gNota").value.trim();
+  const norm = x => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s*\([^)]*\)/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  const ya = new Set(Object.values(st.alumnos || {}).map(a => norm(a.nombre || "")));
   txt.split(/\r?\n/).forEach(l => {
     const c = l.split(/\t|;|,(?=\s*\S)/).map(x => x.trim()).filter(x => x !== "");
     if (/^\d+$/.test(c[0] || "")) c.shift();   // quita el "No." del Excel
@@ -864,13 +904,16 @@ $("fPegar").addEventListener("submit", async e => {
     const horario = horaCelda ? horarioDeTexto(horaCelda) : $("gHorario").value;
     if (!horaCelda) sinHora++;
     const tutor = c.slice(1).find(x => x !== tel && x !== correo && x !== horaCelda && !/\d/.test(x) && !/contactar|pendiente|pagad|recibo|estado|horario/i.test(x)) || "";
-    upd[R.child("alumnos").push().key] = { nombre: c[0], tutor, tel, correo, horario, ciclo: "mensual", activo: true };
+    if (ya.has(norm(c[0]))) { rep++; return; }   // ya está en el sistema (activo o ex): no se duplica
+    ya.add(norm(c[0]));
+    upd[R.child("alumnos").push().key] = { nombre: c[0], tutor, tel, correo, horario, ciclo: "mensual", activo: !ex, ...(nota ? { nota } : {}) };
     n++;
   });
-  if (!n) return;
+  if (!n) { alert(rep ? `Todos (${rep}) ya estaban en el sistema. No se agregó nada.` : "No encontré nombres en la lista."); return; }
   if (n > 150 && !confirm(`Se van a crear ${n} alumnos. ¿Seguro que es la lista correcta?`)) return;
   await R.child("alumnos").update(upd);
-  alert(`Listo: ${n} alumnos agregados.${sinHora ? ` ${sinHora} sin hora en la fila quedaron en el horario elegido.` : ""}`);
+  if (ex) { tab = "ex"; render(); }
+  alert(`Listo: ${n} ${ex ? "ex alumnos" : "alumnos"} agregados.${rep ? ` ${rep} ya estaban en el sistema y no se duplicaron.` : ""}${!ex && sinHora ? ` ${sinHora} sin hora en la fila quedaron en el horario elegido.` : ""}`);
 });
 
 /* ---------- Descargar ---------- */
@@ -897,10 +940,13 @@ $("chips").addEventListener("click", e => { const b = e.target.closest("button")
 $("buscar").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); render(); });
 $("alerta").addEventListener("click", e => {
   if (e.target.id !== "recordar") return;
-  colaIds = cola().map(a => a.id); qi = 0; enCola = true; mostrarMensaje();
+  colaIds = cola().map(a => a.id); qi = 0; enCola = true; colaModo = "cobro"; mostrarMensaje();
 });
 $("list").addEventListener("click", e => {
   const ms = e.target.closest("[data-msg]"); if (ms) return abrirMensaje(ms.dataset.msg);
+  if (e.target.id === "exTodos") { colaIds = colaEx().map(a => a.id); qi = 0; enCola = true; colaModo = "ex"; return mostrarMensaje(); }
+  const rc = e.target.closest("[data-react]");
+  if (rc) { const a = st.alumnos[rc.dataset.react]; if (confirm(`¿${a.nombre} regresó? Vuelve a tu lista de alumnos activos.`)) { R.child(`alumnos/${rc.dataset.react}/activo`).set(true); } return; }
   const pay = e.target.closest("[data-pay]"); if (pay) return openPago(pay.dataset.pay);
   const rb = e.target.closest("[data-recibo]"); if (rb) return openRecibo(rb.dataset.recibo, rb.dataset.k);
   const ed = e.target.closest("[data-edit]"); if (ed) return openAlumno(ed.dataset.edit);
