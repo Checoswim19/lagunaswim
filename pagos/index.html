@@ -1,0 +1,1343 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Pagos · Laguna Swim</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e8f3f4; --surf:#ffffff; --surf2:#d6eaec; --ink:#0b2a3a; --mute:#557080; --line:#c3dcdf;
+  --aqua:#08899a; --aquaSoft:#cdeef1; --coral:#d9493a; --coralSoft:#fbe2dd; --btnInk:#ffffff;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#051a28; --surf:#0b2738; --surf2:#123447; --ink:#e6f3f5; --mute:#8eaab6; --line:#1d4358;
+    --aqua:#45cbd8; --aquaSoft:#0f3c48; --coral:#ff7b67; --coralSoft:#3e201d; --btnInk:#051a28;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#051a28; --surf:#0b2738; --surf2:#123447; --ink:#e6f3f5; --mute:#8eaab6; --line:#1d4358;
+  --aqua:#45cbd8; --aquaSoft:#0f3c48; --coral:#ff7b67; --coralSoft:#3e201d; --btnInk:#051a28;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding:16px 18px 110px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--aqua);outline-offset:2px;border-radius:8px}
+
+.demo{font-size:.82rem;color:var(--mute);background:var(--surf2);border-radius:12px;padding:8px 12px;margin-bottom:18px}
+.demo b{color:var(--ink)}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{font-weight:600;font-size:.95rem;color:var(--mute)}
+.month{display:flex;align-items:center;gap:4px}
+.month button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surf);font-size:1.1rem;line-height:1}
+.month span{min-width:128px;text-align:center;font-weight:600;text-transform:capitalize}
+
+.hero{margin:22px 0 8px}
+.big{font-size:clamp(2.6rem,11vw,3.6rem);font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big small{font-size:.42em;font-weight:600;color:var(--mute);letter-spacing:0}
+.sub{color:var(--mute);margin-top:6px}
+
+/* La cuerda de carril: cada flotador es un nadador */
+.rope{position:relative;display:flex;flex-wrap:wrap;gap:5px;padding:14px 0 6px;margin:6px 0 4px}
+.float{width:18px;height:18px;border-radius:50%;background:var(--coral);
+  box-shadow:inset -3px -3px 0 rgba(0,0,0,.16);transition:background .35s}
+.float.ok{background:var(--aqua)}
+@media (prefers-reduced-motion:reduce){.float{transition:none}}
+.money{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 22px}
+.money div{background:var(--surf);border-radius:16px;padding:12px 14px}
+.money p{margin:0;font-size:.85rem;color:var(--mute)}
+.money strong{display:block;font-size:1.35rem;font-variant-numeric:tabular-nums}
+.money .in strong{color:var(--aqua)} .money .out strong{color:var(--coral)}
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surf2);border-radius:14px;padding:4px;gap:4px}
+.tabs button{border:0;background:none;padding:9px 4px;border-radius:10px;font-weight:600;color:var(--mute)}
+.tabs button[aria-pressed="true"]{background:var(--surf);color:var(--ink)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chips button{flex:none;border:1px solid var(--line);background:none;border-radius:999px;padding:6px 14px;font-size:.9rem}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+ul.list{list-style:none;margin:10px 0 0;padding:0}
+.row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.who{flex:1;min-width:0;background:none;border:0;text-align:left;padding:0}
+.who b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{display:block;font-size:.85rem;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q{display:inline-block;font-size:.72rem;font-weight:600;background:var(--surf2);color:var(--ink);border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px}
+.act{display:flex;gap:6px;flex:none}
+.wa{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--coralSoft);color:var(--coral);text-decoration:none}
+.wa svg{width:20px;height:20px}
+.cobrar{border:0;border-radius:12px;background:var(--ink);color:var(--bg);padding:0 14px;height:40px;font-weight:600}
+.paid{border:0;border-radius:12px;background:var(--aquaSoft);color:var(--aqua);padding:0 12px;height:40px;font-weight:600;font-size:.88rem}
+.empty{padding:34px 8px;text-align:center;color:var(--mute)}
+
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  border:0;border-radius:999px;background:var(--aqua);color:var(--btnInk);font-weight:700;padding:14px 24px;
+  box-shadow:0 8px 24px rgba(0,40,60,.25)}
+.foot{margin-top:28px;font-size:.82rem;color:var(--mute)}
+.foot button{background:none;border:0;color:var(--mute);text-decoration:underline;padding:0}
+
+dialog{border:0;padding:0;width:100%;max-width:560px;margin:auto auto 0;border-radius:22px 22px 0 0;
+  background:var(--surf);color:var(--ink);max-height:92vh}
+dialog::backdrop{background:rgba(2,16,26,.55)}
+.sheet{padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px))}
+.sheet h2{margin:0 0 2px;font-size:1.4rem;line-height:1.2}
+.sheet .note{margin:0 0 16px;color:var(--mute);font-size:.9rem}
+label.f{display:block;margin-bottom:12px;font-size:.88rem;color:var(--mute)}
+label.f input,label.f select{display:block;width:100%;margin-top:4px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:1rem}
+.rule{display:flex;gap:10px;align-items:flex-start;background:var(--aquaSoft);border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:.88rem}
+.rule input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--aqua);flex:none}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.btns button{flex:1 1 auto;border:0;border-radius:12px;padding:12px 14px;font-weight:600}
+.primary{background:var(--aqua);color:var(--btnInk)}
+.ghost{background:var(--surf2)}
+.danger{background:var(--coralSoft);color:var(--coral)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.hidden{display:none!important}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 18px}
+.card{width:100%;max-width:400px;background:var(--surf);border-radius:22px;padding:26px 22px}
+.card h1{margin:0 0 4px;font-size:1.8rem;line-height:1.1}
+.card p.lead{margin:0 0 20px;color:var(--mute)}
+.full{width:100%;border:0;border-radius:12px;padding:13px;font-weight:700;background:var(--aqua);color:var(--btnInk);margin-top:4px}
+.link{background:none;border:0;color:var(--aqua);font-weight:600;padding:8px 0;text-decoration:underline}
+.err{color:var(--coral);font-size:.9rem;min-height:1.3em;margin:6px 0 0}
+.tools{display:flex;align-items:center;gap:6px}
+.icon{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surf);display:grid;place-items:center;font-size:1rem}
+.sync{font-size:.78rem;color:var(--mute);margin:6px 0 0}
+.sync i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--coral);margin-right:6px}
+.sync.on i{background:var(--aqua)}
+.alert{display:flex;align-items:center;gap:12px;background:var(--coralSoft);border-radius:16px;padding:14px;margin:0 0 18px}
+.alert p{margin:0;flex:1;font-size:.95rem}
+.alert b{display:block;font-size:1.05rem}
+.alert button{border:0;border-radius:12px;background:var(--coral);color:#fff;font-weight:700;padding:11px 14px;flex:none}
+.alert.ok{background:var(--aquaSoft)}
+.who .rec{color:var(--coral)}
+.who .rec.done{color:var(--mute)}
+.mail{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--surf2);color:var(--ink);text-decoration:none;font-size:1.05rem}
+.recibo{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:14px;white-space:pre-wrap;font-size:.92rem;margin:0 0 14px}
+.btns a{flex:1 1 auto;border-radius:12px;padding:12px 14px;font-weight:600;text-align:center;text-decoration:none}
+.wabtn{background:#1f9e57;color:#fff}
+.mailbtn{background:var(--surf2);color:var(--ink)}
+textarea{display:block;width:100%;min-height:160px;margin-top:4px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font:inherit;font-size:.92rem}
+.por{color:#b7791f}.venc{color:var(--coral)}.aldia{color:var(--aqua)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .por{color:#f0b24a}}
+.tabs.cuatro{grid-template-columns:repeat(4,1fr)}
+.tabs button small{display:block;font-size:.75rem;font-weight:600;opacity:.8}
+.msg{width:40px;height:40px;border-radius:12px;border:0;display:grid;place-items:center;background:var(--coralSoft);color:var(--coral)}
+.msg svg{width:20px;height:20px}
+.plantillas{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.plantillas button{border:1px solid var(--line);background:none;border-radius:999px;padding:6px 12px;font-size:.88rem}
+.plantillas button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hist{list-style:none;margin:0 0 14px;padding:0;font-size:.9rem}
+.hist li{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hist li span{color:var(--mute)}
+.ayuda{font-size:.82rem;color:var(--mute);margin:-6px 0 12px}
+.linea{display:block;width:100%;border:1px solid var(--line);background:var(--surf);border-radius:14px;padding:12px;font-weight:600;margin:-8px 0 18px}
+.checks{display:grid;gap:6px;margin:0 0 12px}
+.checks label{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 12px}
+.checks input{width:20px;height:20px;accent-color:var(--aqua);flex:none}
+.checks span{flex:1}.checks small{color:var(--mute)}
+.gan{grid-column:1/-1;background:var(--surf);border-radius:16px;padding:12px 14px;font:inherit;color:inherit;display:flex!important;align-items:center;justify-content:space-between;gap:10px;border:0;text-align:left;width:100%;cursor:pointer}
+.gan strong{color:var(--ink)!important}
+.gan em{font-style:normal;font-size:.85rem;color:var(--mute);text-align:right}
+.desc{display:grid;grid-template-columns:1fr 100px 40px;gap:6px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.desc select{grid-column:1/-1;padding:9px 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:.9rem}
+.desc input{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:1rem;min-width:0}
+.desc button{border:0;border-radius:12px;background:var(--coralSoft);color:var(--coral);font-size:1.1rem}
+.queda{background:var(--aquaSoft);border-radius:12px;padding:10px 12px;margin:4px 0 12px;font-weight:600}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem;margin:0 0 16px;font-variant-numeric:tabular-nums}
+table.t th,table.t td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:right}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t th{color:var(--mute);font-weight:600}
+table.t tr.tot td{font-weight:800;border-bottom:0}
+.tscroll{overflow-x:auto}
+.flujo{display:grid;gap:4px;background:var(--bg);border-radius:14px;padding:12px;margin:0 0 16px;font-variant-numeric:tabular-nums}
+.flujo div{display:flex;justify-content:space-between;gap:10px}
+.flujo .fin{font-weight:800;border-top:1px solid var(--line);padding-top:6px;margin-top:2px}
+.tabs.cinco{grid-template-columns:repeat(5,1fr)}
+.tabs.cinco button{font-size:.85rem;padding:9px 2px}
+.react{border:0;border-radius:12px;background:var(--surf2);padding:0 12px;height:40px;font-weight:600;font-size:.88rem}
+.todos{display:block;width:100%;border:0;border-radius:12px;background:var(--aqua);color:var(--btnInk);font-weight:700;padding:12px;margin:10px 0 4px}
+#cLista{max-height:45vh;overflow:auto;margin:0 0 12px}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px;background:var(--aquaSoft);color:var(--aqua)}
+</style>
+</head>
+<body>
+<section id="vLogin" class="login">
+  <form class="card" id="fLogin">
+    <h1>Pagos Laguna Swim</h1>
+    <p class="lead">Solo para Checo. Entra con tu correo.</p>
+    <label class="f">Correo<input type="email" id="lEmail" value="checoswim@gmail.com" autocomplete="username" required></label>
+    <label class="f">Contraseña<input type="password" id="lPass" autocomplete="current-password" required></label>
+    <button class="full" type="submit">Entrar</button>
+    <p class="err" id="lErr" role="alert"></p>
+    <button class="link" type="button" id="lReset">Olvidé mi contraseña</button>
+  </form>
+</section>
+
+<div id="vApp" class="hidden">
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">Pagos Laguna Swim</div>
+      <p class="sync" id="sync"><i></i>Conectando…</p>
+    </div>
+    <div class="tools">
+      <div class="month">
+        <button id="prev" aria-label="Mes anterior">‹</button>
+        <span id="mes"></span>
+        <button id="next" aria-label="Mes siguiente">›</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" aria-live="polite">
+    <div class="big" id="big"></div>
+    <div class="sub" id="sub"></div>
+    <div class="rope" id="rope" aria-hidden="true"></div>
+  </section>
+
+  <div class="money">
+    <div class="in"><p>Cobrado</p><strong id="cobrado"></strong></div>
+    <div class="out"><p>Falta por cobrar</p><strong id="falta"></strong></div>
+    <button class="gan" id="ganBtn"><span><p>Tu ganancia del mes</p><strong id="ganMes"></strong></span><em id="ganAnio"></em></button>
+  </div>
+
+  <button class="linea" id="lista">Enviar lista de pagados</button>
+
+  <div class="alert" id="alerta"></div>
+
+  <div class="tabs cinco" role="group" aria-label="Filtrar por estado" id="tabs"></div>
+  <div class="chips" role="group" aria-label="Filtrar por horario" id="chips"></div>
+  <label class="f" style="margin:8px 0 0"><input type="search" id="buscar" placeholder="Buscar nadador o tutor"></label>
+
+  <ul class="list" id="list"></ul>
+
+  <p class="foot">
+    <button id="pegar">Pegar lista desde Excel</button> ·
+    <button id="contactos">Importar contactos del cel</button> ·
+    <button id="csv">Descargar lista del mes</button> ·
+    <button id="horarios">Horarios y cuotas</button> ·
+    <button id="textos">Textos de mensajes</button> ·
+    <button id="importar">Importar archivo</button> ·
+    <input type="file" id="fImp" accept=".json,application/json" hidden>
+    <button id="reiniciar">Empezar de cero</button> ·
+    <button id="salir">Cerrar sesión</button>
+  </p>
+</div>
+<button class="fab" id="add">Agregar alumno</button>
+</div>
+
+<dialog id="dPago"><form class="sheet" method="dialog" id="fPago">
+  <h2 id="pNombre"></h2>
+  <p class="note" id="pInfo"></p>
+  <div class="grid2">
+    <label class="f">Fecha de pago<input type="date" id="pFecha" required></label>
+    <label class="f">Monto<input type="number" id="pMonto" min="0" step="50" required></label>
+  </div>
+  <label class="f">Cómo pagó
+    <select id="pMetodo"></select>
+  </label>
+  <label class="rule"><input type="checkbox" id="pQuin"><span id="pRuleTxt"></span></label>
+  <div class="btns">
+    <button type="submit" class="primary">Guardar y ver recibo</button>
+    <button type="button" class="danger" id="pQuitar">Quitar pago</button>
+    <button type="button" class="ghost" data-close>Cancelar</button>
+  </div>
+</form></dialog>
+
+<dialog id="dRecibo"><div class="sheet">
+  <h2>Recibo</h2>
+  <p class="note" id="rNota"></p>
+  <div class="recibo" id="rTexto"></div>
+  <div class="btns">
+    <a class="wabtn" id="rWa" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+    <a class="mailbtn" id="rMail">Enviar por correo</a>
+    <button type="button" class="ghost" id="rCopiar">Copiar</button>
+    <button type="button" class="ghost" data-close>Listo</button>
+  </div>
+</div></dialog>
+
+<dialog id="dRec"><div class="sheet">
+  <h2 id="qNombre"></h2>
+  <p class="note" id="qInfo"></p>
+  <div class="plantillas" role="group" aria-label="Tipo de mensaje" id="qPlant"></div>
+  <label class="f">Mensaje (puedes cambiarlo antes de mandarlo)<textarea id="qTexto" style="min-height:150px"></textarea></label>
+  <div class="btns">
+    <a class="wabtn" id="qWa" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="mailbtn" id="qMail">Correo</a>
+    <button type="button" class="ghost" id="qShare">Compartir</button>
+    <button type="button" class="ghost" id="qCopy">Copiar</button>
+  </div>
+  <div class="btns">
+    <button type="button" class="primary" id="qPago">Ya pagó</button>
+    <button type="button" class="ghost" id="qSig">Siguiente</button>
+  </div>
+</div></dialog>
+
+<dialog id="dLista"><div class="sheet">
+  <h2>Lista de pagados</h2>
+  <p class="note" id="lMes"></p>
+  <div class="plantillas" id="lSedes" role="group" aria-label="Elegir por sede"></div>
+  <div class="checks" id="lHor"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="lFecha"><span>Incluir fecha de pago</span></label>
+    <label><input type="checkbox" id="lMonto"><span>Incluir monto y total</span></label>
+    <label><input type="checkbox" id="lAlias" checked><span>Quitar nombres de Playtomic (lo que va entre paréntesis)</span></label>
+  </div>
+  <label class="f">Así se va a mandar (puedes cambiarlo)<textarea id="lTexto" style="min-height:200px"></textarea></label>
+  <div class="btns">
+    <a class="wabtn" id="lWa" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="mailbtn" id="lMail">Correo</a>
+    <button type="button" class="ghost" id="lShare">Compartir</button>
+    <button type="button" class="ghost" id="lCopy">Copiar</button>
+    <button type="button" class="ghost" id="lCsv">Descargar Excel</button>
+  </div>
+</div></dialog>
+
+<dialog id="dGan"><div class="sheet">
+  <h2>Mis ganancias</h2>
+  <p class="note" id="gMes"></p>
+  <div class="tscroll"><table class="t" id="gHor"></table></div>
+  <div class="flujo" id="gFlujo"></div>
+  <h2 style="font-size:1.1rem">A quién le toca</h2>
+  <p class="ayuda">Palomea cuando ya le pagaste. "Ya se lo quedaron" es lo que la app u oficina retuvo sola.</p>
+  <div class="tscroll"><table class="t" id="gConc"></table></div>
+  <h2 style="font-size:1.1rem" id="gAnioT"></h2>
+  <div class="tscroll"><table class="t" id="gAnio"></table></div>
+  <div class="btns">
+    <button type="button" class="ghost" id="gCopy">Copiar resumen</button>
+    <button type="button" class="ghost" data-close>Listo</button>
+  </div>
+</div></dialog>
+
+<dialog id="dCont"><div class="sheet">
+  <h2>Contactos del celular</h2>
+  <div id="cPaso1">
+    <p class="note">WhatsApp no deja sacar los contactos directo, pero son los mismos de tu teléfono. Exporta tus contactos y súbelos aquí; luego eliges cuáles guardar.</p>
+    <div class="flujo">
+      <div><span><b>iPhone:</b> app Contactos → Listas → deja presionado “Todos los contactos” → Exportar. Se guarda un archivo .vcf.</span></div>
+      <div><span><b>Android:</b> app Contactos → Arreglar y administrar (o Configuración) → Exportar a archivo .vcf. También sirve contacts.google.com → Exportar.</span></div>
+    </div>
+    <div class="btns">
+      <button type="button" class="primary" id="cArchivo">Subir archivo .vcf o .csv</button>
+      <button type="button" class="ghost" id="cAndroid">Elegir de mis contactos</button>
+      <button type="button" class="ghost" data-close>Cancelar</button>
+    </div>
+    <input type="file" id="cFile" accept=".vcf,.vcard,.csv,text/vcard,text/csv" hidden>
+  </div>
+  <div id="cPaso2" hidden>
+    <p class="note" id="cInfo"></p>
+    <label class="f"><input type="search" id="cBuscar" placeholder="Buscar nombre o número"></label>
+    <div class="btns" style="margin:0 0 8px"><button type="button" class="ghost" id="cTodos">Marcar los que se ven</button><button type="button" class="ghost" id="cNinguno">Quitar todos</button></div>
+    <div class="checks" id="cLista"></div>
+    <div class="grid2">
+      <label class="f">Guardarlos como<select id="cTipo"><option value="contacto">Posibles clientes</option><option value="ex">Ex alumnos</option></select></label>
+      <label class="f">Nota<input id="cNota" value="Contactos del cel" autocomplete="off"></label>
+    </div>
+    <div class="btns">
+      <button type="button" class="primary" id="cGuardar">Guardar</button>
+      <button type="button" class="ghost" data-close>Cancelar</button>
+    </div>
+  </div>
+</div></dialog>
+
+<dialog id="dTextos"><form class="sheet" id="fTextos">
+  <h2>Textos de mensajes</h2>
+  <p class="note">Se llenan solos con: {tutor} {nadador} {cuota} {vence} {horario} {sede} {horarios} {firma}</p>
+  <label class="f">Por vencer<textarea id="tPor"></textarea></label>
+  <label class="f">Vencido<textarea id="tVenc"></textarea></label>
+  <label class="f">Te extrañamos<textarea id="tAus"></textarea></label>
+  <label class="f">Invitación a ex alumnos (usa {horarios} para listar todos tus horarios)<textarea id="tInv"></textarea></label>
+  <label class="f">Promoción a posibles clientes<textarea id="tPromo"></textarea></label>
+  <div class="grid2">
+    <label class="f">Avisar cuántos días antes<input type="number" id="tAviso" min="0" max="15"></label>
+    <label class="f">"Te extrañamos" después de (días vencido)<input type="number" id="tAusDias" min="7" max="120"></label>
+  </div>
+  <div class="btns">
+    <button type="submit" class="primary">Guardar textos</button>
+    <button type="button" class="ghost" id="tRestaurar">Restaurar originales</button>
+    <button type="button" class="ghost" data-close>Cancelar</button>
+  </div>
+</form></dialog>
+
+<dialog id="dAlumno"><form class="sheet" method="dialog" id="fAlumno">
+  <h2 id="aTitulo">Agregar alumno</h2>
+  <p class="note">El WhatsApp y el correo sirven para mandar recibos y recordatorios con un toque.</p>
+  <label class="f">Nombre del nadador<input id="aNombre" required autocomplete="off"></label>
+  <label class="f">Mamá, papá o tutor<input id="aTutor" autocomplete="off"></label>
+  <div class="grid2">
+    <label class="f">WhatsApp (10 dígitos)<input id="aTel" inputmode="tel" autocomplete="off"></label>
+    <label class="f">Correo<input id="aCorreo" type="email" autocomplete="off"></label>
+  </div>
+  <div class="grid2">
+    <label class="f">Horario<select id="aHorario"></select></label>
+    <label class="f">Ciclo<select id="aCiclo"><option value="mensual">Mes completo</option><option value="quincenal">15 a 15</option></select></label>
+  </div>
+  <div id="aHistBox"><p class="note" style="margin:4px 0 6px" id="aVence"></p><ul class="hist" id="aHist"></ul></div>
+  <div class="btns">
+    <button type="submit" class="primary">Guardar alumno</button>
+    <button type="button" class="ghost" id="aMsg">Mandar mensaje</button>
+    <button type="button" class="danger" id="aBaja">Dar de baja</button>
+    <button type="button" class="danger" id="aBorrar">Eliminar del sistema</button>
+    <button type="button" class="ghost" data-close>Cancelar</button>
+  </div>
+</form></dialog>
+
+<dialog id="dHor"><div class="sheet">
+  <h2>Horarios y cuotas</h2>
+  <p class="note">Toca un horario para cambiarlo. La cuota nueva cuenta para lo que falta por cobrar; los pagos ya guardados no cambian.</p>
+  <ul class="list" id="hLista" style="margin:0 0 14px"></ul>
+  <form id="fHor">
+    <h2 id="hTitulo" style="font-size:1.1rem">Agregar horario</h2>
+    <div class="grid2">
+      <label class="f">Hora<input type="time" id="hHora" required></label>
+      <label class="f">Cuota mensual<input type="number" id="hCuota" min="0" step="50" required></label>
+    </div>
+    <label class="f">Sede<input id="hSede" list="sedes" required autocomplete="off"></label>
+    <datalist id="sedes"><option value="Tec"><option value="Deportiva"></datalist>
+    <label class="f">Cómo pagan normalmente<select id="hMet"></select></label>
+    <p class="note" style="margin:0 0 6px">Lo que se descuenta por cada nadador, y quién se lo queda</p>
+    <div id="hDesc"></div>
+    <button type="button" class="link" id="hMasDesc" style="margin:-4px 0 6px">+ Agregar descuento</button>
+    <div class="queda" id="hQueda"></div>
+    <p class="err" id="hErr" role="alert"></p>
+    <div class="btns">
+      <button type="submit" class="primary" id="hGuardar">Agregar horario</button>
+      <button type="button" class="danger" id="hBorrar">Quitar horario</button>
+      <button type="button" class="ghost" id="hNuevo">Nuevo</button>
+      <button type="button" class="ghost" data-close>Listo</button>
+    </div>
+  </form>
+</div></dialog>
+
+<dialog id="dPegar"><form class="sheet" method="dialog" id="fPegar">
+  <h2>Pegar lista</h2>
+  <p class="note">Copia de tu Excel: nombre, horario, tutor, WhatsApp y correo (las que tengas). Si la fila trae la hora (7:00, 8:00), el nadador se va a ese horario; si no, al que elijas aquí.</p>
+  <label class="f">Horario si la fila no trae hora<select id="gHorario"></select></label>
+  <label class="rule"><input type="checkbox" id="gEx"><span>Son ex alumnos: van a la pestaña "Ex alumnos" para escribirles de vez en cuando. No cuentan en pagos.</span></label>
+  <label class="f">Nota para reconocerlos (opcional)<input id="gNota" placeholder="Ej. Lista de mayo 2026" autocomplete="off"></label>
+  <label class="f">Lista<textarea id="gTexto" placeholder="Mateo Garza	Laura	8711234567	laura@correo.com"></textarea></label>
+  <div class="btns">
+    <button type="submit" class="primary">Agregar alumnos</button>
+    <button type="button" class="ghost" data-close>Cancelar</button>
+  </div>
+</form></dialog>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const DUENO = "checoswim@gmail.com";
+const FIRMA = "Checo Villarreal";
+const TEL_FIRMA = "871 316 4850";
+// Horarios de arranque. Después se editan desde "Horarios y cuotas" y se guardan en la nube.
+const H_INICIO = {
+  "07": { hora: "07:00", s: "Tec", c: 1100 },
+  "17": { hora: "17:00", s: "Deportiva", c: 950 },
+  "19": { hora: "19:00", s: "Tec", c: 1100 },
+  "20": { hora: "20:00", s: "Tec", c: 1100 }
+};
+let H = {};
+function hora12(hm) {
+  const [h, m] = (hm || "00:00").split(":").map(Number);
+  return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
+}
+// Descuentos por nadador según la sede, si el horario todavía no tiene los suyos
+// ret = forma de pago con la que ese descuento ya se lo quedan ellos (no pasa por tus manos)
+function descPorSede(sede) {
+  if (/tec/i.test(sede || "")) return [{ n: "Playtomic", m: 520, ret: "Playtomic" }, { n: "Profe Manuel", m: 100, ret: "" }];
+  if (/deportiva/i.test(sede || "")) return [{ n: "Deportiva", m: 550, ret: "Oficina Deportiva" }];
+  return [];
+}
+const metPorSede = sede => /deportiva/i.test(sede || "") ? "Oficina Deportiva" : "Playtomic";
+const retPorNombre = n => /playtomic/i.test(n) ? "Playtomic" : /deportiva/i.test(n) ? "Oficina Deportiva" : "";
+function armarH(src) {
+  H = {};
+  Object.entries(src).forEach(([k, v]) => {
+    const [h, m] = (v.hora || "00:00").split(":").map(Number);
+    const d = v.d === false ? [] : Array.isArray(v.d) ? v.d.filter(x => x && x.n) : (v.d && typeof v.d === "object" ? Object.values(v.d) : descPorSede(v.s));
+    H[k] = { hora: v.hora, t: hora12(v.hora), s: v.s || "", c: Number(v.c) || 0, m: h * 60 + m, met: v.met || metPorSede(v.s),
+      d: d.map(x => ({ n: x.n, m: Number(x.m) || 0, ret: x.ret ?? retPorNombre(x.n) })) };
+  });
+}
+const METODOS = ["Playtomic", "Oficina Deportiva", "Transferencia", "Efectivo"];
+const descTotal = k => (hor(k).d || []).reduce((s, x) => s + x.m, 0);
+armarH(H_INICIO);
+const hor = k => H[k] || { t: "Sin horario", s: "", c: 0, m: 9999, d: [] };
+const horOrden = () => Object.entries(H).sort((a, b) => a[1].m - b[1].m);
+const porHora = (a, b) => hor(a.horario).m - hor(b.horario).m || a.nombre.localeCompare(b.nombre, "es");
+
+firebase.initializeApp({
+  apiKey: "AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
+  authDomain: "laguna-swim-chrono.firebaseapp.com",
+  databaseURL: "https://laguna-swim-chrono-default-rtdb.firebaseio.com",
+  projectId: "laguna-swim-chrono",
+  storageBucket: "laguna-swim-chrono.firebasestorage.app",
+  messagingSenderId: "618459577354",
+  appId: "1:618459577354:web:2e26bda92112ce241c33f3"
+});
+const auth = firebase.auth(), db = firebase.database();
+const R = db.ref("pagosCheco");
+
+const $ = id => document.getElementById(id);
+const money = n => "$" + Math.round(n).toLocaleString("es-MX");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2, "0");
+const hoy = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const n0 = new Date();
+let mes = `${n0.getFullYear()}-${pad(n0.getMonth()+1)}`;
+let tab = "cobrar", hf = "all", q = "";
+let st = { alumnos: {}, pagos: {}, recordatorios: {}, folio: 0 };
+
+/* ---------- Sesión ---------- */
+$("fLogin").addEventListener("submit", async e => {
+  e.preventDefault(); $("lErr").textContent = "";
+  const em = $("lEmail").value.trim().toLowerCase();
+  if (em !== DUENO) { $("lErr").textContent = "Este panel es solo para la cuenta de Checo."; return; }
+  try { await auth.signInWithEmailAndPassword(em, $("lPass").value); }
+  catch (err) {
+    $("lErr").textContent = err.code === "auth/too-many-requests" ? "Demasiados intentos. Espera unos minutos."
+      : "Correo o contraseña incorrectos. Usa “Olvidé mi contraseña” si no la recuerdas.";
+  }
+});
+$("lReset").addEventListener("click", async () => {
+  try { await auth.sendPasswordResetEmail(DUENO); $("lErr").textContent = "Te mandé un correo a " + DUENO + " para cambiar la contraseña."; }
+  catch (e) { $("lErr").textContent = "No se pudo mandar el correo. Revisa tu conexión."; }
+});
+$("salir").addEventListener("click", () => auth.signOut());
+
+let escuchando = false;
+auth.onAuthStateChanged(u => {
+  if (u && (u.email || "").toLowerCase() === DUENO) {
+    $("vLogin").classList.add("hidden"); $("vApp").classList.remove("hidden");
+    if (!escuchando) {
+      escuchando = true;
+      R.on("value", s => { st = Object.assign({ alumnos: {}, pagos: {}, recordatorios: {}, folio: 0 }, s.val() || {}); armarH(st.horarios || H_INICIO); render(); },
+        () => { $("sync").className = "sync"; $("sync").innerHTML = "<i></i>Sin permiso: revisa las reglas de Firebase"; });
+    }
+  } else {
+    if (u) auth.signOut();
+    if (escuchando) { R.off(); escuchando = false; }
+    $("vApp").classList.add("hidden"); $("vLogin").classList.remove("hidden");
+  }
+});
+db.ref(".info/connected").on("value", s => {
+  $("sync").className = "sync" + (s.val() ? " on" : "");
+  $("sync").innerHTML = s.val() ? "<i></i>Guardado en la nube" : "<i></i>Sin conexión, se guarda al volver";
+});
+
+/* ---------- Utilidades ---------- */
+function mesLabel(k) { const [y, m] = k.split("-").map(Number); return new Date(y, m-1, 1).toLocaleDateString("es-MX", { month: "long", year: "numeric" }); }
+function mesCorto(k) { const [y, m] = k.split("-").map(Number); return new Date(y, m-1, 1).toLocaleDateString("es-MX", { month: "long" }); }
+function fechaLarga(iso) { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }); }
+function shiftMes(d) { let [y, m] = mes.split("-").map(Number); m += d; if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } mes = `${y}-${pad(m)}`; render(); }
+const activos = () => Object.entries(st.alumnos || {}).map(([id, a]) => ({ id, ...a })).filter(a => a.activo !== false);
+const pm = () => (st.pagos && st.pagos[mes]) || {};
+const rm = () => (st.recordatorios && st.recordatorios[mes]) || {};
+const tel52 = t => { const d = String(t || "").replace(/\D/g, ""); return d.length === 10 ? "52" + d : d; };
+const dias = iso => Math.floor((new Date(hoy()) - new Date(iso)) / 864e5);
+function nombrePila(a) { return (a.nombre || "").split(" ")[0]; }
+
+function periodo(a, pg, k = mes) {
+  if (cicloDe(pg, a) !== "quincenal") return `mensualidad de ${mesLabel(k)}`;
+  const [y, m] = k.split("-").map(Number);
+  const sig = new Date(y, m, 14).toLocaleDateString("es-MX", { day: "numeric", month: "long" });
+  return `periodo del 15 de ${mesCorto(k)} al ${sig}`;
+}
+// El ciclo se guarda en cada pago; los pagos viejos toman el del alumno
+const cicloDe = (pg, a) => (pg && pg.ciclo) || (a && a.ciclo) || "mensual";
+// Qué pago cubre a este nadador en el mes m: el suyo de ese mes, o el 15 a 15 del mes anterior (vigente hasta el 14)
+function cubre(a, m = mes) {
+  const own = st.pagos && st.pagos[m] && st.pagos[m][a.id];
+  if (own) return { pg: own, k: m, propio: true };
+  const k = sumaMes(m, -1), prev = st.pagos && st.pagos[k] && st.pagos[k][a.id];
+  if (prev && cicloDe(prev, a) === "quincenal") return { pg: prev, k, propio: false };
+  return null;
+}
+function vigencia(c, a) {
+  if (cicloDe(c.pg, a) === "quincenal") return `vigente 15 ${fechaCorta(c.k + "-15").split(" ")[1]} – 14 ${fechaCorta(sumaMes(c.k, 1) + "-14").split(" ")[1]}`;
+  return `vigente todo ${mesCorto(c.k)}`;
+}
+function textoRecibo(a, pg, k = mes) {
+  return `🧾 RECIBO DE PAGO – Laguna Swim International
+Folio: ${pg.folio || "—"}
+Nadador(a): ${a.nombre}
+Concepto: ${periodo(a, pg, k)}
+Horario: ${hor(a.horario).t} ${hor(a.horario).s}
+Monto: ${money(pg.monto)}
+Fecha de pago: ${fechaLarga(pg.fecha)}
+Forma de pago: ${pg.metodo}
+
+¡Gracias por tu pago! 🏊
+${FIRMA} · ${TEL_FIRMA}`;
+}
+/* ---------- Vencimientos ---------- */
+const TEXTOS_INICIO = {
+  por: "¡Hola {tutor}! 🏊 Te escribe {firma}. El mes de natación de {nadador} termina el {vence}. Para que siga sin pausa, la mensualidad es de {cuota}. ¡Que no se le olvide nadar! 😄 Cualquier duda aquí estoy.",
+  venc: "¡Hola {tutor}! 🏊 Te escribe {firma}. El mes de {nadador} terminó {vence} y sigue pendiente la mensualidad de {cuota}. ¿Me ayudas a ponerte al corriente? ¡Te esperamos en la alberca! 💪",
+  promo: "¡Hola {tutor}! 🏊 Soy {firma}, de Laguna Swim International. Te comparto nuestros horarios de natación: {horarios}. Tenemos clases desde preescolar hasta adultos. ¿Te interesa para alguien de tu familia? Con gusto te aparto lugar.",
+  inv: "¡Hola {tutor}! 🏊 Soy {firma}, de Laguna Swim. Hace tiempo que {nadador} no se da la vuelta por la alberca y aquí se le extraña. Te cuento que tenemos estos horarios: {horarios}. ¿Te aparto su lugar? ¡Te espero en la alberca!",
+  aus: "¡Hola {tutor}! 🏊 Hace tiempo que {nadador} no se da la vuelta por la alberca, ¡se le extraña! Te espero en el horario de {horario} en {sede}, su lugar sigue apartado. Cuando quieras regresamos. {firma}",
+  aviso: 5, ausDias: 30
+};
+const T = () => Object.assign({}, TEXTOS_INICIO, st.textos || {});
+const sumaMes = (k, d) => { let [y, m] = k.split("-").map(Number); m += d; while (m > 12) { m -= 12; y++; } while (m < 1) { m += 12; y--; } return `${y}-${pad(m)}`; };
+const ultimoDia = k => { const [y, m] = k.split("-").map(Number); return `${k}-${pad(new Date(y, m, 0).getDate())}`; };
+function mesesPagados(id) { return Object.keys(st.pagos || {}).filter(m => st.pagos[m] && st.pagos[m][id]).sort(); }
+// Último día que cubre su pago más reciente: fin de mes, o el 14 del mes siguiente si es 15 a 15
+function vence(a) {
+  const ms = mesesPagados(a.id); if (!ms.length) return null;
+  const m = ms[ms.length - 1];
+  return a.ciclo === "quincenal" ? `${sumaMes(m, 1)}-14` : ultimoDia(m);
+}
+const faltan = iso => Math.round((new Date(iso + "T12:00") - new Date(hoy() + "T12:00")) / 864e5);
+function estado(a) {
+  const v = vence(a), t = T();
+  if (!v) return { k: "sin", v: null, d: null };
+  const d = faltan(v);
+  if (d > t.aviso) return { k: "aldia", v, d };
+  if (d >= 0) return { k: "por", v, d };
+  if (-d <= t.ausDias) return { k: "venc", v, d };
+  return { k: "aus", v, d };
+}
+const fechaCorta = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("es-MX", { day: "numeric", month: "short" }).replace(".", ""); };
+const fechaDia = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("es-MX", { day: "numeric", month: "long" }); };
+function lineaEstado(e) {
+  if (e.k === "sin") return '<span class="venc">sin pagos registrados</span>';
+  if (e.k === "aldia") return `<span class="aldia">al día hasta ${fechaCorta(e.v)}</span>`;
+  if (e.k === "por") return `<span class="por">${e.d === 0 ? "vence hoy" : e.d === 1 ? "vence mañana" : `vence ${fechaCorta(e.v)}, faltan ${e.d} d`}</span>`;
+  if (e.k === "venc") return `<span class="venc">venció hace ${-e.d} d</span>`;
+  return `<span class="venc">sin venir desde ${fechaCorta(e.v)}</span>`;
+}
+const plantillaDe = (e, a) => a && a.activo === false ? (a.tipo === "contacto" ? "promo" : "inv") : e.k === "por" || e.k === "aldia" ? "por" : e.k === "aus" ? "aus" : "venc";
+function llenarTexto(tipo, a) {
+  const e = estado(a), h = hor(a.horario);
+  const venceTxt = e.v ? (tipo === "venc" ? `el ${fechaDia(e.v)}` : fechaDia(e.v)) : (tipo === "venc" ? "hace unos días" : "pronto");
+  return T()[tipo]
+    .replaceAll("{tutor}", a.tutor || nombrePila(a)).replaceAll("{nadador}", a.nombre)
+    .replaceAll("{cuota}", money(h.c)).replaceAll("{vence}", venceTxt)
+    .replaceAll("{horario}", h.t).replaceAll("{sede}", h.s).replaceAll("{firma}", FIRMA)
+    .replaceAll("{horarios}", listaHorarios());
+}
+// "7:00 am, 7:00 pm y 8:00 pm en el Tec y 5:00 pm en la Deportiva"
+function listaHorarios() {
+  const por = {}; horOrden().forEach(([, h]) => (por[h.s] ||= []).push(h.t));
+  const y = arr => arr.length > 1 ? arr.slice(0, -1).join(", ") + " y " + arr[arr.length - 1] : arr[0] || "";
+  return y(Object.entries(por).map(([sd, ts]) => `${y(ts)} en ${/^(tec|deportiva)$/i.test(sd) ? "la " + sd : sd}`.replace("la Tec", "el Tec")));
+}
+const ultimoAviso = id => (st.avisos || {})[id] || null;
+function marcarRecordado(id) { R.child(`avisos/${id}`).set(hoy()); }
+
+const waURL = (a, txt) => `https://wa.me/${tel52(a.tel)}?text=${encodeURIComponent(txt)}`;
+const mailURL = (a, asunto, txt) => `mailto:${encodeURIComponent(a.correo || "")}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(txt)}`;
+
+const waIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9 4.5 4.5 0 0 0 1 2.4 10.3 10.3 0 0 0 3.9 3.5c1.5.6 2 .7 2.7.6.4-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>';
+
+/* ---------- Recordatorios al pendiente ---------- */
+// Cola: pendientes sin recordar primero, luego los recordados hace más tiempo (3+ días)
+function cola() {
+  return activos().filter(a => ["por", "venc", "sin"].includes(estado(a).k))
+    .filter(a => !ultimoAviso(a.id) || dias(ultimoAviso(a.id)) >= 3)
+    .sort(porUrgencia);
+}
+function porUrgencia(a, b) {
+  const ea = estado(a), eb = estado(b);
+  return (ea.d ?? 999) - (eb.d ?? 999) || porHora(a, b);
+}
+
+/* ---------- Pantalla ---------- */
+function render() {
+  $("mes").textContent = mesLabel(mes);
+  const act = activos(), p = pm(), r = rm();
+  const cov = Object.fromEntries(act.map(a => [a.id, cubre(a)]));
+  const pagados = act.filter(a => cov[a.id]);
+  // Cobrado = dinero registrado en este mes; los 15 a 15 del mes pasado cuentan como pagados pero su dinero ya se contó allá
+  const cobrado = act.filter(a => p[a.id]).reduce((s, a) => s + Number(p[a.id].monto || 0), 0);
+  const falta = act.filter(a => !cov[a.id]).reduce((s, a) => s + hor(a.horario).c, 0);
+  const pend = act.length - pagados.length;
+
+  $("big").innerHTML = `${pagados.length} <small>de ${act.length} ya pagaron</small>`;
+  $("sub").textContent = act.length === 0 ? "Agrega tus nadadores o pega tu lista del Excel para empezar." :
+    pend === 0 ? `Todos al corriente en ${mesCorto(mes)}.` : `${pend} ${pend === 1 ? "pendiente" : "pendientes"} en ${mesCorto(mes)}.`;
+  $("rope").innerHTML = [...act].sort((a, b) => (cov[b.id] ? 1 : 0) - (cov[a.id] ? 1 : 0)).map(a => `<span class="float${cov[a.id] ? " ok" : ""}"></span>`).join("");
+  $("cobrado").textContent = money(cobrado);
+  $("falta").textContent = money(falta);
+  pintarGanancia(); if ($("dGan").open) pintarGanDialog();
+
+  const c = cola();
+  const al = $("alerta");
+  const cuenta = k => c.filter(a => estado(a).k === k).length;
+  if (!act.length) al.className = "alert hidden";
+  else if (c.length) {
+    const partes = [["por", "por vencer"], ["venc", "vencidos"], ["sin", "sin pagos registrados"]].map(([k, l]) => cuenta(k) ? `${cuenta(k)} ${l}` : "").filter(Boolean).join(", ");
+    al.className = "alert";
+    al.innerHTML = `<p><b>Toca recordar a ${c.length}</b>${partes}. Solo los que se les acaba o ya se les acabó el mes.</p><button id="recordar">Empezar</button>`;
+  } else {
+    al.className = "alert ok";
+    al.innerHTML = `<p><b>Recordatorios al día</b>A nadie se le acaba el mes en los próximos ${T().aviso} días, o ya les escribiste.</p>`;
+  }
+
+  const est = Object.fromEntries(act.map(a => [a.id, estado(a)]));
+  const grupos = { cobrar: a => ["por", "venc", "sin"].includes(est[a.id].k), aldia: a => est[a.id].k === "aldia", aus: a => est[a.id].k === "aus", all: () => true };
+  const nombresTab = { cobrar: "Cobrar", aldia: "Al día", aus: "Te extrañamos", all: "Todos", ex: "Invitar" };
+  const exs = exAlumnos();
+  $("tabs").innerHTML = Object.keys(nombresTab).map(k => `<button data-tab="${k}" aria-pressed="${tab === k}">${nombresTab[k]}<small>${k === "ex" ? exs.length : act.filter(grupos[k]).length}</small></button>`).join("");
+  if (tab === "ex") return pintarEx(exs);
+  const chipDefs = [["all", "Todos los horarios"], ...horOrden().map(([k, v]) => [k, `${v.t} ${v.s}`])];
+  $("chips").innerHTML = chipDefs.map(([k, l]) => `<button data-h="${k}" aria-pressed="${hf === k}">${l}</button>`).join("");
+
+  let rows = act.filter(a => hf === "all" || a.horario === hf).filter(grupos[tab]);
+  if (q) rows = rows.filter(a => (a.nombre + " " + (a.tutor || "")).toLowerCase().includes(q));
+  rows.sort(tab === "cobrar" ? porUrgencia : porHora);
+
+  if (!rows.length) {
+    const vacio = { cobrar: "A nadie se le acaba el mes con este filtro. 🎉", aldia: "Nadie al día con este filtro.", aus: "Nadie se ha ausentado. Así se hace.", all: "No hay alumnos con este filtro." };
+    $("list").innerHTML = `<li class="empty">${!act.length ? "Todavía no hay alumnos. Toca “Agregar alumno” o “Importar archivo”." : vacio[tab]}</li>`;
+    return;
+  }
+  $("list").innerHTML = rows.map(a => {
+    const pg = p[a.id], c = cov[a.id], e = est[a.id], av = ultimoAviso(a.id);
+    const qn = a.ciclo === "quincenal" ? '<span class="q">15 a 15</span>' : "";
+    let linea = `${hor(a.horario).t} ${hor(a.horario).s} · ${c ? `<span class="aldia">${vigencia(c, a)}</span>` : lineaEstado(e)}`;
+    if (c && e.k !== "aldia") linea += ` · ${lineaEstado(e)}`;
+    if (e.k !== "aldia" && av) linea += ` · avisado hace ${dias(av)} d`;
+    const btnMsg = `<button class="msg" data-msg="${a.id}" aria-label="Mandar mensaje a ${esc(a.nombre)}">${waIcon}</button>`;
+    const btnRec = c ? `<button class="paid" data-recibo="${a.id}" data-k="${c.k}">Recibo</button>` : "";
+    // Pagado con el 15 a 15 del mes pasado: queda como pagado, y cuando se le acaba aparece también "Cobrar" para el siguiente periodo
+    const acciones = pg ? `${e.k !== "aldia" ? btnMsg : ""}${btnRec}`
+      : c ? `${e.k !== "aldia" ? btnMsg + `<button class="cobrar" data-pay="${a.id}">Cobrar</button>` : ""}${btnRec}`
+      : `${btnMsg}<button class="cobrar" data-pay="${a.id}">Cobrar</button>`;
+    return `<li class="row"><button class="who" data-edit="${a.id}"><b>${esc(a.nombre)}${qn}</b><span>${linea}</span></button><div class="act">${acciones}</div></li>`;
+  }).join("");
+}
+
+
+/* ---------- Ex alumnos: para escribirles de vez en cuando ---------- */
+const exAlumnos = () => Object.entries(st.alumnos || {}).map(([id, a]) => ({ id, ...a })).filter(a => a.activo === false);
+const colaEx = () => exAlumnos().filter(a => exF === "all" || (exF === "cont" ? esContacto(a) : !esContacto(a))).filter(a => !ultimoAviso(a.id) || dias(ultimoAviso(a.id)) >= 30)
+  .sort((a, b) => (ultimoAviso(a.id) || "").localeCompare(ultimoAviso(b.id) || "") || a.nombre.localeCompare(b.nombre, "es"));
+let exF = "all";
+const esContacto = a => a.tipo === "contacto";
+function pintarEx(todos) {
+  const exs = todos.filter(a => exF === "all" || (exF === "cont" ? esContacto(a) : !esContacto(a)));
+  let rows = exs;
+  if (q) rows = rows.filter(a => (a.nombre + " " + (a.tutor || "") + " " + (a.nota || "")).toLowerCase().includes(q));
+  rows.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+  const pend = colaEx().length;
+  const nEx = todos.filter(a => !esContacto(a)).length, nCont = todos.length - nEx;
+  const chipsEx = `<div class="chips" style="padding-top:0">${[["all", `Todos ${todos.length}`], ["ex", `Ex alumnos ${nEx}`], ["cont", `Posibles clientes ${nCont}`]].map(([k, l]) => `<button data-exf="${k}" aria-pressed="${exF === k}">${l}</button>`).join("")}</div>`;
+  const cab = `<li>${chipsEx}${pend ? `<button class="todos" id="exTodos">Escribirles uno por uno (${pend})</button><p class="ayuda" style="margin:4px 0 8px">Solo los que no tienen mensaje en los últimos 30 días.</p>` : exs.length ? '<p class="ayuda" style="margin:10px 0">Ya les escribiste a todos en los últimos 30 días.</p>' : ""}</li>`;
+  if (!rows.length) { $("list").innerHTML = cab + `<li class="empty">${exs.length ? "Nadie con esa búsqueda." : "Aún no hay nadie aquí. Usa “Importar contactos del cel” o “Pegar lista desde Excel” y marca “Son ex alumnos”."}</li>`; return; }
+  $("list").innerHTML = cab + rows.map(a => {
+    const av = ultimoAviso(a.id), ms = mesesPagados(a.id);
+    const linea = [esContacto(a) ? "posible cliente" : "", a.nota ? esc(a.nota) : "", ms.length ? `último pago ${mesCorto(ms[ms.length - 1])}` : "", a.tel || a.correo ? "" : "sin teléfono", av ? `mensaje hace ${dias(av)} d` : "sin mensaje"].filter(Boolean).join(" · ");
+    return `<li class="row"><button class="who" data-edit="${a.id}"><b>${esc(a.nombre)}</b><span>${linea}</span></button><div class="act"><button class="msg" data-msg="${a.id}" aria-label="Mandar mensaje a ${esc(a.nombre)}">${waIcon}</button><button class="react" data-react="${a.id}">${esContacto(a) ? "Se inscribió" : "Regresó"}</button></div></li>`;
+  }).join("");
+}
+
+/* ---------- Cobrar ---------- */
+let payId = null;
+function reglaTxt() {
+  const d = Number(($("pFecha").value || "").slice(8));
+  const aplica = d >= 15 && d <= 27;
+  $("pRuleTxt").textContent = aplica ? `Pagó el día ${d}: por la regla del 27 va en ciclo 15 a 15.` : "Registrar en ciclo 15 a 15.";
+  return aplica;
+}
+function openPago(id) {
+  payId = id;
+  const a = st.alumnos[id], pg = pm()[id];
+  $("pNombre").textContent = a.nombre;
+  $("pInfo").textContent = `${hor(a.horario).t} ${hor(a.horario).s}, ${mesLabel(mes)}`;
+  $("pFecha").value = pg ? pg.fecha : (hoy().startsWith(mes) ? hoy() : `${mes}-01`);
+  $("pMonto").value = pg ? pg.monto : hor(a.horario).c;
+  $("pMetodo").innerHTML = METODOS.map(mt => `<option>${mt}</option>`).join("");
+  if (pg && !METODOS.includes(pg.metodo)) $("pMetodo").insertAdjacentHTML("beforeend", `<option>${esc(pg.metodo)}</option>`);
+  $("pMetodo").value = pg ? pg.metodo : hor(a.horario).met;
+  const aplica = reglaTxt();
+  $("pQuin").checked = a.ciclo === "quincenal" || (!pg && aplica);
+  $("pQuitar").hidden = !pg;
+  $("dPago").showModal();
+}
+$("pFecha").addEventListener("change", () => { if (reglaTxt()) $("pQuin").checked = true; });
+$("fPago").addEventListener("submit", async () => {
+  const id = payId, prev = pm()[id];
+  let folio = prev && prev.folio;
+  if (!folio) {
+    const t = await R.child("folio").transaction(n => (n || 0) + 1);
+    folio = `LS-${mes.replace("-", "")}-${pad(t.snapshot.val()).padStart(4, "0")}`;
+  }
+  const hk = st.alumnos[id].horario, monto = Number($("pMonto").value);
+  // Se guarda la foto de los descuentos de ese momento: si luego cambian, el historial no se mueve
+  const pg = { fecha: $("pFecha").value, metodo: $("pMetodo").value, monto, folio, reciboEnviado: !!(prev && prev.reciboEnviado),
+    h: hk, d: hor(hk).d.length ? hor(hk).d.map(x => ({ n: x.n, m: x.m, ret: x.ret || "" })) : false, gan: monto - descTotal(hk) };
+  const ciclo = $("pQuin").checked ? "quincenal" : "mensual";
+  pg.ciclo = ciclo;
+  await R.update({ [`pagos/${mes}/${id}`]: pg, [`alumnos/${id}/ciclo`]: ciclo });
+  openRecibo(id);
+});
+$("pQuitar").addEventListener("click", () => {
+  if (confirm("¿Quitar este pago? El alumno vuelve a pendientes.")) { R.child(`pagos/${mes}/${payId}`).remove(); $("dPago").close(); }
+});
+
+/* ---------- Recibo ---------- */
+let recId = null;
+let recK = null;
+function openRecibo(id, k = mes) {
+  recId = id; recK = k;
+  const a = st.alumnos[id], pg = st.pagos && st.pagos[k] && st.pagos[k][id];
+  if (!a || !pg) return;
+  const txt = textoRecibo(a, pg, k);
+  $("rTexto").textContent = txt;
+  $("rNota").textContent = pg.reciboEnviado ? "Este recibo ya se envió. Puedes mandarlo otra vez." : `Mándaselo a ${a.tutor || nombrePila(a)}.`;
+  $("rWa").hidden = !a.tel; $("rWa").href = waURL(a, txt);
+  $("rMail").hidden = !a.correo; $("rMail").href = mailURL(a, `Recibo ${pg.folio} – Laguna Swim`, txt);
+  if (!$("dRecibo").open) $("dRecibo").showModal();
+}
+const enviado = () => R.child(`pagos/${recK}/${recId}/reciboEnviado`).set(true);
+$("rWa").addEventListener("click", enviado);
+$("rMail").addEventListener("click", enviado);
+$("rCopiar").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("rTexto").textContent); $("rCopiar").textContent = "Copiado"; setTimeout(() => $("rCopiar").textContent = "Copiar", 1500); } catch (e) {}
+});
+
+/* ---------- Mensajes: uno por uno o a un solo nadador ---------- */
+let colaIds = [], qi = 0, qTipo = "venc", enCola = false;
+const PLANT = { por: "Por vencer", venc: "Vencido", aus: "Te extrañamos", inv: "Invitación", promo: "Promoción" };
+function actualQ() { return colaIds[qi]; }
+function pintarMensaje(tipo) {
+  const a = { id: actualQ(), ...st.alumnos[actualQ()] };
+  qTipo = tipo;
+  $("qPlant").innerHTML = Object.entries(PLANT).map(([k, l]) => `<button data-t="${k}" aria-pressed="${k === tipo}">${l}</button>`).join("");
+  $("qTexto").value = llenarTexto(tipo, a);
+  links();
+}
+function links() {
+  const a = st.alumnos[actualQ()], txt = $("qTexto").value;
+  $("qWa").hidden = false; $("qWa").href = waURL(a, txt); // sin número, WhatsApp te deja elegir el chat
+  $("qMail").hidden = !a.correo; $("qMail").href = mailURL(a, qTipo === "aus" ? "Te extrañamos en la alberca – Laguna Swim" : "Mensualidad de natación – Laguna Swim", txt);
+}
+let colaModo = "cobro";
+function mostrarMensaje() {
+  if (enCola && colaModo === "cobro") while (qi < colaIds.length && !["por", "venc", "sin"].includes(estado({ id: colaIds[qi], ...st.alumnos[colaIds[qi]] }).k)) qi++;
+  if (qi >= colaIds.length) { $("dRec").close(); return; }
+  const a = { id: actualQ(), ...st.alumnos[actualQ()] }, e = estado(a), av = ultimoAviso(a.id);
+  $("qNombre").textContent = a.nombre;
+  $("qInfo").innerHTML = `${enCola ? `${qi + 1} de ${colaIds.length} · ` : ""}${a.activo === false ? `${a.tipo === "contacto" ? "posible cliente" : "ex alumno"}${a.nota ? " · " + esc(a.nota) : ""}` : `${hor(a.horario).t} ${hor(a.horario).s} · ${lineaEstado(e)}`} · ${av ? "último aviso hace " + dias(av) + " d" : "sin avisar"}${!a.tel && !a.correo ? " · sin número guardado: WhatsApp te deja elegir el chat" : ""}`;
+  $("qSig").hidden = !enCola;
+  $("qSig").textContent = qi + 1 < colaIds.length ? "Siguiente" : "Terminar";
+  pintarMensaje(plantillaDe(e, a));
+  if (!$("dRec").open) $("dRec").showModal();
+}
+function abrirMensaje(id) { enCola = false; colaIds = [id]; qi = 0; mostrarMensaje(); }
+const avanzar = () => { if (enCola) setTimeout(() => { qi++; mostrarMensaje(); }, 400); };
+$("qPlant").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (b) pintarMensaje(b.dataset.t); });
+$("qTexto").addEventListener("input", links);
+$("qWa").addEventListener("click", () => { marcarRecordado(actualQ()); avanzar(); });
+$("qMail").addEventListener("click", () => { marcarRecordado(actualQ()); avanzar(); });
+$("qShare").addEventListener("click", async () => {
+  const txt = $("qTexto").value;
+  if (navigator.share) { try { await navigator.share({ text: txt }); marcarRecordado(actualQ()); avanzar(); } catch (e) {} }
+  else { try { await navigator.clipboard.writeText(txt); $("qShare").textContent = "Copiado, pégalo donde quieras"; setTimeout(() => $("qShare").textContent = "Compartir", 1800); marcarRecordado(actualQ()); } catch (e) {} }
+});
+$("qCopy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("qTexto").value); $("qCopy").textContent = "Copiado"; setTimeout(() => $("qCopy").textContent = "Copiar", 1500); } catch (e) {}
+});
+$("qSig").addEventListener("click", () => { qi++; mostrarMensaje(); });
+$("qPago").addEventListener("click", () => { const id = actualQ(); $("dRec").close(); openPago(id); });
+
+/* ---------- Textos editables ---------- */
+$("textos").addEventListener("click", () => {
+  const t = T();
+  $("tPor").value = t.por; $("tVenc").value = t.venc; $("tAus").value = t.aus; $("tInv").value = t.inv; $("tPromo").value = t.promo; $("tAviso").value = t.aviso; $("tAusDias").value = t.ausDias;
+  $("dTextos").showModal();
+});
+$("fTextos").addEventListener("submit", e => {
+  e.preventDefault();
+  R.child("textos").set({ por: $("tPor").value.trim(), venc: $("tVenc").value.trim(), aus: $("tAus").value.trim(), inv: $("tInv").value.trim(), promo: $("tPromo").value.trim(),
+    aviso: Math.max(0, Number($("tAviso").value) || 5), ausDias: Math.max(7, Number($("tAusDias").value) || 30) });
+  $("dTextos").close();
+});
+$("tRestaurar").addEventListener("click", () => {
+  $("tPor").value = TEXTOS_INICIO.por; $("tVenc").value = TEXTOS_INICIO.venc; $("tAus").value = TEXTOS_INICIO.aus; $("tInv").value = TEXTOS_INICIO.inv; $("tPromo").value = TEXTOS_INICIO.promo;
+  $("tAviso").value = TEXTOS_INICIO.aviso; $("tAusDias").value = TEXTOS_INICIO.ausDias;
+});
+
+/* ---------- Alumno ---------- */
+let editId = null;
+const opcionesH = () => horOrden().map(([k, v]) => `<option value="${k}">${v.t} ${v.s} (${money(v.c)})</option>`).join("");
+function llenarSelects() { $("aHorario").innerHTML = opcionesH(); $("gHorario").innerHTML = opcionesH(); }
+function openAlumno(id) {
+  editId = id;
+  llenarSelects();
+  const a = id ? st.alumnos[id] : { nombre: "", tutor: "", tel: "", correo: "", horario: H["20"] ? "20" : (horOrden()[0] || [""])[0], ciclo: "mensual" };
+  $("aTitulo").textContent = id ? "Editar alumno" : "Agregar alumno";
+  $("aNombre").value = a.nombre || ""; $("aTutor").value = a.tutor || ""; $("aTel").value = a.tel || ""; $("aCorreo").value = a.correo || "";
+  $("aHorario").value = a.horario; $("aCiclo").value = a.ciclo || "mensual";
+  $("aBorrar").hidden = !(id && a.activo === false);
+  $("aBaja").hidden = !id; $("aBaja").textContent = id && a.activo === false ? "Regresó (reactivar)" : "Dar de baja"; $("aMsg").hidden = !id; $("aHistBox").hidden = !id;
+  if (id) {
+    const e = estado({ id, ...a });
+    $("aVence").innerHTML = e.v ? `Pagado hasta el ${fechaDia(e.v)} · ${lineaEstado(e)}` : lineaEstado(e);
+    const ms = mesesPagados(id).reverse().slice(0, 6);
+    $("aHist").innerHTML = ms.map(m => { const pg = st.pagos[m][id]; return `<li><b>${mesLabel(m)}</b><span>${money(pg.monto)} · ${pg.metodo} · ${fechaCorta(pg.fecha)}</span></li>`; }).join("") || "<li><span>Sin pagos registrados todavía.</span></li>";
+  }
+  $("dAlumno").showModal();
+}
+$("fAlumno").addEventListener("submit", () => {
+  const data = { nombre: $("aNombre").value.trim(), tutor: $("aTutor").value.trim(), tel: $("aTel").value.trim(), correo: $("aCorreo").value.trim(), horario: $("aHorario").value, ciclo: $("aCiclo").value };
+  if (!data.nombre) return;
+  if (editId) R.child("alumnos/" + editId).update(data); else R.child("alumnos").push({ ...data, activo: tab !== "ex" });
+});
+$("aMsg").addEventListener("click", () => { const id = editId; $("dAlumno").close(); abrirMensaje(id); });
+$("aBorrar").addEventListener("click", () => {
+  const a = st.alumnos[editId];
+  if (mesesPagados(editId).length) { alert(`${a.nombre} tiene pagos registrados; se queda en el sistema para no perder tu historial.`); return; }
+  if (confirm(`¿Eliminar a ${a.nombre} por completo? Ya no aparecerá en ningún lado.`)) { R.child("alumnos/" + editId).remove(); $("dAlumno").close(); }
+});
+$("aBaja").addEventListener("click", () => {
+  const a = st.alumnos[editId];
+  if (a.activo === false) { if (confirm(`¿${a.nombre} regresó? Vuelve a tu lista de alumnos activos.`)) { R.child(`alumnos/${editId}/activo`).set(true); $("dAlumno").close(); } return; }
+  if (confirm(`¿Dar de baja a ${a.nombre}? Pasa a "Ex alumnos": deja de contar en pagos, pero le puedes seguir escribiendo.`)) { R.child(`alumnos/${editId}/activo`).set(false); $("dAlumno").close(); }
+});
+
+/* ---------- Pegar lista ---------- */
+$("pegar").addEventListener("click", () => { llenarSelects(); $("gTexto").value = ""; $("gEx").checked = tab === "ex"; $("gNota").value = ""; $("dPegar").showModal(); });
+// Reconoce una hora escrita en la fila ("7:00", "8 pm", "19:00") y la liga al horario que exista
+function horarioDeTexto(x) {
+  const m = String(x).toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$/);
+  if (!m) return null;
+  let h = Number(m[1]); const mi = Number(m[2] || 0), ap = m[3] || "";
+  if (h > 23 || mi > 59) return null;
+  const busca = hh => (horOrden().find(([k, v]) => v.hora === `${pad(hh)}:${pad(mi)}`) || [null])[0];
+  if (ap.startsWith("p") && h < 12) h += 12;
+  if (ap.startsWith("a") && h === 12) h = 0;
+  if (ap || h >= 12) return busca(h);
+  return busca(h + 12) || busca(h); // "7:00" sin am/pm: primero la tarde
+}
+$("fPegar").addEventListener("submit", async e => {
+  const txt = $("gTexto").value.trim();
+  if (txt.startsWith("{")) {           // pegaron el archivo .json: se importa bien
+    try { await importarDatos(JSON.parse(txt)); } catch (err) { alert("Eso parece el archivo de importar pero está incompleto. Mejor usa el botón Importar archivo."); }
+    return;
+  }
+  const upd = {}; let n = 0, sinHora = 0, rep = 0;
+  const ex = $("gEx").checked, nota = $("gNota").value.trim();
+  const norm = x => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s*\([^)]*\)/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  const ya = new Set(Object.values(st.alumnos || {}).map(a => norm(a.nombre || "")));
+  txt.split(/\r?\n/).forEach(l => {
+    const c = l.split(/\t|;|,(?=\s*\S)/).map(x => x.trim()).filter(x => x !== "");
+    if (/^\d+$/.test(c[0] || "")) c.shift();   // quita el "No." del Excel
+    if (!c[0] || /^(no\.?|nombre)$/i.test(c[0])) return;
+    const correo = c.find(x => /@/.test(x)) || "";
+    const tel = c.find(x => /\d{7,}/.test(x.replace(/\D/g, ""))) || "";
+    const horaCelda = c.find(x => horarioDeTexto(x));
+    const horario = horaCelda ? horarioDeTexto(horaCelda) : $("gHorario").value;
+    if (!horaCelda) sinHora++;
+    const tutor = c.slice(1).find(x => x !== tel && x !== correo && x !== horaCelda && !/\d/.test(x) && !/contactar|pendiente|pagad|recibo|estado|horario/i.test(x)) || "";
+    if (ya.has(norm(c[0]))) { rep++; return; }   // ya está en el sistema (activo o ex): no se duplica
+    ya.add(norm(c[0]));
+    upd[R.child("alumnos").push().key] = { nombre: c[0], tutor, tel, correo, horario, ciclo: "mensual", activo: !ex, ...(nota ? { nota } : {}) };
+    n++;
+  });
+  if (!n) { alert(rep ? `Todos (${rep}) ya estaban en el sistema. No se agregó nada.` : "No encontré nombres en la lista."); return; }
+  if (n > 150 && !confirm(`Se van a crear ${n} alumnos. ¿Seguro que es la lista correcta?`)) return;
+  await R.child("alumnos").update(upd);
+  if (ex) { tab = "ex"; render(); }
+  alert(`Listo: ${n} ${ex ? "ex alumnos" : "alumnos"} agregados.${rep ? ` ${rep} ya estaban en el sistema y no se duplicaron.` : ""}${!ex && sinHora ? ` ${sinHora} sin hora en la fila quedaron en el horario elegido.` : ""}`);
+});
+
+/* ---------- Descargar ---------- */
+$("csv").addEventListener("click", () => {
+  const p = pm(), r = rm();
+  const filas = [["Nadador","Tutor","WhatsApp","Correo","Horario","Ciclo","Pagado hasta","Situación","Pago del mes","Fecha pago","Monto","Método","Folio","Último aviso"]];
+  const sit = { sin: "Sin pagos", aldia: "Al día", por: "Por vencer", venc: "Vencido", aus: "Te extrañamos" };
+  activos().sort(porHora).forEach(a => {
+    const pg = p[a.id];
+    filas.push([a.nombre, a.tutor, a.tel, a.correo, `${hor(a.horario).t} ${hor(a.horario).s}`, a.ciclo === "quincenal" ? "15 a 15" : "Mes completo",
+      estado(a).v || "", sit[estado(a).k], pg ? "Pagado" : "Pendiente", pg ? pg.fecha : "", pg ? pg.monto : "", pg ? pg.metodo : "", pg ? pg.folio : "", ultimoAviso(a.id) || ""]);
+  });
+  const csv = "\ufeff" + filas.map(f => f.map(x => `"${String(x ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  const el = document.createElement("a"); el.href = url; el.download = `pagos-${mes}.csv`; el.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+});
+
+/* ---------- Eventos ---------- */
+document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
+document.querySelectorAll("dialog").forEach(d => d.addEventListener("click", e => { if (e.target === d) d.close(); }));
+$("tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { tab = b.dataset.tab; render(); } });
+$("chips").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { hf = b.dataset.h; render(); } });
+$("buscar").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); render(); });
+$("alerta").addEventListener("click", e => {
+  if (e.target.id !== "recordar") return;
+  colaIds = cola().map(a => a.id); qi = 0; enCola = true; colaModo = "cobro"; mostrarMensaje();
+});
+$("list").addEventListener("click", e => {
+  const ms = e.target.closest("[data-msg]"); if (ms) return abrirMensaje(ms.dataset.msg);
+  const xf = e.target.closest("[data-exf]"); if (xf) { exF = xf.dataset.exf; return render(); }
+  if (e.target.id === "exTodos") { colaIds = colaEx().map(a => a.id); qi = 0; enCola = true; colaModo = "ex"; return mostrarMensaje(); }
+  const rc = e.target.closest("[data-react]");
+  if (rc) { const a = st.alumnos[rc.dataset.react]; if (confirm(esContacto(a) ? `¿Se inscribió? Abre su ficha para poner el nombre del nadador y su horario.` : `¿${a.nombre} regresó? Vuelve a tu lista de alumnos activos.`)) { R.child(`alumnos/${rc.dataset.react}`).update({ activo: true, tipo: null }); if (esContacto(a)) { tab = "all"; openAlumno(rc.dataset.react); } } return; }
+  const pay = e.target.closest("[data-pay]"); if (pay) return openPago(pay.dataset.pay);
+  const rb = e.target.closest("[data-recibo]"); if (rb) return openRecibo(rb.dataset.recibo, rb.dataset.k);
+  const ed = e.target.closest("[data-edit]"); if (ed) return openAlumno(ed.dataset.edit);
+});
+$("prev").addEventListener("click", () => shiftMes(-1));
+$("next").addEventListener("click", () => shiftMes(1));
+$("add").addEventListener("click", () => openAlumno(null));
+
+/* ---------- Importar archivo (no borra ni duplica: respeta lo que ya llenaste) ---------- */
+$("importar").addEventListener("click", () => $("fImp").click());
+async function importarDatos(d) {
+  const upd = {}; let nuevos = 0, pagosN = 0;
+  Object.entries(d.alumnos || {}).forEach(([id, a]) => { if (!st.alumnos[id]) { upd[`alumnos/${id}`] = a; nuevos++; } });
+  Object.entries(d.pagos || {}).forEach(([m, lista]) => Object.entries(lista).forEach(([id, pg]) => {
+    if (!(st.pagos && st.pagos[m] && st.pagos[m][id])) { upd[`pagos/${m}/${id}`] = pg; pagosN++; }
+  }));
+  if (!nuevos && !pagosN) { alert("Todo lo de este archivo ya estaba en tu panel."); return false; }
+  if (!confirm(`Se van a agregar ${nuevos} alumnos y ${pagosN} pagos. ¿Continuar?`)) return false;
+  await R.update(upd);
+  if (d.folio) await R.child("folio").transaction(n => Math.max(n || 0, d.folio));
+  const [m0] = Object.keys(d.pagos || {}); if (m0) { mes = m0; render(); }
+  alert(`Listo: ${nuevos} alumnos y ${pagosN} pagos importados.`);
+  return true;
+}
+$("fImp").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  let d;
+  try { d = JSON.parse(await f.text()); } catch (err) { alert("Ese archivo no se pudo leer. Usa el .json que te pasé."); return; }
+  importarDatos(d);
+});
+
+/* ---------- Empezar de cero ---------- */
+$("reiniciar").addEventListener("click", async () => {
+  const n = Object.keys(st.alumnos || {}).length;
+  const r = prompt(`Se borran los ${n} alumnos, sus pagos, recibos y recordatorios. Los horarios y cuotas se quedan.\n\nEscribe BORRAR para confirmar:`);
+  if ((r || "").trim().toUpperCase() !== "BORRAR") return;
+  await R.update({ alumnos: null, pagos: null, recordatorios: null, avisos: null, folio: null });
+  alert("Listo, el panel quedó vacío. Ya puedes importar tu lista.");
+});
+
+/* ---------- Horarios y cuotas ---------- */
+let horId = null;
+function pintarHorarios() {
+  const act = activos();
+  $("hLista").innerHTML = horOrden().map(([k, v]) => {
+    const n = act.filter(a => a.horario === k).length;
+    return `<li class="row"><button class="who" data-h="${k}"><b>${v.t} ${esc(v.s)}</b><span>${money(v.c)} al mes · te quedan ${money(v.c - descTotal(k))} · ${n} ${n === 1 ? "alumno" : "alumnos"}</span></button></li>`;
+  }).join("") || '<li class="empty">No hay horarios. Agrega el primero abajo.</li>';
+}
+function filaDesc(x) {
+  const ops = [["", "Me llega a mí y yo se lo pago"], ...METODOS.map(mt => [mt, `Se lo quedan si pagan por ${mt}`])]
+    .map(([v, l]) => `<option value="${v}" ${(x.ret || "") === v ? "selected" : ""}>${l}</option>`).join("");
+  return `<div class="desc"><input placeholder="Concepto" value="${esc(x.n)}" aria-label="Concepto"><input type="number" min="0" step="10" placeholder="Monto" value="${x.m ?? ""}" aria-label="Monto"><button type="button" aria-label="Quitar descuento">×</button><select aria-label="Quién se lo queda">${ops}</select></div>`;
+}
+function leerDesc() {
+  return [...$("hDesc").querySelectorAll(".desc")].map(r => { const [n, m] = r.querySelectorAll("input"); return { n: n.value.trim(), m: Number(m.value) || 0, ret: r.querySelector("select").value }; }).filter(x => x.n);
+}
+function queda() {
+  const c = Number($("hCuota").value) || 0, d = leerDesc().reduce((s, x) => s + x.m, 0);
+  $("hQueda").textContent = `Cobras ${money(c)} − descuentos ${money(d)} = te quedan ${money(c - d)} por nadador`;
+}
+function formHorario(k) {
+  horId = k; $("hErr").textContent = "";
+  const v = k ? H[k] : { hora: "", s: "", c: "", d: [] };
+  $("hHora").value = v.hora; $("hSede").value = v.s; $("hCuota").value = v.c;
+  $("hMet").innerHTML = METODOS.map(mt => `<option>${mt}</option>`).join(""); $("hMet").value = v.met || metPorSede(v.s);
+  $("hDesc").innerHTML = (v.d || []).map(filaDesc).join(""); queda();
+  $("hTitulo").textContent = k ? `Editar ${v.t} ${v.s}` : "Agregar horario";
+  $("hGuardar").textContent = k ? "Guardar cambios" : "Agregar horario";
+  $("hBorrar").hidden = !k; $("hNuevo").hidden = !k;
+}
+function guardarH() {
+  const out = {};
+  Object.entries(H).forEach(([k, v]) => out[k] = { hora: v.hora, s: v.s, c: v.c, met: v.met || metPorSede(v.s), d: (v.d && v.d.length) ? v.d : false }); // false = sin descuentos (Firebase borra listas vacías)
+  return R.child("horarios").set(out);
+}
+$("horarios").addEventListener("click", () => { pintarHorarios(); formHorario(null); $("dHor").showModal(); });
+$("hLista").addEventListener("click", e => { const b = e.target.closest("[data-h]"); if (b) formHorario(b.dataset.h); });
+$("hNuevo").addEventListener("click", () => formHorario(null));
+$("hMasDesc").addEventListener("click", () => { $("hDesc").insertAdjacentHTML("beforeend", filaDesc({ n: "", m: "" })); queda(); });
+$("hDesc").addEventListener("click", e => { if (e.target.tagName === "BUTTON") { e.target.closest(".desc").remove(); queda(); } });
+$("hDesc").addEventListener("input", queda);
+$("hCuota").addEventListener("input", queda);
+// Al escribir la sede de un horario nuevo, sugiere sus descuentos de siempre
+$("hSede").addEventListener("change", () => { if (!horId && !leerDesc().length) { $("hDesc").innerHTML = descPorSede($("hSede").value).map(filaDesc).join(""); $("hMet").value = metPorSede($("hSede").value); queda(); } });
+$("fHor").addEventListener("submit", async e => {
+  e.preventDefault();
+  const hora = $("hHora").value, sede = $("hSede").value.trim(), c = Number($("hCuota").value);
+  const choca = Object.entries(H).find(([k, v]) => k !== horId && v.hora === hora && v.s.toLowerCase() === sede.toLowerCase());
+  if (choca) { $("hErr").textContent = `Ya existe ${hora12(hora)} en ${sede}.`; return; }
+  const k = horId || "h" + Date.now().toString(36);
+  H[k] = { hora, s: sede, c, d: leerDesc(), met: $("hMet").value };
+  armarH(Object.fromEntries(Object.entries(H).map(([x, v]) => [x, { hora: v.hora, s: v.s, c: v.c, d: v.d, met: v.met }])));
+  await guardarH(); pintarHorarios(); formHorario(null);
+});
+$("hBorrar").addEventListener("click", async () => {
+  const n = activos().filter(a => a.horario === horId).length;
+  if (n) { $("hErr").textContent = `Tiene ${n} ${n === 1 ? "alumno" : "alumnos"}. Cámbialos de horario antes de quitarlo.`; return; }
+  if (!confirm(`¿Quitar ${H[horId].t} ${H[horId].s}?`)) return;
+  delete H[horId]; await guardarH(); pintarHorarios(); formHorario(null);
+});
+
+/* ---------- Lista de pagados por horario (para el Tec, la Deportiva, etc.) ---------- */
+let lSel = new Set();
+const sinAlias = n => n.replace(/\s*\([^)]*\)\s*/g, " ").trim();
+function pagadosLista() {
+  const limpiar = $("lAlias").checked;
+  return horOrden().filter(([k]) => lSel.has(k)).map(([k, h]) => ({
+    k, h, filas: activos().filter(a => a.horario === k && cubre(a)).sort(porHora)
+      .map(a => { const c = cubre(a); return { nombre: limpiar ? sinAlias(a.nombre) : a.nombre, pg: c.pg, ciclo: cicloDe(c.pg, a), vig: vigencia(c, a) }; })
+  }));
+}
+function armarLista() {
+  const grupos = pagadosLista(), conF = $("lFecha").checked, conM = $("lMonto").checked;
+  const sedes = [...new Set(grupos.map(g => g.h.s))].join(" y ");
+  let total = 0, n = 0;
+  const partes = grupos.map(g => {
+    const lineas = g.filas.map((f, i) => {
+      n++; total += Number(f.pg.monto || 0);
+      const extra = [f.ciclo === "quincenal" ? f.vig : "", conF ? "pagó " + fechaCorta(f.pg.fecha) : "", conM ? money(f.pg.monto) : ""].filter(Boolean).join(" · ");
+      return `${i + 1}. ${f.nombre}${extra ? " – " + extra : ""}`;
+    });
+    return `🕐 ${g.h.t} ${g.h.s} (${g.filas.length})\n${lineas.join("\n") || "Sin pagos todavía"}`;
+  });
+  $("lTexto").value = grupos.length ? `Laguna Swim International\nNadadores pagados – ${mesLabel(mes)}${sedes ? "\n" + sedes : ""}\n\n${partes.join("\n\n")}\n\nTotal: ${n} ${n === 1 ? "nadador" : "nadadores"}${conM ? " · " + money(total) : ""}\n${FIRMA}` : "";
+  linksLista();
+}
+function linksLista() {
+  const txt = $("lTexto").value;
+  $("lWa").href = `https://wa.me/?text=${encodeURIComponent(txt)}`;
+  $("lMail").href = `mailto:?subject=${encodeURIComponent("Nadadores pagados " + mesLabel(mes) + " – Laguna Swim")}&body=${encodeURIComponent(txt)}`;
+}
+function pintarChecks() {
+  const p = pm();
+  $("lHor").innerHTML = horOrden().map(([k, h]) => {
+    const n = activos().filter(a => a.horario === k && cubre(a)).length;
+    return `<label><input type="checkbox" data-k="${k}" ${lSel.has(k) ? "checked" : ""}><span>${h.t} ${esc(h.s)}</span><small>${n} pagados</small></label>`;
+  }).join("");
+  const sedes = [...new Set(Object.values(H).map(h => h.s))];
+  $("lSedes").innerHTML = sedes.map(sd => `<button data-sede="${esc(sd)}">Solo ${esc(sd)}</button>`).join("") + '<button data-sede="*">Todos</button>';
+}
+$("lista").addEventListener("click", () => {
+  if (!lSel.size) { const tec = horOrden().filter(([, h]) => /tec/i.test(h.s)).map(([k]) => k); lSel = new Set(tec.length ? tec : Object.keys(H)); }
+  $("lMes").textContent = `${mesLabel(mes)}. Para otro mes, cámbialo arriba con las flechas.`;
+  pintarChecks(); armarLista(); $("dLista").showModal();
+});
+$("lHor").addEventListener("change", e => { const k = e.target.dataset.k; if (!k) return; e.target.checked ? lSel.add(k) : lSel.delete(k); armarLista(); });
+$("lSedes").addEventListener("click", e => {
+  const b = e.target.closest("[data-sede]"); if (!b) return;
+  const sd = b.dataset.sede;
+  lSel = new Set(horOrden().filter(([, h]) => sd === "*" || h.s === sd).map(([k]) => k));
+  pintarChecks(); armarLista();
+});
+["lFecha", "lMonto", "lAlias"].forEach(id => $(id).addEventListener("change", armarLista));
+$("lTexto").addEventListener("input", linksLista);
+$("lCopy").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("lTexto").value); $("lCopy").textContent = "Copiado"; setTimeout(() => $("lCopy").textContent = "Copiar", 1500); } catch (e) {} });
+$("lShare").addEventListener("click", async () => {
+  const txt = $("lTexto").value;
+  if (navigator.share) { try { await navigator.share({ text: txt }); } catch (e) {} }
+  else { try { await navigator.clipboard.writeText(txt); $("lShare").textContent = "Copiado"; setTimeout(() => $("lShare").textContent = "Compartir", 1500); } catch (e) {} }
+});
+$("lCsv").addEventListener("click", () => {
+  const conF = $("lFecha").checked, conM = $("lMonto").checked;
+  const enc = ["No.", "Nadador", "Horario", "Sede", "Ciclo", "Vigencia"].concat(conF ? ["Fecha de pago"] : [], conM ? ["Monto"] : []);
+  const filas = [enc]; let i = 0;
+  pagadosLista().forEach(g => g.filas.forEach(f => filas.push([++i, f.nombre, g.h.t, g.h.s, f.ciclo === "quincenal" ? "15 a 15" : "Mes completo", f.vig]
+    .concat(conF ? [f.pg.fecha] : [], conM ? [f.pg.monto] : []))));
+  const csv = "\ufeff" + filas.map(f => f.map(x => `"${String(x ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  const el = document.createElement("a"); el.href = url; el.download = `pagados-${mes}.csv`; el.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+});
+
+/* ---------- Ganancias ---------- */
+// Por cada pago: qué pagó el papá, qué retuvo la app/oficina, qué te llegó y qué te toca pagar a ti
+function detallePago(id, pg) {
+  const hk = pg.h || (st.alumnos[id] || {}).horario;
+  const d = pg.d === false ? [] : Array.isArray(pg.d) ? pg.d : (pg.d && typeof pg.d === "object") ? Object.values(pg.d) : hor(hk).d;
+  const monto = Number(pg.monto || 0);
+  let desc = 0, retenido = 0, debes = 0;
+  const partes = d.map(x => {
+    const m = Number(x.m || 0), ret = x.ret ?? retPorNombre(x.n), yaRet = !!ret && ret === pg.metodo;
+    desc += m; if (yaRet) retenido += m; else debes += m;
+    return { n: x.n, m, yaRet };
+  });
+  return { hk, partes, monto, desc, retenido, debes, llega: monto - retenido, gan: monto - desc };
+}
+function resumenMes(m) {
+  const lista = (st.pagos && st.pagos[m]) || {};
+  const r = { n: 0, cobrado: 0, desc: 0, retenido: 0, debes: 0, llega: 0, gan: 0, porH: {}, porC: {} };
+  Object.entries(lista).forEach(([id, pg]) => {
+    const x = detallePago(id, pg);
+    r.n++; r.cobrado += x.monto; r.desc += x.desc; r.retenido += x.retenido; r.debes += x.debes; r.llega += x.llega; r.gan += x.gan;
+    const h = (r.porH[x.hk] ||= { n: 0, cobrado: 0, desc: 0, gan: 0 });
+    h.n++; h.cobrado += x.monto; h.desc += x.desc; h.gan += x.gan;
+    x.partes.forEach(c => { const k = (r.porC[c.n] ||= { n: 0, ret: 0, debes: 0 }); k.n++; if (c.yaRet) k.ret += c.m; else k.debes += c.m; });
+  });
+  return r;
+}
+function acumuladoAnio(m) {
+  const y = m.slice(0, 4);
+  return Object.keys(st.pagos || {}).filter(k => k.startsWith(y) && k <= m).sort().map(k => ({ k, ...resumenMes(k) }));
+}
+const liq = () => (st.liquidado && st.liquidado[mes]) || {};
+const keyC = n => n.replace(/[.#$\[\]\/]/g, "_");
+function pendientePagar(r) { const l = liq(); return Object.entries(r.porC).filter(([n]) => !l[keyC(n)]).reduce((s, [, x]) => s + x.debes, 0); }
+function pintarGanancia() {
+  const r = resumenMes(mes), a = acumuladoAnio(mes), pend = pendientePagar(r);
+  $("ganMes").textContent = money(r.gan);
+  $("ganAnio").innerHTML = `${pend ? `Te toca pagar <b>${money(pend)}</b><br>` : ""}Acumulado ${mes.slice(0, 4)} <b>${money(a.reduce((s, x) => s + x.gan, 0))}</b>`;
+}
+function pintarGanDialog() {
+  const r = resumenMes(mes), a = acumuladoAnio(mes), l = liq();
+  $("gMes").textContent = `${mesLabel(mes)}: ${r.n} ${r.n === 1 ? "pago" : "pagos"}. Para otro mes, cámbialo arriba con las flechas.`;
+  $("gFlujo").innerHTML = `<div><span>Pagaron los papás</span><span>${money(r.cobrado)}</span></div>
+    <div><span>Ya se lo quedaron Playtomic u oficina</span><span>− ${money(r.retenido)}</span></div>
+    <div><span>Te llegó a ti</span><span>${money(r.llega)}</span></div>
+    <div><span>Te toca pagar a ti</span><span>− ${money(r.debes)}</span></div>
+    <div class="fin"><span>Tu ganancia</span><span>${money(r.gan)}</span></div>`;
+  const filasH = horOrden().filter(([k]) => r.porH[k]).map(([k, h]) => { const x = r.porH[k]; return `<tr><td>${h.t} ${esc(h.s)}</td><td>${x.n}</td><td>${money(x.cobrado)}</td><td>${money(x.desc)}</td><td>${money(x.gan)}</td></tr>`; });
+  Object.entries(r.porH).filter(([k]) => !H[k]).forEach(([k, x]) => filasH.push(`<tr><td>Horario quitado</td><td>${x.n}</td><td>${money(x.cobrado)}</td><td>${money(x.desc)}</td><td>${money(x.gan)}</td></tr>`));
+  $("gHor").innerHTML = `<tr><th>Horario</th><th>Pagos</th><th>Cobrado</th><th>Descuentos</th><th>Te quedan</th></tr>${filasH.join("")}<tr class="tot"><td>Total</td><td>${r.n}</td><td>${money(r.cobrado)}</td><td>${money(r.desc)}</td><td>${money(r.gan)}</td></tr>`;
+  const conc = Object.entries(r.porC);
+  $("gConc").innerHTML = conc.length ? `<tr><th>A quién</th><th>Nadadores</th><th>Ya se lo quedaron</th><th>Te toca pagar</th><th>Pagado</th></tr>${conc.map(([n, x]) =>
+    `<tr><td>${esc(n)}</td><td>${x.n}</td><td>${money(x.ret)}</td><td>${money(x.debes)}</td><td>${x.debes ? `<input type="checkbox" data-liq="${esc(keyC(n))}" ${l[keyC(n)] ? "checked" : ""} aria-label="Ya le pagué a ${esc(n)}">` : "—"}</td></tr>`).join("")}` : "<tr><td>Sin descuentos este mes.</td></tr>";
+  let acc = 0;
+  $("gAnioT").textContent = `Acumulado ${mes.slice(0, 4)}`;
+  $("gAnio").innerHTML = `<tr><th>Mes</th><th>Pagos</th><th>Cobrado</th><th>Te quedan</th><th>Acumulado</th></tr>${a.map(x => { acc += x.gan; return `<tr><td>${mesCorto(x.k)}</td><td>${x.n}</td><td>${money(x.cobrado)}</td><td>${money(x.gan)}</td><td>${money(acc)}</td></tr>`; }).join("")}`;
+}
+$("ganBtn").addEventListener("click", () => { pintarGanDialog(); $("dGan").showModal(); });
+$("gConc").addEventListener("change", e => {
+  const k = e.target.dataset.liq; if (!k) return;
+  R.child(`liquidado/${mes}/${k}`).set(e.target.checked ? hoy() : null);
+});
+$("gCopy").addEventListener("click", async () => {
+  const r = resumenMes(mes), a = acumuladoAnio(mes), l = liq();
+  const txt = `Ganancias ${mesLabel(mes)} (${r.n} pagos)\nPagaron los papás: ${money(r.cobrado)}\nYa retenido (Playtomic/oficina): ${money(r.retenido)}\nMe llegó: ${money(r.llega)}\n` +
+    Object.entries(r.porC).filter(([, x]) => x.debes).map(([n, x]) => `Pagar a ${n}: ${money(x.debes)}${l[keyC(n)] ? " ✓ pagado" : ""}`).join("\n") +
+    `\nMi ganancia: ${money(r.gan)}\nAcumulado ${mes.slice(0, 4)}: ${money(a.reduce((s, x) => s + x.gan, 0))}`;
+  try { await navigator.clipboard.writeText(txt); $("gCopy").textContent = "Copiado"; setTimeout(() => $("gCopy").textContent = "Copiar resumen", 1500); } catch (e) {}
+});
+
+/* ---------- Contactos del celular (vCard .vcf, CSV de Google o selector de Android) ---------- */
+let contCand = [];   // { nombre, tel, sel }
+const tel10 = t => { const d = String(t || "").replace(/\D/g, ""); return d.length > 10 ? d.slice(-10) : d; };
+function qpDecode(v) {   // vCards viejas de Android vienen en "quoted-printable"
+  try { const bytes = v.replace(/=\r?\n/g, "").replace(/=([0-9A-F]{2})/gi, (_, h) => String.fromCharCode(parseInt(h, 16))); return decodeURIComponent(escape(bytes)); } catch (e) { return v; }
+}
+function leerVcf(txt) {
+  const out = [];
+  txt.replace(/\r?\n[ \t]/g, "").split(/BEGIN:VCARD/i).slice(1).forEach(card => {
+    let nombre = "", n = "", tels = [];
+    card.split(/\r?\n/).forEach(l => {
+      const i = l.indexOf(":"); if (i < 0) return;
+      const k = l.slice(0, i).toUpperCase(); let v = l.slice(i + 1).trim();
+      if (/QUOTED-PRINTABLE/.test(k)) v = qpDecode(v);
+      if (/^(ITEM\d+\.)?FN\b/.test(k)) nombre = v;
+      else if (/^N\b/.test(k) || /^N;/.test(k)) n = v.split(";").slice(0, 2).reverse().join(" ").trim();
+      else if (/^(ITEM\d+\.)?TEL\b/.test(k)) tels.push({ v, cel: /CELL|MOBILE|IPHONE/.test(k) });
+    });
+    const t = (tels.find(x => x.cel) || tels[0] || {}).v;
+    if (t) out.push({ nombre: (nombre || n).replace(/\\,/g, ",").trim(), tel: tel10(t) });
+  });
+  return out;
+}
+function leerCsv(txt) {
+  const filas = []; let f = [], c = "", q = false;
+  for (let i = 0; i < txt.length; i++) {
+    const ch = txt[i];
+    if (q) { if (ch === '"' && txt[i + 1] === '"') { c += '"'; i++; } else if (ch === '"') q = false; else c += ch; }
+    else if (ch === '"') q = true; else if (ch === ",") { f.push(c); c = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && txt[i + 1] === "\n") i++; f.push(c); filas.push(f); f = []; c = ""; }
+    else c += ch;
+  }
+  if (c || f.length) { f.push(c); filas.push(f); }
+  const enc = (filas.shift() || []).map(x => x.trim().toLowerCase());
+  const col = re => enc.findIndex(h => re.test(h));
+  const iNom = col(/^(name|nombre|display name)$/), iFirst = col(/^(first name|given name|nombre de pila)$/), iLast = col(/^(last name|family name|apellido)/);
+  const iTels = enc.map((h, i) => /phone.*value|tel[eé]fono|^phone|m[oó]vil|celular/.test(h) ? i : -1).filter(i => i >= 0);
+  return filas.map(r => {
+    const nombre = (iNom >= 0 && r[iNom]) || [r[iFirst], r[iLast]].filter(Boolean).join(" ");
+    const t = iTels.map(i => (r[i] || "").split(":::")[0]).find(x => x.replace(/\D/g, "").length >= 10);
+    return { nombre: (nombre || "").trim(), tel: tel10(t) };
+  }).filter(x => x.tel);
+}
+function prepararCont(lista) {
+  const telesYa = new Set(Object.values(st.alumnos || {}).map(a => tel10(a.tel)).filter(Boolean));
+  const vistos = new Set(); let yaN = 0;
+  contCand = lista.filter(x => x.tel && x.tel.length === 10).filter(x => {
+    if (telesYa.has(x.tel)) { yaN++; return false; }
+    if (vistos.has(x.tel)) return false; vistos.add(x.tel); return true;
+  }).map(x => ({ nombre: x.nombre || "Sin nombre", tel: x.tel, sel: false }))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+  $("cPaso1").hidden = true; $("cPaso2").hidden = false;
+  $("cInfo").textContent = `${contCand.length} contactos nuevos con celular${yaN ? ` (${yaN} ya estaban en el sistema y los quité)` : ""}. Palomea los que quieras guardar.`;
+  pintarCont();
+}
+function pintarCont() {
+  const f = $("cBuscar").value.trim().toLowerCase();
+  const vis = contCand.filter(x => !f || x.nombre.toLowerCase().includes(f) || x.tel.includes(f));
+  $("cLista").innerHTML = vis.slice(0, 600).map(x => `<label><input type="checkbox" data-t="${x.tel}" ${x.sel ? "checked" : ""}><span>${esc(x.nombre)}</span><small>${x.tel}</small></label>`).join("")
+    + (vis.length > 600 ? `<p class="ayuda">Mostrando 600 de ${vis.length}. Usa el buscador para encontrar los demás.</p>` : "")
+    + (!vis.length ? '<p class="ayuda">Nadie con esa búsqueda.</p>' : "");
+  const n = contCand.filter(x => x.sel).length;
+  $("cGuardar").textContent = n ? `Guardar ${n} ${n === 1 ? "contacto" : "contactos"}` : "Palomea al menos uno";
+  $("cGuardar").disabled = !n;
+}
+$("contactos").addEventListener("click", () => {
+  contCand = []; $("cPaso1").hidden = false; $("cPaso2").hidden = true; $("cBuscar").value = "";
+  $("cAndroid").hidden = !("contacts" in navigator && "select" in navigator.contacts);
+  $("dCont").showModal();
+});
+$("cArchivo").addEventListener("click", () => $("cFile").click());
+$("cFile").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const txt = await f.text();
+  const lista = /BEGIN:VCARD/i.test(txt) ? leerVcf(txt) : leerCsv(txt);
+  if (!lista.length) { alert("No encontré contactos con teléfono en ese archivo. Debe ser .vcf (vCard) o el CSV que exporta Google Contactos."); return; }
+  prepararCont(lista);
+});
+$("cAndroid").addEventListener("click", async () => {
+  try {
+    const sel = await navigator.contacts.select(["name", "tel"], { multiple: true });
+    prepararCont(sel.map(c => ({ nombre: (c.name || [])[0] || "", tel: tel10((c.tel || [])[0]) })));
+  } catch (e) {}
+});
+$("cBuscar").addEventListener("input", pintarCont);
+$("cLista").addEventListener("change", e => { const x = contCand.find(c => c.tel === e.target.dataset.t); if (x) { x.sel = e.target.checked; pintarCont(); } });
+$("cTodos").addEventListener("click", () => { const f = $("cBuscar").value.trim().toLowerCase(); contCand.forEach(x => { if (!f || x.nombre.toLowerCase().includes(f) || x.tel.includes(f)) x.sel = true; }); pintarCont(); });
+$("cNinguno").addEventListener("click", () => { contCand.forEach(x => x.sel = false); pintarCont(); });
+$("cGuardar").addEventListener("click", async () => {
+  const elegidos = contCand.filter(x => x.sel); if (!elegidos.length) return;
+  const tipo = $("cTipo").value, nota = $("cNota").value.trim(), upd = {};
+  const hk = (horOrden()[0] || [""])[0];
+  elegidos.forEach(x => {
+    upd[R.child("alumnos").push().key] = { nombre: x.nombre, tutor: tipo === "contacto" ? x.nombre.split(" ")[0] : "", tel: x.tel, correo: "", horario: hk, ciclo: "mensual", activo: false, tipo, ...(nota ? { nota } : {}) };
+  });
+  await R.child("alumnos").update(upd);
+  $("dCont").close(); tab = "ex"; exF = tipo === "contacto" ? "cont" : "ex"; render();
+  alert(`Listo: ${elegidos.length} guardados en "Invitar".`);
+});
+
+</script>
+</body>
+</html>
