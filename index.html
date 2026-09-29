@@ -3780,6 +3780,18 @@ body.blog-active #tab-timer { display: none !important; }
             <button type="button" class="hero-frase-btn" onclick="fraseHistoria()">Compartir en historia</button>
           </div>
         </figure>
+        <!-- Accesos rápidos: lo que más buscan papás y nadadores -->
+        <nav class="lx-quick" aria-label="Accesos rápidos">
+          <a class="lx-quick-btn lx-quick-main" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20quiero%20inscribirme%20a%20Laguna%20Swim.%20%C2%BFMe%20das%20informaci%C3%B3n%20de%20d%C3%ADas%20y%20precios%3F" target="_blank" rel="noopener">
+            <span class="lx-quick-ico">💬</span><span>Inscribirme</span>
+          </a>
+          <button type="button" class="lx-quick-btn" onclick="document.getElementById('horarios').scrollIntoView({behavior:'smooth',block:'start'})">
+            <span class="lx-quick-ico">🕔</span><span>Horarios</span>
+          </button>
+          <button type="button" class="lx-quick-btn" onclick="abrirModalEntrenamiento()">
+            <span class="lx-quick-ico">📝</span><span>Subir entreno</span>
+          </button>
+        </nav>
       </div>
 
       <!-- ZONA DE SIMULADORES (catálogo de 2 juegos) -->
@@ -3891,6 +3903,41 @@ body.blog-active #tab-timer { display: none !important; }
 
     <!-- ============ ABAJO DEL FOLD ============ -->
     <div class="v3-below-fold">
+      <!-- SECCION: HORARIOS Y SEDES -->
+      <div class="v2-section" id="horarios">
+        <div class="v2-section-head">
+          <div class="v2-section-head-bar"></div>
+          <div class="v2-section-head-text">Horarios <em>y sedes</em></div>
+          <div class="v2-section-head-line"></div>
+        </div>
+        <div class="lx-sede">
+          <div class="lx-sede-top">
+            <div>
+              <div class="lx-sede-name">Unidad Deportiva Torreón</div>
+              <div class="lx-sede-city">Torreón, Coahuila</div>
+            </div>
+            <div class="lx-sede-times"><span>5:00 pm</span></div>
+          </div>
+          <div class="lx-sede-btns">
+            <a class="lx-sede-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Unidad%20Deportiva%20Torre%C3%B3n" target="_blank" rel="noopener">📍 Cómo llegar</a>
+            <a class="lx-sede-btn lx-sede-btn-wa" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20me%20interesa%20el%20grupo%20de%20las%205%20pm%20en%20la%20Unidad%20Deportiva%20Torre%C3%B3n.%20%C2%BFQu%C3%A9%20d%C3%ADas%20y%20precios%20manejan%3F" target="_blank" rel="noopener">💬 Apartar lugar</a>
+          </div>
+        </div>
+        <div class="lx-sede">
+          <div class="lx-sede-top">
+            <div>
+              <div class="lx-sede-name">Tec de Monterrey · Campus Laguna</div>
+              <div class="lx-sede-city">Torreón, Coahuila</div>
+            </div>
+            <div class="lx-sede-times"><span>7:00 pm</span><span>8:00 pm</span></div>
+          </div>
+          <div class="lx-sede-btns">
+            <a class="lx-sede-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Tecnol%C3%B3gico%20de%20Monterrey%20Campus%20Laguna" target="_blank" rel="noopener">📍 Cómo llegar</a>
+            <a class="lx-sede-btn lx-sede-btn-wa" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20me%20interesa%20un%20grupo%20en%20el%20Tec%20de%20Monterrey%20Campus%20Laguna%20(7%20u%208%20pm).%20%C2%BFQu%C3%A9%20d%C3%ADas%20y%20precios%20manejan%3F" target="_blank" rel="noopener">💬 Apartar lugar</a>
+          </div>
+        </div>
+      </div>
+
       <div class="v3-below-divider">
         <span class="v3-below-divider-text">— EQUIPO —</span>
       </div>
@@ -3936,7 +3983,7 @@ body.blog-active #tab-timer { display: none !important; }
           </div>
           <div class="v2-action-arrow">→</div>
         </div>
-        <div class="v2-action-card" onclick="window.open('https://wa.me/5218714419555?text=Hola%20Coach%20Sergio,%20me%20interesa%20informaci%C3%B3n%20de%20Laguna%20Swim','_blank')">
+        <div class="v2-action-card" onclick="window.open('https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20quiero%20inscribirme%20a%20Laguna%20Swim.%20%C2%BFMe%20das%20informaci%C3%B3n%20de%20d%C3%ADas%20y%20precios%3F','_blank')">
           <div>
             <div class="v2-action-icon">💬</div>
             <div class="v2-action-title">CONTACTO</div>
@@ -15221,6 +15268,46 @@ body.v7 .modal-box {
   backdrop-filter: blur(30px) saturate(1.8);
   -webkit-backdrop-filter: blur(30px) saturate(1.8);
 }
+
+/* ---------- Accesos rápidos y horarios (practicidad) ---------- */
+.lx-quick { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 0.5rem; margin: 0 0 1.4rem; }
+.lx-quick-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem;
+  min-height: 64px; padding: 0.6rem 0.4rem;
+  border-radius: 16px; border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.08); color: #fff;
+  font: inherit; font-size: 0.78rem; font-weight: 700; text-decoration: none;
+  cursor: pointer; touch-action: manipulation;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  transition: transform 0.35s cubic-bezier(0.34,1.4,0.64,1);
+}
+.lx-quick-btn:active { transform: scale(0.95); }
+.lx-quick-main { background: #25d366; border-color: #25d366; color: #04210f; }
+.lx-quick-ico { font-size: 1.3rem; line-height: 1; }
+#horarios { scroll-margin-top: 72px; }
+.lx-sede {
+  padding: 1rem; margin-bottom: 0.7rem;
+  border-radius: 22px; border: 1px solid rgba(255,255,255,0.16);
+  background: linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 30px rgba(0,8,20,0.35);
+  backdrop-filter: blur(22px) saturate(1.6); -webkit-backdrop-filter: blur(22px) saturate(1.6);
+}
+.lx-sede-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.8rem; }
+.lx-sede-name { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; color: #fff; }
+.lx-sede-city { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.lx-sede-times { display: flex; flex-direction: column; gap: 0.3rem; align-items: flex-end; flex-shrink: 0; }
+.lx-sede-times span {
+  font-size: 0.95rem; font-weight: 800; color: #051a3a; background: var(--gold);
+  padding: 0.25rem 0.6rem; border-radius: 999px; white-space: nowrap;
+}
+.lx-sede-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.9rem; }
+.lx-sede-btn {
+  display: flex; align-items: center; justify-content: center; min-height: 44px;
+  border-radius: 999px; font-size: 0.82rem; font-weight: 700; text-decoration: none;
+  color: #fff; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16);
+}
+.lx-sede-btn-wa { background: #25d366; border-color: #25d366; color: #04210f; }
 
 /* ---------- Aparición al hacer scroll (si el navegador lo soporta) ---------- */
 @supports (animation-timeline: view()) {
