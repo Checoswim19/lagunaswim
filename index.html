@@ -3542,6 +3542,10 @@ body.blog-active #tab-timer { display: none !important; }
   margin-top: 0.85rem;
 }
 .hero-frase-sem { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+.hero-cta-row { display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem 0.9rem; margin-top:1.1rem; }
+.hero-cta-main { display:inline-flex; align-items:center; gap:0.4rem; background:#25d366; color:#fff; font-weight:900; font-size:0.95rem; letter-spacing:0.3px; padding:0.8rem 1.4rem; border-radius:999px; text-decoration:none; box-shadow:0 6px 22px rgba(37,211,102,0.35); }
+.hero-cta-main:active { transform:scale(0.97); }
+.hero-cta-sub { font-size:0.72rem; color:rgba(255,255,255,0.7); font-weight:600; }
 .hero-frase-btn {
   flex-shrink: 0;
   background: rgba(255,215,0,0.14);
@@ -3678,7 +3682,7 @@ body.blog-active #tab-timer { display: none !important; }
     <div class="v2-app-header-main">LAGUNA <em>SWIM</em></div>
     <div class="v2-app-header-sub">INTERNATIONAL</div>
   </div>
-  <div id="app-ver" style="margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v9 · 18jun</div>
+  <div id="app-ver" style="display:none;margin-left:auto;font-size:0.6rem;font-weight:700;color:var(--gold);opacity:0.85;letter-spacing:0.5px;white-space:nowrap">v9 · 18jun</div>
 </div>
 <!-- ============ FIN V2 HEADER ============ -->
 
@@ -3780,6 +3784,10 @@ body.blog-active #tab-timer { display: none !important; }
             <button type="button" class="hero-frase-btn" onclick="fraseHistoria()">Compartir en historia</button>
           </div>
         </figure>
+        <div class="hero-cta-row">
+          <a class="hero-cta-main" href="https://wa.me/5218714419555?text=Hola%20Coach%20Sergio,%20quiero%20agendar%20una%20clase%20muestra%20en%20Laguna%20Swim" target="_blank" rel="noopener">🏊 Agenda tu clase muestra</a>
+          <span class="hero-cta-sub">Infantil · Juvenil · Masters — Torreón</span>
+        </div>
       </div>
 
       <!-- ZONA DE SIMULADORES (catálogo de 2 juegos) -->
@@ -4020,20 +4028,6 @@ body.blog-active #tab-timer { display: none !important; }
         </div>
       </div>
 
-      <!-- EVENTO CERRADO: Cuba -->
-      <div class="v2-event-poster" style="opacity:0.85"
-        onclick="openUrl('https://www.granretto.com/proximos-eventos/detalle?id=236')">
-        <div class="v2-event-tape">⚠️ INSCRIPCIONES CERRADAS</div>
-        <div class="v2-event-body">
-          <div class="v2-event-flag">🇨🇺</div>
-          <div class="v2-event-info">
-            <div class="v2-event-name">Aguas Abiertas Gran Retto Cuba 2026</div>
-            <div class="v2-event-date">12-13 SEPTIEMBRE · 2026</div>
-            <div class="v2-event-loc">Varadero, Cuba</div>
-          </div>
-          <div class="v2-event-arrow">→</div>
-        </div>
-      </div>
     </div>
 
     <!-- SECCION: COACH -->
@@ -4672,7 +4666,7 @@ body.blog-active #tab-timer { display: none !important; }
         <span style="font-size:1.3rem">&#127942;</span>
         <div>
           <div style="font-size:0.88rem;font-weight:800;color:var(--gold)">Ranking Reto 50m</div>
-          <div style="font-size:0.65rem;color:var(--accent-soft)">Carrera contra rivales virtuales</div>
+          <div style="font-size:0.65rem;color:var(--accent-soft)">Ranking del mes · se reinicia cada día 1</div>
         </div>
       </div>
       <span id="reto50-lb-arrow-v2" style="color:var(--gold);font-size:1.2rem">&#8964;</span>
@@ -13257,28 +13251,45 @@ async function reto50GuardarResultado(data) {
 }
 
 // ===== FIREBASE: CARGAR LEADERBOARD POR ESTILO =====
+// Ranking mensual: se reinicia el día 1 de cada mes (hora de Torreón, UTC-6).
+// No se borra nada: el historial queda en Firebase, solo se filtra por mes.
+function reto50InicioMes() {
+  var ahora = new Date(Date.now() - 6 * 3600 * 1000);
+  return Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), 1, 6, 0, 0);
+}
+function reto50InfoMes() {
+  var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var ahora = new Date(Date.now() - 6 * 3600 * 1000);
+  var y = ahora.getUTCFullYear(), m = ahora.getUTCMonth();
+  var fin = Date.UTC(y, m + 1, 1, 6, 0, 0);
+  var dias = Math.max(1, Math.ceil((fin - Date.now()) / 86400000));
+  return { mes: meses[m], dias: dias };
+}
+
 async function reto50CargarLeaderboard(forzar, estilo) {
   estilo = estilo || RETO50.estiloActual || 'libre';
   var ahora = Date.now();
   // Cache separado por estilo
   if (!RETO50.lbCacheByStyle) RETO50.lbCacheByStyle = {};
   if (!RETO50.lbCacheTimeByStyle) RETO50.lbCacheTimeByStyle = {};
-  if (!forzar && RETO50.lbCacheByStyle[estilo] && (ahora - (RETO50.lbCacheTimeByStyle[estilo] || 0)) < RETO50.lbCacheMs) {
+  var inicioMes = reto50InicioMes();
+  if (!forzar && RETO50.lbCacheByStyle[estilo] && RETO50.lbMesCache === inicioMes && (ahora - (RETO50.lbCacheTimeByStyle[estilo] || 0)) < RETO50.lbCacheMs) {
     return RETO50.lbCacheByStyle[estilo];
   }
+  RETO50.lbMesCache = inicioMes;
 
   try {
-    // Pedimos los 200 mejores tiempos (sin filtrar todavía) y filtramos en cliente
+    // Solo las carreras del mes en curso (el ranking se reinicia cada mes)
     // Las entradas viejas no tienen swimStyle, se asumen "libre" por defecto
     var snap = await db.ref('races_leaderboard')
-      .orderByChild('time')
-      .limitToFirst(200)
+      .orderByChild('timestamp')
+      .startAt(inicioMes)
       .once('value');
 
     var rows = [];
     snap.forEach(function(child) {
       var v = child.val();
-      if (v && v.time && v.nickname) {
+      if (v && v.time && v.nickname && (v.timestamp || 0) >= inicioMes) {
         var entryStyle = v.swimStyle || 'libre'; // default libre para entradas viejas
         if (entryStyle === estilo) {
           rows.push({
@@ -13351,6 +13362,8 @@ async function reto50RenderLeaderboard() {
   });
   tabsHtml += '</div>';
 
+  var infoMes = reto50InfoMes();
+  tabsHtml = '<div style="text-align:center;font-size:0.68rem;font-weight:800;color:var(--gold);letter-spacing:0.5px;margin:0 0 8px">🗓️ Ranking de ' + infoMes.mes + ' · se reinicia en ' + infoMes.dias + ' día' + (infoMes.dias === 1 ? '' : 's') + '</div>' + tabsHtml;
   list.innerHTML = tabsHtml + '<div class="reto50-lb-empty">Cargando ranking...</div>';
 
   var top = await reto50CargarLeaderboard(false, RETO50.estiloActual);
@@ -13358,7 +13371,7 @@ async function reto50RenderLeaderboard() {
   var bodyHtml = '';
   if (!top || top.length === 0) {
     var nombreEstilo = (ESTILOS.find(function(e) { return e.id === RETO50.estiloActual; }) || {}).label || 'este estilo';
-    bodyHtml = '<div class="reto50-lb-empty">Sé el primero en ' + nombreEstilo + ' 🏊‍♂️</div>';
+    bodyHtml = '<div class="reto50-lb-empty">Nuevo mes, ranking en cero. ¡Sé el primero en ' + nombreEstilo + ' de ' + infoMes.mes + '! 🏊‍♂️</div>';
   } else {
     var esCoach = !!(state && state.isCoach);
     top.forEach(function(entry, idx) {
