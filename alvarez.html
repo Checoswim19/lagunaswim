@@ -319,6 +319,32 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
   .footer__grid{grid-template-columns:1.6fr 1fr 1fr 1.3fr}
 }
 </style>
+<link rel="canonical" href="https://lagunaswim.net/alvarez.html">
+<meta name="geo.region" content="MX-COA">
+<meta name="geo.placename" content="Torreón">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LocalBusiness","additionalType":"https://schema.org/PrintShop",
+"name":"Álvarez Impresores","description":"Imprenta en Torreón, Coahuila. Impresión digital, offset, gran formato y diseño gráfico.",
+"url":"https://lagunaswim.net/alvarez.html","telephone":"+52 871 220 0427",
+"address":{"@type":"PostalAddress","addressLocality":"Torreón","addressRegion":"Coahuila","addressCountry":"MX"},
+"areaServed":["Torreón","Gómez Palacio","Lerdo","La Laguna"],
+"contactPoint":{"@type":"ContactPoint","telephone":"+52 871 220 0427","contactType":"sales","availableLanguage":"Spanish"}}
+</script>
+<style>
+.ai-contacto{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));max-width:820px;margin:30px auto 0;text-align:left}
+.ai-cotiza{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:var(--r);padding:22px;display:grid;gap:12px}
+.ai-cotiza h3{margin:0;font-size:1.15rem;text-transform:uppercase;color:#fff}
+.ai-cotiza label{display:grid;gap:5px;font-size:.9rem;color:rgba(255,255,255,.9)}
+.ai-cotiza input,.ai-cotiza select{padding:12px;border-radius:10px;border:0;font:inherit;font-size:16px;background:#fff;color:var(--tinta);width:100%}
+.ai-cotiza .ai-check{display:flex;align-items:center;gap:10px}
+.ai-cotiza .ai-check input{width:20px;height:20px}
+.ai-acciones{display:grid;gap:10px;align-content:start}
+.ai-btn{display:block;width:100%;text-align:center;padding:14px;border-radius:999px;font:inherit;font-weight:700;font-size:1rem;text-decoration:none;border:2px solid rgba(255,255,255,.6);background:transparent;color:#fff;cursor:pointer;transition:transform .2s,background .2s}
+.ai-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.12)}
+.ai-wa{background:#25D366;border-color:#25D366;color:#fff}
+.ai-wa:hover{background:#1ebe5a}
+.ai-nota{font-size:.9rem;color:rgba(255,255,255,.8);margin:4px 0 0;text-align:center}
+</style>
 </head>
 <body>
 
@@ -561,12 +587,34 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
     <div class="cta-final revelar">
       <h2>¿Listo para imprimir?</h2>
       <p>Mándanos tu archivo o cuéntanos tu idea. Te cotizamos el mismo día.</p>
-      <a href="https://wa.me/528712200427?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20cotizar%20un%20trabajo%20de%20impresi%C3%B3n."
-         target="_blank" rel="noopener" class="btn btn--claro">Escribir por WhatsApp</a>
-      <div class="cta-final__datos">
-        <a href="https://wa.me/528712200427?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20cotizar%20un%20trabajo%20de%20impresi%C3%B3n." target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
-        <span>Torreón, Coahuila</span>
+      <div class="ai-contacto">
+        <form class="ai-cotiza" id="aiCotiza">
+          <h3>Cotiza en 20 segundos</h3>
+          <label>¿Qué necesitas?
+            <select name="producto" required>
+              <option value="">Elige…</option>
+              <option>Flyers / volantes</option><option>Tarjetas de presentación</option>
+              <option>Lona / gran formato</option><option>Catálogos / revistas</option>
+              <option>Libros</option><option>Folletos / carpetas</option>
+              <option>Etiquetas</option><option>Papelería corporativa</option>
+              <option>Diseño gráfico</option><option>Otro</option>
+            </select>
+          </label>
+          <label>Cantidad aproximada<input name="cantidad" inputmode="numeric" placeholder="Ej. 500"></label>
+          <label>¿Para cuándo lo necesitas?<input name="fecha" type="date"></label>
+          <label>Tu nombre<input name="nombre" placeholder="Opcional"></label>
+          <label class="ai-check"><input type="checkbox" name="archivo"> Ya tengo el diseño / archivo</label>
+          <button type="submit" class="ai-btn ai-wa">Enviar por WhatsApp</button>
+        </form>
+        <div class="ai-acciones">
+          <a class="ai-btn ai-wa" href="https://wa.me/528712200427?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20cotizar%20un%20trabajo%20de%20impresi%C3%B3n." target="_blank" rel="noopener">Escribir por WhatsApp</a>
+          <a class="ai-btn" href="tel:+528712200427">Llamar ahora · 871 220 0427</a>
+          <button class="ai-btn" type="button" id="aiVcard">Guardar contacto</button>
+          <button class="ai-btn" type="button" id="aiShare">Compartir esta página</button>
+          <p class="ai-nota">Torreón, Coahuila · Respuesta el mismo día</p>
+        </div>
       </div>
+    </div>
     </div>
   </div>
 </section>
@@ -688,6 +736,30 @@ document.querySelectorAll('.revelar').forEach((el, i) => {
    JS 4 · Año actual en el pie de página
    ============================================================ */
 document.getElementById('anio').textContent = new Date().getFullYear();
+</script>
+<script>
+(function(){
+  var NUM='528712200427',f=document.getElementById('aiCotiza');if(!f)return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var l=['Hola, vi su página web y quiero cotizar:','• Producto: '+f.producto.value];
+    if(f.cantidad.value)l.push('• Cantidad: '+f.cantidad.value);
+    if(f.fecha.value)l.push('• Lo necesito para: '+f.fecha.value.split('-').reverse().join('/'));
+    l.push('• Archivo: '+(f.archivo.checked?'ya lo tengo':'necesito diseño'));
+    if(f.nombre.value)l.push('Soy '+f.nombre.value+'.');
+    window.open('https://wa.me/'+NUM+'?text='+encodeURIComponent(l.join('\n')),'_blank');
+  });
+  document.getElementById('aiVcard').addEventListener('click',function(){
+    var v='BEGIN:VCARD\nVERSION:3.0\nFN:Álvarez Impresores\nORG:Álvarez Impresores\nTEL;TYPE=CELL:+528712200427\nURL:https://lagunaswim.net/alvarez.html\nADR:;;;Torreón;Coahuila;;México\nEND:VCARD';
+    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([v],{type:'text/vcard'}));
+    a.download='Alvarez-Impresores.vcf';document.body.appendChild(a);a.click();a.remove();
+  });
+  document.getElementById('aiShare').addEventListener('click',function(){
+    var d={title:'Álvarez Impresores',text:'Imprenta en Torreón: te cotizan el mismo día por WhatsApp',url:'https://lagunaswim.net/alvarez.html'};
+    if(navigator.share)navigator.share(d).catch(function(){});
+    else window.open('https://wa.me/?text='+encodeURIComponent(d.text+' '+d.url),'_blank');
+  });
+})();
 </script>
 </body>
 </html>
