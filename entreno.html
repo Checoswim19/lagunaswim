@@ -282,11 +282,12 @@ var KW = "(?:Calentamiento|Activaci[oó]n|Principal|Serie principal|Bloque|TEST|
 function normalize(raw){
   var t = String(raw).replace(/\r/g,"");
   t = t.replace(/\s*(—\s*)?(FRASE DE LA SEMANA\s*:|LEYENDA\s*:)/g, "\n$2");
-  t = t.replace(/\s*(?:📅|🗓️?)?\s*\b(LUNES|MARTES|MI[ÉE]RCOLES|JUEVES|VIERNES|S[ÁA]BADO|DOMINGO)\b(?=\s*[–—:(-])/g, "\n$1");
+  t = t.replace(/\s*(?:\p{Extended_Pictographic}\uFE0F?\s*)*\b(LUNES|MARTES|MI[ÉE]RCOLES|JUEVES|VIERNES|S[ÁA]BADO|DOMINGO)\b(?=\s*[–—:(-])/gu, "\n$1");
+  t = t.replace(/\s+(Total\s*:)/g, "\n$1");
   t = t.replace(/\s+Objetivo\s*:\s*/g, "\nObjetivo:\n");
   t = t.replace(new RegExp("\\s+("+KW+"(?::\\s*)?[^:•\\n()]*\\([^)]*\\)\\s*:|"+KW+"[^:•\\n()]*:)","g"), "\n$1\n");
   t = t.replace(/\s*•\s*/g, "\n• ");
-  return t.replace(/^\s*(?:📅|🗓️?)\s*/gm,"");
+  return t.replace(/^[ \t]*(?:\p{Extended_Pictographic}\uFE0F?[ \t]*)+/gmu,"").replace(/(?:[ \t]*\p{Extended_Pictographic}\uFE0F?)+[ \t]*$/gmu,"");
 }
 function parse(raw){
   raw = normalize(raw);
@@ -309,8 +310,7 @@ function parse(raw){
     if(!day){ intro.push(l); return; }
     if(/^objetivo\s*:/i.test(l)){ pendingObj = true; return; }
     if(pendingObj){ pendingObj = false; if(!/:$/.test(l) && !/^[·•*]/.test(l)){ day.focus = (day.focus?day.focus+" · ":"")+l; return; } }
-    m = l.match(/^total\s*:?\s*([\d.,]+)\s*m/i);
-    if(m){ day.total = num(m[1]); return; }
+    if(/^total\s*:/i.test(l)){ m = l.match(/([\d.,]+)\s*m\s*$/i) || l.match(/^total\s*:?\s*([\d.,]+)/i); if(m) day.total = num(m[1]); return; }
     if(/:$/.test(l) && !/^[·•*–-]\s/.test(l)){
       var t = l.slice(0,-1).trim(), mm = t.match(/\(([^)]*)\)\s*$/);
       sec = { title: t.replace(/\([^)]*\)\s*$/,"").trim(), meta: mm?mm[1].trim():"", items: [] };
