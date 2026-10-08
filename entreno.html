@@ -273,13 +273,25 @@ function kindOf(title){
   var t = title.toLowerCase();
   if(/seco|gimnasio|fuera del agua/.test(t)) return "dry";
   if(/calentamiento|activaci/.test(t)) return "warm";
-  if(/principal|serie|bloque|main/.test(t)) return "main";
+  if(/principal|serie|bloque|main|test/.test(t)) return "main";
   if(/enfriamiento|vuelta a la calma|afloje|recuperaci/.test(t)) return "cool";
   return "other";
 }
+/* Acomoda texto que llega en un solo renglón (WhatsApp, copiar/pegar): separa días, bloques y viñetas */
+var KW = "(?:Calentamiento|Activaci[oó]n|Principal|Serie principal|Bloque|TEST|Enfriamiento|Vuelta a la calma|T[ée]cnica)";
+function normalize(raw){
+  var t = String(raw).replace(/\r/g,"");
+  t = t.replace(/\s*(—\s*)?(FRASE DE LA SEMANA\s*:|LEYENDA\s*:)/g, "\n$2");
+  t = t.replace(/\s*(?:📅|🗓️?)?\s*\b(LUNES|MARTES|MI[ÉE]RCOLES|JUEVES|VIERNES|S[ÁA]BADO|DOMINGO)\b(?=\s*[–—:(-])/g, "\n$1");
+  t = t.replace(/\s+Objetivo\s*:\s*/g, "\nObjetivo:\n");
+  t = t.replace(new RegExp("\\s+("+KW+"(?::\\s*)?[^:•\\n()]*\\([^)]*\\)\\s*:|"+KW+"[^:•\\n()]*:)","g"), "\n$1\n");
+  t = t.replace(/\s*•\s*/g, "\n• ");
+  return t.replace(/^\s*(?:📅|🗓️?)\s*/gm,"");
+}
 function parse(raw){
+  raw = normalize(raw);
   var lines = String(raw).replace(/\r/g,"").split("\n").map(function(l){return l.trim();});
-  var intro = [], days = [], day = null, sec = null, summary = null, seen = {};
+  var intro = [], days = [], day = null, sec = null, summary = null, seen = {}, pendingObj = false;
   lines.forEach(function(l){
     if(!l || /^[=_*~-]{3,}$/.test(l)) return;
     if(summary){ summary.push(l.replace(/^[·•*]\s*/,"")); return; }
@@ -295,6 +307,8 @@ function parse(raw){
       days.push(day); sec = null; return;
     }
     if(!day){ intro.push(l); return; }
+    if(/^objetivo\s*:/i.test(l)){ pendingObj = true; return; }
+    if(pendingObj){ pendingObj = false; if(!/:$/.test(l) && !/^[·•*]/.test(l)){ day.focus = (day.focus?day.focus+" · ":"")+l; return; } }
     m = l.match(/^total\s*:?\s*([\d.,]+)\s*m/i);
     if(m){ day.total = num(m[1]); return; }
     if(/:$/.test(l) && !/^[·•*–-]\s/.test(l)){
@@ -332,7 +346,12 @@ function render(data, opts){
   h += '</div>';
   if(p.days.length) h += '<div class="stats"><div><b>'+p.days.length+'</b><span>'+(p.days.length===1?"sesión":"sesiones")+'</span></div><div><b>'+fmt(week)+' m</b><span>total de la semana</span></div></div>';
   h += '</header>';
-  if(p.intro.length) h += '<p class="quote">'+esc(p.intro.join(" "))+'</p>';
+  var inLeg = false, quote = p.intro.filter(function(l){
+    if(/^leyenda\s*:/i.test(l)){ inLeg = true; return false; }
+    if(inLeg && /^[·•*]/.test(l)) return false;
+    inLeg = false; return true;
+  }).map(function(l){ return l.replace(/^frase de la semana\s*:\s*/i,""); });
+  if(quote.length) h += '<p class="quote">'+esc(quote.join(" "))+'</p>';
   if(!p.days.length){
     h += '<div class="empty">Pega el entrenamiento empezando cada día con su nombre, por ejemplo: <br><strong>MIÉRCOLES – Recuperación activa (2000 m)</strong></div>';
   }
