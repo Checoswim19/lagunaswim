@@ -1492,7 +1492,11 @@ document.getElementById('duelCreate').onclick=function(){
   ref.set({meta:{st:'wait',h:homeC.abbr,a:awayC.abbr,m:pickedMin,t:Date.now(),hb:Date.now()}})
     .then(function(){
       NET.role='host';NET.code=code;NET.ref=ref;
-      ref.onDisconnect().remove();
+      // FIX: antes onDisconnect().remove() borraba la sala cuando el anfitrión salía
+      // a WhatsApp a mandar el código (el celular corta la conexión) y el rival veía
+      // "No existe la sala". Ahora solo se borra al cerrar la página de verdad.
+      if(!NET.pagehideOn){NET.pagehideOn=true;
+        window.addEventListener('pagehide',function(e){if(!e.persisted&&NET.role==='host'&&NET.ref){try{NET.ref.remove();}catch(err){}}});}
       var url=location.origin+location.pathname+'?duelo='+code;
       var qr='https://api.qrserver.com/v1/create-qr-code/?size=130x130&data='+encodeURIComponent(url);
       var wa='https://wa.me/?text='+encodeURIComponent('🤽 ¡Te reto a WATERPOLO Laguna Swim! Entra y usa el código '+code+' 👉 '+url);
@@ -1521,6 +1525,7 @@ function duelJoin(code){
     var m=sn.val();
     if(!m){NET.lobby=false;duelMsg('❌ No existe la sala <b>'+code+'</b>. Revisa el código (el anfitrión debe tener su pantalla abierta).');return;}
     var vivo=(Date.now()-(m.hb||m.t||0))<15000;
+    if(m.st==='wait'&&Date.now()-(m.t||0)>20*60000){NET.lobby=false;duelMsg('❌ Esa sala ya expiró. Pide un código nuevo.');return;}
     if(m.st==='play'&&!vivo){NET.lobby=false;duelMsg('❌ Esa sala ya terminó. Pide un código nuevo.');return;}
     NET.role='guest';NET.code=code;NET.ref=ref;
     pickedMin=m.m||2;MATCH=pickedMin*60;

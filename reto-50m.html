@@ -4228,8 +4228,11 @@
       duelState.duelRef = duelDb.ref('duels/' + code);
       await duelState.duelRef.set(duelData);
 
-      // Configurar auto-remove al cerrar la pestaña
-      duelState.duelRef.onDisconnect().remove();
+      // FIX: antes se usaba onDisconnect().remove(). En el celular, al salir a WhatsApp
+      // a mandar el código, el navegador corta la conexión y Firebase BORRABA la sala:
+      // el rival veía "El duelo no existe". Ahora la sala solo se borra al cerrar la
+      // página de verdad (pagehide) o al cancelar; si no, expira sola a los 10 min.
+      borrarDueloAlCerrar();
 
       mostrarLobbyCreador(code, nick);
       escucharRivalUnirse();
@@ -4403,6 +4406,21 @@
     }
   }
 
+  // Borra mi parte del duelo solo cuando la página se cierra de verdad
+  // (no cuando el celular cambia de app para mandar el código por WhatsApp).
+  let duelPagehideOn = false;
+  function borrarDueloAlCerrar() {
+    if (duelPagehideOn) return;
+    duelPagehideOn = true;
+    window.addEventListener('pagehide', function (e) {
+      if (e.persisted || !duelState.duelRef) return;
+      try {
+        if (duelState.isCreator) duelState.duelRef.remove();
+        else duelState.duelRef.child('rival').remove();
+      } catch (err) {}
+    });
+  }
+
   // ===== UNIRSE A UN DUELO (desde URL ?duelo=ABC123) =====
   function checkUrlForDuel() {
     const params = new URLSearchParams(window.location.search);
@@ -4467,6 +4485,12 @@
         $('overlayStart').classList.remove('hidden');
         return;
       }
+      if (data.expiresAt && Date.now() > data.expiresAt && data.status === 'waiting') {
+        alert('Este duelo ya expiró. Pide un código nuevo.');
+        $('overlayDueloUnirse').classList.add('hidden');
+        $('overlayStart').classList.remove('hidden');
+        return;
+      }
       if (data.rival) {
         alert('Este duelo ya tiene un rival. Pide otro código.');
         return;
@@ -4488,8 +4512,8 @@
         },
       });
 
-      // Auto-cleanup
-      duelState.duelRef.child('rival').onDisconnect().remove();
+      // FIX: igual que el creador, no se borra al salir un momento de la app
+      borrarDueloAlCerrar();
 
       mostrarLobbyRival(data.creator.nickname, nick);
       escucharInicioCarrera();
