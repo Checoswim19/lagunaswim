@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Panel Copa 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#13294B; --water:#1F6E8C; --buoy:#F07D1A; --mist:#EEF3F1; --line:#C9D6D3; --white:#fff;
+  --ok:#1E7B4F; --okbg:#DDF1E6; --warn:#9A5B00; --warnbg:#FFF0D6; --bad:#B3261E; --badbg:#FBE3E1; --muted:#5A6577;
+  --display:"Big Shoulders Display","Arial Narrow",sans-serif; --body:"Atkinson Hyperlegible",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--mist);color:var(--ink);font:16px/1.5 var(--body)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.hidden{display:none!important}
+header{background:var(--ink);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+header h1{font-family:var(--display);font-weight:900;font-size:26px;margin:0;line-height:1;text-transform:uppercase;flex:1}
+header small{display:block;font-family:var(--body);font-weight:400;font-size:13px;text-transform:none;opacity:.8}
+.btn{text-decoration:none;display:inline-block;border:2px solid var(--line);background:var(--white);border-radius:10px;padding:8px 14px;font-weight:700;cursor:pointer}
+.btn.pri{background:var(--buoy);border-color:var(--buoy);color:#fff}
+.btn.sm{padding:5px 10px;font-size:14px}
+header .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.gate{max-width:420px;margin:60px auto;text-align:center;background:var(--white);border-radius:16px;padding:32px 20px;border:2px solid var(--line)}
+.gate h2{font-family:var(--display);font-size:34px;margin:0 0 8px}
+nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+nav button{white-space:nowrap;border:2px solid var(--line);background:var(--white);border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer}
+nav button[aria-selected=true]{background:var(--water);border-color:var(--water);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+@media(min-width:720px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--white);border:2px solid var(--line);border-radius:14px;padding:12px 14px}
+.kpi b{display:block;font-family:var(--display);font-weight:900;font-size:36px;line-height:1}
+.kpi span{font-size:14px;color:var(--muted)}
+.card{background:var(--white);border:2px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-family:var(--display);font-weight:800;font-size:24px;margin:0 0 10px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tfoot td{font-weight:700;border-bottom:0}
+.bar{height:10px;background:var(--mist);border-radius:6px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--buoy)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.filters input,.filters select{border:2px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--white)}
+.filters input{flex:1;min-width:180px}
+.row{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.num{font-family:var(--display);font-weight:900;font-size:30px;line-height:1;min-width:64px}
+.row h3{margin:0;font-size:17px}
+.row .meta{font-size:14px;color:var(--muted)}
+.row .acts{grid-column:2;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-right:4px;vertical-align:2px}
+.t-ok{background:var(--okbg);color:var(--ok)} .t-warn{background:var(--warnbg);color:var(--warn)} .t-bad{background:var(--badbg);color:var(--bad)} .t-info{background:#DCEBF3;color:var(--water)}
+.members{grid-column:2;font-size:14px;margin-top:4px;padding-left:10px;border-left:3px solid var(--line)}
+.grid2{display:grid;gap:14px}
+@media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
+.form{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+.form label{font-size:13px;font-weight:700;display:block}
+.form input,.form select{width:100%;border:2px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--white);font-weight:400}
+.form .full{grid-column:1/-1}
+.note{font-size:14px;color:var(--muted)}
+.empty{color:var(--muted);padding:16px 0}
+.sig{text-align:center;font-size:13px;color:var(--muted);margin:24px 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Panel Copa 2027<small id="who">Copa de Aguas Abiertas Laguna Swim · 30 de mayo de 2027</small></h1>
+  <button class="btn hidden" id="outBtn" type="button">Salir</button>
+</header>
+
+<div class="gate" id="gate">
+  <h2>Acceso privado</h2>
+  <p id="gateMsg">Entra con tu cuenta de Google de organizador.</p>
+  <button class="btn pri" id="inBtn" type="button">Entrar con Google</button>
+</div>
+
+<main id="app" class="hidden">
+  <div class="kpis" id="kpis"></div>
+  <nav role="tablist">
+    <button role="tab" data-tab="resumen" aria-selected="true">Resumen</button>
+    <button role="tab" data-tab="inscritos" aria-selected="false">Inscritos</button>
+    <button role="tab" data-tab="relevos" aria-selected="false">Relevos</button>
+    <button role="tab" data-tab="produccion" aria-selected="false">Pedido</button>
+    <button role="tab" data-tab="equipos" aria-selected="false">Equipos</button>
+    <button role="tab" data-tab="patrocinios" aria-selected="false">Patrocinios</button>
+  </nav>
+
+  <section data-panel="resumen">
+    <div class="card">
+      <h2>Por prueba</h2>
+      <div class="tw"><table id="tPruebas"></table></div>
+      <p class="note">Cuenta cada número de competidor: una segunda prueba suma en su distancia. Los relevos cuentan equipos y nadadores.</p>
+    </div>
+    <div class="grid2">
+      <div class="card"><h2>Pagos</h2><div class="tw"><table id="tPagos"></table></div></div>
+      <div class="card"><h2>Por vencer o vencidos</h2><div id="vencidos"></div><p class="note">Pendientes con más de 72 horas desde su inscripción. Al cancelarlos se libera su lugar en el cupo.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="inscritos" class="hidden">
+    <div class="card">
+      <div class="filters">
+        <input type="search" id="q" placeholder="Buscar nombre, número, equipo o WhatsApp">
+        <select id="fDist"><option value="">Todas las pruebas</option></select>
+        <select id="fEstado"><option value="">Todos los estados</option><option>pendiente de pago</option><option>pagado</option><option>cancelado</option></select>
+        <button class="btn" id="csvBtn" type="button">Descargar CSV</button>
+      </div>
+      <div id="lista"></div>
+    </div>
+  </section>
+
+  <section data-panel="relevos" class="hidden">
+    <div id="relevos"></div>
+  </section>
+
+  <section data-panel="produccion" class="hidden">
+    <div class="filters"><select id="fProd"><option value="todos">Todos los inscritos (sin cancelados)</option><option value="pagado">Solo pagados</option></select></div>
+    <div class="grid2">
+      <div class="card"><h2>Playeras por talla</h2><div class="tw"><table id="tTallas"></table></div><p class="note">Una por persona inscrita en prueba individual. Los relevos no llevan playera.</p></div>
+      <div class="card"><h2>Kit y premiación</h2><div class="tw"><table id="tKit"></table></div></div>
+    </div>
+  </section>
+
+  <section data-panel="equipos" class="hidden">
+    <div class="card"><h2>Equipos con más nadadores</h2><div class="tw"><table id="tEquipos"></table></div><p class="note">Agrupa por el nombre del club o equipo sin importar mayúsculas ni acentos. Cuenta personas, no pruebas; los integrantes de relevo suman a su club.</p></div>
+  </section>
+
+  <section data-panel="patrocinios" class="hidden">
+    <div class="kpis" id="kSpons"></div>
+    <div class="card">
+      <h2 id="spTitle">Agregar patrocinador</h2>
+      <form class="form" id="spForm">
+        <label class="full">Nombre<input name="nombre" required></label>
+        <label>Nivel<select name="nivel"><option>Presentador</option><option>Gorra oficial</option><option>Oro</option><option>Manga</option><option>Plata</option><option>Amigos</option><option>Especie</option></select></label>
+        <label>Orden en la página<input name="orden" type="number" min="1" value="10"></label>
+        <label>Comprometido ($)<input name="comprometido" type="number" min="0" step="100"></label>
+        <label>Cobrado ($)<input name="cobrado" type="number" min="0" step="100"></label>
+        <label>Contacto<input name="contacto" placeholder="Nombre y teléfono"></label>
+        <label>Link<input name="link" type="url" placeholder="https://"></label>
+        <label class="full">Logo (URL de Cloudinary)<input name="logo" type="url" placeholder="https://res.cloudinary.com/dg84htrzg/..."></label>
+        <label class="full" style="display:flex;gap:8px;align-items:center;font-weight:400"><input name="mostrar" type="checkbox" style="width:auto"> Mostrar en la barra de patrocinadores de copa.html</label>
+        <div class="full" style="display:flex;gap:8px"><button class="btn pri" type="submit">Guardar</button><button class="btn hidden" type="button" id="spCancel">Cancelar edición</button></div>
+      </form>
+      <p class="note">Los montos y el contacto se guardan aparte y no se publican; en la página solo aparecen nombre, logo y link.</p>
+    </div>
+    <div class="card"><h2>Patrocinadores</h2><div class="tw"><table id="tSpons"></table></div></div>
+  </section>
+  <p class="sig">Laguna Swim International · Fuertes y Valientes, Josué 1:9</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+<script>
+/* ====== CONFIGURACIÓN ====== */
+const ADMINS = ['checoswim@gmail.com'];
+const NODE = 'copa2027';
+const CUPO = 500;
+const HORAS_PAGO = 72;
+const FB_CFG = {
+  apiKey: "AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA",
+  authDomain: "laguna-swim-chrono.firebaseapp.com",
+  databaseURL: "https://laguna-swim-chrono-default-rtdb.firebaseio.com",
+  projectId: "laguna-swim-chrono",
+  storageBucket: "laguna-swim-chrono.firebasestorage.app",
+  messagingSenderId: "618459577354",
+  appId: "1:618459577354:web:2e26bda92112ce241c33f3"
+};
+const PRUEBAS = ['3 km Desafío','1.5 km Sprint','1.5 km Aletas','500 m Infantil','Relevo 3×500 m'];
+const TALLAS = ['Infantil 6-8','Infantil 10-12','Infantil 14-16','CH','M','G','XG','XXG'];
+/* =========================== */
+
+firebase.initializeApp(FB_CFG);
+const auth = firebase.auth(), db = firebase.database();
+const $ = s => document.querySelector(s);
+const money = n => '$' + Math.round(n || 0).toLocaleString('es-MX');
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim().replace(/\s+/g, ' ');
+const wa = t => { const d = String(t || '').replace(/\D/g, ''); return d ? 'https://wa.me/' + (d.length === 10 ? '52' + d : d) : null; };
+
+let INS = {}, SPONS = {}, CONTADOR = 0, editId = null;
+
+/* ---------- acceso ---------- */
+$('#inBtn').onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => { $('#gateMsg').textContent = 'No se pudo entrar: ' + e.message; });
+$('#outBtn').onclick = () => auth.signOut();
+auth.onAuthStateChanged(u => {
+  const ok = u && ADMINS.includes((u.email || '').toLowerCase());
+  $('#gate').classList.toggle('hidden', !!ok); $('#app').classList.toggle('hidden', !ok); $('#outBtn').classList.toggle('hidden', !u);
+  if (u && !ok){ $('#gateMsg').textContent = `La cuenta ${u.email} no tiene acceso a este panel.`; $('#inBtn').textContent = 'Entrar con otra cuenta'; return; }
+  if (!ok) return;
+  $('#who').textContent = 'Sesión: ' + u.email;
+  db.ref(NODE + '/inscripciones').on('value', s => { INS = s.val() || {}; pintar(); }, err => alerta(err));
+  db.ref(NODE + '/contador').on('value', s => { CONTADOR = s.val() || 0; pintar(); });
+  db.ref(NODE + '/patrocinadoresCRM').on('value', s => { SPONS = s.val() || {}; pintarSpons(); });
+});
+function alerta(err){ $('#lista').innerHTML = `<p class="empty">No se pudieron leer los datos: ${esc(err.message)}</p>`; }
+
+/* ---------- pestañas ---------- */
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.setAttribute('aria-selected', x === b));
+  document.querySelectorAll('[data-panel]').forEach(p => p.classList.toggle('hidden', p.dataset.panel !== b.dataset.tab));
+});
+
+/* ---------- modelo ---------- */
+function registros(){
+  return Object.entries(INS).filter(([, r]) => r && typeof r === 'object').map(([id, r]) => ({ id, ...r }))
+    .sort((a, b) => (Number(a.numero) || 1e9) - (Number(b.numero) || 1e9));
+}
+const activo = r => r.estado !== 'cancelado';
+const pagado = r => r.estado === 'pagado';
+const personas = r => r.relevo ? (r.integrantes || []).length || 3 : 1;
+const horas = r => typeof r.creado === 'number' ? (Date.now() - r.creado) / 36e5 : 0;
+/* Cada número de competidor como una fila: individuales, segundas pruebas e integrantes de relevo */
+function participaciones(lista){
+  const out = [];
+  lista.forEach(r => {
+    if (r.relevo){
+      (r.integrantes || []).forEach(m => out.push({ r, prueba:'Relevo 3×500 m', numero: m.numero || (r.folio + '-' + m.posta), nombre: m.nombre + ' ' + m.apellidos, categoria: 'Relevo ' + r.rama, rama: m.sexo === 'F' ? 'Femenil' : 'Varonil', edad: m.edadCompetencia, talla: '', equipo: r.equipo, club: r.club, souvenir: m.souvenir }));
+    } else {
+      out.push({ r, prueba: r.distancia, numero: r.numero || r.folio || r.id, nombre: r.nombre + ' ' + r.apellidos, categoria: r.categoria, rama: r.rama, edad: r.edadCompetencia, talla: r.talla, equipo: '', club: r.club, souvenir: r.souvenir });
+      if (r.segunda) out.push({ r, prueba: r.segunda.distancia, numero: r.segunda.numero || 'por asignar', nombre: r.nombre + ' ' + r.apellidos, categoria: r.segunda.categoria, rama: r.rama, edad: r.edadCompetencia, talla: '', equipo: '', club: r.club, segunda: true });
+    }
+  });
+  return out;
+}
+
+/* ---------- pintar todo ---------- */
+function pintar(){
+  const L = registros(), A = L.filter(activo), P = L.filter(pagado);
+  const nPers = A.reduce((s, r) => s + personas(r), 0);
+  const ingreso = P.reduce((s, r) => s + (r.total || 0), 0);
+  const porCobrar = A.filter(r => !pagado(r)).reduce((s, r) => s + (r.total || 0), 0);
+  $('#kpis').innerHTML = [
+    [nPers, `nadadores inscritos · quedan ${Math.max(CUPO - CONTADOR, 0)} lugares`],
+    [P.reduce((s, r) => s + personas(r), 0), 'nadadores con pago confirmado'],
+    [money(ingreso), 'cobrado'],
+    [money(porCobrar), 'por cobrar']
+  ].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('') +
+  `<div class="kpi" style="grid-column:1/-1"><span>Cupo usado: ${CONTADOR} de ${CUPO}</span><div class="bar"><i style="width:${Math.min(CONTADOR / CUPO * 100, 100)}%"></i></div></div>`;
+
+  /* por prueba */
+  const parts = participaciones(A);
+  const filasP = PRUEBAS.map(p => {
+    const x = parts.filter(q => q.prueba === p);
+    const fem = x.filter(q => q.rama === 'Femenil').length, var_ = x.filter(q => q.rama === 'Varonil').length;
+    const seg = x.filter(q => q.segunda).length;
+    const pag = x.filter(q => pagado(q.r)).length;
+    const equipos = p.startsWith('Relevo') ? new Set(x.map(q => q.r.id)).size : null;
+    return `<tr><td>${p}${equipos !== null ? ` <span class="tag t-info">${equipos} ${equipos === 1 ? 'equipo' : 'equipos'}</span>` : ''}</td><td class="n">${x.length}</td><td class="n">${fem}</td><td class="n">${var_}</td><td class="n">${seg || ''}</td><td class="n">${pag}</td></tr>`;
+  }).join('');
+  $('#tPruebas').innerHTML = `<thead><tr><th>Prueba</th><th class="n">Números</th><th class="n">Fem</th><th class="n">Var</th><th class="n">2ª prueba</th><th class="n">Pagados</th></tr></thead><tbody>${filasP}</tbody><tfoot><tr><td>Total</td><td class="n">${parts.length}</td><td colspan="4"></td></tr></tfoot>`;
+
+  /* pagos */
+  const est = ['pendiente de pago', 'pagado', 'cancelado'].map(e => { const x = L.filter(r => (r.estado || 'pendiente de pago') === e); return `<tr><td>${e}</td><td class="n">${x.length}</td><td class="n">${money(x.reduce((s, r) => s + (r.total || 0), 0))}</td></tr>`; }).join('');
+  const grupo = A.filter(r => r.precioGrupo).length, desc = A.filter(r => r.descuentoCompetencia).length, seg = A.filter(r => r.segunda).length;
+  $('#tPagos').innerHTML = `<thead><tr><th>Estado</th><th class="n">Inscripciones</th><th class="n">Monto</th></tr></thead><tbody>${est}</tbody><tfoot><tr><td colspan="3" style="font-weight:400" class="note">Con precio de grupo: ${grupo} · con 15% de abril: ${desc} · con segunda prueba: ${seg}</td></tr></tfoot>`;
+
+  const venc = A.filter(r => !pagado(r) && horas(r) >= HORAS_PAGO - 12).sort((a, b) => horas(b) - horas(a));
+  $('#vencidos').innerHTML = venc.length ? venc.map(r => `<div class="row"><span class="num">${esc(r.numero || r.folio || '—')}</span><div><h3>${esc(r.relevo ? 'Equipo ' + r.equipo : r.nombre + ' ' + r.apellidos)}</h3><div class="meta">${esc(r.distancia)} · ${money(r.total)} · <span class="tag ${horas(r) >= HORAS_PAGO ? 't-bad' : 't-warn'}">${Math.floor(horas(r))} h</span></div></div><div class="acts">${acciones(r)}</div></div>`).join('') : '<p class="empty">Nada pendiente por vencer.</p>';
+
+  pintarLista(); pintarRelevos(); pintarProd(); pintarEquipos();
+  const fd = $('#fDist'); if (fd.options.length === 1) fd.innerHTML += PRUEBAS.map(p => `<option>${p}</option>`).join('');
+}
+
+function acciones(r){
+  const w = wa(r.whatsapp);
+  const msg = encodeURIComponent(`Hola, te escribimos de la Copa de Aguas Abiertas Laguna Swim sobre la inscripción ${r.numero || r.folio || ''}${r.relevo ? ' del equipo ' + r.equipo : ''}.`);
+  return [
+    !pagado(r) ? `<button class="btn sm pri" data-est="pagado" data-id="${esc(r.id)}">Marcar pagado</button>` : '',
+    r.estado !== 'pendiente de pago' && r.estado ? `<button class="btn sm" data-est="pendiente de pago" data-id="${esc(r.id)}">Volver a pendiente</button>` : '',
+    r.estado !== 'cancelado' ? `<button class="btn sm" data-est="cancelado" data-id="${esc(r.id)}">Cancelar</button>` : '',
+    w ? `<a class="btn sm" href="${w}?text=${msg}" target="_blank" rel="noopener">WhatsApp</a>` : ''
+  ].join('');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-est]'); if (!b) return;
+  const r = INS[b.dataset.id]; if (!r) return;
+  const nuevo = b.dataset.est;
+  if (nuevo === 'cancelado' && !confirm(`¿Cancelar la inscripción ${r.numero || r.folio || ''}? Se libera su lugar en el cupo; el número queda reservado y no se reasigna.`)) return;
+  const upd = { estado: nuevo, actualizado: firebase.database.ServerValue.TIMESTAMP, por: auth.currentUser.email };
+  if (nuevo === 'pagado') upd.pagadoEn = firebase.database.ServerValue.TIMESTAMP;
+  const antes = r.estado || 'pendiente de pago';
+  const delta = nuevo === 'cancelado' && antes !== 'cancelado' ? -personas(r) : antes === 'cancelado' && nuevo !== 'cancelado' ? personas(r) : 0;
+  db.ref(`${NODE}/inscripciones/${b.dataset.id}`).update(upd)
+    .then(() => delta && db.ref(NODE + '/contador').transaction(n => Math.max((n || 0) + delta, 0)))
+    .catch(err => alert('No se pudo guardar: ' + err.message));
+});
+
+function tagEstado(r){
+  const e = r.estado || 'pendiente de pago';
+  return `<span class="tag ${e === 'pagado' ? 't-ok' : e === 'cancelado' ? 't-bad' : horas(r) >= HORAS_PAGO ? 't-bad' : 't-warn'}">${e === 'pendiente de pago' && horas(r) >= HORAS_PAGO ? 'pago vencido' : e}</span>`;
+}
+
+function pintarLista(){
+  const q = norm($('#q').value), fd = $('#fDist').value, fe = $('#fEstado').value;
+  const L = registros().filter(r => {
+    if (fe && (r.estado || 'pendiente de pago') !== fe) return false;
+    if (fd && r.distancia !== fd && !(r.segunda && r.segunda.distancia === fd)) return false;
+    if (!q) return true;
+    const texto = norm([r.numero, r.folio, r.nombre, r.apellidos, r.equipo, r.club, r.whatsapp, r.correo, r.segunda?.numero, ...(r.integrantes || []).map(m => m.nombre + ' ' + m.apellidos + ' ' + m.numero)].join(' '));
+    return texto.includes(q);
+  });
+  $('#lista').innerHTML = L.length ? `<p class="note">${L.length} inscripciones</p>` + L.map(r => `
+    <div class="row">
+      <span class="num">${esc(r.numero || r.folio || '—')}</span>
+      <div>
+        <h3>${esc(r.relevo ? 'Equipo ' + r.equipo : r.nombre + ' ' + r.apellidos)} ${tagEstado(r)}${r.souvenir ? '<span class="tag t-info">souvenir</span>' : ''}</h3>
+        <div class="meta">${esc(r.distancia)} · ${esc(r.relevo ? r.rama : r.categoria + ' ' + r.rama)}${r.talla && !r.relevo ? ' · playera ' + esc(r.talla) : ''}${r.club ? ' · ' + esc(r.club) : ''} · <b>${money(r.total)}</b>${r.tipoDescuento ? ' (' + esc(r.tipoDescuento) + ')' : ''}</div>
+        ${r.segunda ? `<div class="meta">+ ${esc(r.segunda.distancia)} · ${esc(r.segunda.categoria)} · número <b>${esc(r.segunda.numero)}</b></div>` : ''}
+        <div class="meta">${esc(r.whatsapp)} · ${esc(r.correo)} · ${esc(r.ciudad)}${r.tutor ? ' · tutor: ' + esc(r.tutor) : ''}${r.discapacidad ? ' · <span class="tag t-info">discapacidad: ' + esc(r.discapacidad.tipo) + '</span>' : ''}</div>
+      </div>
+      ${r.relevo ? `<div class="members">${(r.integrantes || []).map(m => `<b>${esc(m.numero || r.folio + '-' + m.posta)}</b> ${esc(m.nombre)} ${esc(m.apellidos)} · ${m.sexo === 'F' ? 'mujer' : 'hombre'}, ${esc(m.edadCompetencia)} años`).join('<br>')}</div>` : ''}
+      <div class="acts">${acciones(r)}</div>
+    </div>`).join('') : '<p class="empty">Sin inscripciones con ese filtro.</p>';
+}
+['#q', '#fDist', '#fEstado'].forEach(s => $(s).addEventListener('input', pintarLista));
+
+function pintarRelevos(){
+  const R = registros().filter(r => r.relevo && activo(r));
+  $('#relevos').innerHTML = ['Femenil', 'Varonil', 'Mixto'].map(cat => {
+    const x = R.filter(r => r.rama === cat);
+    return `<div class="card"><h2>Relevo ${cat} · ${x.length} ${x.length === 1 ? 'equipo' : 'equipos'}</h2>${x.length ? x.map(r => `
+      <div class="row"><span class="num">${esc(r.folio)}</span><div><h3>${esc(r.equipo)} ${tagEstado(r)}</h3><div class="meta">${esc(r.club || '')}${r.club ? ' · ' : ''}${money(r.total)}</div></div>
+      <div class="members">${(r.integrantes || []).map(m => `Posta ${esc(m.posta)}: <b>${esc(m.numero || r.folio + '-' + m.posta)}</b> ${esc(m.nombre)} ${esc(m.apellidos)} (${m.sexo === 'F' ? 'M' : 'H'}, ${esc(m.edadCompetencia)})`).join('<br>')}</div></div>`).join('') : '<p class="empty">Todavía no hay equipos.</p>'}</div>`;
+  }).join('');
+}
+
+function pintarProd(){
+  const base = registros().filter($('#fProd').value === 'pagado' ? pagado : activo);
+  const indiv = base.filter(r => !r.relevo);
+  const tallas = TALLAS.map(t => [t, indiv.filter(r => r.talla === t).length]);
+  const otras = indiv.filter(r => r.talla && !TALLAS.includes(r.talla)).length;
+  $('#tTallas').innerHTML = `<thead><tr><th>Talla</th><th class="n">Playeras</th></tr></thead><tbody>${tallas.map(([t, n]) => `<tr><td>${t}</td><td class="n">${n}</td></tr>`).join('')}${otras ? `<tr><td>Otra</td><td class="n">${otras}</td></tr>` : ''}</tbody><tfoot><tr><td>Total</td><td class="n">${indiv.length}</td></tr></tfoot>`;
+  const parts = participaciones(base);
+  const relevistas = parts.filter(q => q.prueba.startsWith('Relevo')).length;
+  const equiposRel = base.filter(r => r.relevo);
+  const souv = parts.filter(q => q.souvenir).length;
+  const conRel = ['Femenil', 'Varonil', 'Mixto'].filter(c => equiposRel.some(r => r.rama === c)).length;
+  $('#tKit').innerHTML = `<thead><tr><th>Concepto</th><th class="n">Cantidad</th></tr></thead><tbody>
+    <tr><td>Gorras numeradas (una por número)</td><td class="n">${parts.length}</td></tr>
+    <tr><td>Chips (uno por número)</td><td class="n">${parts.length}</td></tr>
+    <tr><td>Medallas de finalista</td><td class="n">${parts.length}</td></tr>
+    <tr><td>· de ellas, para integrantes de relevo</td><td class="n">${relevistas}</td></tr>
+    <tr><td>Segundas pruebas (gorra, chip y medalla extra)</td><td class="n">${parts.filter(q => q.segunda).length}</td></tr>
+    <tr><td>Souvenirs</td><td class="n">${souv}</td></tr>
+    <tr><td>Trofeos de relevo (3 por categoría con equipos)</td><td class="n">${conRel * 3}</td></tr>
+  </tbody>`;
+}
+$('#fProd').addEventListener('input', pintarProd);
+
+function pintarEquipos(){
+  const m = new Map();
+  registros().filter(activo).forEach(r => {
+    const nombre = (r.club || '').trim(); if (!nombre) return;
+    const k = norm(nombre); const e = m.get(k) || { nombre, n: 0, pag: 0 };
+    if (e.nombre === e.nombre.toLowerCase() && nombre !== nombre.toLowerCase()) e.nombre = nombre;
+    e.n += personas(r); if (pagado(r)) e.pag += personas(r); m.set(k, e);
+  });
+  const L = [...m.values()].sort((a, b) => b.n - a.n);
+  $('#tEquipos').innerHTML = L.length ? `<thead><tr><th>#</th><th>Equipo</th><th class="n">Nadadores</th><th class="n">Pagados</th><th>Grupo 10+</th></tr></thead><tbody>${L.map((e, i) => `<tr><td>${i + 1}</td><td>${esc(e.nombre)}</td><td class="n">${e.n}</td><td class="n">${e.pag}</td><td>${e.n >= 10 ? '<span class="tag t-ok">sí</span>' : `faltan ${10 - e.n}`}</td></tr>`).join('')}</tbody>` : '<tbody><tr><td class="empty">Nadie ha escrito club o equipo todavía.</td></tr></tbody>';
+}
+
+/* ---------- CSV ---------- */
+$('#csvBtn').onclick = () => {
+  const cols = ['numero', 'prueba', 'nombre', 'categoria', 'rama', 'edad', 'talla', 'equipo_relevo', 'club', 'estado', 'total_inscripcion', 'folio', 'whatsapp', 'correo', 'ciudad', 'tutor', 'emergencia', 'tel_emergencia', 'medico'];
+  const filas = participaciones(registros()).map(q => [q.numero, q.prueba, q.nombre, q.categoria, q.rama, q.edad, q.talla, q.equipo, q.club, q.r.estado, q.segunda ? '' : q.r.total, q.r.folio || q.r.id, q.r.whatsapp, q.r.correo, q.r.ciudad, q.r.tutor, q.r.emergenciaNombre, q.r.emergenciaTel, q.r.medico]);
+  const csv = [cols, ...filas].map(f => f.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = `copa2027-inscritos-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+};
+
+/* ---------- patrocinios ---------- */
+function pintarSpons(){
+  const L = Object.entries(SPONS).map(([id, s]) => ({ id, ...s })).sort((a, b) => (a.orden ?? 99) - (b.orden ?? 99));
+  const comp = L.reduce((s, x) => s + (Number(x.comprometido) || 0), 0), cob = L.reduce((s, x) => s + (Number(x.cobrado) || 0), 0);
+  $('#kSpons').innerHTML = [[L.length, 'patrocinadores'], [money(comp), 'comprometido'], [money(cob), 'cobrado'], [money(comp - cob), 'por cobrar']].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
+  $('#tSpons').innerHTML = L.length ? `<thead><tr><th>Nombre</th><th>Nivel</th><th class="n">Comprometido</th><th class="n">Cobrado</th><th>En página</th><th></th></tr></thead><tbody>${L.map(s => `<tr><td>${esc(s.nombre)}<div class="note">${esc(s.contacto || '')}</div></td><td>${esc(s.nivel)}</td><td class="n">${money(s.comprometido)}</td><td class="n">${money(s.cobrado)}</td><td>${s.mostrar ? '<span class="tag t-ok">sí</span>' : 'no'}</td><td><button class="btn sm" data-sp="${esc(s.id)}">Editar</button> <button class="btn sm" data-spdel="${esc(s.id)}">Borrar</button></td></tr>`).join('')}</tbody>` : '<tbody><tr><td class="empty">Aún no hay patrocinadores registrados.</td></tr></tbody>';
+}
+const spF = $('#spForm');
+spF.onsubmit = async e => {
+  e.preventDefault();
+  const d = { nombre: spF.nombre.value.trim(), nivel: spF.nivel.value, orden: Number(spF.orden.value) || 99, comprometido: Number(spF.comprometido.value) || 0, cobrado: Number(spF.cobrado.value) || 0, contacto: spF.contacto.value.trim(), link: spF.link.value.trim(), logo: spF.logo.value.trim(), mostrar: spF.mostrar.checked, actualizado: firebase.database.ServerValue.TIMESTAMP };
+  if (!d.nombre) return;
+  const id = editId || db.ref(NODE + '/patrocinadoresCRM').push().key;
+  try {
+    await db.ref(`${NODE}/patrocinadoresCRM/${id}`).set(d);
+    await db.ref(`${NODE}/patrocinadores/${id}`).set(d.mostrar ? { nombre: d.nombre, logo: d.logo || null, link: d.link || null, orden: d.orden } : null);
+    limpiarSp();
+  } catch (err){ alert('No se pudo guardar: ' + err.message); }
+};
+function limpiarSp(){ editId = null; spF.reset(); spF.orden.value = 10; $('#spTitle').textContent = 'Agregar patrocinador'; $('#spCancel').classList.add('hidden'); }
+$('#spCancel').onclick = limpiarSp;
+document.addEventListener('click', async e => {
+  const ed = e.target.closest('[data-sp]'), del = e.target.closest('[data-spdel]');
+  if (ed){ const s = SPONS[ed.dataset.sp]; editId = ed.dataset.sp;
+    ['nombre', 'nivel', 'orden', 'comprometido', 'cobrado', 'contacto', 'link', 'logo'].forEach(k => spF[k].value = s[k] ?? '');
+    spF.mostrar.checked = !!s.mostrar; $('#spTitle').textContent = 'Editar ' + s.nombre; $('#spCancel').classList.remove('hidden'); spF.scrollIntoView({ behavior: 'smooth' }); }
+  if (del){ const s = SPONS[del.dataset.spdel]; if (!confirm(`¿Borrar a ${s.nombre}?`)) return;
+    await db.ref(`${NODE}/patrocinadoresCRM/${del.dataset.spdel}`).remove(); await db.ref(`${NODE}/patrocinadores/${del.dataset.spdel}`).remove(); }
+});
+</script>
+</body>
+</html>
