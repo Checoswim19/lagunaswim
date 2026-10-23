@@ -77,6 +77,8 @@ body.v3-fluid .ls-inicio *{transition:none}
 /* ---------- horarios ---------- */
 .ls-sedes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:10px;margin-top:28px}
 .ls-sede{background:var(--blanco);border-radius:28px;padding:24px}
+.ls-sede{overflow:hidden}
+.ls-sede-foto{display:block;width:calc(100% + 48px);height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 55%;margin:-24px -24px 20px}
 .ls-sede h3{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;line-height:1.15}
 .ls-horas{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:18px;white-space:nowrap;font-size:clamp(2.25rem,9vw,3.25rem);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--carril)}
 .ls-precio{margin-top:12px!important;font-size:1rem}
