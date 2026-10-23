@@ -140,6 +140,19 @@ a.ls-evento-nombre{text-decoration:underline;text-decoration-thickness:2px;text-
 .ls-mas{padding-bottom:clamp(48px,8vh,96px)}
 .ls-firma{margin-top:40px!important;font-weight:700;color:var(--oro)}
 
+/* ---------- fotos del equipo ---------- */
+.ls-foto{margin:0;background:var(--abismo);color:var(--blanco)}
+.ls-foto img{display:block;width:100%;height:min(72svh,760px);object-fit:cover;object-position:50% 55%}
+.ls-foto figcaption{padding:14px var(--m) 18px;font-size:.875rem;font-weight:500;max-width:1180px;margin:0 auto}
+.ls-foto-marco{margin:28px auto 0}
+.ls-foto-marco img{height:auto;display:block;width:100%;aspect-ratio:4/3;max-height:640px;object-fit:cover;object-position:50% 60%;border-radius:28px}
+.ls-foto-marco figcaption,.ls-par figcaption{margin-top:10px;font-size:.875rem;font-weight:500}
+.ls-eventos .ls-foto-marco + .ls-evento{margin-top:28px}
+.ls-par{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:28px}
+.ls-par figure{margin:0}
+.ls-par img{height:auto;display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 35%;border-radius:20px}
+@media (min-width:900px){.ls-par{gap:20px}.ls-par img{border-radius:28px}}
+
 /* ---------- escritorio ---------- */
 @media (min-width:900px){
   .ls-portada{min-height:calc(100svh - 160px)}

@@ -56,9 +56,9 @@
   });
 
   // Entrada por partes: titulo, texto y figura, escalonados
-  var partes = [].slice.call(document.querySelectorAll('.sube'));
+  var partes = [].slice.call(document.querySelectorAll('.sube, .foto-banda'));
   partes.forEach(function(el){
-    var hermanos = [].slice.call(el.closest('section, footer').querySelectorAll('.sube'));
+    var hermanos = [].slice.call((el.closest('section, footer') || document).querySelectorAll('.sube'));
     el.style.setProperty('--i', hermanos.indexOf(el) % 6);
   });
   if('IntersectionObserver' in window){
