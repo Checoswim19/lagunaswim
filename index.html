@@ -3766,29 +3766,37 @@ body.blog-active #tab-timer { display: none !important; }
   <div id="s-home" class="screen active">
   <div class="ls-inicio">
 
-    <!-- ===== Tramo 1: portada ===== -->
-    <section class="ls-c ls-oro ls-portada" aria-labelledby="ls-titulo">
-      <div class="ls-portada-top">
-        <span class="ls-lugar">Escuela de natación · Torreón</span>
-        <span id="fb-status" class="hdr-status">...</span>
+    <!-- ===== Portada ===== -->
+    <section class="ls-hero" aria-labelledby="ls-titulo">
+      <div class="ls-hero-media" aria-hidden="true">
+        <img src="img/equipo-bandera.webp" srcset="img/equipo-bandera-800.webp 800w, img/equipo-bandera.webp 1600w" sizes="100vw" width="1600" height="1200" alt="" fetchpriority="high" decoding="async">
       </div>
-      <h1 id="ls-titulo" class="ls-display"><span class="ls-l1">fuertes</span> <span class="ls-l2">y valientes</span></h1>
-      <p class="ls-verso">Josué 1:9</p>
-      <p class="ls-apoyo">Clases de natación en Torreón para niños, jóvenes y Masters, con el coach Checo Villarreal.</p>
-      <div class="ls-acciones">
-        <a class="ls-btn ls-btn-wa" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20quiero%20agendar%20una%20clase%20muestra%20en%20Laguna%20Swim" target="_blank" rel="noopener">Agenda tu clase muestra</a>
-        <button type="button" class="ls-btn ls-btn-linea" onclick="document.getElementById('horarios').scrollIntoView({behavior:'smooth',block:'start'})">Horarios y precios</button>
+      <div class="ls-hero-velo" aria-hidden="true"></div>
+      <div class="ls-hero-luz" aria-hidden="true"></div>
+      <div class="ls-hero-in">
+        <div class="ls-hero-top ls-in" style="--d:0">
+          <span class="ls-pill"><i class="ls-punto" aria-hidden="true"></i>Escuela de natación · Torreón</span>
+          <span id="fb-status" class="hdr-status">...</span>
+        </div>
+        <h1 id="ls-titulo" class="ls-display">
+          <span class="ls-l1"><span class="ls-in" style="--d:1">Fuertes</span></span>
+          <span class="ls-l2"><span class="ls-in" style="--d:2"><span class="ls-oro-txt">y Valientes</span></span></span>
+        </h1>
+        <p class="ls-verso ls-in" style="--d:3">Josué 1:9</p>
+        <p class="ls-apoyo ls-in" style="--d:4">Clases de natación en Torreón para niños, jóvenes y Masters, con el coach Checo Villarreal.</p>
+        <div class="ls-acciones ls-in" style="--d:5">
+          <a class="ls-btn ls-btn-wa ls-brillo" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20quiero%20agendar%20una%20clase%20muestra%20en%20Laguna%20Swim" target="_blank" rel="noopener">Agenda tu clase muestra</a>
+          <button type="button" class="ls-btn ls-btn-vidrio" onclick="document.getElementById('horarios').scrollIntoView({behavior:'smooth',block:'start'})">Horarios y precios</button>
+        </div>
+        <ul class="ls-sellos ls-in" style="--d:6" aria-label="Datos del equipo">
+          <li><b>30+</b> años</li><li><b>ASCA</b> Nivel 4</li><li><b>2</b> sedes</li><li><b>60+</b> medallas Panam</li>
+        </ul>
       </div>
     </section>
 
-    <figure class="ls-foto">
-      <img src="img/equipo-bandera.webp" srcset="img/equipo-bandera-800.webp 800w, img/equipo-bandera.webp 1600w" sizes="100vw" width="1600" height="1200" alt="El equipo Laguna Swim, con sus playeras azules, sostiene la bandera de México junto con el coach en una alberca de competencia" loading="lazy" decoding="async">
-      <figcaption>El equipo con la bandera de México en competencia.</figcaption>
-    </figure>
-
     <!-- ===== Tramo 2: frase de la semana ===== -->
-    <section class="ls-c ls-noche ls-frase" aria-labelledby="ls-t-frase">
-      <h2 id="ls-t-frase" class="ls-h2">frase <span class="ls-s">de la semana</span></h2>
+    <section class="ls-c ls-frase" aria-labelledby="ls-t-frase">
+      <h2 id="ls-t-frase" class="ls-h2">Frase <span class="ls-s">de la semana</span></h2>
       <figure class="hero-frase" id="hero-frase">
         <blockquote id="hero-frase-texto">&nbsp;</blockquote>
         <figcaption id="hero-frase-autor"></figcaption>
@@ -3800,8 +3808,8 @@ body.blog-active #tab-timer { display: none !important; }
     </section>
 
     <!-- ===== Tramo 3: horarios y sedes ===== -->
-    <section class="ls-c ls-espuma ls-horarios" id="horarios" aria-labelledby="ls-t-horarios">
-      <h2 id="ls-t-horarios" class="ls-h2">horarios <span class="ls-s">y sedes</span></h2>
+    <section class="ls-c ls-horarios" id="horarios" aria-labelledby="ls-t-horarios">
+      <h2 id="ls-t-horarios" class="ls-h2">Horarios <span class="ls-s">y sedes</span></h2>
       <p class="ls-texto">Principiantes: <strong>3 veces por semana</strong>. Mensualidad según la sede.</p>
       <div class="ls-sedes">
         <article class="ls-sede">
@@ -3828,8 +3836,8 @@ body.blog-active #tab-timer { display: none !important; }
     </section>
 
     <!-- ===== Tramo 4: entrenamientos de la semana ===== -->
-    <section class="ls-c ls-equipo ls-semana" aria-labelledby="ls-t-semana">
-      <h2 id="ls-t-semana" class="ls-h2">la semana <span class="ls-s">del equipo</span></h2>
+    <section class="ls-c ls-semana" aria-labelledby="ls-t-semana">
+      <h2 id="ls-t-semana" class="ls-h2">La semana <span class="ls-s">del equipo</span></h2>
       <p class="ls-texto">Entrenamientos que sube el equipo, en vivo.</p>
       <div class="ls-cifras">
         <div><b id="home-stat-sesiones">—</b><span>sesiones</span></div>
@@ -3848,8 +3856,8 @@ body.blog-active #tab-timer { display: none !important; }
     </section>
 
     <!-- ===== Tramo 5: simuladores ===== -->
-    <section class="ls-c ls-carril ls-sims" aria-labelledby="ls-t-sims">
-      <h2 id="ls-t-sims" class="ls-h2">juega <span class="ls-s">y compite</span></h2>
+    <section class="ls-c ls-sims" aria-labelledby="ls-t-sims">
+      <h2 id="ls-t-sims" class="ls-h2">Juega <span class="ls-s">y compite</span></h2>
       <ul class="ls-lista">
         <li><button type="button" class="ls-fila" onclick="reto50AbrirJuego(false)">
           <span class="ls-fila-txt"><b>Reto 50 m · 4 estilos</b><span>Reto de 4 estilos en alberca. Demuestra tu velocidad y rompe tu récord.</span></span>
@@ -3871,8 +3879,8 @@ body.blog-active #tab-timer { display: none !important; }
     </section>
 
     <!-- ===== Tramo 6: proximos eventos ===== -->
-    <section class="ls-c ls-oro ls-eventos" aria-labelledby="ls-t-eventos">
-      <h2 id="ls-t-eventos" class="ls-h2">próximos <span class="ls-s">eventos</span></h2>
+    <section class="ls-c ls-eventos" aria-labelledby="ls-t-eventos">
+      <h2 id="ls-t-eventos" class="ls-h2">Próximos <span class="ls-s">eventos</span></h2>
       <figure class="ls-foto-marco">
         <img src="img/oceanman-cozumel.webp" srcset="img/oceanman-cozumel-800.webp 800w, img/oceanman-cozumel.webp 1600w" sizes="(max-width:900px) 100vw, 1180px" width="1600" height="1200" alt="El equipo Laguna Swim con medallas y la bandera de México en la playa de Cozumel, en Oceanman" loading="lazy" decoding="async">
         <figcaption>El equipo en Oceanman Cozumel.</figcaption>
@@ -3903,28 +3911,28 @@ body.blog-active #tab-timer { display: none !important; }
     </section>
 
     <!-- ===== Tramo 7: lo ultimo del muro (solo si hay publicaciones) ===== -->
-    <section class="ls-c ls-noche ls-muro" id="home-muro-sec" style="display:none" aria-labelledby="ls-t-muro">
-      <h2 id="ls-t-muro" class="ls-h2">lo último <span class="ls-s">del muro</span></h2>
+    <section class="ls-c ls-muro" id="home-muro-sec" style="display:none" aria-labelledby="ls-t-muro">
+      <h2 id="ls-t-muro" class="ls-h2">Lo último <span class="ls-s">del muro</span></h2>
       <div class="home-muro" id="home-muro"></div>
       <button type="button" class="ls-btn ls-btn-linea" onclick="openBlog()">Ver todo el muro</button>
     </section>
 
     <!-- ===== Tramo 8: el coach ===== -->
-    <section class="ls-c ls-espuma ls-coach" aria-labelledby="ls-t-coach">
-      <h2 id="ls-t-coach" class="ls-h2">tu <span class="ls-s">coach</span></h2>
+    <section class="ls-c ls-coach" aria-labelledby="ls-t-coach">
+      <h2 id="ls-t-coach" class="ls-h2">Tu <span class="ls-s">coach</span></h2>
       <p class="ls-coach-nombre">Sergio "Checo" Villarreal</p>
       <p class="ls-texto">ASCA Level 4 Certified · Lic. en Acondicionamiento Físico · 30 años entrenando en La Laguna.</p>
       <div class="ls-cifras ls-cifras-claro">
-        <div><b>30+</b><span>años de experiencia</span></div>
-        <div><b>60+</b><span>medallas panamericanas</span></div>
-        <div><b>4</b><span>mundiales</span></div>
+        <div><b data-cuenta="30" data-suf="+">30+</b><span>años de experiencia</span></div>
+        <div><b data-cuenta="60" data-suf="+">60+</b><span>medallas panamericanas</span></div>
+        <div><b data-cuenta="4">4</b><span>mundiales</span></div>
       </div>
-      <button type="button" class="ls-btn" onclick="showTab('profile')">Conoce al coach</button>
+      <button type="button" class="ls-btn ls-btn-azul" onclick="showTab('profile')">Conoce al coach</button>
     </section>
 
     <!-- ===== Tramo 9: todo lo demas ===== -->
-    <section class="ls-c ls-abismo ls-mas" aria-labelledby="ls-t-mas">
-      <h2 id="ls-t-mas" class="ls-h2">únete <span class="ls-s">al equipo</span></h2>
+    <section class="ls-c ls-mas" aria-labelledby="ls-t-mas">
+      <h2 id="ls-t-mas" class="ls-h2">Únete <span class="ls-s">al equipo</span></h2>
       <div class="ls-par">
         <figure><img src="img/equipo-alberca.webp" srcset="img/equipo-alberca-800.webp 800w, img/equipo-alberca.webp 1200w" sizes="(max-width:900px) 50vw, 580px" width="1200" height="1600" alt="Cuatro nadadoras del equipo sonríen dentro de la alberca después de entrenar" loading="lazy" decoding="async"><figcaption>Después del entrenamiento.</figcaption></figure>
         <figure><img src="img/cozumel-playa.webp" srcset="img/cozumel-playa-800.webp 800w, img/cozumel-playa.webp 1200w" sizes="(max-width:900px) 50vw, 580px" width="1200" height="1600" alt="Un nadador del equipo con la playera de Laguna Swim en la playa de Cozumel" loading="lazy" decoding="async"><figcaption>En Cozumel, con la playera del equipo.</figcaption></figure>
@@ -15236,5 +15244,6 @@ body.v7 .modal-box {
 }
 </style>
 <link rel="stylesheet" href="inicio.css">
+<script src="inicio.js" defer></script>
 </body>
 </html>
