@@ -24,6 +24,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=pilcrow-rounded@400,500,700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg-deep: #050f1c;
@@ -3740,19 +3743,19 @@ body.blog-active #tab-timer { display: none !important; }
 <!-- ============ BOTTOM NAV ============ -->
 <nav class="bnav">
   <button class="bnav-item active" onclick="showTab('timer')" id="nav-timer">
-    <span class="bnav-icon">&#127968;</span><span class="bnav-label">Inicio</span>
+    <span class="bnav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v9h5v-5h4v5h5v-9"/></svg></span><span class="bnav-label">Inicio</span>
   </button>
   <button class="bnav-item" onclick="showTab('ranking')" id="nav-ranking">
-    <span class="bnav-icon">&#127942;</span><span class="bnav-label">Competir</span>
+    <span class="bnav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8"/></svg></span><span class="bnav-label">Competir</span>
   </button>
   <button class="bnav-item" onclick="showTab('store')" id="nav-store">
-    <span class="bnav-icon">&#128722;</span><span class="bnav-label">Tienda</span>
+    <span class="bnav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></span><span class="bnav-label">Tienda</span>
   </button>
   <button class="bnav-item" onclick="showTab('workout')" id="nav-workout">
-    <span class="bnav-icon">&#9881;&#65039;</span><span class="bnav-label">Tools</span>
+    <span class="bnav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 13V9M10 3h4M12 3v3"/></svg></span><span class="bnav-label">Tools</span>
   </button>
   <button class="bnav-item" onclick="showTab('profile')" id="nav-profile">
-    <span class="bnav-icon">&#128100;</span><span class="bnav-label">Coach</span>
+    <span class="bnav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="bnav-label">Coach</span>
   </button>
 </nav>
 
@@ -3761,360 +3764,182 @@ body.blog-active #tab-timer { display: none !important; }
 
   <!-- Home / inicio -->
   <div id="s-home" class="screen active">
+  <div class="ls-inicio">
 
-    <!-- ============ NUEVO V5: HERO ESTILO SPEEDO ============ -->
-    <div class="v5-hero">
-      <div class="oc-hero-rays" aria-hidden="true"></div>
-      <span id="fb-status" class="v5-hero-status hdr-status">...</span>
-
-      <div class="v5-hero-content">
-        <div class="v5-hero-top-row">
-          <div class="v5-hero-logo">
-            <img src="https://res.cloudinary.com/dg84htrzg/image/upload/v1778390443/ChatGPT_Image_9_may_2026_11_17_28_p.m._geedfw.png" alt="Laguna Swim International">
-          </div>
-          <div class="v5-hero-kicker">Laguna Swim International</div>
-        </div>
-        <div class="v5-hero-title">Fuertes <em>y Valientes</em></div>
-        <div class="v5-hero-verse">Josué 1:9</div>
-        <figure class="hero-frase" id="hero-frase">
-          <blockquote id="hero-frase-texto">&nbsp;</blockquote>
-          <figcaption id="hero-frase-autor"></figcaption>
-          <div class="hero-frase-row">
-            <span class="hero-frase-sem" id="hero-frase-sem">Frase de la semana</span>
-            <button type="button" class="hero-frase-btn" onclick="fraseHistoria()">Compartir en historia</button>
-          </div>
-        </figure>
-        <div class="hero-cta-row">
-          <a class="hero-cta-main" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20quiero%20agendar%20una%20clase%20muestra%20en%20Laguna%20Swim" target="_blank" rel="noopener">🏊 Agenda tu clase muestra</a>
-          <span class="hero-cta-sub">Infantil · Juvenil · Masters — Torreón</span>
-        </div>
-        <!-- Accesos rápidos: lo que más buscan papás y nadadores -->
-        <nav class="lx-quick" aria-label="Accesos rápidos">
-          <button type="button" class="lx-quick-btn" onclick="document.getElementById('horarios').scrollIntoView({behavior:'smooth',block:'start'})">
-            <span class="lx-quick-ico">🕔</span><span>Horarios</span>
-          </button>
-          <button type="button" class="lx-quick-btn" onclick="abrirModalEntrenamiento()">
-            <span class="lx-quick-ico">📝</span><span>Subir entreno</span>
-          </button>
-        </nav>
+    <!-- ===== Tramo 1: portada ===== -->
+    <section class="ls-c ls-oro ls-portada" aria-labelledby="ls-titulo">
+      <div class="ls-portada-top">
+        <span class="ls-lugar">Escuela de natación · Torreón</span>
+        <span id="fb-status" class="hdr-status">...</span>
       </div>
-
-      <!-- ZONA DE SIMULADORES (catálogo de 2 juegos) -->
-      <div class="simuladores-zone">
-        <div class="simuladores-zone-title">SIMULADORES</div>
-
-        <button class="sim-card" onclick="reto50AbrirJuego(false)">
-          <div class="sim-card-icon">🏊</div>
-          <div class="sim-card-body">
-            <div class="sim-card-title">RETO 50m · 4 ESTILOS
-              <span class="sim-card-tag">SW</span>
-            </div>
-            <div class="sim-card-desc">Reto de 4 estilos en alberca. Demuestra tu velocidad y rompe tu récord.</div>
-          </div>
-          <div class="sim-card-cta">▶</div>
-        </button>
-
-        <button class="sim-card" onclick="aguasabiertasAbrirJuego()">
-          <div class="sim-card-icon" style="background:linear-gradient(135deg,#00bcd4,#2a8888)">🌊</div>
-          <div class="sim-card-body">
-            <div class="sim-card-title">AGUAS ABIERTAS
-              <span class="sim-card-tag ow">OW</span>
-              <span class="sim-card-badge">NUEVO</span>
-            </div>
-            <div class="sim-card-desc">5 niveles desde entrenamiento hasta la Gran Travesía 10K con Coach Checo.</div>
-          </div>
-          <div class="sim-card-cta">▶</div>
-        </button>
-
-        <button class="sim-card" onclick="waterpoloAbrirJuego()">
-          <div class="sim-card-icon" style="background:linear-gradient(135deg,#123a6e,#38bdf8)">🤽</div>
-          <div class="sim-card-body">
-            <div class="sim-card-title">WATERPOLO
-              <span class="sim-card-tag" style="background:#0a3a60;color:#7CFFB0">WP</span>
-              <span class="sim-card-badge">NUEVO</span>
-            </div>
-            <div class="sim-card-desc">Partido internacional con salida oficial, tomas de tiro en primera persona y duelo 1v1 en línea.</div>
-          </div>
-          <div class="sim-card-cta">▶</div>
-        </button>
-
-        <button class="sim-card" onclick="goTimer('s-role')">
-          <div class="sim-card-icon" style="background:linear-gradient(135deg,#ffd60a,#e0a800)">⏱️</div>
-          <div class="sim-card-body">
-            <div class="sim-card-title">CRONÓMETRO
-              <span class="sim-card-tag" style="background:#0a3a60;color:#ffd60a">LIVE</span>
-            </div>
-            <div class="sim-card-desc">Cronómetro multi-carril para competencias: salida simultánea, un dispositivo por carril y monitor central.</div>
-          </div>
-          <div class="sim-card-cta">▶</div>
-        </button>
+      <h1 id="ls-titulo" class="ls-display"><span class="ls-l1">fuertes</span> <span class="ls-l2">y valientes</span></h1>
+      <p class="ls-verso">Josué 1:9</p>
+      <p class="ls-apoyo">Clases de natación en Torreón para niños, jóvenes y Masters, con el coach Checo Villarreal.</p>
+      <div class="ls-acciones">
+        <a class="ls-btn ls-btn-wa" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20quiero%20agendar%20una%20clase%20muestra%20en%20Laguna%20Swim" target="_blank" rel="noopener">Agenda tu clase muestra</a>
+        <button type="button" class="ls-btn ls-btn-linea" onclick="document.getElementById('horarios').scrollIntoView({behavior:'smooth',block:'start'})">Horarios y precios</button>
       </div>
+    </section>
 
-      <!-- NUEVO V4: Botón subir entrenamiento sin login -->
-      <div class="v4-upload-cta" style="position:relative;z-index:2;margin-top:1rem" onclick="abrirModalEntrenamiento()">
-        <div class="v4-upload-icon">📝</div>
-        <div class="v4-upload-text">
-          <div class="v4-upload-title">Subir Mi Entrenamiento</div>
-          <div class="v4-upload-sub">Sube tus metros semanales · Sin registro</div>
-        </div>
-        <div class="v4-upload-arrow">→</div>
+    <figure class="ls-foto">
+      <img src="img/equipo-bandera.webp" srcset="img/equipo-bandera-800.webp 800w, img/equipo-bandera.webp 1600w" sizes="100vw" width="1600" height="1200" alt="El equipo Laguna Swim, con sus playeras azules, sostiene la bandera de México junto con el coach en una alberca de competencia" loading="lazy" decoding="async">
+      <figcaption>El equipo con la bandera de México en competencia.</figcaption>
+    </figure>
+
+    <!-- ===== Tramo 2: frase de la semana ===== -->
+    <section class="ls-c ls-noche ls-frase" aria-labelledby="ls-t-frase">
+      <h2 id="ls-t-frase" class="ls-h2">frase <span class="ls-s">de la semana</span></h2>
+      <figure class="hero-frase" id="hero-frase">
+        <blockquote id="hero-frase-texto">&nbsp;</blockquote>
+        <figcaption id="hero-frase-autor"></figcaption>
+      </figure>
+      <div class="ls-frase-pie">
+        <span class="ls-dato" id="hero-frase-sem">Frase de la semana</span>
+        <button type="button" class="ls-btn ls-btn-oro" onclick="fraseHistoria()">Compartir en historia</button>
       </div>
+    </section>
 
-      <!-- NUEVO V4.2: Tabla pública de entrenamientos de la semana (visible para todos) -->
-      <div id="v4-home-tabla" style="position:relative;z-index:2;margin-top:1rem;width:100%;background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(56,189,248,0.08) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 14px; padding: 1rem; text-align: left;">
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">
-          <div style="font-size:1.4rem">🏆</div>
-          <div style="flex:1">
-            <div style="font-size:0.78rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)">Entrenamientos de la Semana</div>
-            <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);margin-top:1px">Ranking del equipo en vivo</div>
+    <!-- ===== Tramo 3: horarios y sedes ===== -->
+    <section class="ls-c ls-espuma ls-horarios" id="horarios" aria-labelledby="ls-t-horarios">
+      <h2 id="ls-t-horarios" class="ls-h2">horarios <span class="ls-s">y sedes</span></h2>
+      <p class="ls-texto">Principiantes: <strong>3 veces por semana</strong>. Mensualidad según la sede.</p>
+      <div class="ls-sedes">
+        <article class="ls-sede">
+          <img class="ls-sede-foto" src="img/sede-udt.webp" srcset="img/sede-udt-800.webp 600w, img/sede-udt.webp 900w" sizes="(max-width:900px) 100vw, 560px" width="900" height="760" alt="Alberca techada de la Unidad Deportiva Torreón, con carriles y banco de salida" loading="lazy" decoding="async">
+          <h3>Unidad Deportiva Torreón</h3>
+          <div class="ls-horas"><span>5:00 pm</span></div>
+          <p class="ls-precio"><b>$1,000</b> MXN al mes</p>
+          <div class="ls-sede-btns">
+            <a class="ls-btn ls-btn-wa" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20me%20interesa%20el%20grupo%20de%20las%205%20pm%20en%20la%20Unidad%20Deportiva%20Torre%C3%B3n.%20%C2%BFQu%C3%A9%20d%C3%ADas%20hay%20lugar%3F" target="_blank" rel="noopener">Apartar lugar</a>
+            <a class="ls-btn ls-btn-linea" href="https://www.google.com/maps/search/?api=1&amp;query=Unidad%20Deportiva%20Torre%C3%B3n" target="_blank" rel="noopener">Cómo llegar</a>
           </div>
-        </div>
-
-        <!-- Totales -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;margin-bottom:0.8rem">
-          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
-            <div id="home-stat-sesiones" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Sesiones</div>
+        </article>
+        <article class="ls-sede">
+          <img class="ls-sede-foto" src="img/sede-tec.webp" srcset="img/sede-tec-800.webp 600w, img/sede-tec.webp 900w" sizes="(max-width:900px) 100vw, 560px" width="900" height="760" alt="Alberca techada del Tec de Monterrey, Campus Laguna, con carriles y banderines" loading="lazy" decoding="async">
+          <h3>Tec de Monterrey · Campus Laguna</h3>
+          <div class="ls-horas"><span>7:00 pm</span><span>8:00 pm</span></div>
+          <p class="ls-precio"><b>$1,100</b> MXN al mes</p>
+          <div class="ls-sede-btns">
+            <a class="ls-btn ls-btn-wa" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20me%20interesa%20un%20grupo%20en%20el%20Tec%20de%20Monterrey%20Campus%20Laguna%20(7%20u%208%20pm).%20%C2%BFQu%C3%A9%20d%C3%ADas%20hay%20lugar%3F" target="_blank" rel="noopener">Apartar lugar</a>
+            <a class="ls-btn ls-btn-linea" href="https://www.google.com/maps/search/?api=1&amp;query=Tecnol%C3%B3gico%20de%20Monterrey%20Campus%20Laguna" target="_blank" rel="noopener">Cómo llegar</a>
           </div>
-          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
-            <div id="home-stat-personas" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Personas</div>
-          </div>
-          <div style="text-align:center;padding:0.5rem 0.3rem;background:rgba(0,0,0,0.25);border-radius:7px">
-            <div id="home-stat-metros" style="font-size:1.2rem;font-weight:900;color:var(--gold);line-height:1">—</div>
-            <div style="font-size:0.5rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:3px;text-transform:uppercase">Metros</div>
-          </div>
-        </div>
-
-        <!-- Top 5 ranking -->
-        <div style="font-size:0.6rem;color:var(--accent-soft);letter-spacing:1.5px;font-weight:800;margin-bottom:0.4rem;text-transform:uppercase">🥇 Top 5 por metros</div>
-        <div id="home-top5" style="font-size:0.82rem">
-          <div style="text-align:center;padding:0.8rem;color:rgba(255,255,255,0.4);font-size:0.7rem">Cargando...</div>
-        </div>
-
-        <!-- Botón ver todos -->
-        <button onclick="verEntrenamientosPublicos()" style="width:100%;margin-top:0.7rem;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);color:var(--accent);padding:0.6rem;border-radius:8px;font-weight:700;font-size:0.75rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase">
-          Ver todos los entrenamientos →
-        </button>
+        </article>
       </div>
+    </section>
 
-      <div class="v3-hero-scroll-hint" style="position:relative;z-index:2;margin:1rem auto 0;bottom:auto;left:auto;transform:none" onclick="document.querySelector('.v3-below-fold').scrollIntoView({behavior:'smooth'})">
-        <span>Ver más</span>
-        <span class="chev">⌄</span>
+    <!-- ===== Tramo 4: entrenamientos de la semana ===== -->
+    <section class="ls-c ls-equipo ls-semana" aria-labelledby="ls-t-semana">
+      <h2 id="ls-t-semana" class="ls-h2">la semana <span class="ls-s">del equipo</span></h2>
+      <p class="ls-texto">Entrenamientos que sube el equipo, en vivo.</p>
+      <div class="ls-cifras">
+        <div><b id="home-stat-sesiones">—</b><span>sesiones</span></div>
+        <div><b id="home-stat-personas">—</b><span>personas</span></div>
+        <div><b id="home-stat-metros">—</b><span>metros</span></div>
       </div>
-    </div>
-    <!-- ============ FIN V5 HERO ============ -->
+      <h3 class="ls-h3">Top 5 por metros</h3>
+      <div id="home-top5" class="ls-top5">
+        <div class="ls-cargando">Cargando...</div>
+      </div>
+      <div class="ls-acciones">
+        <button type="button" class="ls-btn ls-btn-oro" onclick="abrirModalEntrenamiento()">Subir mi entrenamiento</button>
+        <button type="button" class="ls-btn ls-btn-linea" onclick="verEntrenamientosPublicos()">Ver todos</button>
+      </div>
+      <p class="ls-nota">Sin registro: solo tu nombre y tus metros.</p>
+    </section>
 
+    <!-- ===== Tramo 5: simuladores ===== -->
+    <section class="ls-c ls-carril ls-sims" aria-labelledby="ls-t-sims">
+      <h2 id="ls-t-sims" class="ls-h2">juega <span class="ls-s">y compite</span></h2>
+      <ul class="ls-lista">
+        <li><button type="button" class="ls-fila" onclick="reto50AbrirJuego(false)">
+          <span class="ls-fila-txt"><b>Reto 50 m · 4 estilos</b><span>Reto de 4 estilos en alberca. Demuestra tu velocidad y rompe tu récord.</span></span>
+          <span class="ls-flecha" aria-hidden="true"></span>
+        </button></li>
+        <li><button type="button" class="ls-fila" onclick="aguasabiertasAbrirJuego()">
+          <span class="ls-fila-txt"><b>Aguas abiertas <em class="ls-nuevo">Nuevo</em></b><span>5 niveles desde entrenamiento hasta la Gran Travesía 10K con Coach Checo.</span></span>
+          <span class="ls-flecha" aria-hidden="true"></span>
+        </button></li>
+        <li><button type="button" class="ls-fila" onclick="waterpoloAbrirJuego()">
+          <span class="ls-fila-txt"><b>Waterpolo <em class="ls-nuevo">Nuevo</em></b><span>Partido internacional con salida oficial, tomas de tiro en primera persona y duelo 1v1 en línea.</span></span>
+          <span class="ls-flecha" aria-hidden="true"></span>
+        </button></li>
+        <li><button type="button" class="ls-fila" onclick="goTimer('s-role')">
+          <span class="ls-fila-txt"><b>Cronómetro en vivo</b><span>Cronómetro multi-carril para competencias: salida simultánea, un dispositivo por carril y monitor central.</span></span>
+          <span class="ls-flecha" aria-hidden="true"></span>
+        </button></li>
+      </ul>
+    </section>
 
-    <!-- ============ ABAJO DEL FOLD ============ -->
-    <div class="v3-below-fold">
-      <!-- SECCION: HORARIOS Y SEDES -->
-      <div class="v2-section" id="horarios">
-        <div class="v2-section-head">
-          <div class="v2-section-head-bar"></div>
-          <div class="v2-section-head-text">Horarios <em>y sedes</em></div>
-          <div class="v2-section-head-line"></div>
-        </div>
-        <p class="lx-sede-note">Principiantes: <strong>3 veces por semana</strong>. Mensualidad según la sede.</p>
-        <div class="lx-sede">
-          <div class="lx-sede-top">
-            <div>
-              <div class="lx-sede-name">Unidad Deportiva Torreón</div>
-              <div class="lx-sede-city">Torreón, Coahuila</div>
-            </div>
-            <div class="lx-sede-times"><span>5:00 pm</span></div>
-          </div>
-          <div class="lx-sede-price">$1,000 <small>MXN al mes</small></div>
-          <div class="lx-sede-btns">
-            <a class="lx-sede-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Unidad%20Deportiva%20Torre%C3%B3n" target="_blank" rel="noopener">📍 Cómo llegar</a>
-            <a class="lx-sede-btn lx-sede-btn-wa" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20me%20interesa%20el%20grupo%20de%20las%205%20pm%20en%20la%20Unidad%20Deportiva%20Torre%C3%B3n.%20%C2%BFQu%C3%A9%20d%C3%ADas%20hay%20lugar%3F" target="_blank" rel="noopener">💬 Apartar lugar</a>
-          </div>
-        </div>
-        <div class="lx-sede">
-          <div class="lx-sede-top">
-            <div>
-              <div class="lx-sede-name">Tec de Monterrey · Campus Laguna</div>
-              <div class="lx-sede-city">Torreón, Coahuila</div>
-            </div>
-            <div class="lx-sede-times"><span>7:00 pm</span><span>8:00 pm</span></div>
-          </div>
-          <div class="lx-sede-price">$1,100 <small>MXN al mes</small></div>
-          <div class="lx-sede-btns">
-            <a class="lx-sede-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Tecnol%C3%B3gico%20de%20Monterrey%20Campus%20Laguna" target="_blank" rel="noopener">📍 Cómo llegar</a>
-            <a class="lx-sede-btn lx-sede-btn-wa" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20me%20interesa%20un%20grupo%20en%20el%20Tec%20de%20Monterrey%20Campus%20Laguna%20(7%20u%208%20pm).%20%C2%BFQu%C3%A9%20d%C3%ADas%20hay%20lugar%3F" target="_blank" rel="noopener">💬 Apartar lugar</a>
-          </div>
-        </div>
-      </div>
+    <!-- ===== Tramo 6: proximos eventos ===== -->
+    <section class="ls-c ls-oro ls-eventos" aria-labelledby="ls-t-eventos">
+      <h2 id="ls-t-eventos" class="ls-h2">próximos <span class="ls-s">eventos</span></h2>
+      <figure class="ls-foto-marco">
+        <img src="img/oceanman-cozumel.webp" srcset="img/oceanman-cozumel-800.webp 800w, img/oceanman-cozumel.webp 1600w" sizes="(max-width:900px) 100vw, 1180px" width="1600" height="1200" alt="El equipo Laguna Swim con medallas y la bandera de México en la playa de Cozumel, en Oceanman" loading="lazy" decoding="async">
+        <figcaption>El equipo en Oceanman Cozumel.</figcaption>
+      </figure>
 
-      <div class="v3-below-divider">
-        <span class="v3-below-divider-text">— EQUIPO —</span>
-      </div>
-
-      <!-- BANDA DE STATS PROMINENTES -->
-      <div class="v2-stats-banner">
-      <div class="v2-stat-item">
-        <div class="v2-stat-num-big">30+</div>
-        <div class="v2-stat-lbl-big">Años Exp.</div>
-      </div>
-      <div class="v2-stat-item">
-        <div class="v2-stat-num-big">60+</div>
-        <div class="v2-stat-lbl-big">Medallas Panam</div>
-      </div>
-      <div class="v2-stat-item">
-        <div class="v2-stat-num-big">4</div>
-        <div class="v2-stat-lbl-big">Mundiales</div>
-      </div>
-    </div>
-
-    <!-- SECCION: UNETE AL EQUIPO -->
-    <div class="v2-section">
-      <div class="v2-section-head">
-        <div class="v2-section-head-bar"></div>
-        <div class="v2-section-head-text">Únete <em>al Equipo</em></div>
-        <div class="v2-section-head-line"></div>
-      </div>
-
-      <div class="v2-nav-grid">
-        <div class="v2-action-card featured" onclick="showTab('tab-profile')">
-          <div>
-            <div class="v2-action-icon">💪</div>
-            <div class="v2-action-title">ENTRENA</div>
-            <div class="v2-action-sub">Masters · Juvenil · Infantil</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-        <div class="v2-action-card" onclick="showTab('tab-ranking')">
-          <div>
-            <div class="v2-action-icon">🏆</div>
-            <div class="v2-action-title">COMPITE</div>
-            <div class="v2-action-sub">Rankings y eventos internacionales</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-        <div class="v2-action-card" onclick="window.open('https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20quiero%20inscribirme%20a%20Laguna%20Swim.%20%C2%BFMe%20das%20informaci%C3%B3n%20de%20d%C3%ADas%20y%20precios%3F','_blank')">
-          <div>
-            <div class="v2-action-icon">💬</div>
-            <div class="v2-action-title">CONTACTO</div>
-            <div class="v2-action-sub">Inscríbete por WhatsApp</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-        <div class="v2-action-card" onclick="showTab('tab-store')">
-          <div>
-            <div class="v2-action-icon">🛒</div>
-            <div class="v2-action-title">TIENDA</div>
-            <div class="v2-action-sub">Libros · Viajes Oceanman</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-        <div class="v2-action-card" onclick="openBlog()">
-          <div>
-            <div class="v2-action-icon">📰</div>
-            <div class="v2-action-title">MURO</div>
-            <div class="v2-action-sub">Noticias, tips y reseñas</div>
-          </div>
-          <div class="v2-action-arrow">→</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECCION: LO ULTIMO DEL MURO -->
-    <div class="v2-section" id="home-muro-sec" style="display:none">
-      <div class="v2-section-head">
-        <div class="v2-section-head-bar"></div>
-        <div class="v2-section-head-text">Lo <em>último</em></div>
-        <div class="v2-section-head-line"></div>
-      </div>
-      <div class="home-muro" id="home-muro"></div>
-      <button type="button" class="home-muro-all" onclick="openBlog()">Ver todo el muro</button>
-    </div>
-
-    <!-- SECCION: PROXIMO EVENTO -->
-    <div class="v2-section">
-      <div class="v2-section-head">
-        <div class="v2-section-head-bar"></div>
-        <div class="v2-section-head-text">Próximo <em>Evento</em></div>
-        <div class="v2-section-head-line"></div>
-      </div>
-
-      <!-- EVENTO PROPIO: 1a Copa Laguna Swim de Aguas Abiertas 2027 -->
-      <a class="v2-event-poster" href="copa.html" style="display:block;text-decoration:none;color:inherit;border-color:var(--gold);margin-bottom:0.8rem">
-        <div class="v2-event-tape" style="background:linear-gradient(90deg,#b8860b,#ffd700);color:#071e38">🏆 INSCRIPCIONES DESDE EL 15 DE OCTUBRE</div>
-        <div class="v2-event-body">
-          <div class="v2-event-flag">🌊</div>
-          <div class="v2-event-info">
-            <div class="v2-event-name">1ª Copa Laguna Swim de Aguas Abiertas</div>
-            <div class="v2-event-date">DOMINGO 30 MAYO · 2027</div>
-            <div class="v2-event-loc">Presa Francisco Zarco, Lerdo · 3 km · 1.5 km · Aletas · 500 m infantil</div>
-          </div>
-          <div class="v2-event-arrow">→</div>
-        </div>
+      <a class="ls-evento" href="copa.html">
+        <span class="ls-evento-cinta">Inscripciones desde el 15 de octubre</span>
+        <b class="ls-evento-nombre">1ª Copa Laguna Swim de Aguas Abiertas</b>
+        <span class="ls-evento-fecha">Domingo 30 de mayo · 2027</span>
+        <span class="ls-evento-lugar">Presa Francisco Zarco, Lerdo · 3 km · 1.5 km · Aletas · 500 m infantil</span>
+        <span class="ls-flecha" aria-hidden="true"></span>
       </a>
 
-      <!-- EVENTO PRINCIPAL: Oceanman World Final Championship + cuenta regresiva -->
-      <div class="v2-event-poster" style="border-color:var(--gold);margin-bottom:0.8rem"
-        onclick="openUrl('https://dominicanrepublicwfc.lovable.app/')">
-        <div class="v2-event-tape" style="background:linear-gradient(90deg,#0a3a6e,#1a6bb5)">🌎 WORLD FINAL CHAMPIONSHIP</div>
-        <div class="v2-event-body">
-          <div class="v2-event-flag">🇩🇴</div>
-          <div class="v2-event-info">
-            <div class="v2-event-name">Oceanman República Dominicana</div>
-            <div class="v2-event-date">9-15 NOVIEMBRE · 2026</div>
-            <div class="v2-event-loc">Miches, República Dominicana</div>
-          </div>
-          <div class="v2-event-arrow">→</div>
+      <div class="ls-evento ls-evento-wfc">
+        <span class="ls-evento-cinta">World Final Championship</span>
+        <a class="ls-evento-nombre" href="https://dominicanrepublicwfc.lovable.app/" target="_blank" rel="noopener">Oceanman República Dominicana</a>
+        <span class="ls-evento-fecha">9 al 15 de noviembre · 2026</span>
+        <span class="ls-evento-lugar">Miches, República Dominicana · 4,000+ nadadores · 100+ nacionalidades · 7 días en el Caribe</span>
+        <div id="wfc-countdown" class="ls-cuenta" aria-label="Cuenta regresiva">
+          <div><b id="wfc-d">--</b><span>días</span></div>
+          <div><b id="wfc-h">--</b><span>horas</span></div>
+          <div><b id="wfc-m">--</b><span>min</span></div>
+          <div><b id="wfc-s">--</b><span>seg</span></div>
         </div>
-
-        <!-- Cuenta regresiva al arranque de la semana del mundial -->
-        <div style="padding:0 1rem 1rem">
-          <div style="font-size:0.55rem;letter-spacing:3px;font-weight:800;color:var(--gold);text-align:center;margin-bottom:0.5rem;text-transform:uppercase">Faltan</div>
-          <div id="wfc-countdown" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem">
-            <div class="wfc-cd-box"><div class="wfc-cd-num" id="wfc-d">--</div><div class="wfc-cd-lbl">días</div></div>
-            <div class="wfc-cd-box"><div class="wfc-cd-num" id="wfc-h">--</div><div class="wfc-cd-lbl">horas</div></div>
-            <div class="wfc-cd-box"><div class="wfc-cd-num" id="wfc-m">--</div><div class="wfc-cd-lbl">min</div></div>
-            <div class="wfc-cd-box"><div class="wfc-cd-num" id="wfc-s">--</div><div class="wfc-cd-lbl">seg</div></div>
-          </div>
-          <div style="font-size:0.6rem;color:rgba(255,255,255,0.55);text-align:center;margin-top:0.6rem;line-height:1.4">
-            4,000+ nadadores · 100+ nacionalidades · 7 días en el Caribe
-          </div>
-
-          <!-- El equipo viaja junto: primero se coordinan con el coach -->
-          <button onclick="event.stopPropagation();contactoWFC()"
-            style="width:100%;margin-top:0.8rem;padding:0.85rem;background:#16a34a;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:0.82rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.4rem">
-            💬 Quiero ir · Escríbele al Coach
-          </button>
-          <div style="font-size:0.58rem;color:rgba(255,255,255,0.5);text-align:center;margin-top:0.45rem;line-height:1.4">
-            Vamos como equipo Laguna Swim. Antes de inscribirte,<br>ponte de acuerdo con el Coach Checo.
-          </div>
-        </div>
+        <button type="button" class="ls-btn ls-btn-wa" onclick="contactoWFC()">Quiero ir · Escríbele al coach</button>
+        <p class="ls-nota">Vamos como equipo Laguna Swim. Antes de inscribirte, ponte de acuerdo con el Coach Checo.</p>
       </div>
+    </section>
 
-    </div>
+    <!-- ===== Tramo 7: lo ultimo del muro (solo si hay publicaciones) ===== -->
+    <section class="ls-c ls-noche ls-muro" id="home-muro-sec" style="display:none" aria-labelledby="ls-t-muro">
+      <h2 id="ls-t-muro" class="ls-h2">lo último <span class="ls-s">del muro</span></h2>
+      <div class="home-muro" id="home-muro"></div>
+      <button type="button" class="ls-btn ls-btn-linea" onclick="openBlog()">Ver todo el muro</button>
+    </section>
 
-    <!-- SECCION: COACH -->
-    <div class="v2-section">
-      <div class="v2-section-head">
-        <div class="v2-section-head-bar"></div>
-        <div class="v2-section-head-text">Tu <em>Coach</em></div>
-        <div class="v2-section-head-line"></div>
+    <!-- ===== Tramo 8: el coach ===== -->
+    <section class="ls-c ls-espuma ls-coach" aria-labelledby="ls-t-coach">
+      <h2 id="ls-t-coach" class="ls-h2">tu <span class="ls-s">coach</span></h2>
+      <p class="ls-coach-nombre">Sergio "Checo" Villarreal</p>
+      <p class="ls-texto">ASCA Level 4 Certified · Lic. en Acondicionamiento Físico · 30 años entrenando en La Laguna.</p>
+      <div class="ls-cifras ls-cifras-claro">
+        <div><b>30+</b><span>años de experiencia</span></div>
+        <div><b>60+</b><span>medallas panamericanas</span></div>
+        <div><b>4</b><span>mundiales</span></div>
       </div>
+      <button type="button" class="ls-btn" onclick="showTab('profile')">Conoce al coach</button>
+    </section>
 
-      <div class="v2-coach-poster" onclick="showTab('tab-profile')">
-        <div class="v2-coach-pic">SV</div>
-        <div class="v2-coach-info">
-          <div class="v2-coach-name">Sergio Villarreal</div>
-          <div class="v2-coach-title">ASCA Level 4 Certified</div>
-          <div class="v2-coach-exp">30+ años · Lic. Acondicionamiento Físico</div>
-        </div>
-        <div class="v2-coach-arrow">→</div>
+    <!-- ===== Tramo 9: todo lo demas ===== -->
+    <section class="ls-c ls-abismo ls-mas" aria-labelledby="ls-t-mas">
+      <h2 id="ls-t-mas" class="ls-h2">únete <span class="ls-s">al equipo</span></h2>
+      <div class="ls-par">
+        <figure><img src="img/equipo-alberca.webp" srcset="img/equipo-alberca-800.webp 800w, img/equipo-alberca.webp 1200w" sizes="(max-width:900px) 50vw, 580px" width="1200" height="1600" alt="Cuatro nadadoras del equipo sonríen dentro de la alberca después de entrenar" loading="lazy" decoding="async"><figcaption>Después del entrenamiento.</figcaption></figure>
+        <figure><img src="img/cozumel-playa.webp" srcset="img/cozumel-playa-800.webp 800w, img/cozumel-playa.webp 1200w" sizes="(max-width:900px) 50vw, 580px" width="1200" height="1600" alt="Un nadador del equipo con la playera de Laguna Swim en la playa de Cozumel" loading="lazy" decoding="async"><figcaption>En Cozumel, con la playera del equipo.</figcaption></figure>
       </div>
-    </div>
+      <ul class="ls-lista">
+        <li><button type="button" class="ls-fila" onclick="showTab('profile')"><span class="ls-fila-txt"><b>Entrena</b><span>Masters · Juvenil · Infantil</span></span><span class="ls-flecha" aria-hidden="true"></span></button></li>
+        <li><button type="button" class="ls-fila" onclick="showTab('ranking')"><span class="ls-fila-txt"><b>Compite</b><span>Rankings y eventos internacionales</span></span><span class="ls-flecha" aria-hidden="true"></span></button></li>
+        <li><button type="button" class="ls-fila" onclick="showTab('store')"><span class="ls-fila-txt"><b>Tienda</b><span>Libros · Viajes Oceanman</span></span><span class="ls-flecha" aria-hidden="true"></span></button></li>
+        <li><button type="button" class="ls-fila" onclick="openBlog()"><span class="ls-fila-txt"><b>Muro</b><span>Noticias, tips y reseñas</span></span><span class="ls-flecha" aria-hidden="true"></span></button></li>
+        <li><a class="ls-fila" href="https://wa.me/528713164850?text=Hola%20Coach%20Sergio,%20quiero%20inscribirme%20a%20Laguna%20Swim.%20%C2%BFMe%20das%20informaci%C3%B3n%20de%20d%C3%ADas%20y%20precios%3F" target="_blank" rel="noopener"><span class="ls-fila-txt"><b>Contacto</b><span>Inscríbete por WhatsApp · 871 316 4850</span></span><span class="ls-flecha" aria-hidden="true"></span></a></li>
+      </ul>
+      <p class="ls-firma">Fuertes y Valientes — Josué 1:9</p>
+    </section>
 
-    <div style="height: 1rem"></div>
-    <!-- ============ FIN ABAJO DEL FOLD ============ -->
-    </div>
-    <!-- ============ FIN V3 HOME ============ -->
-
+  </div>
   </div>
 
   <!-- Pantalla oculta: contiene la calculadora y otros elementos legacy del antiguo s-home, accesibles desde Tools -->
@@ -15410,5 +15235,6 @@ body.v7 .modal-box {
   body.v7 .v2-section, body.v7 .v2-stats-banner, body.v7 .v4-upload-cta { animation: none !important; }
 }
 </style>
+<link rel="stylesheet" href="inicio.css">
 </body>
 </html>
