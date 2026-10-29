@@ -5248,6 +5248,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         <!-- Botones acción (solo Coach) -->
         <div id="muro-pub-acciones" style="display:none;gap:0.4rem;margin-bottom:1rem">
           <button onclick="exportarEntrenamientosCSV()" style="flex:1;background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem;letter-spacing:1px;cursor:pointer">📥 EXPORTAR CSV</button>
+          <button onclick="cerrarMesNazas()" style="flex:1;background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid var(--gold);padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem">🗺️ Cerrar mes</button>
           <button onclick="toggleMuroVistaPub()" id="muro-toggle-vista" style="flex:1;background:rgba(56,189,248,0.2);color:var(--accent);border:1px solid var(--accent);padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem;letter-spacing:1px;cursor:pointer">👥 POR PERSONA</button>
         </div>
 
@@ -13586,10 +13587,18 @@ function sensEmoji(e){
 
 function abrirModalEntrenamiento() {
   document.getElementById('v4-modal-entrenamiento').classList.add('show');
-  v4SensacionSel = 0;
-  var sbtns = document.querySelectorAll('#v4-sensacion .v4-sens-btn');
-  for (var si = 0; si < sbtns.length; si++) sbtns[si].classList.remove('sel');
   document.body.style.overflow = 'hidden';
+  // Sugerir los nombres que ya existen, para que nadie se duplique por un error de dedo
+  try {
+    db.ref('entrenamientos_publicos').once('value').then(function(snap) {
+      var vistos = {}, opts = '';
+      snap.forEach(function(ch) {
+        var n = ((ch.val() || {}).nombre || '').trim(), k = normalizarNombre(n);
+        if (n && !vistos[k]) { vistos[k] = 1; opts += '<option value="' + escapeHtml(n) + '">'; }
+      });
+      document.getElementById('v4-nombres').innerHTML = opts;
+    }).catch(function() {});
+  } catch (e) {}
   // Cargar nombre guardado si existe
   var nombreGuardado = localStorage.getItem('laguna_nombre_entrenamiento');
   if (nombreGuardado) {
@@ -13612,8 +13621,6 @@ async function enviarEntrenamientoPublico() {
   var nombre = (document.getElementById('v4-nombre').value || '').trim();
   var fecha = document.getElementById('v4-fecha').value;
   var metros = parseInt(document.getElementById('v4-metros').value) || 0;
-  var grupo = document.getElementById('v4-grupo').value;
-  var descripcion = (document.getElementById('v4-descripcion').value || '').trim();
 
   var errorEl = document.getElementById('v4-error');
   var successEl = document.getElementById('v4-success');
@@ -13621,8 +13628,8 @@ async function enviarEntrenamientoPublico() {
   successEl.style.display = 'none';
 
   // Validaciones
-  if (!nombre || nombre.length < 3) {
-    errorEl.textContent = 'Escribe tu nombre completo';
+  if (!nombre || nombre.length < 5 || nombre.split(/\s+/).length < 2) {
+    errorEl.textContent = 'Escribe tu nombre y al menos un apellido (ej. María González)';
     errorEl.style.display = 'block';
     return;
   }
@@ -13636,18 +13643,6 @@ async function enviarEntrenamientoPublico() {
     errorEl.style.display = 'block';
     return;
   }
-  if (!descripcion || descripcion.length < 5) {
-    errorEl.textContent = 'Describe qué hiciste en el entrenamiento';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  if (!v4SensacionSel) {
-    errorEl.textContent = 'Cuéntanos cómo te sentiste (elige una carita)';
-    errorEl.style.display = 'block';
-    return;
-  }
-
   // Guardar nombre para próxima vez
   localStorage.setItem('laguna_nombre_entrenamiento', nombre);
 
@@ -13683,15 +13678,12 @@ async function enviarEntrenamientoPublico() {
     }
 
     // 2) Enviar a Firebase (colección pública)
+    // Solo lo necesario: nombre, fecha y metros (más la hora del servidor para ordenar)
     var data = {
       nombre: nombre,
       fecha: fecha,
       metros: metros,
-      grupo: grupo,
-      descripcion: descripcion,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
-      sensacion: v4SensacionSel,
-      sensacionTxt: SENS_TXT[v4SensacionSel] || '',
       anonymous: true,
     };
     if (nadadorIdVinculado) {
@@ -13721,7 +13713,6 @@ async function enviarEntrenamientoPublico() {
 
     // Limpiar campos (excepto nombre)
     document.getElementById('v4-metros').value = '';
-    document.getElementById('v4-descripcion').value = '';
 
     // Cerrar modal después de 2 segundos
     setTimeout(function() {
@@ -13943,6 +13934,7 @@ async function verEntrenamientosPublicos() {
     if (state && state.isCoach) {
       html += '<div style="display: flex; gap: 0.4rem; margin-bottom: 1rem;">' +
         '<button onclick="exportarEntrenamientosCSV()" style="flex:1; background: linear-gradient(135deg, #06d6a0, #38bdf8); color: white; border: none; padding: 0.6rem; border-radius: 8px; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; cursor: pointer;">📥 EXPORTAR CSV</button>' +
+        '<button onclick="cerrarMesNazas()" style="flex:1; background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid var(--gold); padding: 0.6rem; border-radius: 8px; font-weight: 800; font-size: 0.75rem;">🗺️ Cerrar mes</button>' +
         '<button onclick="toggleVistaEntrenamientos()" id="v4-toggle-vista" style="flex:1; background: rgba(56,189,248,0.2); color: var(--accent); border: 1px solid var(--accent); padding: 0.6rem; border-radius: 8px; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; cursor: pointer;">👥 POR PERSONA</button>' +
         '</div>';
     }
@@ -14143,6 +14135,60 @@ setTimeout(function() {
   } catch (e) {}
 }, 1500);
 
+// ===== RUTA DEL NAZAS: CERRAR MES (solo coach) =====
+// Guarda en nazas_historial el resumen de los meses ya terminados (solo quienes subieron
+// más de 10 entrenamientos, más el total del equipo para el mapa) y borra los entrenamientos
+// sueltos de esos meses. Todo va en una sola escritura: si algo falla, no se borra nada.
+async function cerrarMesNazas() {
+  if (!(state && state.isCoach)) { alert('Solo el coach puede cerrar el mes.'); return; }
+  try {
+    var snap = await db.ref('entrenamientos_publicos').once('value');
+    var hoy = new Date();
+    var mesActual = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
+    var meses = {};
+    snap.forEach(function(ch) {
+      var e = ch.val() || {};
+      var ym = (e.fecha && /^\d{4}-\d{2}/.test(e.fecha)) ? e.fecha.slice(0, 7)
+        : (e.timestamp ? (function(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); })(new Date(e.timestamp)) : null);
+      if (!ym || ym >= mesActual) return;   // el mes en curso nunca se cierra
+      if (!meses[ym]) meses[ym] = { keys: [], personas: {}, metros: 0, sesiones: 0 };
+      var m = meses[ym], met = +e.metros || 0;
+      m.keys.push(ch.key); m.metros += met; m.sesiones++;
+      var k = normalizarNombre(e.nombre || '');
+      if (!k) return;
+      if (!m.personas[k]) m.personas[k] = { nombre: String(e.nombre).trim(), metros: 0, sesiones: 0 };
+      m.personas[k].metros += met; m.personas[k].sesiones++;
+    });
+    var lista = Object.keys(meses).sort();
+    if (!lista.length) { alert('No hay meses terminados por cerrar. El mes en curso se cierra a partir del día 1 del siguiente.'); return; }
+
+    var nivel = function(metros) { var km = Math.floor(metros / 100) / 10; return km >= 50 ? 'Leyenda' : km >= 30 ? 'Oro' : km >= 20 ? 'Plata' : km >= 10 ? 'Bronce' : ''; };
+    var updates = {}, resumen = [];
+    lista.forEach(function(ym) {
+      var m = meses[ym], quedan = 0;
+      Object.keys(m.personas).forEach(function(k) {
+        var p = m.personas[k];
+        if (p.sesiones > 10) {
+          quedan++;
+          updates['nazas_historial/' + ym + '/personas/' + k.replace(/[.#$\[\]\/]/g, '_')] = { nombre: p.nombre, metros: p.metros, sesiones: p.sesiones, nivel: nivel(p.metros) };
+        }
+      });
+      // Si el mes ya se había cerrado antes (entrenamientos subidos tarde), se suma al total
+      updates['nazas_historial/' + ym + '/equipo/metros'] = firebase.database.ServerValue.increment(m.metros);
+      updates['nazas_historial/' + ym + '/equipo/sesiones'] = firebase.database.ServerValue.increment(m.sesiones);
+      updates['nazas_historial/' + ym + '/equipo/cerradoEn'] = firebase.database.ServerValue.TIMESTAMP;
+      m.keys.forEach(function(key) { updates['entrenamientos_publicos/' + key] = null; });
+      resumen.push('• ' + ym + ': se borran ' + m.keys.length + ' entrenamientos de ' + Object.keys(m.personas).length + ' personas; quedan en el resumen ' + quedan + ' (más de 10 entrenamientos).');
+    });
+    if (!confirm('Cerrar mes de la Ruta del Nazas\n\n' + resumen.join('\n') + '\n\nEl total del equipo se guarda para el mapa. Esto no se puede deshacer. ¿Continuar?')) return;
+    await db.ref().update(updates);
+    alert('Listo. Mes cerrado:\n\n' + resumen.join('\n'));
+    try { cargarTotalesEntrenamientos(); } catch (e) {}
+  } catch (e) {
+    alert('No se pudo cerrar el mes y no se borró nada.\n\n' + (e && e.message ? e.message : e) + '\n\nSi dice "permission denied", hay que permitir escribir en nazas_historial en las reglas de Firebase.');
+  }
+}
+
 async function borrarEntrenamientoPublico(key) {
   if (!confirm('¿Borrar este entrenamiento?')) return;
   try {
@@ -14178,11 +14224,13 @@ function escapeHtml(str) {
   <div class="v4-modal">
     <button class="v4-modal-close" onclick="cerrarModalEntrenamiento()">✕</button>
     <div class="v4-modal-title">SUBE TU <em>ENTRENAMIENTO</em></div>
-    <div class="v4-modal-subtitle">Registra tus metros y cómo te sentiste. Cada día que registras suma a tu racha 🔥 <strong>No necesitas registrarte</strong>.</div>
+    <div class="v4-modal-subtitle">Registra tus metros. Cada entrenamiento suma a tu racha 🔥 y te hace avanzar en la Ruta del Nazas. <strong>No necesitas registrarte</strong>.</div>
 
     <div class="v4-field">
-      <label>Tu nombre <span class="req">*</span></label>
-      <input type="text" id="v4-nombre" placeholder="Ej. María González" maxlength="60">
+      <label>Nombre y apellidos <span class="req">*</span></label>
+      <input type="text" id="v4-nombre" list="v4-nombres" placeholder="Ej. María González López" maxlength="60" autocomplete="name">
+      <datalist id="v4-nombres"></datalist>
+      <div class="v4-field-hint">&#9888;&#65039; Escribe <b>siempre igual</b> tu nombre y apellidos, sin errores. Si cambia una letra, tus km se cuentan como de otra persona. Si ya aparece en la lista, elígelo.</div>
     </div>
 
     <div class="v4-field-row">
@@ -14197,40 +14245,7 @@ function escapeHtml(str) {
       </div>
     </div>
 
-    <div class="v4-field">
-      <label>Grupo</label>
-      <select id="v4-grupo">
-        <option value="Acuatl&oacute;n">&#127939; Acuatl&oacute;n</option>
-        <option value="Masters">Masters</option>
-        <option value="Juvenil">Juvenil</option>
-        <option value="Infantil">Infantil</option>
-        <option value="Pre-Equipo">Pre-Equipo</option>
-        <option value="Equipo">Equipo</option>
-        <option value="Otro">Otro</option>
-      </select>
-    </div>
-
-    <div class="v4-field">
-      <label>¿Qué hiciste? <span class="req">*</span></label>
-      <textarea id="v4-descripcion" placeholder="Ej: Calentamiento 400m, 8x100 estilo libre 1:40, técnica 4x50 patada, vuelta a la calma 200m" maxlength="500"></textarea>
-      <div class="v4-field-hint">Describe tu entrenamiento: distancias, ejercicios, intensidades</div>
-    </div>
-
-    <div class="v4-field">
-      <label>&iquest;C&oacute;mo te sentiste? <span class="req">*</span></label>
-      <style>
-        .v4-sens-btn{flex:1;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;padding:0.45rem 0.1rem;cursor:pointer;text-align:center;font-size:1.25rem;line-height:1;transition:border-color .15s,background .15s}
-        .v4-sens-btn span{display:block;font-size:0.5rem;color:rgba(255,255,255,0.55);margin-top:3px;letter-spacing:0.3px}
-        .v4-sens-btn.sel{border-color:#06d6a0;background:rgba(6,214,160,0.15)}
-      </style>
-      <div id="v4-sensacion" style="display:flex;gap:0.35rem">
-        <button type="button" class="v4-sens-btn" data-v="1" onclick="selSensacion(this)">😫<span>Muy pesado</span></button>
-        <button type="button" class="v4-sens-btn" data-v="2" onclick="selSensacion(this)">😓<span>Pesado</span></button>
-        <button type="button" class="v4-sens-btn" data-v="3" onclick="selSensacion(this)">🙂<span>Bien</span></button>
-        <button type="button" class="v4-sens-btn" data-v="4" onclick="selSensacion(this)">💪<span>Fuerte</span></button>
-        <button type="button" class="v4-sens-btn" data-v="5" onclick="selSensacion(this)">🔥<span>&iexcl;Volando!</span></button>
-      </div>
-    </div>
+    <div class="v4-field-hint" style="margin:-0.2rem 0 0.8rem">&#128274; Solo guardamos tu nombre, la fecha y los metros. Al cerrar cada mes se borran los entrenamientos; solo queda el resumen del mes de quienes suben más de 10.</div>
 
     <button class="v4-submit-btn" id="v4-submit" onclick="enviarEntrenamientoPublico()">Enviar mi entrenamiento</button>
 
