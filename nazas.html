@@ -157,6 +157,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
       <select id="mes" aria-label="Mes"></select>
       <button class="btn btn-oro" id="ver" type="button">Ver mi avance</button>
     </div>
+    <p class="hint">⚠️ Usa tu <b>nombre y apellidos</b> exactamente como los escribes al subir tus entrenamientos. Si cambia una letra, cuenta como otra persona. Descarga tu diploma antes de que termine el mes: al cerrarse, solo queda el resumen de quienes subieron más de 10 entrenamientos.</p>
     <div class="mine" id="mine" hidden>
       <div class="big"><strong id="miKm">0.0</strong><span>km en <b id="miMes"></b></span><span class="tier-chip t-ninguno" id="miNivel">Sin nivel</span></div>
       <div class="tramo" aria-hidden="true">
@@ -191,7 +192,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
     <div class="stats">
       <div><b id="eqKm">0</b><span>km del equipo</span></div>
       <div><b id="eqPct">0%</b><span>del río</span></div>
-      <div><b id="eqNadadores">0</b><span>nadadores</span></div>
+      <div><b id="eqNadadores">0</b><span>entrenamientos</span></div>
     </div>
     <div class="map-wrap"><svg class="map" id="mapa" viewBox="0 0 720 300" role="img" aria-label="Mapa del Río Nazas con el avance del equipo"></svg></div>
     <p class="hint" id="eqSig"></p>
@@ -254,11 +255,18 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
 
   // ===== Datos =====
   var ENTRADAS = [];
+  // Meses cerrados por el coach: { 'YYYY-MM': { personas: { clave: {nombre, metros, sesiones} }, equipo: {metros, sesiones} } }
+  var HIST = {};
   var mesActual = (function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); })();
 
   // personas del mes: { clave: { nombre, metros, sesiones } }
   function personasDelMes(ym) {
     var p = {};
+    var h = HIST[ym] && HIST[ym].personas;
+    if (h) Object.keys(h).forEach(function (k) {
+      var r = h[k] || {}; var kn = norm(r.nombre); if (!kn) return;
+      p[kn] = { nombre: r.nombre, metros: +r.metros || 0, sesiones: +r.sesiones || 0 };
+    });
     ENTRADAS.forEach(function (e) {
       if (mesDe(e) !== ym) return;
       var k = norm(e.nombre); if (!k) return;
@@ -271,6 +279,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
   function llenarMeses() {
     var set = {}; set[mesActual] = true;
     ENTRADAS.forEach(function (e) { var m = mesDe(e); if (m && m >= TEMPORADA_DESDE.slice(0, 7)) set[m] = true; });
+    Object.keys(HIST).forEach(function (m) { if (m >= TEMPORADA_DESDE.slice(0, 7)) set[m] = true; });
     var meses = Object.keys(set).sort().reverse();
     var sel = $('mes'), prev = sel.value;
     sel.innerHTML = meses.map(function (m) { return '<option value="' + m + '">' + nombreMes(m).replace(/^./, function (c) { return c.toUpperCase(); }) + (m === mesActual ? ' (en curso)' : '') + '</option>'; }).join('');
@@ -306,7 +315,9 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
     document.querySelectorAll('.boya').forEach(function (b, i) { b.classList.toggle('ok', km1(p.metros) >= NIVELES[i].km); });
     var sig = NIVELES.filter(function (x) { return km1(p.metros) < x.km; })[0];
     var txt;
-    if (p.sesiones === 0) txt = 'No encontramos entrenamientos de "' + nombre + '" en ' + nombreMes(ym) + '. Revisa que el nombre sea igual al que usas al subirlos.';
+    if (p.sesiones === 0 && HIST[ym]) txt = nombreMes(ym).replace(/^./, function (c) { return c.toUpperCase(); }) + ' ya se cerró y solo quedó el resumen de quienes subieron más de 10 entrenamientos. "' + nombre + '" no está en ese resumen.';
+    else if (p.sesiones === 0) txt = 'No encontramos entrenamientos de "' + nombre + '" en ' + nombreMes(ym) + '. Revisa que el nombre y apellidos sean iguales a los que usas al subirlos.';
+    else if (HIST[ym] && ym !== mesActual) txt = 'Mes cerrado: ' + p.sesiones + ' entrenamientos.' + (nivel ? ' Lograste ' + nivel.nombre + '.' : '');
     else if (sig) txt = p.sesiones + ' entrenamiento' + (p.sesiones === 1 ? '' : 's') + '. Te faltan ' + (sig.km - km1(p.metros)).toFixed(1) + ' km para ' + sig.nombre + '.';
     else txt = p.sesiones + ' entrenamientos. ¡Llegaste a Leyenda! Nadaste todo el tramo del mes.';
     $('miFalta').textContent = txt;
@@ -371,16 +382,19 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
   }
 
   function pintarEquipo() {
-    var metros = 0, gente = {};
+    var metros = 0, sesiones = 0;
+    Object.keys(HIST).forEach(function (m) {
+      if (m < TEMPORADA_DESDE.slice(0, 7)) return;
+      var q = HIST[m].equipo || {}; metros += +q.metros || 0; sesiones += +q.sesiones || 0;
+    });
     ENTRADAS.forEach(function (e) {
       if (fechaDe(e) < TEMPORADA_DESDE) return;
-      metros += +e.metros || 0;
-      var k = norm(e.nombre); if (k) gente[k] = 1;
+      metros += +e.metros || 0; sesiones++;
     });
     var km = metros / 1000;
     $('eqKm').textContent = Math.floor(km).toLocaleString('es-MX');
     $('eqPct').textContent = Math.min(100, Math.floor(km / RIO_KM * 100)) + '%';
-    $('eqNadadores').textContent = Object.keys(gente).length;
+    $('eqNadadores').textContent = sesiones.toLocaleString('es-MX');
     var sig = PARADAS.filter(function (p) { return km < p.km; })[0];
     $('eqSig').textContent = sig ? 'Siguiente parada: ' + sig.nombre + ', a ' + Math.ceil(sig.km - km).toLocaleString('es-MX') + ' km.' : '¡El equipo nadó el Nazas completo! A empezar la segunda vuelta.';
     pintarMapa(Math.min(km, RIO_KM));
@@ -522,6 +536,10 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
   pintarEquipo(); llenarMeses();
   if (!db) { $('estado').textContent = 'No se pudo conectar. Revisa tu internet y recarga la página.'; $('estado').className = 'msg err'; return; }
   var t = null;
+  db.ref('nazas_historial').on('value', function (snap) {
+    HIST = snap.val() || {};
+    clearTimeout(t); t = setTimeout(refrescar, 50);
+  }, function () { /* sin historial todavía: no pasa nada */ });
   db.ref('entrenamientos_publicos').on('value', function (snap) {
     var lista = [];
     snap.forEach(function (ch) { var v = ch.val(); if (v && v.nombre && v.metros) lista.push(v); });
