@@ -58,7 +58,7 @@ Es gratis y se hace aparte, en business.google.com.
 
 ## Pendientes menores
 
-- **Código postal**: puse 27000 en el marcado. Cámbialo si la Unidad Deportiva tiene otro.
+- **Código postal**: confirmado 27000; ya está en el marcado del inicio y de las páginas de clases y Masters.
 - **Facebook**: falta la URL de tu página en la lista `sameAs` del index. Agrégala cuando puedas.
 - **TikTok**: quedó como `@checoswim_`. Cuando lo muevas a `@checoswim`, cambia el enlace
   en el `sameAs` del index — TikTok no redirige usuarios viejos.
