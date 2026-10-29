@@ -178,6 +178,18 @@
     z-index: 2;
   }
 
+  /* Logo de Laguna Swim pintado en el fondo, al centro de la alberca: queda debajo del
+     agua (brillo y reflejos encima), de las líneas y de los nadadores. */
+  .pool-logo {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: min(46%, 120vh); height: 74%;
+    transform: translate(-50%, -50%);
+    background: url('img/logo-fondo-alberca.webp') center / contain no-repeat;
+    opacity: 0.22;
+    pointer-events: none;
+    z-index: 1;
+  }
   .water-shimmer {
     position: absolute;
     inset: 14px;
@@ -1548,6 +1560,7 @@
     </div>
 
     <div class="pool" id="pool">
+      <div class="pool-logo" aria-hidden="true"></div>
       <div class="drift-arrow" id="driftArrow">→</div>
       <div class="water-shimmer"></div>
       <div class="water-caustics"></div>
