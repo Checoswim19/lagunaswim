@@ -92,6 +92,7 @@ input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px s
 .paradas li::before { content: "○"; color: var(--bajo); text-align: center; }
 .paradas li.ok::before { content: "✓"; color: var(--oro); font-weight: 800; }
 .paradas .km { font-variant-numeric: tabular-nums; }
+.nota-mapa { margin: 0; font-size: 13px; color: var(--suave); background: rgba(3,16,31,.45); border: 1px dashed var(--borde); border-radius: 12px; padding: 10px 12px; }
 @media (prefers-reduced-motion: reduce) { .tramo-hecho, .tramo-yo { transition: none; } }
 
 /* ---- Mapa del equipo ---- */
@@ -186,7 +187,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
   <!-- ===== Mapa del equipo ===== -->
   <section class="card" aria-labelledby="t-equipo">
     <h2 id="t-equipo">El equipo nada el Nazas</h2>
-    <p class="hint">Entre todos sumamos los kilómetros de la temporada (desde el 1 de septiembre de 2026) para recorrer el río desde la sierra de Durango hasta la Laguna de Mayrán. Distancias aproximadas.</p>
+    <p class="hint">Entre todos sumamos los kilómetros de la temporada (desde el 1 de septiembre de 2026) para recorrer el río de La Laguna, el río de Laguna Swim, desde la sierra de Durango hasta la Laguna de Mayrán.</p>
     <div class="stats">
       <div><b id="eqKm">0</b><span>km del equipo</span></div>
       <div><b id="eqPct">0%</b><span>del río</span></div>
@@ -195,6 +196,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
     <div class="map-wrap"><svg class="map" id="mapa" viewBox="0 0 720 300" role="img" aria-label="Mapa del Río Nazas con el avance del equipo"></svg></div>
     <p class="hint" id="eqSig"></p>
     <ul class="paradas" id="paradas"></ul>
+    <p class="nota-mapa">🗺️ El mapa no es exacto: es un modelo recreativo del río de La Laguna, de Laguna Swim. Las distancias y el trazo son solo para divertirnos.</p>
   </section>
 
   <!-- ===== Tabla del mes ===== -->
@@ -220,7 +222,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
   ];
   var TRAMO_KM = 50;
   var TEMPORADA_DESDE = '2026-09-01';
-  // Puntos del Río Nazas para el mapa del equipo (km aproximados desde el nacimiento).
+  // Paradas del mapa del equipo. Es un modelo recreativo, no un mapa exacto: km y trazo son de juego.
   var RIO_KM = 600;
   var PARADAS = [
     { km: 0,   nombre: 'Sierra Madre',            sub: 'Nacimiento, Dgo.' },
