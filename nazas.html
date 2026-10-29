@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruta del Nazas · Laguna Swim</title>
+<meta name="description" content="Reto mensual de Laguna Swim: sube tus entrenamientos, avanza por el Río Nazas y descarga tu diploma Bronce, Plata, Oro o Leyenda.">
+<link rel="canonical" href="https://lagunaswim.net/nazas.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:site_name" content="Laguna Swim International">
+<meta property="og:title" content="Ruta del Nazas · Laguna Swim">
+<meta property="og:description" content="Sube tus metros, avanza por el Río Nazas y gana tu diploma del mes.">
+<meta property="og:url" content="https://lagunaswim.net/nazas.html">
+<meta property="og:image" content="https://lagunaswim.net/logo-og.png">
+<meta name="theme-color" content="#071e38">
+<link rel="icon" href="logo-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=Cinzel:wght@600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+<style>
+:root {
+  --noche: #071e38; --abismo: #03101f; --oro: #ffd700; --cielo: #38bdf8; --bajo: #7cc8f2;
+  --texto: #eaf4fb; --suave: rgba(234,244,251,.72); --borde: rgba(255,255,255,.14);
+  --vidrio: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+  --bronce: #d08a4f; --plata: #c9d3dc; --oro-n: #f5c542; --leyenda: #38bdf8;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html { background: var(--abismo); }
+body {
+  margin: 0; color: var(--texto); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  background: radial-gradient(120% 60% at 50% 0%, #0d3a63 0%, var(--noche) 45%, var(--abismo) 100%) fixed;
+  min-height: 100vh;
+  padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left));
+}
+.wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 22px; }
+a { color: var(--cielo); }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.back { color: var(--suave); text-decoration: none; font-size: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 14px; color: var(--suave); }
+.brand img { width: 34px; height: 34px; border-radius: 9px; background: #fff; }
+h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.05; text-wrap: balance; }
+h1 { font-size: clamp(40px, 9vw, 64px); font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
+h1 em { font-style: normal; color: var(--oro); }
+h2 { font-size: 26px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.lead { color: var(--suave); max-width: 60ch; margin: 6px 0 0; }
+.card { background: var(--vidrio); border: 1px solid var(--borde); border-radius: 20px; padding: 18px; display: grid; gap: 14px; box-shadow: 0 14px 36px rgba(0,8,20,.38); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+label.lbl { font-family: var(--display); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 13px; color: var(--suave); }
+input, select {
+  font: inherit; color: var(--texto); background: rgba(3,16,31,.6); border: 1px solid var(--borde);
+  border-radius: 12px; padding: 12px 14px; min-width: 0;
+}
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--cielo); outline-offset: 2px; }
+#nombre { flex: 1 1 220px; }
+.btn { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; }
+.btn-oro { background: linear-gradient(135deg, #ffe066, #ffb800); color: #2a1a00; }
+.btn-linea { background: transparent; color: var(--texto); border: 1px solid var(--borde); }
+.btn[disabled] { opacity: .45; cursor: default; }
+.hint { font-size: 14px; color: var(--suave); }
+
+/* ---- Mi mes ---- */
+.mine { display: grid; gap: 14px; }
+.big { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.big strong { font-family: var(--display); font-size: 64px; font-weight: 800; line-height: .9; font-variant-numeric: tabular-nums; }
+.big span { color: var(--suave); }
+.tier-chip { font-family: var(--display); font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; font-size: 14px; padding: 4px 12px; border-radius: 999px; color: #10151a; }
+.t-ninguno { background: rgba(255,255,255,.14); color: var(--texto); }
+.t-bronce { background: linear-gradient(135deg, #f0b98a, #a85f2c); }
+.t-plata { background: linear-gradient(135deg, #ffffff, #9aa7b3); }
+.t-oro { background: linear-gradient(135deg, #fff1a6, #d9a000); }
+.t-leyenda { background: linear-gradient(135deg, #a8ecff, #1181c9); color: #031a2e; }
+
+/* tramo del mes: un río recto de 0 a 50 km con las cuatro boyas de nivel */
+.tramo { position: relative; padding: 34px 6px 30px; }
+.tramo-agua { height: 22px; border-radius: 11px; background: linear-gradient(180deg, #0b5e8e, #1289c4 50%, #0b5e8e); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,.18); }
+.tramo-hecho { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, rgba(255,215,0,.15), rgba(255,215,0,.55)); transition: width .9s cubic-bezier(.16,1,.3,1); }
+.tramo-yo { position: absolute; top: 16px; width: 40px; height: 40px; margin-left: -20px; left: 6px; transition: left .9s cubic-bezier(.16,1,.3,1); display: grid; place-items: center; font-size: 26px; filter: drop-shadow(0 3px 6px rgba(0,0,0,.5)); }
+.boya { position: absolute; top: 0; transform: translateX(-50%); display: grid; justify-items: center; gap: 2px; font-family: var(--display); font-weight: 700; font-size: 12px; letter-spacing: .5px; text-transform: uppercase; color: var(--suave); }
+.boya i { width: 12px; height: 12px; border-radius: 50%; display: block; border: 2px solid #031a2e; }
+.boya.ok { color: var(--texto); }
+.boya-km { position: absolute; top: 62px; transform: translateX(-50%); font-size: 12px; color: var(--suave); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.boya.fin, .boya-km.fin { transform: translateX(-100%); justify-items: end; }
+.paradas { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.paradas li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: baseline; font-size: 14px; color: var(--suave); }
+.paradas li b { color: var(--texto); font-weight: 600; }
+.paradas li.ok { color: var(--texto); }
+.paradas li::before { content: "○"; color: var(--bajo); text-align: center; }
+.paradas li.ok::before { content: "✓"; color: var(--oro); font-weight: 800; }
+.paradas .km { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .tramo-hecho, .tramo-yo { transition: none; } }
+
+/* ---- Mapa del equipo ---- */
+.map-wrap { overflow-x: auto; }
+.map { width: 100%; min-width: 560px; height: auto; display: block; }
+.map text { font-family: var(--body); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stats div { background: rgba(3,16,31,.45); border: 1px solid var(--borde); border-radius: 14px; padding: 12px; display: grid; gap: 2px; }
+.stats b { font-family: var(--display); font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+.stats span { font-size: 13px; color: var(--suave); }
+
+/* ---- Tabla del mes ---- */
+.rank { display: grid; gap: 6px; }
+.rank-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 9px 12px; border-radius: 12px; background: rgba(3,16,31,.45); border: 1px solid transparent; cursor: pointer; text-align: left; font: inherit; color: inherit; width: 100%; }
+.rank-row:hover { border-color: var(--borde); }
+.rank-row.yo { border-color: var(--oro); }
+.rank-pos { font-family: var(--display); font-weight: 800; color: var(--suave); text-align: center; }
+.rank-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank-km { font-family: var(--display); font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums; }
+.dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.levels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.levels div { border-radius: 14px; padding: 10px; text-align: center; display: grid; gap: 2px; color: #10151a; }
+.levels b { font-family: var(--display); font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+.levels span { font-size: 13px; font-weight: 600; }
+@media (max-width: 480px) { .levels { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stats b { font-size: 22px; } .big strong { font-size: 52px; } }
+
+/* ---- Vista previa del diploma ---- */
+.preview { display: none; gap: 12px; }
+.preview.show { display: grid; }
+.preview img { width: 100%; border-radius: 10px; box-shadow: 0 18px 40px rgba(0,0,0,.5); }
+.msg { font-size: 14px; color: var(--suave); }
+.err { color: #ffb4a8; }
+footer { text-align: center; color: var(--suave); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <a class="back" href="index.html">‹ Laguna Swim</a>
+    <div class="brand"><img src="logo-256.png" alt="">Laguna Swim International</div>
+  </div>
+
+  <header>
+    <h1>Ruta del <em>Nazas</em></h1>
+    <p class="lead">Cada entrenamiento que subes te hace avanzar por el río. Junta kilómetros en el mes y descarga tu diploma: Bronce, Plata, Oro o Leyenda.</p>
+  </header>
+
+  <div class="levels" aria-label="Niveles del mes">
+    <div class="t-bronce"><b>Bronce</b><span>10 km</span></div>
+    <div class="t-plata"><b>Plata</b><span>20 km</span></div>
+    <div class="t-oro"><b>Oro</b><span>30 km</span></div>
+    <div class="t-leyenda"><b>Leyenda</b><span>50 km</span></div>
+  </div>
+
+  <!-- ===== Mi mes ===== -->
+  <section class="card" aria-labelledby="t-mio">
+    <h2 id="t-mio">Mi mes</h2>
+    <div class="row">
+      <input id="nombre" type="text" list="nombres" placeholder="Tu nombre, como lo pones al subir tu entrenamiento" autocomplete="name" aria-label="Tu nombre">
+      <datalist id="nombres"></datalist>
+      <select id="mes" aria-label="Mes"></select>
+      <button class="btn btn-oro" id="ver" type="button">Ver mi avance</button>
+    </div>
+    <div class="mine" id="mine" hidden>
+      <div class="big"><strong id="miKm">0.0</strong><span>km en <b id="miMes"></b></span><span class="tier-chip t-ninguno" id="miNivel">Sin nivel</span></div>
+      <div class="tramo" aria-hidden="true">
+        <div class="tramo-agua"><div class="tramo-hecho" id="tramoHecho"></div></div>
+        <div class="tramo-yo" id="tramoYo">🏊</div>
+        <div class="boya" style="left:20%"><i style="background:var(--bronce)"></i>Bronce</div>
+        <div class="boya" style="left:40%"><i style="background:var(--plata)"></i>Plata</div>
+        <div class="boya" style="left:60%"><i style="background:var(--oro-n)"></i>Oro</div>
+        <div class="boya fin" style="left:100%"><i style="background:var(--leyenda)"></i>Leyenda</div>
+        <span class="boya-km" style="left:0">0</span><span class="boya-km" style="left:20%">10</span><span class="boya-km" style="left:40%">20</span><span class="boya-km" style="left:60%">30</span><span class="boya-km fin" style="left:100%">50 km</span>
+      </div>
+      <p class="hint" id="miFalta"></p>
+      <div class="row">
+        <button class="btn btn-oro" id="btnDiploma" type="button" disabled>Descargar mi diploma</button>
+        <a class="btn btn-linea" href="index.html#subir">Subir un entrenamiento</a>
+      </div>
+      <div class="preview" id="preview">
+        <img id="diplomaImg" alt="Tu diploma de la Ruta del Nazas">
+        <div class="row">
+          <button class="btn btn-oro" id="btnGuardar" type="button">Guardar imagen</button>
+          <button class="btn btn-linea" id="btnCompartir" type="button" hidden>Compartir</button>
+        </div>
+      </div>
+    </div>
+    <p class="msg" id="estado">Cargando entrenamientos…</p>
+  </section>
+
+  <!-- ===== Mapa del equipo ===== -->
+  <section class="card" aria-labelledby="t-equipo">
+    <h2 id="t-equipo">El equipo nada el Nazas</h2>
+    <p class="hint">Entre todos sumamos los kilómetros de la temporada (desde el 1 de septiembre de 2026) para recorrer el río desde la sierra de Durango hasta la Laguna de Mayrán. Distancias aproximadas.</p>
+    <div class="stats">
+      <div><b id="eqKm">0</b><span>km del equipo</span></div>
+      <div><b id="eqPct">0%</b><span>del río</span></div>
+      <div><b id="eqNadadores">0</b><span>nadadores</span></div>
+    </div>
+    <div class="map-wrap"><svg class="map" id="mapa" viewBox="0 0 720 300" role="img" aria-label="Mapa del Río Nazas con el avance del equipo"></svg></div>
+    <p class="hint" id="eqSig"></p>
+    <ul class="paradas" id="paradas"></ul>
+  </section>
+
+  <!-- ===== Tabla del mes ===== -->
+  <section class="card" aria-labelledby="t-tabla">
+    <h2 id="t-tabla">Tabla del mes</h2>
+    <div class="rank" id="rank"><p class="hint">Cargando…</p></div>
+  </section>
+
+  <footer>Fuertes y Valientes · Josué 1:9 · Coach Sergio "Checo" Villarreal · ASCA Nivel 4</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ===== Configuración del reto =====
+  var NIVELES = [
+    { id: 'bronce',  nombre: 'Bronce',  km: 10, a: '#f3c193', b: '#9c5527', tinta: '#5a2e10' },
+    { id: 'plata',   nombre: 'Plata',   km: 20, a: '#ffffff', b: '#8c99a6', tinta: '#3c4752' },
+    { id: 'oro',     nombre: 'Oro',     km: 30, a: '#fff3b0', b: '#c99400', tinta: '#5c4300' },
+    { id: 'leyenda', nombre: 'Leyenda', km: 50, a: '#b5f0ff', b: '#0d6fb0', tinta: '#063456' },
+  ];
+  var TRAMO_KM = 50;
+  var TEMPORADA_DESDE = '2026-09-01';
+  // Puntos del Río Nazas para el mapa del equipo (km aproximados desde el nacimiento).
+  var RIO_KM = 600;
+  var PARADAS = [
+    { km: 0,   nombre: 'Sierra Madre',            sub: 'Nacimiento, Dgo.' },
+    { km: 150, nombre: 'Presa Lázaro Cárdenas',   sub: 'El Palmito' },
+    { km: 240, nombre: 'Rodeo',                   sub: 'Durango' },
+    { km: 320, nombre: 'Nazas',                   sub: 'Durango' },
+    { km: 470, nombre: 'Presa Francisco Zarco',   sub: 'Sede de la Copa 2027' },
+    { km: 520, nombre: 'Lerdo · Gómez Palacio',   sub: 'Durango' },
+    { km: 540, nombre: 'Torreón',                 sub: 'Casa de Laguna Swim' },
+    { km: 600, nombre: 'Laguna de Mayrán',        sub: 'Fin del río' },
+  ];
+  var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+  function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim(); }
+  function mesDe(e) {
+    if (e.fecha && /^\d{4}-\d{2}/.test(e.fecha)) return e.fecha.slice(0, 7);
+    if (e.timestamp) { var d = new Date(e.timestamp); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+    return null;
+  }
+  function fechaDe(e) {
+    if (e.fecha && /^\d{4}-\d{2}-\d{2}/.test(e.fecha)) return e.fecha.slice(0, 10);
+    if (e.timestamp) { var d = new Date(e.timestamp); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    return '';
+  }
+  function nombreMes(ym) { var p = ym.split('-'); return MESES[+p[1] - 1] + ' ' + p[0]; }
+  function nivelDe(km) { var n = null; NIVELES.forEach(function (x) { if (km >= x.km) n = x; }); return n; }
+  function km1(m) { return Math.floor(m / 100) / 10; }   // metros → km con 1 decimal, sin redondear hacia arriba
+  function fmtKm(m) { return km1(m).toLocaleString('es-MX', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+
+  // ===== Datos =====
+  var ENTRADAS = [];
+  var mesActual = (function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); })();
+
+  // personas del mes: { clave: { nombre, metros, sesiones } }
+  function personasDelMes(ym) {
+    var p = {};
+    ENTRADAS.forEach(function (e) {
+      if (mesDe(e) !== ym) return;
+      var k = norm(e.nombre); if (!k) return;
+      if (!p[k]) p[k] = { nombre: String(e.nombre).trim(), metros: 0, sesiones: 0 };
+      p[k].metros += +e.metros || 0; p[k].sesiones++;
+    });
+    return p;
+  }
+
+  function llenarMeses() {
+    var set = {}; set[mesActual] = true;
+    ENTRADAS.forEach(function (e) { var m = mesDe(e); if (m && m >= TEMPORADA_DESDE.slice(0, 7)) set[m] = true; });
+    var meses = Object.keys(set).sort().reverse();
+    var sel = $('mes'), prev = sel.value;
+    sel.innerHTML = meses.map(function (m) { return '<option value="' + m + '">' + nombreMes(m).replace(/^./, function (c) { return c.toUpperCase(); }) + (m === mesActual ? ' (en curso)' : '') + '</option>'; }).join('');
+    sel.value = prev && set[prev] ? prev : mesActual;
+  }
+
+  function llenarNombres() {
+    var p = personasDelMes($('mes').value), dl = $('nombres');
+    dl.innerHTML = Object.keys(p).map(function (k) { return '<option value="' + esc(p[k].nombre) + '">'; }).join('');
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  // ===== Mi mes =====
+  var actual = null;   // { nombre, metros, sesiones, mes, nivel }
+  function verMiMes() {
+    var nombre = $('nombre').value.trim();
+    var ym = $('mes').value;
+    if (nombre.length < 3) { $('estado').textContent = 'Escribe tu nombre como lo pones al subir tu entrenamiento.'; $('estado').className = 'msg err'; return; }
+    try { localStorage.setItem('laguna_nombre_entrenamiento', nombre); } catch (e) {}
+    var p = personasDelMes(ym)[norm(nombre)] || { nombre: nombre, metros: 0, sesiones: 0 };
+    var nivel = nivelDe(km1(p.metros));
+    actual = { nombre: p.nombre, metros: p.metros, sesiones: p.sesiones, mes: ym, nivel: nivel };
+    $('mine').hidden = false;
+    $('preview').classList.remove('show');
+    $('miKm').textContent = fmtKm(p.metros);
+    $('miMes').textContent = nombreMes(ym);
+    var chip = $('miNivel');
+    chip.className = 'tier-chip ' + (nivel ? 't-' + nivel.id : 't-ninguno');
+    chip.textContent = nivel ? nivel.nombre : 'Sin nivel';
+    var pct = Math.min(100, (p.metros / 1000) / TRAMO_KM * 100);
+    $('tramoHecho').style.width = pct + '%';
+    $('tramoYo').style.left = 'calc(6px + (100% - 12px) * ' + (pct / 100) + ')';
+    document.querySelectorAll('.boya').forEach(function (b, i) { b.classList.toggle('ok', km1(p.metros) >= NIVELES[i].km); });
+    var sig = NIVELES.filter(function (x) { return km1(p.metros) < x.km; })[0];
+    var txt;
+    if (p.sesiones === 0) txt = 'No encontramos entrenamientos de "' + nombre + '" en ' + nombreMes(ym) + '. Revisa que el nombre sea igual al que usas al subirlos.';
+    else if (sig) txt = p.sesiones + ' entrenamiento' + (p.sesiones === 1 ? '' : 's') + '. Te faltan ' + (sig.km - km1(p.metros)).toFixed(1) + ' km para ' + sig.nombre + '.';
+    else txt = p.sesiones + ' entrenamientos. ¡Llegaste a Leyenda! Nadaste todo el tramo del mes.';
+    $('miFalta').textContent = txt;
+    $('btnDiploma').disabled = !nivel;
+    $('btnDiploma').textContent = nivel ? 'Descargar mi diploma ' + nivel.nombre : 'El diploma se gana desde 10 km';
+    $('estado').textContent = ''; $('estado').className = 'msg';
+    pintarTabla();
+  }
+
+  // ===== Tabla del mes =====
+  function pintarTabla() {
+    var ym = $('mes').value;
+    var lista = Object.values(personasDelMes(ym)).sort(function (a, b) { return b.metros - a.metros; });
+    var yo = actual && actual.mes === ym ? norm(actual.nombre) : '';
+    $('t-tabla').textContent = 'Tabla de ' + nombreMes(ym);
+    if (!lista.length) { $('rank').innerHTML = '<p class="hint">Todavía nadie sube entrenamientos este mes. ¡Sé el primero!</p>'; return; }
+    $('rank').innerHTML = lista.slice(0, 15).map(function (p, i) {
+      var n = nivelDe(km1(p.metros));
+      var color = n ? 'linear-gradient(135deg,' + n.a + ',' + n.b + ')' : 'rgba(255,255,255,.18)';
+      return '<button type="button" class="rank-row' + (norm(p.nombre) === yo ? ' yo' : '') + '" data-n="' + esc(p.nombre) + '">' +
+        '<span class="rank-pos">' + (i + 1) + '</span><span class="rank-name">' + esc(p.nombre) + '</span>' +
+        '<span class="dot" style="background:' + color + '" title="' + (n ? n.nombre : 'Sin nivel') + '"></span>' +
+        '<span class="rank-km">' + fmtKm(p.metros) + ' km</span></button>';
+    }).join('');
+  }
+  $('rank').addEventListener('click', function (e) {
+    var b = e.target.closest('.rank-row'); if (!b) return;
+    $('nombre').value = b.getAttribute('data-n'); verMiMes();
+    $('t-mio').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // ===== Mapa del equipo =====
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent) { var n = document.createElementNS(NS, tag); for (var k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; }
+  function pintarMapa(kmEquipo) {
+    var svg = $('mapa'); svg.innerHTML = '';
+    var defs = el('defs', {}, svg);
+    var g = el('linearGradient', { id: 'agua', x1: '0', x2: '1' }, defs);
+    el('stop', { offset: '0', 'stop-color': '#7cc8f2' }, g); el('stop', { offset: '1', 'stop-color': '#1289c4' }, g);
+    // Río estilizado de la sierra (izquierda) a Mayrán (derecha)
+    var d = 'M 30 70 C 90 40, 120 150, 180 130 S 260 60, 320 110 S 400 230, 470 190 S 560 120, 600 170 S 660 240, 695 220';
+    el('path', { d: d, fill: 'none', stroke: 'rgba(255,255,255,.08)', 'stroke-width': 22, 'stroke-linecap': 'round' }, svg);
+    var rio = el('path', { d: d, fill: 'none', stroke: 'url(#agua)', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .55 }, svg);
+    var L = rio.getTotalLength();
+    var frac = Math.max(0, Math.min(1, kmEquipo / RIO_KM));
+    el('path', { d: d, fill: 'none', stroke: '#ffd700', 'stroke-width': 9, 'stroke-linecap': 'round', 'stroke-dasharray': (L * frac) + ' ' + L }, svg);
+    PARADAS.forEach(function (p, i) {
+      var pt = rio.getPointAtLength(L * p.km / RIO_KM);
+      var hecho = kmEquipo >= p.km;
+      el('circle', { cx: pt.x, cy: pt.y, r: p.km === 540 ? 8 : 6, fill: hecho ? '#ffd700' : '#03101f', stroke: hecho ? '#fff3b0' : '#7cc8f2', 'stroke-width': 2 }, svg);
+      var arriba = i % 2 === 0;
+      var ty = arriba ? pt.y - 18 : pt.y + 26;
+      var anchor = i === 0 ? 'start' : (i === PARADAS.length - 1 ? 'end' : 'middle');
+      var t = el('text', { x: pt.x, y: ty, 'text-anchor': anchor, fill: hecho ? '#ffffff' : 'rgba(234,244,251,.75)', 'font-size': 12, 'font-weight': 700 }, svg);
+      t.textContent = p.nombre;
+      var s = el('text', { x: pt.x, y: ty + (arriba ? -14 : 14), 'text-anchor': anchor, fill: 'rgba(234,244,251,.55)', 'font-size': 10.5 }, svg);
+      s.textContent = p.sub + ' · ' + p.km + ' km';
+    });
+    var yo = rio.getPointAtLength(L * frac);
+    var nad = el('text', { x: yo.x, y: yo.y + 7, 'text-anchor': 'middle', 'font-size': 22 }, svg);
+    nad.textContent = '🏊';
+  }
+
+  function pintarEquipo() {
+    var metros = 0, gente = {};
+    ENTRADAS.forEach(function (e) {
+      if (fechaDe(e) < TEMPORADA_DESDE) return;
+      metros += +e.metros || 0;
+      var k = norm(e.nombre); if (k) gente[k] = 1;
+    });
+    var km = metros / 1000;
+    $('eqKm').textContent = Math.floor(km).toLocaleString('es-MX');
+    $('eqPct').textContent = Math.min(100, Math.floor(km / RIO_KM * 100)) + '%';
+    $('eqNadadores').textContent = Object.keys(gente).length;
+    var sig = PARADAS.filter(function (p) { return km < p.km; })[0];
+    $('eqSig').textContent = sig ? 'Siguiente parada: ' + sig.nombre + ', a ' + Math.ceil(sig.km - km).toLocaleString('es-MX') + ' km.' : '¡El equipo nadó el Nazas completo! A empezar la segunda vuelta.';
+    pintarMapa(Math.min(km, RIO_KM));
+    $('paradas').innerHTML = PARADAS.map(function (p) {
+      return '<li class="' + (km >= p.km ? 'ok' : '') + '"><span><b>' + p.nombre + '</b> · ' + p.sub + '</span><span class="km">' + p.km + ' km</span></li>';
+    }).join('');
+  }
+
+  // ===== Diploma =====
+  function cargarImg(src) { return new Promise(function (res) { var i = new Image(); i.onload = function () { res(i); }; i.onerror = function () { res(null); }; i.src = src; }); }
+
+  async function hacerDiploma() {
+    if (!actual || !actual.nivel) return;
+    var n = actual.nivel;
+    $('btnDiploma').disabled = true; $('btnDiploma').textContent = 'Preparando diploma…';
+    try { await Promise.all([document.fonts.load('700 80px Cinzel'), document.fonts.load('600 40px Barlow'), document.fonts.load('800 40px "Barlow Condensed"')]); } catch (e) {}
+    var logo = await cargarImg('img/logo-fondo-alberca.webp');
+    var W = 2000, H = 1414;
+    var c = document.createElement('canvas'); c.width = W; c.height = H;
+    var x = c.getContext('2d');
+
+    // Papel
+    var papel = x.createLinearGradient(0, 0, W, H);
+    papel.addColorStop(0, '#fffdf8'); papel.addColorStop(1, '#f4efe4');
+    x.fillStyle = papel; x.fillRect(0, 0, W, H);
+    // Ondas de agua muy suaves al fondo
+    x.save(); x.globalAlpha = 0.07; x.strokeStyle = n.b; x.lineWidth = 3;
+    for (var yy = 260; yy < H - 160; yy += 46) {
+      x.beginPath();
+      for (var xx = 120; xx <= W - 120; xx += 10) x.lineTo(xx, yy + Math.sin((xx + yy) / 70) * 9);
+      x.stroke();
+    }
+    x.restore();
+    // Logo de agua al centro
+    if (logo) { x.save(); x.globalAlpha = 0.07; var lw = 900, lh = lw * logo.height / logo.width; x.drawImage(logo, (W - lw) / 2, (H - lh) / 2 + 40, lw, lh); x.restore(); }
+
+    // Marco metálico doble en el color del nivel
+    var metal = x.createLinearGradient(0, 0, W, H);
+    metal.addColorStop(0, n.b); metal.addColorStop(0.35, n.a); metal.addColorStop(0.65, n.b); metal.addColorStop(1, n.a);
+    x.strokeStyle = metal; x.lineWidth = 26; x.strokeRect(46, 46, W - 92, H - 92);
+    x.strokeStyle = n.b; x.lineWidth = 4; x.strokeRect(92, 92, W - 184, H - 184);
+    // Esquinas
+    [[92, 92], [W - 92, 92], [92, H - 92], [W - 92, H - 92]].forEach(function (p) {
+      x.save(); x.translate(p[0], p[1]); x.rotate(Math.PI / 4); x.fillStyle = metal; x.fillRect(-18, -18, 36, 36); x.restore();
+    });
+
+    // Logo arriba
+    if (logo) { var w2 = 300, h2 = w2 * logo.height / logo.width; x.drawImage(logo, (W - w2) / 2, 128, w2, h2); }
+
+    x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+    x.fillStyle = '#0b2236';
+    x.font = '700 30px "Barlow Condensed", sans-serif';
+    x.fillText('LAGUNA SWIM INTERNATIONAL  ·  RUTA DEL NAZAS', W / 2, 410);
+    x.font = '700 96px Cinzel, Georgia, serif';
+    x.fillText('DIPLOMA', W / 2, 520);
+
+    // Medalla del nivel
+    var mx = W / 2, my = 660, mr = 92;
+    var med = x.createRadialGradient(mx - 30, my - 30, 10, mx, my, mr);
+    med.addColorStop(0, n.a); med.addColorStop(1, n.b);
+    x.beginPath(); x.arc(mx, my, mr, 0, Math.PI * 2); x.fillStyle = med; x.fill();
+    x.lineWidth = 8; x.strokeStyle = '#ffffff'; x.stroke();
+    x.beginPath(); x.arc(mx, my, mr + 10, 0, Math.PI * 2); x.lineWidth = 3; x.strokeStyle = n.b; x.stroke();
+    x.fillStyle = n.tinta; x.font = '800 40px "Barlow Condensed", sans-serif';
+    x.fillText(n.nombre.toUpperCase(), mx, my - 2);
+    x.font = '700 30px "Barlow Condensed", sans-serif';
+    x.fillText(n.km + ' KM', mx, my + 36);
+
+    x.fillStyle = '#4d6274'; x.font = '500 34px Barlow, sans-serif';
+    x.fillText('Se otorga a', W / 2, 820);
+    // Nombre (ajusta tamaño si es largo)
+    var tam = 104; x.font = '700 ' + tam + 'px Cinzel, Georgia, serif';
+    while (x.measureText(actual.nombre.toUpperCase()).width > W - 420 && tam > 56) { tam -= 4; x.font = '700 ' + tam + 'px Cinzel, Georgia, serif'; }
+    x.fillStyle = '#0b2236'; x.fillText(actual.nombre.toUpperCase(), W / 2, 930);
+    // línea bajo el nombre
+    x.strokeStyle = metal; x.lineWidth = 4; x.beginPath(); x.moveTo(W / 2 - 520, 962); x.lineTo(W / 2 + 520, 962); x.stroke();
+
+    x.fillStyle = '#23384a'; x.font = '500 40px Barlow, sans-serif';
+    x.fillText('por nadar ' + fmtKm(actual.metros) + ' km en ' + nombreMes(actual.mes) + ' en la Ruta del Nazas,', W / 2, 1036);
+    x.fillText('en ' + actual.sesiones + ' entrenamiento' + (actual.sesiones === 1 ? '' : 's') + ', alcanzando el nivel ' + n.nombre + '.', W / 2, 1090);
+
+    // Firma y datos
+    x.strokeStyle = '#0b2236'; x.lineWidth = 2;
+    x.beginPath(); x.moveTo(330, 1236); x.lineTo(830, 1236); x.stroke();
+    x.beginPath(); x.moveTo(W - 830, 1236); x.lineTo(W - 330, 1236); x.stroke();
+    x.fillStyle = '#0b2236'; x.font = '700 30px Barlow, sans-serif';
+    x.fillText('Sergio Elías Villarreal Limas', 580, 1276);
+    x.fillText(nombreMes(actual.mes).replace(/^./, function (c) { return c.toUpperCase(); }), W - 580, 1276);
+    x.fillStyle = '#4d6274'; x.font = '500 24px Barlow, sans-serif';
+    x.fillText('Head Coach · ASCA Nivel 4', 580, 1310);
+    var folio = 'LS-NZ-' + actual.mes.replace('-', '') + '-' + (norm(actual.nombre).split('').reduce(function (h, ch) { return (h * 31 + ch.charCodeAt(0)) % 99991; }, 7)).toString().padStart(5, '0');
+    x.fillText('Folio ' + folio, W - 580, 1310);
+    x.fillStyle = n.b; x.font = 'italic 600 28px Barlow, sans-serif';
+    x.fillText('Fuertes y Valientes · Josué 1:9', W / 2, 1300);
+
+    var blob = await new Promise(function (r) { c.toBlob(r, 'image/png'); });
+    var url = URL.createObjectURL(blob);
+    $('diplomaImg').src = url;
+    $('preview').classList.add('show');
+    var nombreArchivo = 'diploma-nazas-' + norm(actual.nombre).replace(/[^a-z0-9]+/g, '-') + '-' + actual.mes + '.png';
+    $('btnGuardar').onclick = function () { var a = document.createElement('a'); a.href = url; a.download = nombreArchivo; document.body.appendChild(a); a.click(); a.remove(); };
+    var file = null; try { file = new File([blob], nombreArchivo, { type: 'image/png' }); } catch (e) {}
+    var puede = file && navigator.canShare && navigator.canShare({ files: [file] });
+    $('btnCompartir').hidden = !puede;
+    $('btnCompartir').onclick = function () {
+      navigator.share({ files: [file], title: 'Mi diploma de la Ruta del Nazas', text: '🏊 ¡Nadé ' + fmtKm(actual.metros) + ' km en ' + nombreMes(actual.mes) + ' y gané el nivel ' + n.nombre + ' en la Ruta del Nazas de Laguna Swim! lagunaswim.net/nazas.html' }).catch(function () {});
+    };
+    $('btnDiploma').disabled = false; $('btnDiploma').textContent = 'Descargar mi diploma ' + n.nombre;
+    $('preview').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ===== Arranque =====
+  $('ver').addEventListener('click', verMiMes);
+  $('nombre').addEventListener('keydown', function (e) { if (e.key === 'Enter') verMiMes(); });
+  $('mes').addEventListener('change', function () { llenarNombres(); if (actual) verMiMes(); else pintarTabla(); });
+  $('btnDiploma').addEventListener('click', hacerDiploma);
+  try { var guardado = localStorage.getItem('laguna_nombre_entrenamiento'); if (guardado) $('nombre').value = guardado; } catch (e) {}
+
+  function refrescar() {
+    llenarMeses(); llenarNombres(); pintarEquipo(); pintarTabla();
+    if ($('nombre').value.trim().length >= 3) verMiMes();
+    else { $('estado').textContent = 'Escribe tu nombre para ver tu avance.'; $('estado').className = 'msg'; }
+  }
+
+  var db = null;
+  try {
+    if (!firebase.apps.length) firebase.initializeApp({
+      apiKey: 'AIzaSyAox5JQc_swfKXpPrPOS_v3ReHpkuxDasA',
+      authDomain: 'laguna-swim-chrono.firebaseapp.com',
+      databaseURL: 'https://laguna-swim-chrono-default-rtdb.firebaseio.com',
+      projectId: 'laguna-swim-chrono',
+      storageBucket: 'laguna-swim-chrono.firebasestorage.app',
+      messagingSenderId: '618459577354',
+      appId: '1:618459577354:web:2e26bda92112ce241c33f3'
+    });
+    db = firebase.database();
+  } catch (e) { console.warn('Firebase no disponible', e); }
+
+  pintarEquipo(); llenarMeses();
+  if (!db) { $('estado').textContent = 'No se pudo conectar. Revisa tu internet y recarga la página.'; $('estado').className = 'msg err'; return; }
+  var t = null;
+  db.ref('entrenamientos_publicos').on('value', function (snap) {
+    var lista = [];
+    snap.forEach(function (ch) { var v = ch.val(); if (v && v.nombre && v.metros) lista.push(v); });
+    ENTRADAS = lista;
+    clearTimeout(t); t = setTimeout(refrescar, 50);
+  }, function (err) {
+    $('estado').textContent = 'No se pudieron leer los entrenamientos (' + err.code + ').'; $('estado').className = 'msg err';
+  });
+})();
+</script>
+</body>
+</html>

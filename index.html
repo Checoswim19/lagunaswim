@@ -3867,8 +3867,9 @@ body.blog-active #tab-timer { display: none !important; }
       <div class="ls-acciones">
         <button type="button" class="ls-btn ls-btn-oro" onclick="abrirModalEntrenamiento()">Subir mi entrenamiento</button>
         <button type="button" class="ls-btn ls-btn-linea" onclick="verEntrenamientosPublicos()">Ver todos</button>
+        <a class="ls-btn ls-btn-linea" href="nazas.html" style="color:#fff;text-decoration:none">Ruta del Nazas · mi diploma</a>
       </div>
-      <p class="ls-nota">Sin registro: solo tu nombre y tus metros.</p>
+      <p class="ls-nota">Sin registro: solo tu nombre y tus metros. Cada entrenamiento te hace avanzar en la Ruta del Nazas.</p>
     </section>
 
     <!-- ===== Tramo 5: simuladores ===== -->
@@ -14122,6 +14123,10 @@ async function cargarTotalesEntrenamientos() {
     var top5El = document.getElementById('home-top5');
     if (top5El) top5El.innerHTML = '<div style="text-align:center;padding:0.8rem;color:#ff6b35;font-size:0.7rem">Error al cargar</div>';
   }
+}
+// Desde la Ruta del Nazas: lagunaswim.net/#subir abre directo el formulario de entrenamiento
+if (location.hash === '#subir') {
+  setTimeout(function() { try { abrirModalEntrenamiento(); } catch (e) {} }, 800);
 }
 setTimeout(function() {
   cargarTotalesEntrenamientos();
