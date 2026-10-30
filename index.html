@@ -4627,6 +4627,15 @@ body.blog-active #tab-timer { display: none !important; }
     </div>
   </div>
 
+  <!-- Toggle Alberca / Aguas Abiertas -->
+  <div style="display:flex;gap:0.4rem;margin:0.8rem 0 1rem;background:rgba(0,0,0,0.3);border-radius:10px;padding:4px">
+    <button id="btn-mode-alberca" onclick="setRankMode('alberca')" style="flex:1;padding:0.5rem;border-radius:8px;font-size:0.8rem;font-weight:800;border:none;cursor:pointer;background:var(--accent);color:#000;transition:all 0.2s">🏊 Alberca</button>
+    <button id="btn-mode-oa" onclick="setRankMode('oa')" style="flex:1;padding:0.5rem;border-radius:8px;font-size:0.8rem;font-weight:800;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,0.5);transition:all 0.2s">🌊 Aguas Abiertas</button>
+  </div>
+
+  <!-- Contenido Alberca (se oculta al pasar a OA) -->
+  <div id="ranking-alberca-content">
+
   <!-- ============ NUEVO V2: TOP 10 RETO 50M y DUELOS ============ -->
   <div class="v2-section" style="margin-top: 1rem">
     <div class="v2-section-head">
@@ -4880,7 +4889,140 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
     <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
     <button class="coach-logout-btn" id="lo-ranking" onclick="coachLogout()">Cerrar sesion</button>
   </div>
+
+  </div><!-- fin #ranking-alberca-content -->
+
+<!-- ============ TAB AGUAS ABIERTAS (seccion dentro de ranking) ============ -->
+<div id="section-oa" style="display:none">
+
+  <!-- Stats del evento activo -->
+  <div id="oa-counter" style="font-size:0.75rem;margin-bottom:0.7rem;padding:0.5rem 0.7rem;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:6px;color:rgba(255,255,255,0.85)">
+    Cargando...
+  </div>
+
+  <!-- Buscador rápido -->
+  <div style="margin-bottom:0.7rem">
+    <input id="oa-buscador" type="text" placeholder="🔍 Buscar por nombre o evento (ej: Cozumel)" oninput="buscarOA()" style="width:100%;padding:0.6rem 0.8rem;background:rgba(0,0,0,0.3);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit">
+  </div>
+
+  <!-- Filtros OA -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem">
+    <select id="oa-dist" onchange="filterOA()" style="background:rgba(0,0,0,0.35);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;padding:0.5rem 0.7rem;font-size:0.82rem">
+      <option value="">Distancia</option>
+      <option value="0.5">500m (0.5 km)</option>
+      <option value="1">1 km</option>
+      <option value="1.5">1.5 km</option>
+      <option value="3">3 km</option>
+      <option value="5">5 km</option>
+      <option value="10">10 km</option>
+    </select>
+    <select id="oa-gender" onchange="filterOA()" style="background:rgba(0,0,0,0.35);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;padding:0.5rem 0.7rem;font-size:0.82rem">
+      <option value="">Ambos</option>
+      <option value="M">Masculino</option>
+      <option value="F">Femenino</option>
+    </select>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.8rem">
+    <select id="oa-cat" onchange="filterOA()" style="background:rgba(0,0,0,0.35);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;padding:0.5rem 0.7rem;font-size:0.82rem">
+      <option value="">Todas las categorías</option>
+      <option value="U11">U11</option>
+      <option value="U13">U13</option>
+      <option value="U15">U15</option>
+      <option value="U17">U17</option>
+      <option value="Junior 10-19">Junior 10-19</option>
+      <option value="Master 20-29">Master 20-29</option>
+      <option value="Master 30-39">Master 30-39</option>
+      <option value="Master 40-49">Master 40-49</option>
+      <option value="Master 50-59">Master 50-59</option>
+      <option value="Master 60+">Master 60+</option>
+      <option value="Inspiration">Inspiration</option>
+    </select>
+    <select id="oa-evento" onchange="filterOA()" style="background:rgba(0,0,0,0.35);border:1.5px solid rgba(56,189,248,0.3);border-radius:8px;color:#fff;padding:0.5rem 0.7rem;font-size:0.82rem">
+      <option value="">Todos los eventos</option>
+    </select>
+  </div>
+
+  <!-- Lista de resultados OA -->
+  <div id="oa-list">
+    <div style="text-align:center;padding:2rem">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem">🌊</div>
+      <div style="font-size:0.88rem;font-weight:700;color:var(--accent);margin-bottom:0.3rem">Resultados Aguas Abiertas</div>
+      <div style="font-size:0.7rem;color:var(--accent-soft)">Selecciona filtros o busca por nombre</div>
+    </div>
+  </div>
+
+  <!-- Sección coach: agregar tiempos OA -->
+  <div id="coach-oa-section" style="display:none">
+    <div class="card" style="border-color:rgba(14,165,233,0.3);margin-top:1rem">
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.6rem;color:var(--accent)">
+        🌊 Agregar resultado Aguas Abiertas
+      </div>
+      <label>Nadador</label>
+      <input id="oa-r-swimmer" placeholder="Nombre completo">
+      <label>Género</label>
+      <select id="oa-r-gender">
+        <option value="M">Masculino</option>
+        <option value="F">Femenino</option>
+      </select>
+      <label>Categoría</label>
+      <select id="oa-r-cat">
+        <option value="U11">U11</option>
+        <option value="U13">U13</option>
+        <option value="U15">U15</option>
+        <option value="U17">U17</option>
+        <option value="Junior 10-19">Junior 10-19</option>
+        <option value="Master 20-29">Master 20-29</option>
+        <option value="Master 30-39">Master 30-39</option>
+        <option value="Master 40-49">Master 40-49</option>
+        <option value="Master 50-59">Master 50-59</option>
+        <option value="Master 60+">Master 60+</option>
+        <option value="Inspiration">Inspiration</option>
+      </select>
+      <label>Distancia (km)</label>
+      <select id="oa-r-dist">
+        <option value="0.5">500m (0.5 km)</option>
+        <option value="1">1 km</option>
+        <option value="1.5">1.5 km</option>
+        <option value="3">3 km</option>
+        <option value="5">5 km</option>
+        <option value="10">10 km</option>
+      </select>
+      <label>Estilo</label>
+      <select id="oa-r-style">
+        <option value="Libre">Libre</option>
+        <option value="Aletas">Aletas</option>
+      </select>
+      <label>Tiempo (hh:mm:ss)</label>
+      <input id="oa-r-time" placeholder="00:32:14">
+      <label>Evento (nombre y lugar)</label>
+      <input id="oa-r-comp" placeholder="Oceanman Cozumel 2026">
+      <label>Año</label>
+      <input id="oa-r-year" type="number" placeholder="2026">
+      <button class="btn btn-sky" onclick="addOATime()">Agregar resultado</button>
+    </div>
+
+    <div class="card" style="border-color:rgba(250,204,21,0.3);margin-top:0.8rem">
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;color:var(--gold)">
+        📥 Importar varios resultados OA
+      </div>
+      <div style="font-size:0.72rem;color:var(--accent-soft);margin-bottom:0.6rem">
+        Una línea por resultado. Formato:<br>
+        <code style="background:rgba(0,0,0,0.3);padding:1px 4px;border-radius:3px;font-size:0.65rem">Nombre, M/F, Categoria, Dist(km), Estilo, Tiempo, Evento, Año</code>
+      </div>
+      <textarea id="oa-bulk-input" style="height:140px;resize:vertical;font-family:monospace;font-size:0.75rem" placeholder="Ana Garcia, F, Master 40-49, 1.5, Libre, 00:32:14, Oceanman Cozumel 2026, 2026"></textarea>
+      <button class="btn btn-sky" onclick="importOABulk()" style="margin-top:0.4rem">📥 Importar todos</button>
+      <div id="oa-bulk-result" style="font-size:0.75rem;margin-top:0.4rem;display:none"></div>
+    </div>
+  </div>
+
+  <div class="footer-bar" style="margin-top:1.5rem">
+    2026 Laguna Swim International<br>
+    <button class="coach-btn" onclick="showCoachLogin()">Acceso entrenador</button>
+    <button class="coach-logout-btn" id="lo-oa" onclick="coachLogout()">Cerrar sesion</button>
+  </div>
 </div>
+<!-- ============ FIN SECTION OA ============ -->
+</div><!-- cierre tab-ranking -->
 
 <!-- Modal de Diploma -->
 <div class="diploma-overlay modal-hidden" id="diploma-modal">
@@ -9498,6 +9640,270 @@ function descargarDiploma() {
     }
   }, 400);
 }
+
+// ============================================================
+// ============== AGUAS ABIERTAS (OA) =========================
+// ============================================================
+
+var oa = {
+  data: [],       // todos los resultados cargados
+  filtered: [],   // después de filtros
+  eventos: [],    // lista única de eventos para el select
+  mode: 'alberca' // 'alberca' | 'oa'
+};
+
+// Convertir "hh:mm:ss" o "mm:ss" a milisegundos (aguas abiertas)
+function oaTimeToMs(t) {
+  if (!t) return 9999999;
+  t = String(t).trim();
+  var p = t.split(':').map(Number);
+  if (p.length === 3) return ((p[0] || 0) * 3600 + (p[1] || 0) * 60 + (p[2] || 0)) * 1000;
+  if (p.length === 2) return ((p[0] || 0) * 60 + (p[1] || 0)) * 1000;
+  return (parseFloat(t) || 0) * 1000;
+}
+
+// Convertir ms a "hh:mm:ss" o "mm:ss"
+function oaMsToStr(ms) {
+  if (!ms || ms >= 9999999) return '-';
+  var s = Math.floor(ms / 1000);
+  var h = Math.floor(s / 3600);
+  var m = Math.floor((s % 3600) / 60);
+  var sec = s % 60;
+  if (h > 0) return h + ':' + ('0' + m).slice(-2) + ':' + ('0' + sec).slice(-2);
+  return ('0' + m).slice(-2) + ':' + ('0' + sec).slice(-2);
+}
+
+// Cambiar modo alberca / aguas abiertas
+function setRankMode(mode) {
+  oa.mode = mode;
+  var btnAlb = document.getElementById('btn-mode-alberca');
+  var btnOA  = document.getElementById('btn-mode-oa');
+  var secAlb = document.getElementById('ranking-alberca-content');
+  var secOA  = document.getElementById('section-oa');
+
+  if (mode === 'oa') {
+    if (btnAlb) { btnAlb.style.background = 'transparent'; btnAlb.style.color = 'rgba(255,255,255,0.5)'; }
+    if (btnOA)  { btnOA.style.background  = 'var(--accent)'; btnOA.style.color  = '#000'; }
+    if (secAlb) secAlb.style.display = 'none';
+    if (secOA)  secOA.style.display  = 'block';
+    loadOA();
+  } else {
+    if (btnAlb) { btnAlb.style.background = 'var(--accent)'; btnAlb.style.color = '#000'; }
+    if (btnOA)  { btnOA.style.background  = 'transparent'; btnOA.style.color  = 'rgba(255,255,255,0.5)'; }
+    if (secAlb) secAlb.style.display = 'block';
+    if (secOA)  secOA.style.display  = 'none';
+  }
+}
+
+// Cargar todos los resultados OA desde Firebase
+function loadOA() {
+  db.ref('oa').once('value').then(function(snap) {
+    oa.data = [];
+    var d = snap.val() || {};
+    Object.values(d).forEach(function(r) { oa.data.push(r); });
+    oa.data.sort(function(a, b) { return a.timeMs - b.timeMs; });
+
+    // Actualizar counter
+    var counter = document.getElementById('oa-counter');
+    if (counter) {
+      if (oa.data.length === 0) {
+        counter.innerHTML = '<span style="color:rgba(255,255,255,0.5)">Sin resultados de aguas abiertas aún</span>';
+      } else {
+        counter.innerHTML = '<strong style="color:var(--gold)">' + oa.data.length + ' resultados</strong> de aguas abiertas';
+      }
+    }
+
+    // Poblar select de eventos únicos
+    var eventSet = {};
+    oa.data.forEach(function(r) { if (r.comp) eventSet[r.comp] = true; });
+    oa.eventos = Object.keys(eventSet).sort();
+    var sel = document.getElementById('oa-evento');
+    if (sel) {
+      sel.innerHTML = '<option value="">Todos los eventos</option>';
+      oa.eventos.forEach(function(ev) {
+        var opt = document.createElement('option');
+        opt.value = ev; opt.textContent = ev;
+        sel.appendChild(opt);
+      });
+    }
+
+    // Coach section
+    var coachSec = document.getElementById('coach-oa-section');
+    if (coachSec) coachSec.style.display = (state.user && state.user.email === CONFIG.coach) ? 'block' : 'none';
+    var loBtns = ['lo-oa'];
+    loBtns.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = (state.user) ? 'inline-block' : 'none';
+    });
+
+    filterOA();
+  });
+}
+
+// Buscador rápido
+function buscarOA() {
+  filterOA();
+}
+
+// Filtrar y renderizar
+function filterOA() {
+  var bq    = (document.getElementById('oa-buscador') || {}).value || '';
+  var dist  = (document.getElementById('oa-dist')     || {}).value || '';
+  var gender= (document.getElementById('oa-gender')   || {}).value || '';
+  var cat   = (document.getElementById('oa-cat')      || {}).value || '';
+  var evento= (document.getElementById('oa-evento')   || {}).value || '';
+
+  bq = bq.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+  oa.filtered = oa.data.filter(function(r) {
+    if (dist && String(r.dist) !== String(dist)) return false;
+    if (gender && r.gender !== gender) return false;
+    if (cat && r.cat !== cat) return false;
+    if (evento && r.comp !== evento) return false;
+    if (bq) {
+      var hay = ((r.swimmer || '') + ' ' + (r.comp || '')).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+      if (hay.indexOf(bq) < 0) return false;
+    }
+    return true;
+  });
+
+  renderOA();
+}
+
+// Renderizar lista
+function renderOA() {
+  var list = document.getElementById('oa-list');
+  if (!list) return;
+
+  if (oa.filtered.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem"><div style="font-size:2rem;margin-bottom:0.5rem">🌊</div><div style="font-size:0.82rem;color:var(--accent-soft)">Sin resultados para estos filtros</div></div>';
+    return;
+  }
+
+  // Agrupar por dist + comp
+  var grupos = {};
+  oa.filtered.forEach(function(r) {
+    var distLabel = r.dist < 1 ? (r.dist * 1000) + 'm' : r.dist + ' km';
+    var k = distLabel + ' · ' + (r.comp || 'Sin evento');
+    if (!grupos[k]) grupos[k] = [];
+    grupos[k].push(r);
+  });
+
+  var html = '';
+  Object.keys(grupos).sort().forEach(function(grupo) {
+    var rows = grupos[grupo];
+    rows.sort(function(a, b) { return a.timeMs - b.timeMs; });
+
+    html += '<div style="margin-bottom:1.2rem">';
+    html += '<div style="font-size:0.72rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.5rem;padding-bottom:0.3rem;border-bottom:1px solid rgba(56,189,248,0.2)">🌊 ' + grupo + '</div>';
+
+    rows.forEach(function(r, i) {
+      var medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '<span style="color:rgba(255,255,255,0.4);font-size:0.7rem">' + (i + 1) + '</span>';
+      var timeStr = r.time || oaMsToStr(r.timeMs);
+      var distLabel = r.dist < 1 ? (r.dist * 1000) + 'm' : r.dist + ' km';
+      html += '<div style="display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0.3rem;border-bottom:1px solid rgba(255,255,255,0.05)">';
+      html += '<div style="width:1.6rem;text-align:center;font-size:1rem">' + medal + '</div>';
+      html += '<div style="flex:1;min-width:0">';
+      html += '<div style="font-size:0.83rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (r.swimmer || '?') + '</div>';
+      html += '<div style="font-size:0.68rem;color:var(--accent-soft)">' + (r.cat || '') + (r.gender ? ' · ' + (r.gender === 'M' ? '♂' : '♀') : '') + ' · ' + (r.style || 'Libre') + '</div>';
+      html += '</div>';
+      html += '<div style="text-align:right;white-space:nowrap">';
+      html += '<div style="font-size:0.9rem;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums">' + timeStr + '</div>';
+      html += '<div style="font-size:0.62rem;color:rgba(255,255,255,0.35)">' + (r.year || '') + '</div>';
+      html += '</div>';
+      html += '</div>';
+    });
+
+    html += '</div>';
+  });
+
+  list.innerHTML = html;
+}
+
+// Agregar un resultado OA individual
+function addOATime() {
+  if (!state.user || state.user.email !== CONFIG.coach) {
+    alert('Solo el entrenador puede agregar resultados.');
+    return;
+  }
+  var sw = (document.getElementById('oa-r-swimmer') || {}).value || '';
+  var gn = (document.getElementById('oa-r-gender')  || {}).value || 'M';
+  var ct = (document.getElementById('oa-r-cat')     || {}).value || '';
+  var di = parseFloat((document.getElementById('oa-r-dist') || {}).value || 0);
+  var st = (document.getElementById('oa-r-style')   || {}).value || 'Libre';
+  var ti = ((document.getElementById('oa-r-time')   || {}).value || '').trim();
+  var co = ((document.getElementById('oa-r-comp')   || {}).value || '').trim();
+  var yr = parseInt((document.getElementById('oa-r-year') || {}).value || 0);
+
+  if (!sw || !ti || !co || !yr || !di) {
+    alert('Completa todos los campos');
+    return;
+  }
+  var id = 'oa' + Date.now();
+  db.ref('oa/' + id).set({
+    id: id, swimmer: sw, gender: normRankGender(gn), cat: ct,
+    dist: di, style: st, time: ti, timeMs: oaTimeToMs(ti),
+    comp: co, year: yr, addedAt: Date.now()
+  }).then(function() {
+    alert('✅ Resultado agregado: ' + sw + ' · ' + di + 'km · ' + ti);
+    var el = document.getElementById('oa-r-swimmer'); if (el) el.value = '';
+    var el2 = document.getElementById('oa-r-time');   if (el2) el2.value = '';
+    loadOA();
+  }).catch(function(e) { alert('Error: ' + e.message); });
+}
+
+// Importar varios resultados OA
+function importOABulk() {
+  if (!state.user || state.user.email !== CONFIG.coach) {
+    alert('Solo el entrenador puede importar resultados.');
+    return;
+  }
+  var text = (document.getElementById('oa-bulk-input') || {}).value || '';
+  text = text.trim();
+  if (!text) { alert('Pega los resultados primero'); return; }
+
+  var lines = text.split('\n').filter(function(l) {
+    var t = l.trim();
+    return t && !t.startsWith('#') && !t.startsWith('//');
+  });
+
+  var ok = 0; var errs = [];
+  var promises = lines.map(function(line, idx) {
+    var sep = line.indexOf(',') >= 0 ? ',' : (line.indexOf('\t') >= 0 ? '\t' : ',');
+    var p = line.split(sep).map(function(x) { return x.trim(); });
+    if (p.length < 8) { errs.push('Línea ' + (idx + 1)); return null; }
+    if (!p[0] || !p[5]) { errs.push('Línea ' + (idx + 1) + ' incompleta'); return null; }
+    var id = 'oa' + Date.now() + '_' + idx;
+    ok++;
+    return db.ref('oa/' + id).set({
+      id: id, swimmer: p[0], gender: normRankGender(p[1]), cat: p[2].trim(),
+      dist: parseFloat(p[3]) || 0, style: p[4].trim(), time: p[5].trim(),
+      timeMs: oaTimeToMs(p[5].trim()), comp: p[6].trim(),
+      year: parseInt(p[7]) || 0, addedAt: Date.now()
+    });
+  });
+
+  Promise.all(promises.filter(Boolean)).then(function() {
+    var r = document.getElementById('oa-bulk-result');
+    if (r) {
+      r.style.display = 'block';
+      r.style.color = errs.length ? '#eab308' : 'var(--success)';
+      r.innerHTML = '<strong>✅ ' + ok + ' resultados importados</strong>' +
+        (errs.length ? '<br><span style="color:#ff6b35">⚠️ Errores: ' + errs.join(', ') + '</span>' : '');
+    }
+    if (ok > 0) {
+      var inp = document.getElementById('oa-bulk-input'); if (inp) inp.value = '';
+      loadOA();
+    }
+  });
+}
+
+window.setRankMode  = setRankMode;
+window.loadOA       = loadOA;
+window.buscarOA     = buscarOA;
+window.filterOA     = filterOA;
+window.addOATime    = addOATime;
+window.importOABulk = importOABulk;
 
 // ===== Hook a showTab y auth para refrescar ranking =====
 (function() {
