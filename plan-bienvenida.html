@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tu plan a distancia · Laguna Swim</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#071e38">
+<link rel="icon" href="logo-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+<script src="plan-config.js"></script>
+<style>
+:root {
+  --noche: #071e38; --abismo: #03101f; --oro: #ffd700; --cielo: #38bdf8; --texto: #eaf4fb;
+  --suave: rgba(234,244,251,.72); --borde: rgba(255,255,255,.16); --error: #ffb4a8;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html { background: var(--abismo); }
+body {
+  margin: 0; color: var(--texto); font-family: var(--body); font-size: 16px; line-height: 1.5; min-height: 100vh;
+  background: radial-gradient(120% 60% at 50% 0%, #0d3a63 0%, var(--noche) 45%, var(--abismo) 100%) fixed;
+  padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left));
+}
+.wrap { max-width: 640px; margin: 0 auto; display: grid; gap: 20px; }
+.top { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 14px; color: var(--suave); }
+.top img { width: 34px; height: 34px; border-radius: 9px; background: #fff; }
+h1 { font-family: var(--display); font-size: clamp(34px, 8vw, 52px); font-weight: 800; line-height: 1.02; text-transform: uppercase; margin: 0; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--oro); }
+p { margin: 0; }
+.lead { color: var(--suave); }
+form, .ok { background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03)); border: 1px solid var(--borde); border-radius: 20px; padding: 18px; display: grid; gap: 14px; }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 520px) { .fields { grid-template-columns: minmax(0, 1fr); } }
+.f { display: grid; gap: 4px; min-width: 0; }
+.f.full { grid-column: 1 / -1; }
+label { font-family: var(--display); font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; color: var(--suave); }
+label .req { color: var(--oro); }
+input, select, textarea {
+  font: inherit; color: var(--texto); background: rgba(3,16,31,.65); border: 1px solid var(--borde);
+  border-radius: 12px; padding: 12px 14px; min-width: 0; width: 100%;
+}
+textarea { min-height: 76px; resize: vertical; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--cielo); outline-offset: 2px; }
+.hint { font-size: 13px; color: var(--suave); }
+.obj { display: grid; gap: 8px; }
+.obj button { font: inherit; color: var(--texto); text-align: left; cursor: pointer; display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--borde); background: rgba(3,16,31,.45); }
+.obj button span { font-size: 13.5px; color: var(--suave); }
+.obj button[aria-pressed="true"] { border-color: var(--oro); background: rgba(255,215,0,.10); }
+.btn { font: inherit; font-weight: 800; font-size: 17px; border: 0; border-radius: 16px; min-height: 54px; padding: 0 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+  background: linear-gradient(135deg, #ffe14d, var(--oro) 45%, #e6b800); color: #071e38; }
+.btn[disabled] { opacity: .5; cursor: default; }
+.btn-wa { background: #25d366; color: #04220f; }
+.err { color: var(--error); font-size: 14px; }
+.ok h2 { font-family: var(--display); font-size: 30px; margin: 0; text-transform: uppercase; color: var(--oro); }
+.priv { font-size: 13px; color: var(--suave); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><img src="logo-256.png" alt="">Laguna Swim International</div>
+  <h1>¡Bienvenido a tu <em>plan a distancia!</em></h1>
+  <p class="lead">Gracias por tu pago. Llena este cuestionario para que el Coach Checo diseñe tu primera semana. Te llega por WhatsApp en 48 horas.</p>
+
+  <form id="f" novalidate>
+    <div class="fields">
+      <div class="f full"><label for="nombre">Nombre y apellidos <span class="req">*</span></label><input id="nombre" autocomplete="name" maxlength="60" placeholder="Ej. Laura Méndez Ortiz"><span class="hint">Escríbelo igual que al subir tus entrenamientos.</span></div>
+      <div class="f"><label for="wa">WhatsApp <span class="req">*</span></label><input id="wa" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="10 dígitos"></div>
+      <div class="f"><label for="operacion">N.º de operación Mercado Pago <span class="req">*</span></label><input id="operacion" inputmode="numeric" maxlength="20" placeholder="Viene en tu comprobante"></div>
+      <div class="f"><label for="edad">Edad <span class="req">*</span></label><input id="edad" type="number" inputmode="numeric" min="12" max="99"></div>
+      <div class="f"><label for="ciudad">Ciudad <span class="req">*</span></label><input id="ciudad" maxlength="40" placeholder="Ej. Saltillo, Coah."></div>
+      <div class="f"><label for="alberca">Tu alberca</label><select id="alberca"><option>25 m</option><option>50 m</option><option>25 yardas</option><option>Solo aguas abiertas</option></select></div>
+      <div class="f"><label for="dias">Días por semana</label><select id="dias"><option>3</option><option selected>4</option><option>5</option><option>6</option></select></div>
+      <div class="f"><label for="t100">Mejor tiempo en 100 m libre</label><input id="t100" maxlength="10" placeholder="Ej. 1:32"></div>
+      <div class="f"><label for="t400">Mejor tiempo en 400 m libre</label><input id="t400" maxlength="10" placeholder="Ej. 6:40"></div>
+      <div class="f full"><label>¿Qué quieres lograr? <span class="req">*</span></label><div class="obj" id="obj" role="group" aria-label="Objetivo"></div></div>
+      <div class="f full"><label for="meta">Prueba y fecha objetivo</label><input id="meta" maxlength="120" placeholder="Ej. Copa de Aguas Abiertas Laguna Swim · 1.5 km · 30 de mayo 2027"></div>
+      <div class="f full"><label for="lesion">Lesiones o algo que deba saber el coach</label><textarea id="lesion" maxlength="300" placeholder="Ej. Molestia en hombro derecho al nadar mariposa"></textarea></div>
+    </div>
+    <p class="err" id="err" hidden></p>
+    <button class="btn" type="submit" id="enviar">Enviar mi cuestionario</button>
+    <p class="priv">🔒 Tus respuestas solo las ve el Coach Checo para diseñar tu plan. No se publican en la página.</p>
+  </form>
+
+  <div class="ok" id="ok" hidden>
+    <h2>¡Listo, ya lo tiene el coach!</h2>
+    <p>En 48 horas te llega tu primera semana por WhatsApp. Mientras, sube tus entrenamientos en lagunaswim.net para avanzar en la Ruta del Nazas.</p>
+    <a class="btn btn-wa" id="avisar" href="#" target="_blank" rel="noopener">Avisar al coach por WhatsApp</a>
+    <a class="btn" href="index.html">Ir a Laguna Swim</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var C = window.LS_PLAN;
+  var $ = function (id) { return document.getElementById(id); };
+  var objetivo = 'competencia';
+  try { objetivo = localStorage.getItem('ls_plan_objetivo') || objetivo; } catch (e) {}
+  try { var n = localStorage.getItem('laguna_nombre_entrenamiento'); if (n) $('nombre').value = n; } catch (e) {}
+
+  $('obj').innerHTML = C.OBJETIVOS.map(function (o) {
+    return '<button type="button" data-o="' + o.id + '" aria-pressed="' + (o.id === objetivo) + '"><b>' + o.nombre + '</b><span>' + o.detalle + '</span></button>';
+  }).join('');
+  $('obj').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    objetivo = b.getAttribute('data-o');
+    $('obj').querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+  });
+
+  var db = null;
+  try { if (!firebase.apps.length) firebase.initializeApp(C.FIREBASE); db = firebase.database(); } catch (e) {}
+
+  function v(id) { return ($(id).value || '').trim(); }
+  function error(t) { $('err').textContent = t; $('err').hidden = false; }
+
+  $('f').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    $('err').hidden = true;
+    var nombre = v('nombre'), wa = v('wa').replace(/\D/g, ''), op = v('operacion').replace(/\s/g, ''), edad = parseInt(v('edad'), 10), ciudad = v('ciudad');
+    if (nombre.split(/\s+/).length < 2) return error('Escribe tu nombre y al menos un apellido.');
+    if (wa.length < 10) return error('Escribe tu WhatsApp a 10 dígitos.');
+    if (op.length < 6) return error('Escribe el número de operación de tu pago de Mercado Pago. Viene en tu comprobante o en la app.');
+    if (!edad || edad < 12 || edad > 99) return error('Escribe tu edad.');
+    if (!ciudad) return error('Escribe tu ciudad.');
+    if (!db) return error('No hay conexión. Revisa tu internet y vuelve a intentar.');
+    var objNombre = (C.OBJETIVOS.filter(function (o) { return o.id === objetivo; })[0] || {}).nombre || objetivo;
+    var datos = {
+      nombre: nombre, whatsapp: wa, operacion: op, edad: edad, ciudad: ciudad,
+      alberca: v('alberca'), dias: v('dias'), t100: v('t100'), t400: v('t400'),
+      objetivo: objNombre, meta: v('meta'), lesion: v('lesion'),
+      estado: 'nuevo', creado: firebase.database.ServerValue.TIMESTAMP
+    };
+    $('enviar').disabled = true; $('enviar').textContent = 'Enviando…';
+    try {
+      await db.ref('planes_alumnos').push(datos);
+      try { localStorage.setItem('laguna_nombre_entrenamiento', nombre); } catch (e2) {}
+      $('f').hidden = true; $('ok').hidden = false;
+      $('avisar').href = 'https://wa.me/' + C.WHATSAPP + '?text=' + encodeURIComponent('Hola Coach Checo, soy ' + nombre + '. Ya pagué mi semana de prueba (operación ' + op + ') y llené mi cuestionario del plan a distancia: ' + objNombre + '.');
+      window.scrollTo(0, 0);
+    } catch (er) {
+      $('enviar').disabled = false; $('enviar').textContent = 'Enviar mi cuestionario';
+      error('No se pudo enviar (' + (er && er.code ? er.code : 'sin conexión') + '). Intenta otra vez o avísale al coach por WhatsApp.');
+    }
+  });
+})();
+</script>
+</body>
+</html>

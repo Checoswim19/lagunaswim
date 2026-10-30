@@ -144,6 +144,24 @@ p{max-width:60ch}
 .remoto .cab{grid-column:1 / 13}
 .remoto .txt{grid-column:1 / 8;margin-top:28px;display:flex;flex-direction:column;gap:32px;align-items:flex-start}
 .remoto .pasos{grid-column:8 / 13;margin-top:28px;list-style:none;display:flex;flex-direction:column;gap:8px}
+/* Plan a distancia: precio, cupo y objetivo */
+.plan-promo{display:grid;gap:8px;padding:20px 24px;border-radius:24px;background:var(--abismo);color:var(--blanco);width:100%;max-width:520px}
+.plan-precio{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.plan-precio b{font-size:clamp(44px,7vw,64px);line-height:.9;color:var(--oro);font-variant-numeric:tabular-nums}
+.plan-precio span{font-weight:600}
+.plan-promo p{color:var(--bajo)}
+.plan-promo p b{color:var(--blanco)}
+.plan-cupo{display:grid;gap:6px;font-size:.92rem;color:var(--bajo)}
+.plan-barra{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden}
+.plan-barra i{display:block;height:100%;width:0;background:var(--oro);transition:width .8s var(--glide)}
+.plan-obj{display:grid;gap:8px;width:100%;max-width:520px}
+.plan-obj button{font:inherit;color:var(--tinta);text-align:left;cursor:pointer;display:grid;gap:2px;padding:14px 18px;border-radius:18px;border:2px solid color-mix(in srgb,var(--tinta) 25%,transparent);background:color-mix(in srgb,var(--tinta) 6%,var(--fondo))}
+.plan-obj button span{font-size:.9rem;color:var(--suave)}
+.plan-obj button[aria-pressed="true"]{border-color:var(--abismo);background:color-mix(in srgb,var(--blanco) 45%,var(--fondo))}
+.plan-obj button:focus-visible{outline:3px solid var(--abismo);outline-offset:2px}
+.plan-nota{font-size:.92rem;color:var(--suave);max-width:46ch}
+.remoto .pasos{counter-reset:paso}
+.remoto .pasos li b{display:block}
 .remoto .pasos li{padding:20px 24px;border-radius:20px;background:color-mix(in srgb,var(--tinta) 10%,var(--fondo));font-weight:500}
 
 /* ---------- preguntas ---------- */

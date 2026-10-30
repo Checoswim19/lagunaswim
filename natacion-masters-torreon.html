@@ -147,18 +147,30 @@
   </div>
 </section>
 
-<section class="campo f-cielo remoto" aria-labelledby="t-remoto">
+<section class="campo f-cielo remoto" id="plan-distancia" aria-labelledby="t-remoto">
   <div class="grid">
     <div class="cab sube"><h2 id="t-remoto">¿no vives <span class="s">en torreón?</span></h2></div>
     <div class="txt sube">
-      <p class="lead">Hay <b>planes personalizados a distancia</b> para nadadores Masters que entrenan en su propia alberca.</p>
-      <a class="btn" href="https://wa.me/528713164850?text=Hola%20Coach%20Checo%2C%20me%20interesa%20un%20plan%20Masters%20personalizado%20a%20distancia">Quiero mi plan a distancia</a>
+      <p class="lead">Tu <b>plan personalizado a distancia</b>, hecho por el Coach Checo, para entrenar en tu propia alberca.</p>
+      <div class="plan-promo">
+        <div class="plan-precio"><b>$100</b><span>tu primera semana</span></div>
+        <p>Después <b>$500 al mes</b>. Cancelas cuando quieras.</p>
+        <div class="plan-cupo"><span class="plan-barra" data-plan-barra><i></i></span><span data-plan-cupo>Cupo de 20 nadadores</span></div>
+      </div>
+      <div class="plan-obj" role="group" aria-label="¿Qué quieres lograr?">
+        <button type="button" data-plan-obj="tecnica" aria-pressed="false"><b>Técnica y salud</b><span>3 sesiones por semana</span></button>
+        <button type="button" data-plan-obj="competencia" aria-pressed="true"><b>Masters competencia</b><span>4 a 5 sesiones, control de marcas</span></button>
+        <button type="button" data-plan-obj="aguas" aria-pressed="false"><b>Aguas abiertas</b><span>Copa 2027, Oceanman, 1.5 a 10 K</span></button>
+      </div>
+      <a class="btn" data-plan-cta href="https://wa.me/528713164850?text=Hola%20Coach%20Checo%2C%20quiero%20mi%20semana%20de%20prueba%20del%20plan%20a%20distancia">Empezar mi semana por $100</a>
+      <p class="plan-nota">Pagas con tarjeta, OXXO o transferencia en Mercado Pago. Al pagar llenas tu cuestionario y en 48 horas recibes tu primera semana.</p>
     </div>
-    <ul class="pasos">
-      <li class="sube">Sesiones semanales diseñadas para tu nivel.</li>
-      <li class="sube">Ajustadas a tus días disponibles y tu prueba objetivo.</li>
-      <li class="sube">Ajustes y seguimiento por WhatsApp.</li>
-    </ul>
+    <ol class="pasos">
+      <li class="sube"><b>Eliges tu objetivo</b> y pagas tu semana de prueba.</li>
+      <li class="sube"><b>Llenas tu cuestionario:</b> nivel, tiempos, días y prueba objetivo.</li>
+      <li class="sube"><b>En 48 horas</b> te llega tu primera semana por WhatsApp.</li>
+      <li class="sube"><b>Si te gusta</b>, sigues por $500 al mes con ajustes cada semana.</li>
+    </ol>
   </div>
 </section>
 
@@ -223,6 +235,10 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+<script src="plan-config.js"></script>
+<script src="plan-distancia.js"></script>
 <script src="landing.js"></script>
 </body>
 </html>

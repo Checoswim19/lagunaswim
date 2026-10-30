@@ -3851,6 +3851,18 @@ body.blog-active #tab-timer { display: none !important; }
       </div>
     </section>
 
+    <!-- ===== Plan a distancia ===== -->
+    <section class="ls-c ls-distancia" aria-labelledby="ls-t-distancia">
+      <h2 id="ls-t-distancia" class="ls-h2">¿No vives <span class="ls-s">en Torreón?</span></h2>
+      <p class="ls-texto">Plan personalizado a distancia, hecho por el Coach Checo para tu alberca: técnica, Masters competencia o aguas abiertas.</p>
+      <p class="ls-precio"><b>$100</b> MXN tu primera semana · después <b>$500</b> al mes</p>
+      <p class="ls-nota" data-plan-cupo>Cupo de 20 nadadores</p>
+      <div class="ls-acciones">
+        <a class="ls-btn ls-btn-oro" data-plan-cta href="https://wa.me/528713164850?text=Hola%20Coach%20Checo%2C%20quiero%20mi%20semana%20de%20prueba%20del%20plan%20a%20distancia" style="text-decoration:none">Empezar mi semana por $100</a>
+        <a class="ls-btn ls-btn-linea" href="natacion-masters-torreon.html#plan-distancia" style="color:#fff;text-decoration:none">Ver cómo funciona</a>
+      </div>
+    </section>
+
     <!-- ===== Tramo 4: entrenamientos de la semana ===== -->
     <section class="ls-c ls-semana" aria-labelledby="ls-t-semana">
       <h2 id="ls-t-semana" class="ls-h2">La semana <span class="ls-s">del equipo</span></h2>
@@ -5391,6 +5403,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
         <div id="muro-pub-acciones" style="display:none;gap:0.4rem;margin-bottom:1rem">
           <button onclick="exportarEntrenamientosCSV()" style="flex:1;background:linear-gradient(135deg,#06d6a0,#38bdf8);color:white;border:none;padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem;letter-spacing:1px;cursor:pointer">📥 EXPORTAR CSV</button>
           <button onclick="cerrarMesNazas()" style="flex:1;background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid var(--gold);padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem">🗺️ Cerrar mes</button>
+          <button onclick="abrirAlumnosDistancia()" style="flex:1;background:rgba(56,189,248,0.15);color:var(--accent);border:1px solid var(--accent);padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem">🏊 Alumnos a distancia</button>
           <button onclick="toggleMuroVistaPub()" id="muro-toggle-vista" style="flex:1;background:rgba(56,189,248,0.2);color:var(--accent);border:1px solid var(--accent);padding:0.7rem;border-radius:8px;font-weight:800;font-size:0.78rem;letter-spacing:1px;cursor:pointer">👥 POR PERSONA</button>
         </div>
 
@@ -14541,6 +14554,96 @@ setTimeout(function() {
   } catch (e) {}
 }, 1500);
 
+// ===== PLAN A DISTANCIA: panel del coach =====
+// Lee los cuestionarios de planes_alumnos (solo el coach), deja cambiar el estado y
+// actualiza planes_cupo/ocupados, que es el único dato público (el contador de lugares).
+var PD_ESTADOS = [
+  { id: 'nuevo',   txt: 'Nuevo · confirmar pago' },
+  { id: 'prueba',  txt: 'Semana de prueba' },
+  { id: 'mensual', txt: 'Mensualidad activa' },
+  { id: 'baja',    txt: 'Baja' }
+];
+var pdAlumnos = {};
+function abrirAlumnosDistancia() {
+  if (!(state && state.isCoach)) { alert('Solo el coach puede ver a los alumnos.'); return; }
+  document.getElementById('pd-modal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  db.ref('planes_alumnos').once('value').then(function(snap) {
+    pdAlumnos = snap.val() || {};
+    pintarAlumnosDistancia();
+  }).catch(function(e) {
+    document.getElementById('pd-resumen').textContent = 'No se pudieron leer los alumnos: ' + e.message;
+  });
+}
+function cerrarAlumnosDistancia() {
+  document.getElementById('pd-modal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function pdOcupados() {
+  return Object.keys(pdAlumnos).filter(function(k) { return (pdAlumnos[k].estado || 'nuevo') !== 'baja'; }).length;
+}
+function pintarAlumnosDistancia() {
+  var C = window.LS_PLAN || { CUPO: 20 };
+  var keys = Object.keys(pdAlumnos).sort(function(a, b) { return (pdAlumnos[b].creado || 0) - (pdAlumnos[a].creado || 0); });
+  var cuenta = {}; keys.forEach(function(k) { var e = pdAlumnos[k].estado || 'nuevo'; cuenta[e] = (cuenta[e] || 0) + 1; });
+  document.getElementById('pd-resumen').textContent = pdOcupados() + ' de ' + C.CUPO + ' lugares ocupados · ' +
+    (cuenta.nuevo || 0) + ' por confirmar pago · ' + (cuenta.prueba || 0) + ' en prueba · ' + (cuenta.mensual || 0) + ' mensuales';
+  if (!keys.length) { document.getElementById('pd-lista').innerHTML = '<p style="color:rgba(255,255,255,0.6);font-size:0.8rem">Todavía no hay cuestionarios. Aparecen aquí en cuanto alguien paga y llena el suyo.</p>'; return; }
+  var html = '';
+  keys.forEach(function(k) {
+    var a = pdAlumnos[k], est = a.estado || 'nuevo';
+    var fecha = a.creado ? new Date(a.creado).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) : '';
+    var color = est === 'nuevo' ? '#ffd700' : est === 'baja' ? 'rgba(255,255,255,0.35)' : '#06d6a0';
+    html += '<div style="border:1px solid rgba(255,255,255,0.14);border-left:4px solid ' + color + ';border-radius:10px;padding:0.7rem;margin-bottom:0.6rem;font-size:0.78rem;line-height:1.45">' +
+      '<div style="display:flex;justify-content:space-between;gap:0.5rem;align-items:baseline"><b style="font-size:0.92rem">' + escapeHtml(a.nombre || '') + '</b><span style="color:rgba(255,255,255,0.5)">' + fecha + '</span></div>' +
+      '<div style="color:var(--gold);font-weight:700">' + escapeHtml(a.objetivo || '') + '</div>' +
+      '<div>Operación MP: <b>' + escapeHtml(a.operacion || '—') + '</b> · WhatsApp ' + escapeHtml(a.whatsapp || '') + '</div>' +
+      '<div>' + escapeHtml(String(a.edad || '')) + ' años · ' + escapeHtml(a.ciudad || '') + ' · Alberca ' + escapeHtml(a.alberca || '') + ' · ' + escapeHtml(a.dias || '') + ' días</div>' +
+      '<div>100 libre ' + escapeHtml(a.t100 || '—') + ' · 400 libre ' + escapeHtml(a.t400 || '—') + '</div>' +
+      (a.meta ? '<div>Meta: ' + escapeHtml(a.meta) + '</div>' : '') +
+      (a.lesion ? '<div style="color:#ffb4a8">Lesión: ' + escapeHtml(a.lesion) + '</div>' : '') +
+      '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem">' +
+        '<select onchange="pdCambiarEstado(\'' + k + '\', this.value)" style="flex:1 1 150px;background:#03101f;color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:0.4rem">' +
+          PD_ESTADOS.map(function(s) { return '<option value="' + s.id + '"' + (s.id === est ? ' selected' : '') + '>' + s.txt + '</option>'; }).join('') +
+        '</select>' +
+        '<button onclick="pdWhatsApp(\'' + k + '\', \'hola\')" style="background:#25d366;color:#04220f;border:none;border-radius:8px;padding:0.4rem 0.7rem;font-weight:800">WhatsApp</button>' +
+        '<button onclick="pdWhatsApp(\'' + k + '\', \'mensual\')" style="background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:0.4rem 0.7rem;font-weight:800">Mandar link $500</button>' +
+        '<button onclick="pdBorrar(\'' + k + '\')" style="background:transparent;color:rgba(255,255,255,0.55);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:0.4rem 0.7rem">Borrar</button>' +
+      '</div></div>';
+  });
+  document.getElementById('pd-lista').innerHTML = html;
+}
+function pdGuardarCupo() {
+  return db.ref('planes_cupo/ocupados').set(pdOcupados()).catch(function(e) { alert('No se pudo actualizar el cupo: ' + e.message); });
+}
+function pdCambiarEstado(k, est) {
+  if (!pdAlumnos[k]) return;
+  pdAlumnos[k].estado = est;
+  db.ref('planes_alumnos/' + k + '/estado').set(est).then(function() { pdGuardarCupo(); pintarAlumnosDistancia(); })
+    .catch(function(e) { alert('No se pudo guardar: ' + e.message); });
+}
+function pdWhatsApp(k, tipo) {
+  var a = pdAlumnos[k]; if (!a) return;
+  var C = window.LS_PLAN || {};
+  var tel = String(a.whatsapp || '').replace(/\D/g, '');
+  if (tel.length === 10) tel = '52' + tel;
+  var nombre = (a.nombre || '').split(' ')[0];
+  var msg;
+  if (tipo === 'mensual') {
+    if (!C.MENSUAL_URL) { alert('Falta el link de la mensualidad de Mercado Pago en plan-config.js.'); return; }
+    msg = 'Hola ' + nombre + ', ¿cómo te fue con tu semana de prueba? Para seguir con tu plan a distancia por $' + (C.PRECIO_MES || 500) + ' al mes, suscríbete aquí y el cobro se hace solo cada mes: ' + C.MENSUAL_URL;
+  } else {
+    msg = 'Hola ' + nombre + ', soy el Coach Checo. Ya recibí tu cuestionario del plan a distancia (' + (a.objetivo || '') + ').';
+  }
+  window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(msg), '_blank');
+}
+function pdBorrar(k) {
+  var a = pdAlumnos[k]; if (!a) return;
+  if (!confirm('¿Borrar a ' + (a.nombre || 'este alumno') + ' y todas sus respuestas? No se puede deshacer.')) return;
+  db.ref('planes_alumnos/' + k).remove().then(function() { delete pdAlumnos[k]; pdGuardarCupo(); pintarAlumnosDistancia(); })
+    .catch(function(e) { alert('No se pudo borrar: ' + e.message); });
+}
+
 // ===== RUTA DEL NAZAS: CERRAR MES (solo coach) =====
 // Guarda en nazas_historial el resumen de los meses ya terminados (solo quienes subieron
 // más de 10 entrenamientos, más el total del equipo para el mapa) y borra los entrenamientos
@@ -14624,6 +14727,16 @@ function escapeHtml(str) {
    FIN V4
    ============================================================ */
 </script>
+
+<!-- ============ MODAL: ALUMNOS A DISTANCIA (solo coach) ============ -->
+<div id="pd-modal" class="v4-modal-bg">
+  <div class="v4-modal">
+    <button class="v4-modal-close" onclick="cerrarAlumnosDistancia()">✕</button>
+    <div class="v4-modal-title">ALUMNOS <em>A DISTANCIA</em></div>
+    <div class="v4-modal-subtitle" id="pd-resumen">Cargando…</div>
+    <div id="pd-lista"></div>
+  </div>
+</div>
 
 <!-- ============ MODAL: SUBIR ENTRENAMIENTO (sin login) ============ -->
 <div id="v4-modal-entrenamiento" class="v4-modal-bg">
@@ -15701,5 +15814,7 @@ body.v7 .modal-box {
 </style>
 <link rel="stylesheet" href="inicio.css">
 <script src="inicio.js" defer></script>
+<script src="plan-config.js"></script>
+<script src="plan-distancia.js"></script>
 </body>
 </html>
