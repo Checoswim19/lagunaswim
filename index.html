@@ -3853,14 +3853,18 @@ body.blog-active #tab-timer { display: none !important; }
 
     <!-- ===== Tramo 4: entrenamientos de la semana ===== -->
     <section class="ls-c ls-semana" aria-labelledby="ls-t-semana">
-      <h2 id="ls-t-semana" class="ls-h2">La semana <span class="ls-s">del equipo</span></h2>
-      <p class="ls-texto">Entrenamientos que sube el equipo, en vivo.</p>
+      <h2 id="ls-t-semana" class="ls-h2">Reto de <span class="ls-s" id="home-reto-mes">este mes</span></h2>
+      <p class="ls-texto">Sube tus metros cada vez que nades. Premio a los más constantes y a los que más metros naden en el mes.</p>
       <div class="ls-cifras">
         <div><b id="home-stat-sesiones">—</b><span>sesiones</span></div>
-        <div><b id="home-stat-personas">—</b><span>personas</span></div>
+        <div><b id="home-stat-personas">—</b><span>nadadores</span></div>
         <div><b id="home-stat-metros">—</b><span>metros</span></div>
       </div>
-      <h3 class="ls-h3">Top 5 por metros</h3>
+      <div class="ls-reto-tabs" role="tablist" style="display:flex;gap:8px;margin:20px 0 10px">
+        <button type="button" role="tab" id="reto-tab-metros" class="ls-btn ls-btn-oro" style="flex:1;padding:10px" onclick="retoVerRanking('metros')">🏊 Más metros</button>
+        <button type="button" role="tab" id="reto-tab-dias" class="ls-btn ls-btn-linea" style="flex:1;padding:10px" onclick="retoVerRanking('dias')">🔥 Más constantes</button>
+      </div>
+      <h3 class="ls-h3" id="home-top-titulo">Top 10 por metros del mes</h3>
       <div id="home-top5" class="ls-top5">
         <div class="ls-cargando">Cargando...</div>
       </div>
@@ -3869,7 +3873,7 @@ body.blog-active #tab-timer { display: none !important; }
         <button type="button" class="ls-btn ls-btn-linea" onclick="verEntrenamientosPublicos()">Ver todos</button>
         <a class="ls-btn ls-btn-linea" href="nazas.html" style="color:#fff;text-decoration:none">Ruta del Nazas · mi diploma</a>
       </div>
-      <p class="ls-nota">Sin registro: solo tu nombre y tus metros. Cada entrenamiento te hace avanzar en la Ruta del Nazas.</p>
+      <p class="ls-nota">Sin registro: solo tu nombre y tus metros. Constancia = días distintos que nadaste en el mes. Cada entrenamiento te hace avanzar en la Ruta del Nazas.</p>
     </section>
 
     <!-- ===== Tramo 5: simuladores ===== -->
@@ -10035,7 +10039,7 @@ async function cargarEntrenamientosPublicosEnMuro() {
 
     // Actualizar totales
     var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var personasUnicas = new Set(entries.map(function(e) { return (e.nombre || '').toLowerCase().trim(); })).size;
+    var personasUnicas = new Set(entries.map(function(e) { return normalizarNombre(e.nombre || ''); })).size;
 
     var elS = document.getElementById('muro-stat-sesiones');
     var elP = document.getElementById('muro-stat-personas');
@@ -10070,13 +10074,13 @@ function renderMuroEntrenamientos() {
     // Agrupar por persona
     var porPersona = {};
     entries.forEach(function(e) {
-      var nombre = (e.nombre || '').trim();
-      if (!porPersona[nombre]) {
-        porPersona[nombre] = { nombre: nombre, sesiones: 0, metros: 0, grupo: e.grupo, entries: [] };
+      var nombre = (e.nombre || '').trim(), kp = normalizarNombre(nombre);
+      if (!porPersona[kp]) {
+        porPersona[kp] = { nombre: nombre, sesiones: 0, metros: 0, grupo: e.grupo, entries: [] };
       }
-      porPersona[nombre].sesiones++;
-      porPersona[nombre].metros += (e.metros || 0);
-      porPersona[nombre].entries.push(e);
+      porPersona[kp].sesiones++;
+      porPersona[kp].metros += (e.metros || 0);
+      porPersona[kp].entries.push(e);
     });
     var personasArr = Object.values(porPersona).sort(function(a, b) { return b.metros - a.metros; });
 
@@ -14010,9 +14014,12 @@ function abrirModalEntrenamiento() {
   if (nombreGuardado) {
     document.getElementById('v4-nombre').value = nombreGuardado;
   }
-  // Fecha actual por defecto
-  var hoy = new Date().toISOString().split('T')[0];
-  document.getElementById('v4-fecha').value = hoy;
+  // Fecha actual por defecto (hora local) y solo días del mes en curso, sin fechas futuras
+  var hoy = fechaLocalHoy();
+  var inFecha = document.getElementById('v4-fecha');
+  inFecha.value = hoy;
+  inFecha.min = hoy.slice(0, 8) + '01';
+  inFecha.max = hoy;
   // Ocultar mensajes previos
   document.getElementById('v4-success').style.display = 'none';
   document.getElementById('v4-error').style.display = 'none';
@@ -14044,11 +14051,46 @@ async function enviarEntrenamientoPublico() {
     errorEl.style.display = 'block';
     return;
   }
+  var hoyLocal = fechaLocalHoy();
+  if (fecha > hoyLocal) {
+    errorEl.textContent = 'La fecha no puede ser de un día que todavía no llega.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (fecha.slice(0, 7) !== hoyLocal.slice(0, 7)) {
+    errorEl.textContent = 'Solo puedes subir entrenamientos de este mes (' + nombreMesActual() + ').';
+    errorEl.style.display = 'block';
+    return;
+  }
   if (!metros || metros < 50 || metros > 50000) {
     errorEl.textContent = 'Pon los metros nadados (entre 50 y 50000)';
     errorEl.style.display = 'block';
     return;
   }
+  // Evitar que una misma persona quede dividida por un error de dedo o mayúsculas:
+  // si el nombre ya existe (sin importar acentos/mayúsculas) se usa igual; si se parece mucho, se pregunta.
+  try {
+    var snapNom = await db.ref('entrenamientos_publicos').once('value');
+    var existentes = {};
+    snapNom.forEach(function(ch) {
+      var n0 = String((ch.val() || {}).nombre || '').trim(), k0 = normalizarNombre(n0);
+      if (k0 && !existentes[k0]) existentes[k0] = n0;
+    });
+    var kN = normalizarNombre(nombre);
+    if (existentes[kN]) {
+      nombre = existentes[kN];
+    } else {
+      var mejor = null, mejorD = 99;
+      Object.keys(existentes).forEach(function(k0) {
+        var d0 = distanciaNombres(kN, k0);
+        if (d0 < mejorD) { mejorD = d0; mejor = k0; }
+      });
+      if (mejor && mejorD <= 2 && confirm('¿Eres "' + existentes[mejor] + '"?\n\nYa hay alguien con un nombre muy parecido. Si eres tú, toca Aceptar para que tus metros se sumen juntos. Si eres otra persona, toca Cancelar.')) {
+        nombre = existentes[mejor];
+      }
+    }
+    document.getElementById('v4-nombre').value = nombre;
+  } catch (eNom) {}
   // Guardar nombre para próxima vez
   localStorage.setItem('laguna_nombre_entrenamiento', nombre);
 
@@ -14313,23 +14355,23 @@ async function verEntrenamientosPublicos() {
 
     // Calcular totales
     var totalMetros = entries.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
-    var personasUnicas = new Set(entries.map(function(e) { return (e.nombre || '').toLowerCase().trim(); })).size;
+    var personasUnicas = new Set(entries.map(function(e) { return normalizarNombre(e.nombre || ''); })).size;
 
     // Agrupar por persona para el resumen
     var porPersona = {};
     entries.forEach(function(e) {
-      var nombre = (e.nombre || '').trim();
-      if (!porPersona[nombre]) {
-        porPersona[nombre] = { nombre: nombre, sesiones: 0, metros: 0, grupo: e.grupo, entries: [] };
+      var nombre = (e.nombre || '').trim(), kp = normalizarNombre(nombre);
+      if (!porPersona[kp]) {
+        porPersona[kp] = { nombre: nombre, sesiones: 0, metros: 0, grupo: e.grupo, entries: [] };
       }
-      porPersona[nombre].sesiones++;
-      porPersona[nombre].metros += (e.metros || 0);
-      porPersona[nombre].entries.push(e);
+      porPersona[kp].sesiones++;
+      porPersona[kp].metros += (e.metros || 0);
+      porPersona[kp].entries.push(e);
     });
     var personasArr = Object.values(porPersona).sort(function(a, b) { return b.metros - a.metros; });
 
     var html = '<div style="background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:8px;padding:0.8rem;margin-bottom:1rem;text-align:center">' +
-      '<div style="font-size:0.65rem;color:var(--gold);letter-spacing:2px;font-weight:800;margin-bottom:6px">TOTALES DE LA SEMANA</div>' +
+      '<div style="font-size:0.65rem;color:var(--gold);letter-spacing:2px;font-weight:800;margin-bottom:6px">TOTALES (TODOS LOS SUBIDOS)</div>' +
       '<div style="display:flex;justify-content:space-around;font-size:0.85rem">' +
       '<div><strong style="color:var(--gold);font-size:1.5rem">' + entries.length + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Sesiones</span></div>' +
       '<div><strong style="color:var(--gold);font-size:1.5rem">' + personasUnicas + '</strong><br><span style="font-size:0.6rem;letter-spacing:1px">Personas</span></div>' +
@@ -14463,64 +14505,105 @@ async function exportarEntrenamientosCSV() {
   }
 }
 
-// Cargar totales + Top 5 en la tabla pública del home (visible para TODOS)
+// ===== RETO DEL MES (visible para TODOS) =====
+// Fecha local (no UTC): después de las 6 pm en Torreón, toISOString() ya da el día siguiente.
+function fechaLocalHoy() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function mesActualYM() { return fechaLocalHoy().slice(0, 7); }
+var MESES_ES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function nombreMesActual() { return MESES_ES[new Date().getMonth()]; }
+
+// Distancia de edición (para detectar errores de dedo en el nombre)
+function distanciaNombres(a, b) {
+  if (a === b) return 0;
+  var m = a.length, n = b.length, prev = [], cur, i, j;
+  for (j = 0; j <= n; j++) prev[j] = j;
+  for (i = 1; i <= m; i++) {
+    cur = [i];
+    for (j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+
+var retoState = { vista: 'metros', personas: [] };
+
 async function cargarTotalesEntrenamientos() {
   try {
+    var ym = mesActualYM();
+    var elMes = document.getElementById('home-reto-mes');
+    if (elMes) elMes.textContent = nombreMesActual();
     var snap = await db.ref('entrenamientos_publicos').once('value');
-    var sesiones = 0;
-    var metros = 0;
-    var personas = {};
+    var sesiones = 0, metros = 0, personas = {};
     snap.forEach(function(child) {
-      var v = child.val();
-      sesiones++;
-      metros += (v.metros || 0);
-      var nombre = (v.nombre || '').trim();
-      if (nombre) {
-        var key = nombre.toLowerCase();
-        if (!personas[key]) {
-          personas[key] = { nombre: nombre, metros: 0, sesiones: 0, grupo: v.grupo };
-        }
-        personas[key].metros += (v.metros || 0);
-        personas[key].sesiones++;
-      }
+      var v = child.val() || {};
+      if (!v.fecha || String(v.fecha).slice(0, 7) !== ym) return;   // solo el mes en curso
+      var met = +v.metros || 0;
+      sesiones++; metros += met;
+      var nombre = String(v.nombre || '').trim(), key = normalizarNombre(nombre);
+      if (!key) return;
+      if (!personas[key]) personas[key] = { nombre: nombre, metros: 0, sesiones: 0, dias: {} };
+      personas[key].metros += met;
+      personas[key].sesiones++;
+      personas[key].dias[v.fecha] = true;
     });
+    retoState.personas = Object.values(personas).map(function(p) { p.numDias = Object.keys(p.dias).length; return p; });
 
-    // Actualizar totales
     var elS = document.getElementById('home-stat-sesiones');
     var elP = document.getElementById('home-stat-personas');
     var elM = document.getElementById('home-stat-metros');
     if (elS) elS.textContent = sesiones;
-    if (elP) elP.textContent = Object.keys(personas).length;
+    if (elP) elP.textContent = retoState.personas.length;
     if (elM) elM.textContent = metros >= 1000 ? (metros / 1000).toFixed(1) + 'k' : metros.toLocaleString();
-
-    // Top 5 por metros
-    var top5 = Object.values(personas).sort(function(a, b) { return b.metros - a.metros; }).slice(0, 5);
-    var top5El = document.getElementById('home-top5');
-    if (top5El) {
-      if (top5.length === 0) {
-        top5El.innerHTML = '<div style="text-align:center;padding:0.8rem;color:rgba(255,255,255,0.4);font-size:0.72rem;font-style:italic">¡Sé el primero en subir tu entrenamiento!</div>';
-      } else {
-        var html = '';
-        top5.forEach(function(p, idx) {
-          var medal = ['🥇','🥈','🥉','🏅','🏅'][idx];
-          var bgColor = idx === 0 ? 'rgba(255,215,0,0.12)' : (idx === 1 ? 'rgba(192,192,192,0.08)' : (idx === 2 ? 'rgba(205,127,50,0.08)' : 'rgba(255,255,255,0.03)'));
-          html += '<div style="display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0.6rem;background:' + bgColor + ';border-radius:7px;margin-bottom:3px">' +
-            '<div style="font-size:1rem;width:24px;text-align:center">' + medal + '</div>' +
-            '<div style="flex:1;min-width:0;overflow:hidden">' +
-              '<div style="font-weight:700;color:#fff;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(p.nombre) + '</div>' +
-              '<div style="font-size:0.6rem;color:rgba(255,255,255,0.5)">' + p.sesiones + ' sesion' + (p.sesiones === 1 ? '' : 'es') + '</div>' +
-            '</div>' +
-            '<div style="font-weight:900;color:var(--gold);font-size:0.95rem;text-align:right;white-space:nowrap">' + (p.metros >= 1000 ? (p.metros / 1000).toFixed(1) + ' km' : p.metros.toLocaleString() + ' m') + '</div>' +
-          '</div>';
-        });
-        top5El.innerHTML = html;
-      }
-    }
+    pintarRankingReto();
   } catch (e) {
     console.warn('No se pudieron cargar totales:', e);
     var top5El = document.getElementById('home-top5');
     if (top5El) top5El.innerHTML = '<div style="text-align:center;padding:0.8rem;color:#ff6b35;font-size:0.7rem">Error al cargar</div>';
   }
+}
+
+function retoVerRanking(vista) {
+  retoState.vista = vista;
+  var a = document.getElementById('reto-tab-metros'), b = document.getElementById('reto-tab-dias');
+  if (a && b) {
+    a.className = 'ls-btn ' + (vista === 'metros' ? 'ls-btn-oro' : 'ls-btn-linea');
+    b.className = 'ls-btn ' + (vista === 'dias' ? 'ls-btn-oro' : 'ls-btn-linea');
+  }
+  pintarRankingReto();
+}
+window.retoVerRanking = retoVerRanking;
+
+function pintarRankingReto() {
+  var porDias = retoState.vista === 'dias';
+  var tit = document.getElementById('home-top-titulo');
+  if (tit) tit.textContent = porDias ? 'Top 10 más constantes del mes (días nadados)' : 'Top 10 por metros del mes';
+  var lista = retoState.personas.slice().sort(function(a, b) {
+    return porDias ? (b.numDias - a.numDias || b.metros - a.metros) : (b.metros - a.metros || b.numDias - a.numDias);
+  }).slice(0, 10);
+  var el = document.getElementById('home-top5');
+  if (!el) return;
+  if (!lista.length) {
+    el.innerHTML = '<div style="text-align:center;padding:0.8rem;color:rgba(255,255,255,0.6);font-size:0.8rem;font-style:italic">Nadie ha subido metros este mes. ¡Sé el primero!</div>';
+    return;
+  }
+  var html = '';
+  lista.forEach(function(p, idx) {
+    var medal = idx < 3 ? ['🥇','🥈','🥉'][idx] : (idx + 1) + '.';
+    var km = p.metros >= 1000 ? (p.metros / 1000).toFixed(1) + ' km' : p.metros.toLocaleString() + ' m';
+    var dias = p.numDias + ' día' + (p.numDias === 1 ? '' : 's');
+    html += '<div style="display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0.6rem;border-radius:7px;margin-bottom:3px">' +
+      '<div style="font-size:1rem;width:28px;text-align:center;font-weight:800;color:#fff">' + medal + '</div>' +
+      '<div style="flex:1;min-width:0;overflow:hidden">' +
+        '<div style="font-weight:700;color:#fff;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(p.nombre) + '</div>' +
+        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.6)">' + (porDias ? km : dias) + ' · ' + p.sesiones + ' sesion' + (p.sesiones === 1 ? '' : 'es') + '</div>' +
+      '</div>' +
+      '<div style="font-weight:900;color:var(--gold);font-size:0.95rem;text-align:right;white-space:nowrap">' + (porDias ? dias : km) + '</div>' +
+    '</div>';
+  });
+  el.innerHTML = html;
 }
 // Desde la Ruta del Nazas: lagunaswim.net/#subir abre directo el formulario de entrenamiento
 if (location.hash === '#subir') {
