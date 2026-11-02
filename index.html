@@ -14636,7 +14636,7 @@ setTimeout(function() {
 
 // ===== RUTA DEL NAZAS: CERRAR MES (solo coach) =====
 // Guarda en nazas_historial el resumen de los meses ya terminados (solo quienes subieron
-// más de 10 entrenamientos, más el total del equipo para el mapa) y borra los entrenamientos
+// 10 o más entrenamientos, más el total del equipo para el mapa) y borra los entrenamientos
 // sueltos de esos meses. Todo va en una sola escritura: si algo falla, no se borra nada.
 async function cerrarMesNazas() {
   if (!(state && state.isCoach)) { alert('Solo el coach puede cerrar el mes.'); return; }
@@ -14667,7 +14667,7 @@ async function cerrarMesNazas() {
       var m = meses[ym], quedan = 0;
       Object.keys(m.personas).forEach(function(k) {
         var p = m.personas[k];
-        if (p.sesiones > 10) {
+        if (p.sesiones >= 10) {
           quedan++;
           updates['nazas_historial/' + ym + '/personas/' + k.replace(/[.#$\[\]\/]/g, '_')] = { nombre: p.nombre, metros: p.metros, sesiones: p.sesiones, nivel: nivel(p.metros) };
         }
@@ -14677,7 +14677,7 @@ async function cerrarMesNazas() {
       updates['nazas_historial/' + ym + '/equipo/sesiones'] = firebase.database.ServerValue.increment(m.sesiones);
       updates['nazas_historial/' + ym + '/equipo/cerradoEn'] = firebase.database.ServerValue.TIMESTAMP;
       m.keys.forEach(function(key) { updates['entrenamientos_publicos/' + key] = null; });
-      resumen.push('• ' + ym + ': se borran ' + m.keys.length + ' entrenamientos de ' + Object.keys(m.personas).length + ' personas; quedan en el resumen ' + quedan + ' (más de 10 entrenamientos).');
+      resumen.push('• ' + ym + ': se borran ' + m.keys.length + ' entrenamientos de ' + Object.keys(m.personas).length + ' personas; quedan en el resumen ' + quedan + ' (10 o más entrenamientos).');
     });
     if (!confirm('Cerrar mes de la Ruta del Nazas\n\n' + resumen.join('\n') + '\n\nEl total del equipo se guarda para el mapa. Esto no se puede deshacer. ¿Continuar?')) return;
     await db.ref().update(updates);
@@ -14744,7 +14744,7 @@ function escapeHtml(str) {
       </div>
     </div>
 
-    <div class="v4-field-hint" style="margin:-0.2rem 0 0.8rem">&#128274; Solo guardamos tu nombre, la fecha y los metros. Al cerrar cada mes se borran los entrenamientos; solo queda el resumen del mes de quienes suben más de 10.</div>
+    <div class="v4-field-hint" style="margin:-0.2rem 0 0.8rem">&#128274; Solo guardamos tu nombre, la fecha y los metros. Al cerrar cada mes se borran los entrenamientos; solo queda el resumen del mes de quienes suben 10 o más.</div>
 
     <button class="v4-submit-btn" id="v4-submit" onclick="enviarEntrenamientoPublico()">Enviar mi entrenamiento</button>
 
