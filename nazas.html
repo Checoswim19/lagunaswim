@@ -157,7 +157,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
       <select id="mes" aria-label="Mes"></select>
       <button class="btn btn-oro" id="ver" type="button">Ver mi avance</button>
     </div>
-    <p class="hint">⚠️ Usa tu <b>nombre y apellidos</b> exactamente como los escribes al subir tus entrenamientos. Si cambia una letra, cuenta como otra persona. Descarga tu diploma antes de que termine el mes: al cerrarse, solo queda el resumen de quienes subieron más de 10 entrenamientos.</p>
+    <p class="hint">⚠️ Usa tu <b>nombre y apellidos</b> exactamente como los escribes al subir tus entrenamientos. Si cambia una letra, cuenta como otra persona. Descarga tu diploma antes de que termine el mes: al cerrarse, solo queda el resumen de quienes subieron 10 o más entrenamientos.</p>
     <div class="mine" id="mine" hidden>
       <div class="big"><strong id="miKm">0.0</strong><span>km en <b id="miMes"></b></span><span class="tier-chip t-ninguno" id="miNivel">Sin nivel</span></div>
       <div class="tramo" aria-hidden="true">
@@ -323,7 +323,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
     document.querySelectorAll('.boya').forEach(function (b, i) { b.classList.toggle('ok', km1(p.metros) >= NIVELES[i].km); });
     var sig = NIVELES.filter(function (x) { return km1(p.metros) < x.km; })[0];
     var txt;
-    if (p.sesiones === 0 && HIST[ym]) txt = nombreMes(ym).replace(/^./, function (c) { return c.toUpperCase(); }) + ' ya se cerró y solo quedó el resumen de quienes subieron más de 10 entrenamientos. "' + nombre + '" no está en ese resumen.';
+    if (p.sesiones === 0 && HIST[ym]) txt = nombreMes(ym).replace(/^./, function (c) { return c.toUpperCase(); }) + ' ya se cerró y solo quedó el resumen de quienes subieron 10 o más entrenamientos. "' + nombre + '" no está en ese resumen.';
     else if (p.sesiones === 0) txt = 'No encontramos entrenamientos de "' + nombre + '" en ' + nombreMes(ym) + '. Revisa que el nombre y apellidos sean iguales a los que usas al subirlos.';
     else if (HIST[ym] && ym !== mesActual) txt = 'Mes cerrado: ' + p.sesiones + ' entrenamientos.' + (nivel ? ' Lograste ' + nivel.nombre + '.' : '');
     else if (sig) txt = p.sesiones + ' entrenamiento' + (p.sesiones === 1 ? '' : 's') + '. Te faltan ' + (sig.km - km1(p.metros)).toFixed(1) + ' km para ' + sig.nombre + '.';
