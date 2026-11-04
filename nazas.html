@@ -58,6 +58,7 @@ input, select {
 input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--cielo); outline-offset: 2px; }
 #nombre { flex: 1 1 220px; }
 .btn { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; }
+.tm-box .btn-gold{background:linear-gradient(135deg,#ffe066,#ffb800);color:#2a1a00}.tm-box .btn-gray{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35)}
 .btn-oro { background: linear-gradient(135deg, #ffe066, #ffb800); color: #2a1a00; }
 .btn-linea { background: transparent; color: var(--texto); border: 1px solid var(--borde); }
 .btn[disabled] { opacity: .45; cursor: default; }
@@ -175,6 +176,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
         <button class="btn btn-oro" id="btnConstancia" type="button" disabled>Diploma de constancia</button>
         <a class="btn btn-linea" href="index.html#subir">Subir un entrenamiento</a>
       </div>
+      <button class="btn btn-oro" id="btnTarjeta" type="button" hidden style="width:100%;margin-top:10px">📤 Compartir mi acumulado del mes</button>
       <div class="preview" id="preview">
         <img id="diplomaImg" alt="Tu diploma de la Ruta del Nazas">
         <div class="row">
@@ -338,6 +340,7 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
     $('btnDiploma').textContent = nivel ? 'Descargar mi diploma ' + nivel.nombre : 'El diploma se gana desde 10 km';
     $('btnConstancia').disabled = !nc;
     $('btnConstancia').textContent = nc ? 'Diploma de constancia ' + nc.nombre : 'Constancia: desde 10 entrenamientos';
+    $('btnTarjeta').hidden = !(p.metros > 0);
     $('estado').textContent = ''; $('estado').className = 'msg';
     pintarTabla();
   }
@@ -534,6 +537,13 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
 
   // ===== Arranque =====
   $('ver').addEventListener('click', verMiMes);
+  // Tarjeta para redes (tarjeta.js): se genera en el teléfono, no sube nada a ningún servidor.
+  $('btnTarjeta').addEventListener('click', function () {
+    if (!actual || !window.abrirTarjetaMetros) return;
+    var ymT = actual.mes.split('-');
+    window.premios = { tarjetaMetros: { nombre: actual.nombre, fotoUrl: '', metros: Math.round(actual.metros), sesiones: actual.sesiones, mes: +ymT[1] - 1, anio: +ymT[0] } };
+    window.abrirTarjetaMetros();
+  });
   $('nombre').addEventListener('keydown', function (e) { if (e.key === 'Enter') verMiMes(); });
   $('mes').addEventListener('change', function () { llenarNombres(); if (actual) verMiMes(); else pintarTabla(); });
   $('btnDiploma').addEventListener('click', function () { hacerDiploma(false); });
@@ -577,5 +587,6 @@ footer { text-align: center; color: var(--suave); font-size: 13px; }
   });
 })();
 </script>
+<script src="tarjeta.js" defer></script>
 </body>
 </html>
