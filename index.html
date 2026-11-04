@@ -2911,6 +2911,12 @@ body.v3-fluid .v2-coach-poster:active {
   min-height: 90px;
   font-family: inherit;
 }
+.v4-metros-wrap { position: relative; }
+.v4-metros-wrap input { padding-right: 4.6rem; font-size: 1.15rem; font-weight: 800; }
+.v4-metros-unidad { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; font-weight: 800; color: var(--accent); pointer-events: none; }
+.v4-metros-preview { display: none; margin-top: 0.4rem; padding: 0.45rem 0.65rem; border-radius: 8px; font-size: 0.85rem; font-weight: 800; line-height: 1.35; }
+.v4-metros-preview.ok { display: block; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.45); color: #86efac; }
+.v4-metros-preview.mal { display: block; background: rgba(255,107,53,0.15); border: 1px solid #ff6b35; color: #ffb199; }
 .v4-field-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -5725,7 +5731,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
     <label>Fecha</label>
     <input type="date" id="reg-fecha">
     <label>Distancia total (m) *</label>
-    <input type="number" id="reg-distancia" placeholder="2000">
+    <input type="number" id="reg-distancia" placeholder="2000" min="50" max="8000" inputmode="numeric">
     <label>Tiempo total</label>
     <input id="reg-tiempo" placeholder="0:45:30">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
@@ -10121,7 +10127,7 @@ function renderMuroEntrenamientos() {
       var fecha = e.fecha || '';
       var hora = e.timestamp ? new Date(e.timestamp).toLocaleString('es-MX', {hour: '2-digit', minute:'2-digit'}) : '';
       var deleteBtn = esCoach
-        ? '<button onclick="borrarEntrenamientoMuro(\'' + e.key + '\')" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">🗑️</button>'
+        ? '<button onclick="corregirMetrosEntrenamiento(\'' + e.key + '\', ' + (+e.metros || 0) + ', cargarEntrenamientosPublicosEnMuro)" title="Corregir metros" style="background:rgba(56,189,248,0.2);border:1px solid #38bdf8;color:#38bdf8;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">✏️</button><button onclick="borrarEntrenamientoMuro(\'' + e.key + '\')" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">🗑️</button>'
         : '';
       // Badge de vinculación
       var vincBadge = '';
@@ -10330,8 +10336,9 @@ function cerrarRegistroSesion() {
 
 function guardarSesion() {
   if (!state.user) return;
-  var dist = parseInt(document.getElementById('reg-distancia').value) || 0;
-  if (!dist) { alert('Pon al menos los metros nadados'); return; }
+  var distCheck = v4ValidarMetros(document.getElementById('reg-distancia').value);
+  if (!distCheck.ok) { alert(distCheck.msg); return; }
+  var dist = distCheck.metros;
   var fecha = document.getElementById('reg-fecha').value || fmtFechaYMD(new Date());
   var nombre = state.user.displayName || state.user.email.split('@')[0];
 
@@ -12208,8 +12215,9 @@ window.guardarSesion = function() {
       snap.forEach(function(child) { nadadorId = child.key; });
     }
     // Guardar sesión con nadadorId si existe
-    var dist = parseInt(document.getElementById('reg-distancia').value) || 0;
-    if (!dist) { alert('Pon al menos los metros nadados'); return; }
+    var distCheck = v4ValidarMetros(document.getElementById('reg-distancia').value);
+    if (!distCheck.ok) { alert(distCheck.msg); return; }
+    var dist = distCheck.metros;
     var fecha = document.getElementById('reg-fecha').value || fmtFechaYMD(new Date());
     var nombre = state.user.displayName || state.user.email.split('@')[0];
 
@@ -14005,6 +14013,41 @@ function sensEmoji(e){
   return '<span title="' + (SENS_TXT[e.sensacion] || '') + '" style="margin-right:4px">' + (SENS_MAP[e.sensacion] || '') + '</span>';
 }
 
+// Tope de metros por sesión. Para cambiarlo, solo se ajusta este número
+// (y el .validate de las reglas de Firebase, si se agregó).
+// Van en funciones para que el tope siga activo aunque otra parte de la página falle al cargar.
+function v4MetrosMax() { return 8000; }
+function v4MetrosConfirmarDesde() { return 5000; }
+
+function v4FmtMetros(n) {
+  return n.toLocaleString('es-MX') + ' metros (' + (n / 1000).toLocaleString('es-MX', { maximumFractionDigits: 2 }) + ' km)';
+}
+// Lee lo escrito y regresa { ok, metros, msg }. Detecta a quien escribe en km o con comas.
+function v4ValidarMetros(raw) {
+  raw = String(raw == null ? '' : raw).trim();
+  if (raw === '') return { ok: false, metros: 0, msg: 'Escribe los metros solo con números, sin puntos ni comas (ej. 1400).' };
+  var n = Number(raw);
+  if (!isFinite(n) || n <= 0) return { ok: false, metros: 0, msg: 'Escribe los metros solo con números (ej. 1400).' };
+  var maxKm = v4MetrosMax() / 1000;
+  if (n <= maxKm) return { ok: false, metros: 0, msg: '¿Lo escribiste en kilómetros? Ponlo en metros: ' + n.toLocaleString('es-MX') + ' km = ' + Math.round(n * 1000).toLocaleString('es-MX', { useGrouping: false }) + '.' };
+  if (n !== Math.floor(n)) return { ok: false, metros: 0, msg: 'Escribe los metros sin puntos ni decimales (ej. 1400).' };
+  if (n < 50) return { ok: false, metros: 0, msg: 'El mínimo es 50 metros por sesión.' };
+  if (n > v4MetrosMax()) return { ok: false, metros: 0, msg: 'Escribiste ' + v4FmtMetros(n) + '. El máximo es ' + v4MetrosMax().toLocaleString('es-MX') + ' m por sesión. ¿Te sobró un cero?' };
+  return { ok: true, metros: n, msg: '' };
+}
+function v4PreviewMetros() {
+  var input = document.getElementById('v4-metros'), box = document.getElementById('v4-metros-preview');
+  if (!input || !box) return;
+  var errEl = document.getElementById('v4-error');
+  if (errEl) errEl.style.display = 'none';   // no dejar el error anterior mientras corrige
+  // El navegador deja el valor vacío si escriben algo inválido como 1,400
+  var vacio = input.value === '' && !(input.validity && input.validity.badInput);
+  if (vacio) { box.className = 'v4-metros-preview'; box.textContent = ''; return; }
+  var r = v4ValidarMetros(input.value);
+  box.className = 'v4-metros-preview ' + (r.ok ? 'ok' : 'mal');
+  box.textContent = r.ok ? '✓ Vas a registrar ' + v4FmtMetros(r.metros) : r.msg;
+}
+
 function abrirModalEntrenamiento() {
   document.getElementById('v4-modal-entrenamiento').classList.add('show');
   document.body.style.overflow = 'hidden';
@@ -14043,7 +14086,8 @@ function cerrarModalEntrenamiento() {
 async function enviarEntrenamientoPublico() {
   var nombre = (document.getElementById('v4-nombre').value || '').trim();
   var fecha = document.getElementById('v4-fecha').value;
-  var metros = parseInt(document.getElementById('v4-metros').value) || 0;
+  var metrosCheck = v4ValidarMetros(document.getElementById('v4-metros').value);
+  var metros = metrosCheck.metros;
 
   var errorEl = document.getElementById('v4-error');
   var successEl = document.getElementById('v4-success');
@@ -14072,11 +14116,12 @@ async function enviarEntrenamientoPublico() {
     errorEl.style.display = 'block';
     return;
   }
-  if (!metros || metros < 50 || metros > 50000) {
-    errorEl.textContent = 'Pon los metros nadados (entre 50 y 50000)';
+  if (!metrosCheck.ok) {
+    errorEl.textContent = metrosCheck.msg;
     errorEl.style.display = 'block';
     return;
   }
+  if (metros >= v4MetrosConfirmarDesde() && !confirm('Vas a registrar ' + v4FmtMetros(metros) + ' en una sola sesión.\n\n¿Es correcto?')) return;
   // Evitar que una misma persona quede dividida por un error de dedo o mayúsculas:
   // si el nombre ya existe (sin importar acentos/mayúsculas) se usa igual; si se parece mucho, se pregunta.
   try {
@@ -14171,6 +14216,7 @@ async function enviarEntrenamientoPublico() {
 
     // Limpiar campos (excepto nombre)
     document.getElementById('v4-metros').value = '';
+    v4PreviewMetros();
 
     // Cerrar modal después de 2 segundos
     setTimeout(function() {
@@ -14403,7 +14449,7 @@ async function verEntrenamientosPublicos() {
       var fecha = e.fecha || '';
       var hora = e.timestamp ? new Date(e.timestamp).toLocaleString('es-MX', {hour: '2-digit', minute:'2-digit'}) : '';
       var deleteBtn = (state && state.isCoach)
-        ? '<button onclick="borrarEntrenamientoPublico(\'' + e.key + '\')" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">🗑️</button>'
+        ? '<button onclick="corregirMetrosEntrenamiento(\'' + e.key + '\', ' + (+e.metros || 0) + ', verEntrenamientosPublicos)" title="Corregir metros" style="background:rgba(56,189,248,0.2);border:1px solid #38bdf8;color:#38bdf8;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">✏️</button><button onclick="borrarEntrenamientoPublico(\'' + e.key + '\')" style="background:rgba(255,107,53,0.2);border:1px solid #ff6b35;color:#ff6b35;border-radius:4px;padding:2px 8px;font-size:0.7rem;cursor:pointer;margin-left:6px">🗑️</button>'
         : '';
       html += '<div class="v4-entry-card">' +
         '<div class="v4-entry-head">' +
@@ -14688,6 +14734,23 @@ async function cerrarMesNazas() {
   }
 }
 
+// Solo coach: corrige los metros de un entrenamiento ya subido, sin borrarlo.
+async function corregirMetrosEntrenamiento(key, actual, refrescar) {
+  if (!(state && state.isCoach)) return;
+  var valor = prompt('Corregir metros (ahora dice ' + (+actual || 0).toLocaleString('es-MX') + ' m).\n\nEscribe los metros correctos, solo el número:', '');
+  if (valor === null) return;
+  var r = v4ValidarMetros(valor);
+  if (!r.ok) { alert(r.msg); return; }
+  if (r.metros === +actual) return;
+  try {
+    await db.ref('entrenamientos_publicos/' + key + '/metros').set(r.metros);
+    try { cargarTotalesEntrenamientos(); } catch (e0) {}
+    if (typeof refrescar === 'function') refrescar();
+  } catch (e) {
+    alert('No se pudo corregir: ' + (e && e.message ? e.message : e) + '\n\nSi dice "permission denied", bórralo con 🗑️ y súbelo de nuevo con los metros correctos.');
+  }
+}
+
 async function borrarEntrenamientoPublico(key) {
   if (!confirm('¿Borrar este entrenamiento?')) return;
   try {
@@ -14732,16 +14795,20 @@ function escapeHtml(str) {
       <div class="v4-field-hint">&#9888;&#65039; Escribe <b>siempre igual</b> tu nombre y apellidos, sin errores. Si cambia una letra, tus km se cuentan como de otra persona. Si ya aparece en la lista, elígelo.</div>
     </div>
 
-    <div class="v4-field-row">
-      <div class="v4-field">
-        <label>Fecha <span class="req">*</span></label>
-        <input type="date" id="v4-fecha">
+    <div class="v4-field">
+      <label>Fecha <span class="req">*</span></label>
+      <input type="date" id="v4-fecha">
+    </div>
+
+    <div class="v4-field">
+      <label>&iquest;Cu&aacute;ntos METROS nadaste? <span class="req">*</span></label>
+      <div class="v4-metros-wrap">
+        <input type="number" id="v4-metros" placeholder="Ej. 1400" min="50" max="8000" step="25" inputmode="numeric" oninput="v4PreviewMetros()">
+        <span class="v4-metros-unidad">metros</span>
       </div>
-      <div class="v4-field">
-        <label>Metros <span class="req">*</span></label>
-        <input type="number" id="v4-metros" placeholder="2500" min="50" max="50000" step="50">
-        <div class="v4-field-hint">&#127939; Acuatl&oacute;n: si corriste, convierte km a metros (ej. 3 km = 3000)</div>
-      </div>
+      <div class="v4-metros-preview" id="v4-metros-preview" aria-live="polite"></div>
+      <div class="v4-field-hint">&#128207; Escribe <b>solo el n&uacute;mero en metros</b>, sin puntos ni comas.<br>1,400 metros &rarr; <b>1400</b> &nbsp;&middot;&nbsp; 1.5 km &rarr; <b>1500</b><br>M&aacute;ximo <b>8,000 m (8 km)</b> por sesi&oacute;n.</div>
+      <div class="v4-field-hint">&#127939; Acuatl&oacute;n: lo que corriste tambi&eacute;n va en metros (3 km = 3000).</div>
     </div>
 
     <div class="v4-field-hint" style="margin:-0.2rem 0 0.8rem">&#128274; Solo guardamos tu nombre, la fecha y los metros. Al cerrar cada mes se borran los entrenamientos; solo queda el resumen del mes de quienes suben 10 o más.</div>
