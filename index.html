@@ -11821,6 +11821,9 @@ function renderProgresoNadador(nadadorId, nadador) {
     var entriesMes = entries.filter(function(e) { return (e.timestamp || 0) >= hace30dias; });
     var metrosMes = entriesMes.reduce(function(s, e) { return s + (e.metros || 0); }, 0);
 
+    // Datos para la tarjeta compartible (mes calendario) — ver tarjeta.js
+    premios.tarjetaMetros = window.tarjetaMetrosCalc ? window.tarjetaMetrosCalc(entries, nadador) : null;
+
     // Días entrenados esta semana (mapeo por día de la semana)
     var diasEntrenados = {};
     var lunes = getLunes(0);
@@ -11888,6 +11891,10 @@ function renderProgresoNadador(nadadorId, nadador) {
             '<div style="font-size:0.55rem;color:rgba(255,255,255,0.55);letter-spacing:1px;margin-top:4px;text-transform:uppercase">Total</div>' +
           '</div>' +
         '</div>' +
+
+        (premios.tarjetaMetros
+          ? '<button type="button" class="btn btn-gold" style="margin:0 0 0.7rem" onclick="abrirTarjetaMetros()">&#128228; Compartir mi acumulado del mes</button>'
+          : '') +
 
         '<div class="semana-dias-grid">' + diasGridHtml + '</div>' +
         (cumplio
@@ -15861,5 +15868,6 @@ body.v7 .modal-box {
 </style>
 <link rel="stylesheet" href="inicio.css">
 <script src="inicio.js" defer></script>
+<script src="tarjeta.js" defer></script>
 </body>
 </html>
