@@ -1064,6 +1064,80 @@ label { font-size: 0.76rem; color: var(--accent-soft); margin-bottom: 3px; displ
   max-width: 100%;
   object-fit: contain;
 }
+/* ====== PATROCINADORES: ficha + tarjetas en el inicio ====== */
+.spons-bar-item { position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+.spons-bar-item + .spons-bar-item::before {
+  content: ''; position: absolute; left: 0; top: 22%; bottom: 22%;
+  width: 1px; background: rgba(15,23,42,0.10);
+}
+.spons-bar-item:active { transform: scale(0.94); }
+
+.spons-home-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px; margin-top: 16px;
+}
+@media (min-width: 720px) { .spons-home-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.spons-home-card {
+  min-width: 0; display: flex; flex-direction: column; gap: 8px; cursor: pointer;
+  padding: 10px; border-radius: 16px; color: #fff;
+  background: rgba(3,16,36,.42); border: 1px solid rgba(255,255,255,.1);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .25s, border-color .2s, background-color .2s;
+}
+.spons-home-card:active { transform: scale(.97); }
+@media (hover:hover) { .spons-home-card:hover { border-color: rgba(255,215,0,.45); background: rgba(3,16,36,.6); } }
+.spons-home-card.cta { border: 1px dashed rgba(255,215,0,.55); background: rgba(255,215,0,.07); }
+.spons-home-logo {
+  background: #fff; border-radius: 10px; height: 60px; padding: 6px 8px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.spons-home-logo img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.spons-home-name { font-size: .84rem; font-weight: 800; line-height: 1.2; letter-spacing: -.01em; }
+.spons-home-tag { font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #ffd700; }
+.spons-home-more { font-size: .72rem; color: rgba(255,255,255,.6); margin-top: auto; }
+
+.sp-txt-badge { display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.1; text-align:center; }
+.sp-txt-badge b { font-weight: 800; letter-spacing: .5px; color: #db2777; font-size: .82rem; }
+.sp-txt-badge small { font-weight: 700; color: #475569; font-size: .68rem; }
+.sp-sheet-logo .sp-txt-badge b { font-size: 1.4rem; }
+.sp-sheet-logo .sp-txt-badge small { font-size: .85rem; }
+
+.sp-overlay {
+  position: fixed; inset: 0; z-index: 2000; display: none; align-items: flex-end; justify-content: center;
+  background: rgba(2,10,24,.72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+.sp-overlay.open { display: flex; }
+.sp-sheet {
+  width: 100%; max-width: 520px; max-height: 88vh; overflow-y: auto;
+  background: linear-gradient(180deg, #0a2a52 0%, #051a3a 100%);
+  border-top: 3px solid #ffd700; border-radius: 22px 22px 0 0;
+  padding: .6rem 1.1rem calc(1.2rem + env(safe-area-inset-bottom));
+  animation: spSube .25s ease-out;
+}
+@keyframes spSube { from { transform: translateY(100%); } to { transform: none; } }
+.sp-grab { width: 42px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.25); margin: 0 auto .8rem; }
+.sp-sheet-tag { font-size: .66rem; font-weight: 800; letter-spacing: 3px; color: #ffd700; text-align: center; margin-bottom: .7rem; }
+.sp-sheet-logo { background: #fff; border-radius: 14px; height: 96px; padding: 10px 14px; margin-bottom: .9rem;
+  display: flex; align-items: center; justify-content: center; }
+.sp-sheet-logo img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.sp-sheet-name { font-size: 1.2rem; font-weight: 900; color: #fff; text-align: center; margin-bottom: .35rem; letter-spacing: -.01em; }
+.sp-sheet-desc { font-size: .9rem; line-height: 1.45; color: rgba(255,255,255,.82); text-align: center; margin-bottom: .9rem; }
+.sp-perk { background: rgba(255,215,0,.10); border: 1px dashed rgba(255,215,0,.55); border-radius: 12px;
+  padding: .65rem .8rem; margin-bottom: .9rem; text-align: center; }
+.sp-perk-label { font-size: .62rem; font-weight: 800; letter-spacing: 2px; color: #ffd700; }
+.sp-perk-text { font-size: .9rem; font-weight: 700; color: #fff; margin-top: .15rem; }
+.sp-actions { display: grid; gap: .5rem; }
+.sp-btn { border: none; border-radius: 14px; min-height: 50px; padding: .7rem 1rem; font: inherit; font-size: .95rem; font-weight: 800; cursor: pointer; }
+.sp-btn:active { transform: scale(.97); }
+.sp-btn-wa { background: #22c55e; color: #03210e; }
+.sp-btn-web { background: #ffd700; color: #1a1400; }
+.sp-btn-share { background: rgba(255,255,255,.10); color: #fff; border: 1px solid rgba(255,255,255,.22); }
+.sp-btn-close { background: transparent; color: rgba(255,255,255,.6); font-weight: 600; min-height: 40px; }
+.sp-toast { position: fixed; left: 50%; bottom: 110px; transform: translateX(-50%); z-index: 2100;
+  background: #0f172a; color: #fff; padding: .55rem 1rem; border-radius: 20px; font-size: .8rem; font-weight: 700;
+  border: 1px solid rgba(255,215,0,.5); opacity: 0; pointer-events: none; transition: opacity .2s; }
+.sp-toast.show { opacity: 1; }
+
 /* ====== EVALUACIÓN DE NIVELES ====== */
 .wk-mode-orange {
   background: rgba(234,88,12,0.06);
@@ -3712,6 +3786,19 @@ body.blog-active #tab-timer { display: none !important; }
 </div>
 <!-- ============ FIN V2 HEADER ============ -->
 
+<div class="sp-overlay" id="sp-overlay" onclick="if(event.target===this)closeSponsSheet()">
+  <div class="sp-sheet" role="dialog" aria-modal="true" aria-labelledby="sp-sheet-name">
+    <div class="sp-grab"></div>
+    <div class="sp-sheet-tag">PATROCINADOR OFICIAL</div>
+    <div class="sp-sheet-logo" id="sp-sheet-logo"></div>
+    <div class="sp-sheet-name" id="sp-sheet-name"></div>
+    <div class="sp-sheet-desc" id="sp-sheet-desc"></div>
+    <div id="sp-sheet-perk"></div>
+    <div class="sp-actions" id="sp-sheet-actions"></div>
+  </div>
+</div>
+<div class="sp-toast" id="sp-toast"></div>
+
 <!-- ============ BARRA FIJA DE PATROCINADORES ============ -->
 <div class="spons-bar" id="spons-bar">
   <div class="spons-bar-inner" id="spons-bar-inner"></div>
@@ -3956,6 +4043,13 @@ body.blog-active #tab-timer { display: none !important; }
         <div><b data-cuenta="4">4</b><span>mundiales</span></div>
       </div>
       <button type="button" class="ls-btn ls-btn-azul" onclick="showTab('profile')">Conoce al coach</button>
+    </section>
+
+    <!-- ===== Patrocinadores ===== -->
+    <section class="ls-c ls-patro" id="home-spons-section" aria-labelledby="ls-t-patro">
+      <h2 id="ls-t-patro" class="ls-h2">Nuestros <span class="ls-s">patrocinadores</span></h2>
+      <p class="ls-texto">Gracias a ellos hacemos crecer la natación en La Laguna. Tócalos para conocerlos.</p>
+      <div class="spons-home-grid" id="home-spons-grid"></div>
     </section>
 
     <!-- ===== Tramo 9: todo lo demas ===== -->
@@ -10616,6 +10710,7 @@ var PATROCINADORES = [
     subtexto: 'PATROCINADOR',
     color: '#d97706',
     nombre: 'Tú puedes ser patrocinador',
+    cta: true,
     link: 'https://wa.me/528713164850?text=Hola%20Coach%20Checo%2C%20me%20interesa%20ser%20patrocinador%20de%20Laguna%20Swim'
   },
 ];
@@ -10643,6 +10738,98 @@ function sponsFallback(img) {
 }
 window.sponsFallback = sponsFallback;
 
+/*
+  Info de cada patrocinador (se muestra en la ficha al tocarlo). Llave = nombre exacto de PATROCINADORES.
+  - etiqueta: palabra corta para la tarjeta del inicio
+  - desc: qué ofrecen (EDITAR con lo que acuerdes con cada uno)
+  - beneficio: promo exclusiva para la comunidad Laguna Swim (opcional; si no hay, no se muestra)
+  - whatsapp: número con lada, solo dígitos, ej. '528711234567' (opcional)
+*/
+var SPONS_INFO = {
+  'Ferrealberca':       { etiqueta: 'Albercas y ferretería', desc: 'Productos y accesorios para alberca y ferretería. Aliados de Laguna Swim.' },
+  'Lagunero Primero':   { etiqueta: 'Comunidad', desc: 'Iniciativa que impulsa lo hecho en La Laguna y a su gente.' },
+  'Mendoza Abogados':   { etiqueta: 'Despacho jurídico', desc: 'Asesoría legal profesional para personas y empresas de la región.' },
+  'Laguna Swim':        { etiqueta: 'Escuela de natación', desc: 'Natación infantil, juvenil y Masters. Entrenamiento con metodología ASCA.', whatsapp: '528713164850' },
+  'Alvarez Impresores': { etiqueta: 'Impresión', desc: 'Impresión profesional: gorras, playeras, lonas, papelería y más.' },
+  'Tú puedes ser patrocinador': { etiqueta: 'Anúnciate aquí' }
+};
+function sponsInfo(p) { return SPONS_INFO[p.nombre] || {}; }
+function esUrlSegura(u) { return typeof u === 'string' && /^https:\/\//i.test(u); }
+
+// Logo grande (tarjetas del inicio y ficha): imagen con respaldo a texto, o badge de texto
+function sponsLogoHTML(p) {
+  if (p.texto) {
+    var col = p.color ? ' style="color:' + escapeHtml(p.color) + '"' : '';
+    return '<div class="sp-txt-badge"><b' + col + '>' + escapeHtml(p.texto) + '</b>' +
+           (p.subtexto ? '<small>' + escapeHtml(p.subtexto) + '</small>' : '') + '</div>';
+  }
+  return '<img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.nombre) + '" loading="lazy" onerror="sponsFallback(this)">';
+}
+
+var sponsOpenIdx = -1;
+function openSponsSheet(i) {
+  var p = PATROCINADORES[i];
+  if (!p) return;
+  sponsOpenIdx = i;
+  var inf = sponsInfo(p);
+  document.getElementById('sp-sheet-logo').innerHTML = sponsLogoHTML(p);
+  document.getElementById('sp-sheet-name').textContent = p.nombre;
+  document.getElementById('sp-sheet-desc').textContent = inf.desc || '';
+  document.getElementById('sp-sheet-perk').innerHTML = inf.beneficio
+    ? '<div class="sp-perk"><div class="sp-perk-label">BENEFICIO LAGUNA SWIM</div><div class="sp-perk-text">' + escapeHtml(inf.beneficio) + '</div></div>'
+    : '';
+  var acts = document.getElementById('sp-sheet-actions');
+  acts.innerHTML = '';
+  function addBtn(cls, label, fn) {
+    var b = document.createElement('button');
+    b.className = 'sp-btn ' + cls;
+    b.textContent = label;
+    b.addEventListener('click', fn);
+    acts.appendChild(b);
+  }
+  if (inf.whatsapp && /^\d{10,15}$/.test(inf.whatsapp)) {
+    var msg = encodeURIComponent('Hola, vi su anuncio en la app de Laguna Swim y me interesa más información.');
+    addBtn('sp-btn-wa', '💬 Escribir por WhatsApp', function() {
+      window.open('https://wa.me/' + inf.whatsapp + '?text=' + msg, '_blank', 'noopener');
+    });
+  }
+  if (esUrlSegura(p.link)) {
+    addBtn('sp-btn-web', '🌐 Visitar sitio', function() { window.open(p.link, '_blank', 'noopener'); });
+  }
+  addBtn('sp-btn-share', '📤 Compartir', function() { shareSpons(p); });
+  addBtn('sp-btn-close', 'Cerrar', closeSponsSheet);
+  document.getElementById('sp-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSponsSheet() {
+  document.getElementById('sp-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  sponsOpenIdx = -1;
+}
+function sponsToast(t) {
+  var el = document.getElementById('sp-toast');
+  if (!el) return;
+  el.textContent = t;
+  el.classList.add('show');
+  setTimeout(function() { el.classList.remove('show'); }, 2000);
+}
+function shareSpons(p) {
+  var url = esUrlSegura(p.link) ? p.link : 'https://lagunaswim.net';
+  var inf = sponsInfo(p);
+  var texto = p.nombre + (inf.desc ? ' — ' + inf.desc : '') + ' · Patrocinador de Laguna Swim 🏊';
+  if (navigator.share) {
+    navigator.share({ title: p.nombre, text: texto, url: url }).catch(function() {});
+  } else if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texto + ' ' + url).then(function() { sponsToast('Enlace copiado ✓'); })
+      .catch(function() { sponsToast('No se pudo copiar'); });
+  } else {
+    sponsToast('Tu navegador no permite compartir');
+  }
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && sponsOpenIdx !== -1) closeSponsSheet();
+});
+
 function buildSponsCarousel() {
   // Construir barra fija con los 4 logos visibles siempre
   var barInner = document.getElementById('spons-bar-inner');
@@ -10650,12 +10837,14 @@ function buildSponsCarousel() {
 
   if (PATROCINADORES.length === 0) {
     document.getElementById('spons-bar').style.display = 'none';
+    var hs = document.getElementById('home-spons-section');
+    if (hs) hs.style.display = 'none';
     document.body.style.paddingBottom = 'calc(var(--bnav-h) + env(safe-area-inset-bottom) + 10px)';
     return;
   }
 
   barInner.innerHTML = '';
-  PATROCINADORES.forEach(function(p) {
+  PATROCINADORES.forEach(function(p, i) {
     var item = document.createElement('div');
     item.className = 'spons-bar-item';
     if (p.logo) {
@@ -10664,19 +10853,40 @@ function buildSponsCarousel() {
       item.innerHTML = '<img src="' + p.logo + '" alt="' + escapeHtml(p.nombre) +
         '" loading="lazy" onerror="sponsFallback(this)">';
     } else {
-      // FIX: patrocinadores de solo texto (Alvarez Impresores, Linda Alvarez)
+      // FIX: patrocinadores de solo texto (Alvarez Impresores)
       // antes salian como imagen rota porque la barra solo pintaba <img>.
       item.innerHTML = sponsTextoHtml(p);
     }
-    if (p.link) {
-      item.addEventListener('click', function() {
-        openUrl(p.link);
-      });
-    } else {
-      item.style.cursor = 'default';
-    }
+    item.setAttribute('role', 'button');
+    item.setAttribute('aria-label', p.nombre);
+    item.addEventListener('click', function() { sponsAbrir(p, i); });
     barInner.appendChild(item);
   });
+
+  // Tarjetas en el inicio
+  var grid = document.getElementById('home-spons-grid');
+  if (grid) {
+    grid.innerHTML = '';
+    PATROCINADORES.forEach(function(p, i) {
+      var inf = sponsInfo(p);
+      var card = document.createElement('div');
+      card.className = 'spons-home-card' + (p.cta ? ' cta' : '');
+      card.setAttribute('role', 'button');
+      card.innerHTML =
+        '<div class="spons-home-logo">' + sponsLogoHTML(p) + '</div>' +
+        '<div class="spons-home-name">' + escapeHtml(p.nombre) + '</div>' +
+        (inf.etiqueta ? '<div class="spons-home-tag">' + escapeHtml(inf.etiqueta) + '</div>' : '') +
+        '<div class="spons-home-more">' + (p.cta ? 'Escríbele al coach →' : 'Ver más →') + '</div>';
+      card.addEventListener('click', function() { sponsAbrir(p, i); });
+      grid.appendChild(card);
+    });
+  }
+}
+
+// El CTA "Tú puedes ser patrocinador" sigue yendo directo a WhatsApp; los demás abren su ficha
+function sponsAbrir(p, i) {
+  if (p.cta) { if (p.link) openUrl(p.link); return; }
+  openSponsSheet(i);
 }
 
 // Funciones del carrusel anterior (ya no se usan pero las dejo por compatibilidad)

@@ -10,7 +10,17 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Álvarez Impresores | Impresión sin problemas">
 <meta property="og:description" content="Imprenta en Torreón, Coahuila. Diseñamos y creamos en papel: posters, libros, folletos, catálogos, etiquetas y papelería corporativa.">
-<meta property="og:image" content="https://lagunaswim.net/img/alvarez-volante.jpg">
+<meta property="og:url" content="https://lagunaswim.net/alvarez.html">
+<meta property="og:site_name" content="Álvarez Impresores">
+<meta property="og:image" content="https://lagunaswim.net/img/alvarez-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Álvarez Impresores: impresión sin problemas en Torreón">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Álvarez Impresores | Impresión sin problemas">
+<meta name="twitter:description" content="Imprenta en Torreón, Coahuila. Cotiza por WhatsApp y te respondemos el mismo día.">
+<meta name="twitter:image" content="https://lagunaswim.net/img/alvarez-og.jpg">
+<meta name="theme-color" content="#2C2F63">
 <meta property="og:locale" content="es_MX">
 <link rel="icon" href="img/alvarez-iso.png">
 
@@ -197,44 +207,6 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
 .catalogo a:hover em{color:var(--lima)}
 
 /* ============================================================
-   6. PORTAFOLIO (3x2 en escritorio)
-   ============================================================ */
-.grid-portafolio{display:grid;gap:14px}
-.trabajo{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/3;background:var(--papel-2)}
-.trabajo img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
-.trabajo:hover img{transform:scale(1.07)}
-.trabajo__capa{
-  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;color:#fff;
-  background:linear-gradient(to top,rgba(22,22,58,.88) 0%,rgba(22,22,58,.2) 55%,transparent 100%);
-  opacity:0;transition:opacity .35s ease;
-}
-.trabajo:hover .trabajo__capa,.trabajo:focus-within .trabajo__capa{opacity:1}
-.trabajo__capa span{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--lima)}
-.trabajo__capa strong{font-family:'Archivo Black',sans-serif;font-size:1.05rem;text-transform:uppercase;font-weight:400}
-
-/* ============================================================
-   7. TESTIMONIOS
-   ============================================================ */
-.grid-testimonios{display:grid;gap:18px}
-.testimonio{
-  background:#fff;border:1px solid var(--linea);border-radius:var(--r);padding:28px 24px;
-  transition:transform .3s ease,box-shadow .3s ease;
-}
-.testimonio:hover{transform:translateY(-6px);box-shadow:var(--sombra)}
-.testimonio__comillas{
-  font-family:'Archivo Black',sans-serif;font-size:2.8rem;line-height:.7;
-  color:var(--magenta);display:block;margin-bottom:14px;
-}
-.testimonio p{font-size:.98rem;margin-bottom:20px}
-.testimonio__autor{display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid var(--linea)}
-.avatar{
-  width:42px;height:42px;border-radius:50%;background:var(--indigo);color:#fff;
-  display:grid;place-items:center;font-weight:700;font-size:.88rem;
-}
-.testimonio__autor strong{display:block;font-size:.92rem}
-.testimonio__autor span{font-size:.8rem;color:var(--tinta-60)}
-
-/* ============================================================
    8. CONTACTO / LLAMADO FINAL
    ============================================================ */
 .cta-final{
@@ -300,8 +272,6 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
    ============================================================ */
 @media(min-width:640px){
   .grid-servicios{grid-template-columns:repeat(2,1fr)}
-  .grid-portafolio{grid-template-columns:repeat(2,1fr)}
-  .grid-testimonios{grid-template-columns:repeat(2,1fr)}
   .footer__grid{grid-template-columns:repeat(2,1fr)}
   .cta-final{padding:60px 40px}
   .marca img.texto{width:150px}
@@ -314,8 +284,6 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
   .hamburguesa{display:none}
   .menu-movil{display:none}
   .grid-servicios{grid-template-columns:repeat(4,1fr)}
-  .grid-portafolio{grid-template-columns:repeat(3,1fr)}
-  .grid-testimonios{grid-template-columns:repeat(3,1fr)}
   .footer__grid{grid-template-columns:1.6fr 1fr 1fr 1.3fr}
 }
 </style>
@@ -325,7 +293,7 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"LocalBusiness","additionalType":"https://schema.org/PrintShop",
 "name":"Álvarez Impresores","description":"Imprenta en Torreón, Coahuila. Impresión digital, offset, gran formato y diseño gráfico.",
-"url":"https://lagunaswim.net/alvarez.html","telephone":"+52 871 220 0427",
+"url":"https://lagunaswim.net/alvarez.html","image":"https://lagunaswim.net/img/alvarez-og.jpg","telephone":"+52 871 220 0427",
 "address":{"@type":"PostalAddress","addressLocality":"Torreón","addressRegion":"Coahuila","addressCountry":"MX"},
 "areaServed":["Torreón","Gómez Palacio","Lerdo","La Laguna"],
 "contactPoint":{"@type":"ContactPoint","telephone":"+52 871 220 0427","contactType":"sales","availableLanguage":"Spanish"}}
@@ -345,6 +313,56 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
 .ai-wa:hover{background:#1ebe5a}
 .ai-nota{font-size:.9rem;color:rgba(255,255,255,.8);margin:4px 0 0;text-align:center}
 </style>
+<style>
+/* <button> con el mismo aspecto que los enlaces .btn */
+button.btn{font-family:inherit;line-height:inherit}
+.btn--linea{background:transparent}
+/* ===== Fondo del hero con brillos de marca ===== */
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;pointer-events:none;filter:blur(8px)}
+.hero::before{width:560px;height:560px;right:-180px;top:-140px;background:radial-gradient(circle,rgba(235,39,137,.13),transparent 66%)}
+.hero::after{width:520px;height:520px;left:-200px;bottom:-220px;background:radial-gradient(circle,rgba(3,177,237,.13),transparent 66%)}
+.hero__grid{position:relative;z-index:1}
+.hero__acciones .btn svg,.compartir__acciones .btn svg{flex-shrink:0}
+
+/* ===== Sección de difusión ===== */
+.btn--wa{background:#25D366;color:#06210f;box-shadow:0 12px 26px -14px #25D366}
+.btn--wa:hover{background:#1ebe5a;transform:translateY(-3px)}
+.compartir{display:grid;gap:28px;background:#fff;border:1px solid var(--linea);border-radius:var(--r);
+  padding:28px 22px;box-shadow:var(--sombra);position:relative;overflow:hidden}
+.compartir::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;
+  background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--amarillo),var(--lima))}
+.compartir__acciones{display:grid;gap:12px;align-content:center}
+.compartir__acciones .btn{width:100%}
+.compartir__url{font-size:.82rem;color:var(--tinta-60);text-align:center;margin-top:2px;word-break:break-all}
+.qr{display:grid;gap:12px;justify-items:center;text-align:center}
+.qr__marco{width:210px;padding:12px;background:#fff;border:2px solid var(--tinta);border-radius:16px;box-shadow:0 14px 28px -20px rgba(22,22,58,.7)}
+.qr__svg{display:block;width:100%;height:auto;shape-rendering:crispEdges}
+.qr figcaption{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:.95rem;letter-spacing:-.01em}
+.qr__btn{padding:12px 22px}
+@media(min-width:760px){
+  .compartir{grid-template-columns:1.2fr .8fr;align-items:center;padding:40px 44px;gap:44px}
+}
+
+/* ===== Barra de acciones rápidas (celular) ===== */
+.barra-movil{display:none}
+.aviso{position:fixed;left:50%;bottom:92px;transform:translate(-50%,16px);z-index:90;
+  background:var(--tinta);color:#fff;padding:11px 18px;border-radius:999px;font-size:.88rem;font-weight:600;
+  box-shadow:0 14px 30px -12px rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+.aviso.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:639px){
+  body{padding-bottom:84px}
+  .wa-flotante{display:none}
+  .hero__acciones [data-compartir]{display:none}
+  .barra-movil{display:grid;grid-template-columns:1.15fr 1fr 1.15fr;gap:6px;position:fixed;left:10px;right:10px;
+    bottom:calc(10px + env(safe-area-inset-bottom));z-index:70;padding:8px;border-radius:18px;
+    background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--linea);box-shadow:0 18px 40px -14px rgba(22,22,58,.55)}
+  .bm{display:flex;align-items:center;justify-content:center;gap:7px;min-height:48px;border-radius:12px;border:0;cursor:pointer;
+    font:inherit;font-weight:700;font-size:.86rem;padding:0 6px;color:var(--indigo);background:var(--papel-2)}
+  .bm--wa{background:#25D366;color:#06210f}
+  .bm:active{transform:scale(.96)}
+}
+</style>
 </head>
 <body>
 
@@ -362,9 +380,8 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
     <nav class="menu" aria-label="Menú principal">
       <a href="#inicio">Inicio</a>
       <a href="#servicios">Servicios</a>
-      <a href="#portafolio">Portafolio</a>
-      <a href="#testimonios">Testimonios</a>
       <a href="#contacto">Contacto</a>
+      <a href="#compartir">Compartir</a>
     </nav>
 
     <a href="https://wa.me/528712200427?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20cotizar%20un%20trabajo%20de%20impresi%C3%B3n."
@@ -380,9 +397,8 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
 <nav class="menu-movil" id="menuMovil" aria-label="Menú móvil">
   <a href="#inicio">Inicio</a>
   <a href="#servicios">Servicios</a>
-  <a href="#portafolio">Portafolio</a>
-  <a href="#testimonios">Testimonios</a>
   <a href="#contacto">Contacto</a>
+  <a href="#compartir">Compartir</a>
   <a href="https://wa.me/528712200427?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20cotizar%20un%20trabajo%20de%20impresi%C3%B3n."
      target="_blank" rel="noopener" class="btn btn--primario">Cotizar ahora</a>
 </nav>
@@ -400,6 +416,9 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
         <a href="https://wa.me/528712200427?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20cotizar%20un%20trabajo%20de%20impresi%C3%B3n."
            target="_blank" rel="noopener" class="btn btn--primario">Cotizar ahora</a>
         <a href="#imprimimos" class="btn btn--linea">Ver qué imprimimos</a>
+        <button type="button" class="btn btn--linea" data-compartir>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>
+          Compartir</button>
       </div>
 
       <!-- Datos de confianza -->
@@ -497,90 +516,6 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
   </div>
 </section>
 
-<!-- ============================ PORTAFOLIO ============================ -->
-<section class="seccion" id="portafolio" style="background:var(--papel-2)">
-  <div class="contenedor">
-    <p class="eyebrow revelar">Portafolio</p>
-    <h2 class="titulo-seccion revelar">Trabajos que ya andan por Torreón</h2>
-    <p class="intro-seccion revelar">Una muestra de lo que sale todos los días del taller.</p>
-
-    <div class="grid-portafolio">
-      <!-- Cada tarjeta muestra su categoría al pasar el cursor -->
-      <a href="#contacto" class="trabajo revelar">
-        <img src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&w=700&q=80"
-             alt="Tarjetas de presentación impresas" onerror="this.src='https://picsum.photos/seed/print1/700/525'">
-        <span class="trabajo__capa"><span>Digital</span><strong>Papelería corporativa</strong></span>
-      </a>
-      <a href="#contacto" class="trabajo revelar">
-        <img src="https://images.unsplash.com/photo-1503694978374-8a2fa686963a?auto=format&fit=crop&w=700&q=80"
-             alt="Catálogo impreso en offset" onerror="this.src='https://picsum.photos/seed/print2/700/525'">
-        <span class="trabajo__capa"><span>Offset</span><strong>Catálogo de producto</strong></span>
-      </a>
-      <a href="#contacto" class="trabajo revelar">
-        <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=700&q=80"
-             alt="Lona publicitaria de gran formato" onerror="this.src='https://picsum.photos/seed/print3/700/525'">
-        <span class="trabajo__capa"><span>Gran formato</span><strong>Lona para fachada</strong></span>
-      </a>
-      <a href="#contacto" class="trabajo revelar">
-        <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=700&q=80"
-             alt="Libros y revistas impresos" onerror="this.src='https://picsum.photos/seed/print4/700/525'">
-        <span class="trabajo__capa"><span>Encuadernado</span><strong>Libros y revistas</strong></span>
-      </a>
-      <a href="#contacto" class="trabajo revelar">
-        <img src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?auto=format&fit=crop&w=700&q=80"
-             alt="Etiquetas y empaque impresos" onerror="this.src='https://picsum.photos/seed/print5/700/525'">
-        <span class="trabajo__capa"><span>Acabados</span><strong>Etiquetas y empaque</strong></span>
-      </a>
-      <a href="#contacto" class="trabajo revelar">
-        <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=700&q=80"
-             alt="Posters y carteles impresos" onerror="this.src='https://picsum.photos/seed/print6/700/525'">
-        <span class="trabajo__capa"><span>Digital</span><strong>Posters y carteles</strong></span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ TESTIMONIOS ============================ -->
-<section class="seccion" id="testimonios">
-  <div class="contenedor">
-    <p class="eyebrow revelar">Testimonios</p>
-    <h2 class="titulo-seccion revelar">Lo que dicen nuestros clientes</h2>
-    <p class="intro-seccion revelar">Negocios de La Laguna que ya imprimen con nosotros.</p>
-
-    <div class="grid-testimonios">
-      <article class="testimonio revelar">
-        <span class="testimonio__comillas" aria-hidden="true">“</span>
-        <p>Pedí 2,000 catálogos un jueves y el lunes ya los tenía en tienda. El color salió idéntico
-           al de la pantalla, que era justo lo que me preocupaba.</p>
-        <div class="testimonio__autor">
-          <div class="avatar" aria-hidden="true">MR</div>
-          <div><strong>Mariana Ruiz</strong><span>Boutique Alameda, Torreón</span></div>
-        </div>
-      </article>
-
-      <article class="testimonio revelar">
-        <span class="testimonio__comillas" aria-hidden="true">“</span>
-        <p>Los formatos internos de la empresa siempre llegan completos y a tiempo. Ya no tengo
-           que estar hablando para ver si están listos.</p>
-        <div class="testimonio__autor">
-          <div class="avatar" aria-hidden="true">JC</div>
-          <div><strong>Jorge Cárdenas</strong><span>Transportes del Nazas</span></div>
-        </div>
-      </article>
-
-      <article class="testimonio revelar">
-        <span class="testimonio__comillas" aria-hidden="true">“</span>
-        <p>No tenía logo ni nada. Ellos diseñaron la identidad completa y me entregaron la papelería
-           lista. Se nota que saben de diseño y de imprenta.</p>
-        <div class="testimonio__autor">
-          <div class="avatar" aria-hidden="true">AS</div>
-          <div><strong>Ana Sofía Delgado</strong><span>Estudio Dental Nazas</span></div>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
 <!-- ============================ CONTACTO ============================ -->
 <section class="seccion" id="contacto" style="padding-top:0">
   <div class="contenedor">
@@ -615,6 +550,37 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
         </div>
       </div>
     </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ COMPARTIR / DIFUSIÓN ============================ -->
+<section class="seccion" id="compartir">
+  <div class="contenedor">
+    <p class="eyebrow revelar">Difusión</p>
+    <h2 class="titulo-seccion revelar">Pásalo a quien lo necesite</h2>
+    <p class="intro-seccion revelar">Comparte la página por WhatsApp o usa el código QR en tus piezas impresas,
+       tu local o tus redes: quien lo escanee llega directo a cotizar.</p>
+
+    <div class="compartir revelar">
+      <div class="compartir__acciones">
+        <button type="button" class="btn btn--wa" id="cpWa">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.2 13.9c-.2.6-1.3 1.2-1.8 1.3-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.5-4.1-.1-.2-1.1-1.4-1.1-2.7 0-1.3.7-1.9.9-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.4-.3.3c-.1.1-.2.3-.1.5.1.2.6 1 1.3 1.6.9.8 1.7 1.1 1.9 1.2.2.1.4.1.5-.1l.7-.9c.2-.2.3-.2.5-.1l1.8.9c.2.1.4.2.5.3.1.2.1.8-.1 1.4z"/></svg>
+          Compartir por WhatsApp</button>
+        <button type="button" class="btn btn--linea" id="cpCopiar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>
+          Copiar enlace</button>
+        <button type="button" class="btn btn--linea" data-compartir>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>
+          Más opciones</button>
+        <p class="compartir__url" id="cpUrl">lagunaswim.net/alvarez.html</p>
+      </div>
+
+      <figure class="qr">
+        <div class="qr__marco"><svg id="qrSvg" class="qr__svg" viewBox="0 0 33 33" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Código QR que abre la página de Álvarez Impresores"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#16163a" d="M2 2.5h7m2 0h2m3 0h3m1 0h1m1 0h1m1 0h7m-29 1h1m5 0h1m1 0h1m1 0h2m1 0h2m2 0h1m4 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m6 0h2m4 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h4m2 0h1m2 0h3m1 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m3 0h1m1 0h1m5 0h1m1 0h1m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-21 1h5m1 0h1m1 0h1m3 0h1m-21 1h1m5 0h1m1 0h3m6 0h1m3 0h2m2 0h3m-28 1h1m2 0h1m1 0h1m1 0h1m2 0h4m1 0h1m1 0h3m3 0h2m1 0h2m-28 1h1m1 0h1m1 0h1m1 0h2m1 0h8m5 0h3m-24 1h1m1 0h2m2 0h1m2 0h4m2 0h1m1 0h3m1 0h4m-26 1h2m1 0h1m2 0h1m1 0h1m1 0h4m2 0h1m3 0h1m1 0h1m5 0h1m-29 1h1m4 0h1m1 0h1m4 0h1m2 0h2m2 0h2m1 0h3m2 0h2m-29 1h1m1 0h2m1 0h2m1 0h1m6 0h1m1 0h1m3 0h1m1 0h1m1 0h2m-27 1h4m1 0h1m2 0h5m5 0h2m1 0h4m1 0h1m1 0h1m-29 1h1m2 0h5m4 0h1m2 0h3m1 0h1m5 0h2m-27 1h2m1 0h1m9 0h4m1 0h2m1 0h4m1 0h3m-29 1h2m1 0h7m2 0h1m2 0h5m1 0h2m1 0h2m2 0h1m-29 1h1m2 0h2m3 0h2m3 0h1m6 0h3m1 0h1m-25 1h1m1 0h7m2 0h1m2 0h1m2 0h1m1 0h6m1 0h3m-21 1h1m5 0h2m4 0h1m3 0h2m-26 1h7m3 0h1m1 0h1m2 0h1m1 0h4m1 0h1m1 0h3m-27 1h1m5 0h1m2 0h1m2 0h1m1 0h3m1 0h3m3 0h1m2 0h2m-29 1h1m1 0h3m1 0h1m4 0h1m1 0h2m1 0h1m2 0h7m1 0h2m-29 1h1m1 0h3m1 0h1m4 0h5m2 0h2m1 0h1m3 0h2m1 0h1m-29 1h1m1 0h3m1 0h1m3 0h4m1 0h1m4 0h1m1 0h6m-28 1h1m5 0h1m2 0h3m1 0h4m4 0h2m1 0h3m1 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m2 0h2m2 0h1"/></svg></div>
+        <figcaption>Escanea para cotizar</figcaption>
+        <button type="button" class="btn btn--primario qr__btn" id="qrDescarga">Descargar QR</button>
+      </figure>
     </div>
   </div>
 </section>
@@ -677,6 +643,20 @@ h1,h2,h3{font-family:'Archivo Black',Impact,sans-serif;line-height:1.06;letter-s
     </div>
   </div>
 </footer>
+
+<!-- Barra de acciones rápidas (solo celular): cotizar, llamar, compartir -->
+<div class="barra-movil" role="region" aria-label="Acciones rápidas">
+  <a class="bm bm--wa" href="https://wa.me/528712200427?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20cotizar%20un%20trabajo%20de%20impresi%C3%B3n." target="_blank" rel="noopener">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.2 13.9c-.2.6-1.3 1.2-1.8 1.3-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.5-4.1-.1-.2-1.1-1.4-1.1-2.7 0-1.3.7-1.9.9-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.4-.3.3c-.1.1-.2.3-.1.5.1.2.6 1 1.3 1.6.9.8 1.7 1.1 1.9 1.2.2.1.4.1.5-.1l.7-.9c.2-.2.3-.2.5-.1l1.8.9c.2.1.4.2.5.3.1.2.1.8-.1 1.4z"/></svg>
+    Cotizar</a>
+  <a class="bm" href="tel:+528712200427">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>
+    Llamar</a>
+  <button type="button" class="bm" data-compartir>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>
+    Compartir</button>
+</div>
+<div class="aviso" id="aviso" role="status" aria-live="polite"></div>
 
 <!-- Botón flotante de WhatsApp (siempre visible) -->
 <a class="wa-flotante" href="https://wa.me/528712200427?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20cotizar%20un%20trabajo%20de%20impresi%C3%B3n."
@@ -758,6 +738,60 @@ document.getElementById('anio').textContent = new Date().getFullYear();
     var d={title:'Álvarez Impresores',text:'Imprenta en Torreón: te cotizan el mismo día por WhatsApp',url:'https://lagunaswim.net/alvarez.html'};
     if(navigator.share)navigator.share(d).catch(function(){});
     else window.open('https://wa.me/?text='+encodeURIComponent(d.text+' '+d.url),'_blank');
+  });
+})();
+</script>
+<script>
+(function(){
+  var URL_PAG = 'https://lagunaswim.net/alvarez.html';
+  var TEXTO = 'Álvarez Impresores, imprenta en Torreón: cotizan el mismo día por WhatsApp.';
+  var aviso = document.getElementById('aviso'), t;
+  function toast(msg){
+    if(!aviso) return; aviso.textContent = msg; aviso.classList.add('on');
+    clearTimeout(t); t = setTimeout(function(){ aviso.classList.remove('on'); }, 2200);
+  }
+  function viaWhatsApp(){
+    window.open('https://wa.me/?text=' + encodeURIComponent(TEXTO + ' ' + URL_PAG), '_blank', 'noopener');
+  }
+  function copiar(){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(URL_PAG).then(function(){ toast('Enlace copiado ✓'); },
+        function(){ copiarViejo(); });
+    } else copiarViejo();
+  }
+  function copiarViejo(){
+    var i = document.createElement('input'); i.value = URL_PAG; i.setAttribute('readonly','');
+    i.style.cssText = 'position:fixed;opacity:0;font-size:16px'; document.body.appendChild(i);
+    i.select(); var ok = false; try { ok = document.execCommand('copy'); } catch(e) {}
+    i.remove(); toast(ok ? 'Enlace copiado ✓' : 'Copia el enlace: ' + URL_PAG);
+  }
+  function compartir(){
+    var d = { title: 'Álvarez Impresores', text: TEXTO, url: URL_PAG };
+    if(navigator.share){ navigator.share(d).catch(function(){}); } else { viaWhatsApp(); }
+  }
+  document.querySelectorAll('[data-compartir]').forEach(function(b){ b.addEventListener('click', compartir); });
+  var bw = document.getElementById('cpWa'); if(bw) bw.addEventListener('click', viaWhatsApp);
+  var bc = document.getElementById('cpCopiar'); if(bc) bc.addEventListener('click', copiar);
+  var ab = document.getElementById('aiShare'); if(ab){ ab.replaceWith(ab.cloneNode(true)); document.getElementById('aiShare').addEventListener('click', compartir); }
+
+  // Descargar el QR como imagen PNG (para imprimir o subir a redes)
+  var bq = document.getElementById('qrDescarga');
+  if(bq) bq.addEventListener('click', function(){
+    var svg = document.getElementById('qrSvg'); if(!svg) return;
+    var xml = new XMLSerializer().serializeToString(svg);
+    if(xml.indexOf('width=') === -1) xml = xml.replace('<svg', '<svg width="1024" height="1024"');
+    var img = new Image();
+    img.onload = function(){
+      var c = document.createElement('canvas'); c.width = c.height = 1024;
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,1024,1024);
+      x.imageSmoothingEnabled = false; x.drawImage(img, 0, 0, 1024, 1024);
+      c.toBlob(function(b){
+        var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'QR-Alvarez-Impresores.png';
+        document.body.appendChild(a); a.click(); a.remove(); toast('QR descargado ✓');
+      }, 'image/png');
+    };
+    img.onerror = function(){ toast('No se pudo generar el QR'); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
   });
 })();
 </script>
