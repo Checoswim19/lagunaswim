@@ -478,9 +478,22 @@ body .titulo-seccion{font-size:clamp(2rem,5.6vw,3.2rem);text-transform:none;line
 @media(prefers-reduced-motion:reduce){
   .hero h1.reg::before,.hero h1.reg::after{animation:none;opacity:0}
 }
+
+/* --- Tintas primarias cruzando el fondo (se mueven con el scroll) --- */
+.hero{background:transparent}
+.tintas{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.tintas .t{position:absolute;left:-30vw;width:160vw;height:17vmax;display:block;border-radius:40px;
+  mix-blend-mode:multiply;filter:blur(2px);will-change:transform;transform:translate3d(0,-120%,0) rotate(-14deg)}
+.tintas .t--c{background:var(--cyan);opacity:.12}
+.tintas .t--m{background:var(--magenta);opacity:.09}
+.tintas .t--y{background:var(--amarillo);opacity:.26}
+.nav,.hero,.seccion,.footer{position:relative;z-index:1}
+.nav{position:fixed;z-index:50}
+@media(prefers-reduced-motion:reduce){.tintas .t{transition:none}}
 </style>
 </head>
 <body>
+<div class="tintas" aria-hidden="true"><i class="t t--c"></i><i class="t t--m"></i><i class="t t--y"></i></div>
 
 <!-- ===== Barra CMYK: los cuatro colores del isotipo ===== -->
 <div class="barra-color" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -908,6 +921,30 @@ document.getElementById('anio').textContent = new Date().getFullYear();
     img.onerror = function(){ toast('No se pudo generar el QR'); };
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
   });
+})();
+</script>
+
+<script>
+/* Tintas del fondo: cada franja sube a su ritmo y vuelve a entrar por abajo */
+(function(){
+  var t=[].slice.call(document.querySelectorAll('.tintas .t'));
+  if(!t.length) return;
+  var cfg=[{v:.22,o:0.05},{v:.34,o:0.38},{v:.14,o:0.70}];   // velocidad y posición inicial (fracción de pantalla)
+  var quieto=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pend=false;
+  function pinta(){
+    pend=false;
+    var H=window.innerHeight, sy=quieto?0:(window.pageYOffset||0);
+    t.forEach(function(el,i){
+      var c=cfg[i], alto=el.offsetHeight, ciclo=H+alto*2;
+      var y=((c.o*H - sy*c.v) % ciclo + ciclo) % ciclo - alto;
+      el.style.transform='translate3d(0,'+y.toFixed(1)+'px,0) rotate(-14deg)';
+    });
+  }
+  function pide(){ if(!pend){ pend=true; requestAnimationFrame(pinta); } }
+  addEventListener('scroll',pide,{passive:true});
+  addEventListener('resize',pide);
+  pinta();
 })();
 </script>
 </body>
