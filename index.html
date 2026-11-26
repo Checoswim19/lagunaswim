@@ -4010,18 +4010,80 @@ body.blog-active #tab-timer { display: none !important; }
       </a>
 
       <div class="ls-evento ls-evento-wfc">
-        <span class="ls-evento-cinta">World Final Championship</span>
-        <a class="ls-evento-nombre" href="https://dominicanrepublicwfc.lovable.app/" target="_blank" rel="noopener">Oceanman República Dominicana</a>
-        <span class="ls-evento-fecha">9 al 15 de noviembre · 2026</span>
-        <span class="ls-evento-lugar">Miches, República Dominicana · 4,000+ nadadores · 100+ nacionalidades · 7 días en el Caribe</span>
-        <div id="wfc-countdown" class="ls-cuenta" aria-label="Cuenta regresiva">
-          <div><b id="wfc-d">--</b><span>días</span></div>
-          <div><b id="wfc-h">--</b><span>horas</span></div>
-          <div><b id="wfc-m">--</b><span>min</span></div>
-          <div><b id="wfc-s">--</b><span>seg</span></div>
+        <span class="ls-evento-cinta">Próximo viaje internacional</span>
+        <span class="ls-evento-nombre">🇪🇸 Oceanman Gijón, España</span>
+        <span class="ls-evento-fecha">11–12 de septiembre · 2027</span>
+        <span class="ls-evento-lugar">Playa de San Lorenzo, Gijón, Asturias · Equipo Laguna Swim</span>
+        <div id="gijon-countdown" class="ls-cuenta" aria-label="Cuenta regresiva Gijón">
+          <div><b id="gij-d">--</b><span>días</span></div>
+          <div><b id="gij-h">--</b><span>horas</span></div>
+          <div><b id="gij-m">--</b><span>min</span></div>
+          <div><b id="gij-s">--</b><span>seg</span></div>
         </div>
-        <button type="button" class="ls-btn ls-btn-wa" onclick="contactoWFC()">Quiero ir · Escríbele al coach</button>
+        <button type="button" class="ls-btn ls-btn-wa" onclick="contactoGijon()">Quiero ir · Escríbele al coach</button>
         <p class="ls-nota">Vamos como equipo Laguna Swim. Antes de inscribirte, ponte de acuerdo con el Coach Checo.</p>
+      </div>
+    </section>
+
+    <!-- ===== Tramo 6b: Resultados de competencias ===== -->
+    <section class="ls-c" id="sec-resultados-comp" aria-labelledby="ls-t-resultados-comp">
+      <h2 id="ls-t-resultados-comp" class="ls-h2">Resultados <span class="ls-s">recientes</span></h2>
+
+      <!-- === Serial Escuelas Etapa 10 === -->
+      <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(56,189,248,0.25);border-radius:14px;padding:0.9rem;margin-bottom:1rem">
+        <div style="font-size:0.65rem;font-weight:800;color:var(--accent-soft);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.3rem">Serial de Escuelas de Natación de La Laguna 2026</div>
+        <div style="font-size:0.88rem;font-weight:900;color:#fff;margin-bottom:0.1rem">Etapa 10 — La Jabonera · 7 de noviembre 2026</div>
+        <div style="font-size:0.78rem;color:rgba(255,255,255,0.75);margin-bottom:0.5rem">Laguna Swim: <strong style="color:var(--accent)">6° lugar general</strong> · 542 puntos en la etapa</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.55)">Acumulado temporada: <strong style="color:var(--accent-soft)">5° general · 7,831 puntos</strong></div>
+        <div style="margin-top:0.65rem">
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.4);margin-bottom:0.3rem;text-transform:uppercase">📸 Fotos de la etapa</div>
+          <div id="foto-grid-serial-etapa10" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:8px;overflow:hidden;min-height:48px">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;padding:0.5rem;grid-column:1/-1">Las fotos aparecerán aquí una vez aprobadas</div>
+          </div>
+          <button id="btn-subir-serial10" onclick="abrirSubirFotoResultado('serial-etapa10')" style="display:none;margin-top:0.4rem;font-size:0.68rem;background:rgba(56,189,248,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:4px 12px;cursor:pointer;font-weight:700">+ Subir fotos</button>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.65rem;color:rgba(255,255,255,0.3)">Siguiente etapa: Etapa 11 · 28 de noviembre 2026</div>
+      </div>
+
+      <!-- === Serial Municipal Masters Final === -->
+      <div style="background:linear-gradient(135deg,rgba(255,215,0,0.07),rgba(0,0,0,0.3));border:1px solid rgba(255,215,0,0.3);border-radius:14px;padding:0.9rem;margin-bottom:1rem">
+        <div style="font-size:0.65rem;font-weight:800;color:#FFD700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.3rem">🏆 Serial Municipal de Masters de Natación 2026 — Final</div>
+        <div style="font-size:0.88rem;font-weight:900;color:#FFD700;margin-bottom:0.5rem">¡Tres campeones de Laguna Swim!</div>
+        <div style="display:flex;flex-direction:column;gap:0.35rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,215,0,0.08);border-radius:9px;padding:0.45rem 0.6rem">
+            <span style="font-size:1.2rem">🥇</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:900;color:#FFD700">Sergio "Checo" Villarreal</div>
+              <div style="font-size:0.68rem;color:rgba(255,255,255,0.75)">CAMPEÓN varonil 40–44 · 229 puntos</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,215,0,0.08);border-radius:9px;padding:0.45rem 0.6rem">
+            <span style="font-size:1.2rem">🥇</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:900;color:#FFD700">Leticia Samaniego</div>
+              <div style="font-size:0.68rem;color:rgba(255,255,255,0.75)">CAMPEONA femenil 55–59 · 212 puntos</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,215,0,0.08);border-radius:9px;padding:0.45rem 0.6rem">
+            <span style="font-size:1.2rem">🥇</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:900;color:#FFD700">Jesús Mendoza</div>
+              <div style="font-size:0.68rem;color:rgba(255,255,255,0.75)">CAMPEÓN varonil 45–49 · 201 puntos</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:0.7rem">
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,215,0,0.4);margin-bottom:0.3rem;text-transform:uppercase">📸 Fotos de la premiación</div>
+          <div id="foto-grid-masters-final" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:8px;overflow:hidden;min-height:48px">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;padding:0.5rem;grid-column:1/-1">Las fotos aparecerán aquí una vez aprobadas</div>
+          </div>
+          <button id="btn-subir-masters-final" onclick="abrirSubirFotoResultado('masters-final')" style="display:none;margin-top:0.4rem;font-size:0.68rem;background:rgba(255,215,0,0.15);border:1px solid #FFD700;color:#FFD700;border-radius:7px;padding:4px 12px;cursor:pointer;font-weight:700">+ Subir fotos</button>
+        </div>
+      </div>
+
+      <!-- Próximos resultados: estructura lista -->
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.3rem">
+        Los resultados de cada etapa se irán publicando aquí conforme avance la temporada.
       </div>
     </section>
 
@@ -5761,6 +5823,7 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
       <option value="costarica2025|Oceanman Costa Rica 2025">Oceanman Costa Rica 2025</option>
       <option value="cozumel2026|Oceanman Cozumel 2026">Oceanman Cozumel 2026</option>
       <option value="cuba2026|Gran Retto Cuba 2026">Gran Retto Cuba 2026 (Varadero)</option>
+      <option value="miches2026|Oceanman World Final Miches 2026">Oceanman World Final — Miches 2026</option>
     </select>
     <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);margin:0.2rem 0 0.6rem">
       Tip: para subir foto a un proximo evento, abre la tarjeta del evento y toca + Subir foto desde ahi.
@@ -6051,7 +6114,87 @@ Pedro Lopez, M, M40-44, 50, Pecho, 0:34.50, Master Nacional, 2024"></textarea>
   <!-- Logros pasados (4 fijos) -->
   <div class="intl-section-head">
     <span>&#127881; Logros internacionales</span>
-    <span style="font-size:0.62rem;color:var(--accent-soft);font-weight:600">6 representaciones</span>
+    <span style="font-size:0.62rem;color:var(--accent-soft);font-weight:600">7 representaciones</span>
+  </div>
+
+  <!-- ===== OCEANMAN WORLD FINAL CHAMPIONSHIP MICHES 2026 ===== -->
+  <div class="evento-wrapper">
+    <div class="evento-card pasado evento-card-clickable" data-evento-id="miches2026" onclick="toggleEvento(this)" style="border:1.5px solid rgba(255,215,0,0.4);background:linear-gradient(135deg,rgba(255,215,0,0.08),rgba(0,0,0,0))">
+      <div class="evento-flag">&#127465;&#127476;</div>
+      <div class="evento-info">
+        <div class="evento-titulo" style="color:#FFD700">🏆 Oceanman World Final Championship</div>
+        <div class="evento-lugar">Miches, República Dominicana · 14–15 noviembre 2026</div>
+        <div class="evento-fecha">Condiciones extremas: corrientes fuertes y medusas</div>
+      </div>
+      <div class="evento-badge evento-badge-realizado">REALIZADO</div>
+      <div class="evento-arrow">&#9662;</div>
+    </div>
+    <div class="evento-galeria" id="gal-miches2026">
+      <!-- Mundialistas destacados -->
+      <div style="padding:0.9rem 0.7rem 0.3rem;border-top:1px solid rgba(255,215,0,0.2)">
+        <div style="font-size:0.78rem;font-weight:900;color:#FFD700;letter-spacing:0.04em;margin-bottom:0.7rem;text-align:center">🌟 NUESTROS MUNDIALISTAS 🌟</div>
+
+        <!-- SEBASTIÁN: 2° MUNDIAL -->
+        <div style="background:linear-gradient(135deg,rgba(255,215,0,0.18),rgba(255,215,0,0.05));border:1.5px solid rgba(255,215,0,0.5);border-radius:12px;padding:0.75rem;margin-bottom:0.6rem">
+          <div style="display:flex;align-items:center;gap:0.6rem">
+            <div style="font-size:1.6rem">🥈</div>
+            <div>
+              <div style="font-size:0.88rem;font-weight:900;color:#FFD700">Sebastián Cruz Escobedo</div>
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.85);margin-top:1px">U13 Varonil · <strong style="color:#FFD700">2° lugar mundial</strong> · Tiempo: 9:08</div>
+              <div style="font-size:0.68rem;color:var(--accent-soft);margin-top:1px">¡Medalla de plata para Laguna Swim en el mundo! 🏅</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFE CHECO -->
+        <div style="background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.3);border-radius:12px;padding:0.65rem;margin-bottom:0.5rem">
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <div style="font-size:1.3rem">🏊</div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:800;color:var(--accent)">Sergio "Checo" Villarreal</div>
+              <div style="font-size:0.7rem;color:rgba(255,255,255,0.8)">Open Men Sprint · <strong style="color:var(--accent)">7° lugar</strong> · 46:15 · Finisher ✅</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESTO DEL EQUIPO -->
+        <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.5);margin:0.6rem 0 0.3rem;text-transform:uppercase;letter-spacing:0.05em">Resultados del equipo</div>
+        <div style="display:flex;flex-direction:column;gap:0.3rem">
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.85);display:flex;justify-content:space-between;padding:0.3rem 0.5rem;background:rgba(255,255,255,0.04);border-radius:7px">
+            <span>Alexa Cruz Escobedo</span><span style="color:var(--accent-soft)">U13 Femenil · 4° lugar</span>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.85);display:flex;justify-content:space-between;padding:0.3rem 0.5rem;background:rgba(255,255,255,0.04);border-radius:7px">
+            <span>Héctor Alí Reyes Herrera</span><span style="color:var(--accent-soft)">U11 Varonil · 6° lugar</span>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.85);display:flex;justify-content:space-between;padding:0.3rem 0.5rem;background:rgba(255,255,255,0.04);border-radius:7px">
+            <span>Bárbara Acosta Gallegos</span><span style="color:var(--accent-soft)">U13 Femenil · 7° lugar</span>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.85);display:flex;justify-content:space-between;padding:0.3rem 0.5rem;background:rgba(255,255,255,0.04);border-radius:7px">
+            <span>Diego Alexis Chairez</span><span style="color:var(--accent-soft)">U11 Varonil · 12° lugar</span>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.85);display:flex;justify-content:space-between;padding:0.3rem 0.5rem;background:rgba(255,255,255,0.04);border-radius:7px">
+            <span>Zoé Israel Galindo</span><span style="color:var(--accent-soft)">U15 Varonil · 15° lugar</span>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.85);display:flex;justify-content:space-between;padding:0.3rem 0.5rem;background:rgba(255,255,255,0.04);border-radius:7px">
+            <span>Team Laguna Swim</span><span style="color:var(--accent-soft)">Relevos · 13° lugar</span>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.85);display:flex;justify-content:space-between;padding:0.3rem 0.5rem;background:rgba(255,255,255,0.04);border-radius:7px">
+            <span>Marian Sofía López</span><span style="color:var(--accent-soft)">Half 5 km · 20° lugar · 2:06:33</span>
+          </div>
+        </div>
+
+        <!-- Galería de fotos -->
+        <div style="margin-top:0.8rem">
+          <div class="evento-galeria-head">
+            <span style="font-size:0.72rem;color:var(--accent-soft)">📸 Fotos del evento</span>
+            <button class="intl-add-btn" id="btn-add-foto-miches" onclick="abrirSubirFotoEvento('miches2026')" style="display:none">+ Subir</button>
+          </div>
+          <div class="evento-galeria-grid" id="foto-grid-miches2026">
+            <div class="evento-galeria-empty">Las fotos aparecerán aquí</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="evento-wrapper">
@@ -7584,19 +7727,26 @@ function contactoWFC() {
 }
 window.contactoWFC = contactoWFC;
 
-// ===== CUENTA REGRESIVA: Oceanman World Final Championship =====
-// Arranque de la semana del mundial: 9 nov 2026, hora de Republica Dominicana (AST, UTC-4)
-var WFC_FECHA = new Date('2026-11-09T00:00:00-04:00').getTime();
+// Oceanman Gijón 2027 - contacto
+function contactoGijon() {
+  var msg = 'Hola Coach Checo! Me interesa el viaje a Oceanman Gijón, España (11-12 septiembre 2027). ¿Cómo nos organizamos como equipo Laguna Swim?';
+  openUrl('https://wa.me/528713164850?text=' + encodeURIComponent(msg));
+}
+window.contactoGijon = contactoGijon;
 
-function wfcTick() {
-  var d = document.getElementById('wfc-d');
+// ===== CUENTA REGRESIVA: Oceanman Gijón 11-12 sept 2027 =====
+// Fecha: 11 sep 2027, hora de España (CEST, UTC+2)
+var GIJON_FECHA = new Date('2027-09-11T09:00:00+02:00').getTime();
+
+function gijonTick() {
+  var d = document.getElementById('gij-d');
   if (!d) return;
-  var falta = WFC_FECHA - Date.now();
+  var falta = GIJON_FECHA - Date.now();
   if (falta <= 0) {
-    d.textContent = '00';
-    document.getElementById('wfc-h').textContent = '00';
-    document.getElementById('wfc-m').textContent = '00';
-    document.getElementById('wfc-s').textContent = '00';
+    d.textContent = '¡HOY!';
+    document.getElementById('gij-h').textContent = '';
+    document.getElementById('gij-m').textContent = '';
+    document.getElementById('gij-s').textContent = '';
     return;
   }
   var seg = Math.floor(falta / 1000);
@@ -7605,12 +7755,33 @@ function wfcTick() {
   var mins = Math.floor((seg % 3600) / 60);
   var segs = seg % 60;
   d.textContent = dias;
-  document.getElementById('wfc-h').textContent = String(horas).padStart(2, '0');
-  document.getElementById('wfc-m').textContent = String(mins).padStart(2, '0');
-  document.getElementById('wfc-s').textContent = String(segs).padStart(2, '0');
+  document.getElementById('gij-h').textContent = String(horas).padStart(2, '0');
+  document.getElementById('gij-m').textContent = String(mins).padStart(2, '0');
+  document.getElementById('gij-s').textContent = String(segs).padStart(2, '0');
 }
-wfcTick();
-setInterval(wfcTick, 1000);
+gijonTick();
+setInterval(gijonTick, 1000);
+
+// ===== BOTONES DE SUBIR FOTOS (solo coach) - Resultados =====
+function initBotonesSubirResultados(esCoach) {
+  if (!esCoach) return;
+  var btns = ['btn-subir-serial10', 'btn-subir-masters-final', 'btn-add-foto-miches'];
+  btns.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'inline-block';
+  });
+}
+// Se llama desde el flujo de autenticación de coach existente
+window.initBotonesSubirResultados = initBotonesSubirResultados;
+
+// Subir foto a un resultado (pendiente de aprobación coach)
+function abrirSubirFotoResultado(eventoId) {
+  // Reutiliza el flujo existente de fotos de eventos
+  if (typeof abrirSubirFotoEvento === 'function') {
+    abrirSubirFotoEvento(eventoId);
+  }
+}
+window.abrirSubirFotoResultado = abrirSubirFotoResultado;
 
 // ===== TIENDA =====
 var BOOKS = [
@@ -11820,6 +11991,7 @@ window.borrarFoto = async function() {
       var b2 = document.getElementById('btn-add-foto-intl');
       if (b1) b1.style.display = esCoach ? 'block' : 'none';
       if (b2) b2.style.display = esCoach ? 'block' : 'none';
+      initBotonesSubirResultados(esCoach);
     }
   };
 })();
@@ -11832,6 +12004,7 @@ auth.onAuthStateChanged(function(u) {
     var b2 = document.getElementById('btn-add-foto-intl');
     if (b1) b1.style.display = esCoach ? 'block' : 'none';
     if (b2) b2.style.display = esCoach ? 'block' : 'none';
+    initBotonesSubirResultados(esCoach);
   }, 200);
 });
 
