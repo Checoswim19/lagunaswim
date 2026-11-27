@@ -4038,7 +4038,7 @@ body.blog-active #tab-timer { display: none !important; }
         <div style="margin-top:0.65rem">
           <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.4);margin-bottom:0.3rem;text-transform:uppercase">📸 Fotos de la etapa</div>
           <div id="foto-grid-serial-etapa10" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:8px;overflow:hidden;min-height:48px">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;padding:0.5rem;grid-column:1/-1">Las fotos aparecerán aquí una vez aprobadas</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;padding:0.5rem;grid-column:1/-1">Las fotos aparecerán aquí</div>
           </div>
           <button id="btn-subir-serial10" onclick="abrirSubirFotoResultado('serial-etapa10')" style="display:none;margin-top:0.4rem;font-size:0.68rem;background:rgba(56,189,248,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:4px 12px;cursor:pointer;font-weight:700">+ Subir fotos</button>
         </div>
@@ -4075,7 +4075,7 @@ body.blog-active #tab-timer { display: none !important; }
         <div style="margin-top:0.7rem">
           <div style="font-size:0.65rem;font-weight:700;color:rgba(255,215,0,0.4);margin-bottom:0.3rem;text-transform:uppercase">📸 Fotos de la premiación</div>
           <div id="foto-grid-masters-final" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:8px;overflow:hidden;min-height:48px">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;padding:0.5rem;grid-column:1/-1">Las fotos aparecerán aquí una vez aprobadas</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;padding:0.5rem;grid-column:1/-1">Las fotos aparecerán aquí</div>
           </div>
           <button id="btn-subir-masters-final" onclick="abrirSubirFotoResultado('masters-final')" style="display:none;margin-top:0.4rem;font-size:0.68rem;background:rgba(255,215,0,0.15);border:1px solid #FFD700;color:#FFD700;border-radius:7px;padding:4px 12px;cursor:pointer;font-weight:700">+ Subir fotos</button>
         </div>
@@ -6413,7 +6413,7 @@ try {
   var _noop = function () {};
   var _refStub = {
     on: _noop, off: _noop,
-    once: function () { return Promise.resolve({ val: function () { return null; } }); },
+    once: function () { return Promise.resolve({ val: function () { return null; }, exists: function () { return false; }, forEach: function () {} }); },
     set: function () { return Promise.resolve(); },
     update: function () { return Promise.resolve(); },
     remove: function () { return Promise.resolve(); },
@@ -6429,6 +6429,8 @@ try {
   auth = {
     onAuthStateChanged: function (cb) { try { cb(null); } catch (e2) {} },
     signInWithPopup: function () { return Promise.reject(new Error('offline')); },
+    signInWithRedirect: function () { return Promise.reject(new Error('offline')); },
+    getRedirectResult: function () { return Promise.resolve({ user: null }); },
     signInAnonymously: function () { return Promise.reject(new Error('offline')); },
     signOut: function () { return Promise.resolve(); },
     currentUser: null
@@ -7764,24 +7766,68 @@ setInterval(gijonTick, 1000);
 
 // ===== BOTONES DE SUBIR FOTOS (solo coach) - Resultados =====
 function initBotonesSubirResultados(esCoach) {
-  if (!esCoach) return;
   var btns = ['btn-subir-serial10', 'btn-subir-masters-final', 'btn-add-foto-miches'];
   btns.forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) el.style.display = 'inline-block';
+    if (el) el.style.display = esCoach ? 'inline-block' : 'none';
   });
 }
 // Se llama desde el flujo de autenticación de coach existente
 window.initBotonesSubirResultados = initBotonesSubirResultados;
 
 // Subir foto a un resultado (pendiente de aprobación coach)
-function abrirSubirFotoResultado(eventoId) {
-  // Reutiliza el flujo existente de fotos de eventos
-  if (typeof abrirSubirFotoEvento === 'function') {
-    abrirSubirFotoEvento(eventoId);
+var ETIQUETAS_EVENTOS_FOTOS = {
+  'miches2026': 'Oceanman World Final Miches 2026',
+  'serial-etapa10': 'Serial Escuelas Etapa 10 - La Jabonera',
+  'masters-final': 'Serial Municipal Masters 2026 - Final'
+};
+function abrirSubirFotoEvento(eventoId) {
+  if (!state.user || state.user.email !== CONFIG.coach) {
+    alert('Solo el coach puede subir fotos. Inicia sesion con la cuenta del coach.');
+    return;
   }
+  abrirSubirFotoConEvento(eventoId, ETIQUETAS_EVENTOS_FOTOS[eventoId] || eventoId);
+}
+window.abrirSubirFotoEvento = abrirSubirFotoEvento;
+
+function abrirSubirFotoResultado(eventoId) {
+  abrirSubirFotoEvento(eventoId);
 }
 window.abrirSubirFotoResultado = abrirSubirFotoResultado;
+
+// Galerías fijas (foto-grid-<id>) dentro de tarjetas con contenido propio:
+// se llenan sin borrar el resto de la tarjeta.
+function cargarFotosEnGrid(eventoId, grid) {
+  if (!db) return;
+  db.ref('fotos_internacionales').orderByChild('eventoId').equalTo(eventoId).once('value').then(function(snap) {
+    var fotos = [];
+    snap.forEach(function(child) { fotos.push(Object.assign({ key: child.key }, child.val())); });
+    fotos.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+    if (!fotos.length) {
+      grid.innerHTML = '<div class="evento-galeria-empty" style="grid-column:1/-1">Las fotos aparecerán aquí</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    fotos.forEach(function(f) {
+      var t = document.createElement('div');
+      t.className = 'evento-foto-tile';
+      t.style.cssText = 'aspect-ratio:1;cursor:pointer';
+      var img = document.createElement('img');
+      img.src = f.url; img.loading = 'lazy'; img.alt = f.caption || 'Foto del evento';
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+      t.appendChild(img);
+      t.addEventListener('click', function(e) { e.stopPropagation(); verFotoIntl(f); });
+      grid.appendChild(t);
+    });
+  }).catch(function(e) { console.warn('No se pudieron cargar fotos de ' + eventoId, e); });
+}
+function cargarGaleriasFijas() {
+  ['serial-etapa10', 'masters-final', 'miches2026'].forEach(function(id) {
+    var g = document.getElementById('foto-grid-' + id);
+    if (g) cargarFotosEnGrid(id, g);
+  });
+}
+window.cargarGaleriasFijas = cargarGaleriasFijas;
 
 // ===== TIENDA =====
 var BOOKS = [
@@ -11846,6 +11892,8 @@ function toggleEvento(card) {
 }
 
 function cargarFotosEvento(eventoId) {
+  var gridFijo = document.getElementById('foto-grid-' + eventoId);
+  if (gridFijo) { cargarFotosEnGrid(eventoId, gridFijo); return; }
   var gal = document.getElementById('gal-' + eventoId);
   if (!gal) return;
 
@@ -11962,7 +12010,9 @@ window.borrarFoto = async function() {
     cerrarVerFoto();
     cargarFotosIntl();
     // Refrescar también la galería del evento si está abierta
-    if (eventoId) {
+    if (eventoId && document.getElementById('foto-grid-' + eventoId)) {
+      cargarFotosEvento(eventoId);
+    } else if (eventoId) {
       var card = document.querySelector('[data-evento-id="' + eventoId + '"]') ||
                  document.querySelector('[data-evento-id="prox_' + eventoId + '"]');
       if (card && card.classList.contains('expandido')) {
@@ -12005,6 +12055,7 @@ auth.onAuthStateChanged(function(u) {
     if (b1) b1.style.display = esCoach ? 'block' : 'none';
     if (b2) b2.style.display = esCoach ? 'block' : 'none';
     initBotonesSubirResultados(esCoach);
+    cargarGaleriasFijas();
   }, 200);
 });
 
