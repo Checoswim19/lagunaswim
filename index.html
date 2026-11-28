@@ -11374,7 +11374,6 @@ function guardarNadador() {
   db.ref('nadadores/' + id).set({
     id: id,
     nombre: nombre,
-    fechaNacimiento: fnac,
     equipo: equipo,
     nombreKey: portalNormNombre(nombre),
     nivel: nivel,
@@ -11382,6 +11381,8 @@ function guardarNadador() {
     fechaAlta: new Date().toISOString(),
     creadoPor: state.user.email,
     uidPropietario: '' // Sergio puede vincular después si quiere
+  }).then(function() {
+    return guardarPrivadoNadador(id, { fechaNacimiento: fnac });
   }).then(function() {
     cerrarAltaNadador();
     cargarNadadoresEval();
@@ -12056,6 +12057,7 @@ auth.onAuthStateChanged(function(u) {
     if (b2) b2.style.display = esCoach ? 'block' : 'none';
     initBotonesSubirResultados(esCoach);
     cargarGaleriasFijas();
+    if (esCoach) migrarPrivadosNadadores();
   }, 200);
 });
 
@@ -12098,9 +12100,107 @@ function initPremios() {
   procesarLogrosSemana();
 }
 
+// ===== DATOS PRIVADOS DE NADADORES =====
+// El correo vinculado y la fecha de nacimiento NO van en nadadores/ (lectura publica).
+// Viven en nadadores_privado/<id>, que solo leen el coach y la familia vinculada.
+// vinculos_correo/<correo con "," en vez de "."> /<id> = true deja que la familia encuentre a su nadador.
+function correoKey(correo) { return String(correo || '').trim().toLowerCase().replace(/\./g, ','); }
+function esCoachActual() { return !!(state.user && state.user.email === CONFIG.coach); }
+
+function leerPrivadoNadador(id) {
+  return db.ref('nadadores_privado/' + id).once('value')
+    .then(function(s) { return s.val() || {}; })
+    .catch(function() { return {}; });
+}
+function leerPrivadosTodos() {
+  if (!esCoachActual()) return Promise.resolve({});
+  return db.ref('nadadores_privado').once('value')
+    .then(function(s) { return s.val() || {}; })
+    .catch(function() { return {}; });
+}
+// Une datos publicos + privados (acepta datos viejos aun sin migrar)
+function conPrivado(nd, priv) {
+  priv = priv || {};
+  return Object.assign({}, nd, {
+    correoVinculado: priv.correoVinculado || nd.correoVinculado || '',
+    fechaNacimiento: priv.fechaNacimiento || nd.fechaNacimiento || ''
+  });
+}
+// Nadadores vinculados a un correo: [{ id, data }]
+function buscarNadadoresPorCorreo(correo) {
+  correo = String(correo || '').trim().toLowerCase();
+  return db.ref('vinculos_correo/' + correoKey(correo)).once('value').then(function(s) {
+    var ids = Object.keys(s.val() || {});
+    return Promise.all(ids.map(function(id) {
+      return Promise.all([db.ref('nadadores/' + id).once('value'), leerPrivadoNadador(id)]).then(function(r) {
+        var nd = r[0].val();
+        return nd ? { id: id, data: conPrivado(nd, r[1]) } : null;
+      });
+    }));
+  }).catch(function() { return []; }).then(function(lista) {
+    lista = (lista || []).filter(Boolean);
+    if (lista.length) return lista;
+    // Respaldo mientras queden datos sin migrar
+    return db.ref('nadadores').orderByChild('correoVinculado').equalTo(correo).once('value').then(function(snap) {
+      var out = [];
+      snap.forEach(function(c) { out.push({ id: c.key, data: c.val() }); });
+      return out;
+    }).catch(function() { return []; });
+  });
+}
+// Guarda correo/fecha en la zona privada y borra cualquier copia publica
+function guardarPrivadoNadador(id, cambios, correoAnterior) {
+  var up = {};
+  if (cambios.fechaNacimiento) up['nadadores_privado/' + id + '/fechaNacimiento'] = cambios.fechaNacimiento;
+  if (cambios.correoVinculado) {
+    var nuevo = String(cambios.correoVinculado).trim().toLowerCase();
+    up['nadadores_privado/' + id + '/correoVinculado'] = nuevo;
+    up['vinculos_correo/' + correoKey(nuevo) + '/' + id] = true;
+    if (correoAnterior && correoKey(correoAnterior) !== correoKey(nuevo)) {
+      up['vinculos_correo/' + correoKey(correoAnterior) + '/' + id] = null;
+    }
+  }
+  up['nadadores/' + id + '/correoVinculado'] = null;
+  up['nadadores/' + id + '/fechaNacimiento'] = null;
+  return db.ref().update(up);
+}
+// Mueve los datos viejos a la zona privada. Solo coach; es atomico: si las
+// reglas nuevas aun no estan publicadas, falla completo y no se pierde nada.
+var _migracionPrivadosHecha = false;
+function migrarPrivadosNadadores() {
+  if (!esCoachActual() || _migracionPrivadosHecha) return Promise.resolve();
+  return db.ref('nadadores').once('value').then(function(snap) {
+    var up = {}, n = 0;
+    snap.forEach(function(c) {
+      var nd = c.val() || {};
+      if (!nd.correoVinculado && !nd.fechaNacimiento) return;
+      n++;
+      if (nd.fechaNacimiento) up['nadadores_privado/' + c.key + '/fechaNacimiento'] = nd.fechaNacimiento;
+      if (nd.correoVinculado) {
+        var correo = String(nd.correoVinculado).trim().toLowerCase();
+        up['nadadores_privado/' + c.key + '/correoVinculado'] = correo;
+        up['vinculos_correo/' + correoKey(correo) + '/' + c.key] = true;
+      }
+      up['nadadores/' + c.key + '/correoVinculado'] = null;
+      up['nadadores/' + c.key + '/fechaNacimiento'] = null;
+    });
+    if (!n) { _migracionPrivadosHecha = true; return; }
+    return db.ref().update(up).then(function() {
+      _migracionPrivadosHecha = true;
+      console.info('Datos privados de ' + n + ' nadadores movidos a nadadores_privado');
+    });
+  }).catch(function(e) {
+    console.warn('Migracion de datos privados pendiente (publica las reglas nuevas de Firebase):', e);
+  });
+}
+window.migrarPrivadosNadadores = migrarPrivadosNadadores;
+
 // ===== VISTA COACH =====
 function cargarNadadoresCoach() {
-  db.ref('nadadores').once('value').then(function(snap) {
+  migrarPrivadosNadadores().then(function() {
+    return Promise.all([db.ref('nadadores').once('value'), leerPrivadosTodos()]);
+  }).then(function(r) {
+    var snap = r[0], privs = r[1];
     var lista = document.getElementById('coach-nadadores-list');
     var empty = document.getElementById('coach-no-nadadores');
     var data = snap.val() || {};
@@ -12113,13 +12213,13 @@ function cargarNadadoresCoach() {
     }
     empty.style.display = 'none';
 
-    var nadadores = keys.map(function(k) { return Object.assign({ _id: k }, data[k]); });
+    var nadadores = keys.map(function(k) { return Object.assign({ _id: k }, conPrivado(data[k], privs[k])); });
     nadadores.sort(function(a, b) { return (a.nombre || '').localeCompare(b.nombre || ''); });
 
     lista.innerHTML = '';
     nadadores.forEach(function(n) {
       var meta = n.metaSemanal || 4;
-      var vinculado = n.correoVinculado ? '✓ ' + n.correoVinculado : 'sin vincular';
+      var vinculado = n.correoVinculado ? '✓ ' + escapeHtml(n.correoVinculado) : 'sin vincular';
       var fotoUrl = n.fotoUrl;
       var fotoHtml = fotoUrl
         ? '<img src="' + fotoUrl + '" style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0">'
@@ -12166,12 +12266,14 @@ function guardarMetaNadador() {
   var correo = document.getElementById('meta-correo').value.trim().toLowerCase();
   var fnac = document.getElementById('meta-fnac').value || '';
   var updates = { metaSemanal: meta };
-  if (correo) updates.correoVinculado = correo;
-  if (fnac) { updates.fechaNacimiento = fnac; if (premios.metaNadadorActual && premios.metaNadadorActual.data && premios.metaNadadorActual.data.nombre) updates.nombreKey = portalNormNombre(premios.metaNadadorActual.data.nombre); }
+  var datosAntes = (premios.metaNadadorActual && premios.metaNadadorActual.data) || {};
+  if (fnac && datosAntes.nombre) updates.nombreKey = portalNormNombre(datosAntes.nombre);
   db.ref('nadadores/' + id).update(updates).then(function() {
+    return guardarPrivadoNadador(id, { correoVinculado: correo, fechaNacimiento: fnac }, datosAntes.correoVinculado);
+  }).then(function() {
     cerrarMetaNadador();
     cargarNadadoresCoach();
-  });
+  }).catch(function(e) { alert('No se pudo guardar: ' + e.message); });
 }
 
 // Borrar un nadador de la lista (solo coach). Elimina su perfil/nivel/evaluacion.
@@ -12181,7 +12283,12 @@ function borrarNadador() {
   var id = premios.metaNadadorActual.id;
   var nombre = (premios.metaNadadorActual.data && premios.metaNadadorActual.data.nombre) || 'este nadador';
   if (!confirm('¿Borrar a ' + nombre + ' de la lista?\n\nSe elimina su perfil, nivel y evaluacion. Sus tiempos en el ranking NO se borran.\n\nEsta accion no se puede deshacer.')) return;
-  db.ref('nadadores/' + id).remove().then(function() {
+  var borrar = {};
+  borrar['nadadores/' + id] = null;
+  borrar['nadadores_privado/' + id] = null;
+  var correoBorrar = premios.metaNadadorActual.data && premios.metaNadadorActual.data.correoVinculado;
+  if (correoBorrar) borrar['vinculos_correo/' + correoKey(correoBorrar) + '/' + id] = null;
+  db.ref().update(borrar).then(function() {
     cerrarMetaNadador();
     if (typeof cargarNadadoresCoach === 'function') cargarNadadoresCoach();
     if (typeof cargarNadadoresEval === 'function') cargarNadadoresEval();
@@ -12193,11 +12300,11 @@ window.borrarNadador = borrarNadador;
 function cargarVistaNadador() {
   // Buscar el nadador vinculado al correo del usuario actual
   var correo = state.user.email.toLowerCase();
-  db.ref('nadadores').orderByChild('correoVinculado').equalTo(correo).once('value').then(function(snap) {
+  buscarNadadoresPorCorreo(correo).then(function(vinculados) {
     var cont = document.getElementById('premios-progreso-container');
     var logrosCont = document.getElementById('premios-mis-logros-container');
 
-    if (!snap.exists()) {
+    if (!vinculados.length) {
       cont.innerHTML =
         '<div style="text-align:center;padding:1.5rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:14px">' +
           '<div style="font-size:2rem;margin-bottom:0.5rem">&#127919;</div>' +
@@ -12210,11 +12317,8 @@ function cargarVistaNadador() {
       return;
     }
 
-    var nadadorId, nadador;
-    snap.forEach(function(child) {
-      nadadorId = child.key;
-      nadador = child.val();
-    });
+    var ultimo = vinculados[vinculados.length - 1];
+    var nadadorId = ultimo.id, nadador = ultimo.data;
     premios.nadadorActual = { id: nadadorId, data: nadador };
 
     renderProgresoNadador(nadadorId, nadador);
@@ -12497,11 +12601,12 @@ function procesarLogrosSemana() {
   lunesPasado.setDate(sabado.getDate() - 5);
   var semanaKey = getNumeroSemana(lunesPasado);
 
-  db.ref('nadadores').once('value').then(function(snapN) {
+  Promise.all([db.ref('nadadores').once('value'), leerPrivadosTodos()]).then(function(rN) {
+    var snapN = rN[0], privsN = rN[1];
     if (!snapN.exists()) return;
     var nadadores = [];
     snapN.forEach(function(child) {
-      nadadores.push(Object.assign({ _id: child.key }, child.val()));
+      nadadores.push(Object.assign({ _id: child.key }, conPrivado(child.val(), privsN[child.key])));
     });
 
     // Obtener todas las sesiones de los 6 días
@@ -12650,11 +12755,8 @@ var _origGuardarSesion = window.guardarSesion;
 window.guardarSesion = function() {
   if (!state.user) return;
   // Buscar nadador vinculado al correo del usuario
-  db.ref('nadadores').orderByChild('correoVinculado').equalTo(state.user.email.toLowerCase()).once('value').then(function(snap) {
-    var nadadorId = null;
-    if (snap.exists()) {
-      snap.forEach(function(child) { nadadorId = child.key; });
-    }
+  buscarNadadoresPorCorreo(state.user.email).then(function(vinculados) {
+    var nadadorId = vinculados.length ? vinculados[vinculados.length - 1].id : null;
     // Guardar sesión con nadadorId si existe
     var distCheck = v4ValidarMetros(document.getElementById('reg-distancia').value);
     if (!distCheck.ok) { alert(distCheck.msg); return; }

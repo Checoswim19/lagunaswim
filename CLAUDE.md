@@ -11,6 +11,11 @@ Idioma del sitio y de las respuestas: español (México).
 - Datos en vivo: Firebase Realtime Database (compat 9.23 desde cdnjs) + Firebase Auth (Google).
 - Fotos: Cloudinary (`CONFIG.cloudName`, preset sin firma `CONFIG.uploadPreset`).
 - Coach/admin = `CONFIG.coach`; los botones de admin solo se muestran a esa cuenta.
+- Reglas de Firebase: copia en `database.rules.json`. Se publican a mano en la consola de
+  Firebase (Realtime Database → Reglas); la seguridad real depende de ellas, no del JS.
+- Datos personales de nadadores (correo vinculado, fecha de nacimiento) van en
+  `nadadores_privado/<id>` + `vinculos_correo/<correo con , por .>/<id>`; nunca en `nadadores/`
+  (lectura pública). Usar `buscarNadadoresPorCorreo`, `conPrivado`, `guardarPrivadoNadador`.
 
 ## Convenciones
 - JS vanilla con `var`/funciones globales (llamadas desde `onclick`). Mantener ese estilo.
