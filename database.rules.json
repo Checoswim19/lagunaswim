@@ -1,0 +1,202 @@
+{
+  "rules": {
+    "races": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "ranking": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "records": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "suscripciones": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid == $uid || (auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true))",
+        ".write": "auth != null && (auth.uid == $uid || (auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true))"
+      }
+    },
+    "suscripciones_muro": {
+      ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      "$key": {
+        ".read": "auth != null && (auth.uid == $key || (auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true))",
+        ".write": "auth != null && (auth.uid == $key || (auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true))"
+      }
+    },
+    "pagos_muro": {
+      ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "pagosCheco": {
+      ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "entrenos": {
+      ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "masters_remotos": {
+      ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "entrenos_pro": {
+      ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "sesiones": {
+      ".read": true,
+      "$fecha": {
+        "$uid": {
+          ".write": "auth != null && (auth.uid == $uid || (auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true))"
+        }
+      }
+    },
+    "fotos": {
+      ".read": true,
+      "$fotoId": {
+        ".write": "auth != null && (!data.exists() || data.child('uid').val() == auth.uid || (auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true))"
+      }
+    },
+    "fotos_internacionales": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      ".indexOn": ["eventoId", "timestamp"]
+    },
+    "eventos_internacionales": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "videos": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "nadadores": {
+      ".read": true,
+      ".indexOn": ["correoVinculado", "nombre"],
+      "$id": {
+        ".write": "auth != null && ((auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true) || (data.exists() && auth.token.email != null && root.child('vinculos_correo').child(auth.token.email.toLowerCase().replace('.', ',')).child($id).val() == true) || (data.exists() && data.child('correoVinculado').val() == auth.token.email))",
+        "correoVinculado": { ".validate": false },
+        "fechaNacimiento": { ".validate": false }
+      }
+    },
+    "nadadores_privado": {
+      ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      "$id": {
+        ".read": "auth != null && auth.token.email != null && data.child('correoVinculado').val() == auth.token.email.toLowerCase()"
+      }
+    },
+    "vinculos_correo": {
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+      "$correo": {
+        ".read": "auth != null && auth.token.email != null && ((auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true) || auth.token.email.toLowerCase().replace('.', ',') == $correo)"
+      }
+    },
+    "logros": {
+      ".read": true,
+      ".indexOn": ["nadadorId", "timestamp", "tipo"],
+      "$id": {
+        ".write": "auth != null && (!data.exists() || (auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true))"
+      }
+    },
+    "blog": {
+      ".read": true,
+      "posts": {
+        ".indexOn": ["ts"],
+        "$postId": {
+          ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+        }
+      },
+      "comments": {
+        "$postId": {
+          "$cid": {
+            ".write": "(!data.exists() && auth != null) || (data.exists() && auth != null && (auth.uid == data.child('uid').val() || auth.token.email == 'checoswim@gmail.com'))",
+            ".validate": "newData.hasChildren(['texto']) && newData.child('texto').isString() && newData.child('texto').val().length >= 1 && newData.child('texto').val().length <= 1000"
+          }
+        }
+      },
+      "resenas": {
+        ".indexOn": ["ts"],
+        "$rid": {
+          ".write": "(!data.exists() && newData.child('aprobada').val() == false) || (data.exists() && auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true)",
+          ".validate": "newData.hasChildren(['texto','aprobada']) && newData.child('texto').isString() && newData.child('texto').val().length >= 1 && newData.child('texto').val().length <= 1000 && newData.child('estrellas').isNumber() && newData.child('estrellas').val() >= 1 && newData.child('estrellas').val() <= 5"
+        }
+      }
+    },
+    "races_leaderboard": {
+      ".read": true,
+      ".indexOn": ["time", "timestamp"],
+      "$entryId": {
+        ".write": "(!data.exists() && newData.exists()) || (data.exists() && auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true)",
+        ".validate": "newData.hasChildren(['nickname','time','timestamp']) && newData.child('time').isNumber() && newData.child('time').val() >= 30 && newData.child('time').val() <= 300 && newData.child('nickname').isString() && newData.child('nickname').val().length >= 3 && newData.child('nickname').val().length <= 14"
+      }
+    },
+    "duels": {
+      ".indexOn": ["expiresAt", "status"],
+      "$duelId": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "duels_rankings": {
+      ".read": true,
+      ".indexOn": ["wins", "totalDuels", "lastDuelAt"],
+      "$nickname": {
+        ".write": true
+      }
+    },
+    "entrenamientos_publicos": {
+      ".read": true,
+      ".indexOn": ["timestamp", "fecha", "nombre", "nadadorId"],
+      "$entryId": {
+        ".write": "!data.exists() || (auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true)",
+        ".validate": "newData.hasChildren(['nombre','fecha','metros']) && newData.child('nombre').isString() && newData.child('nombre').val().length >= 3 && newData.child('nombre').val().length <= 60 && newData.child('fecha').isString() && newData.child('fecha').val().matches(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) && newData.child('metros').isNumber() && newData.child('metros').val() >= 50 && newData.child('metros').val() <= 50000"
+      }
+    },
+    "nazas_historial": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    },
+    "wpduel": {
+      ".read": true,
+      "$code": {
+        ".write": true,
+        ".validate": "$code.matches(/^[0-9]{4}$/)"
+      }
+    },
+    "copa2027": {
+      "inscripciones": {
+        ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+        ".indexOn": ["estado", "numero"],
+        "$folio": {
+          ".write": "(auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true) || (!data.exists() && newData.exists())",
+          ".validate": "(auth != null && auth.token.email == 'checoswim@gmail.com') || (newData.child('estado').val() == 'pendiente de pago' && newData.child('total').isNumber() && newData.child('total').val() >= 0 && newData.child('total').val() <= 5000 && newData.child('nombre').isString() && newData.child('nombre').val().length <= 120 && newData.child('distancia').isString())"
+        }
+      },
+      "contador": {
+        ".read": true,
+        ".write": "(auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true) || (newData.isNumber() && newData.val() <= 500 && ((!data.exists() && newData.val() >= 1 && newData.val() <= 3) || (data.exists() && newData.val() > data.val() && newData.val() <= data.val() + 3)))"
+      },
+      "numeros": {
+        ".read": true,
+        "$distancia": {
+          ".write": "(auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true) || (newData.isNumber() && newData.val() <= 300 && ((!data.exists() && newData.val() == 1) || (data.exists() && newData.val() == data.val() + 1)))"
+        }
+      },
+      "patrocinadores": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+      },
+      "patrocinadoresCRM": {
+        ".read": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true",
+        ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+      }
+    },
+    "resenas_google": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'checoswim@gmail.com' && auth.token.email_verified == true"
+    }
+  }
+}
